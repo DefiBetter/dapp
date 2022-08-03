@@ -1,10 +1,9 @@
-import { useAccount, useConnect, useDisconnect } from 'wagmi'
+import { useConnect, useDisconnect } from 'wagmi'
 
-export function WalletConnect() {
+function WalletConnect({address}) {
+
   const { connect, connectors, error, isLoading, pendingConnector } = useConnect();
-  const { address } = useAccount();
   const { disconnect, reset } = useDisconnect({address});
-
 
   if(address) {
     return (
@@ -37,3 +36,5 @@ export function WalletConnect() {
     </div>
   )
 }
+
+export default WalletConnect;

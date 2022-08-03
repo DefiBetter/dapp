@@ -1,3 +1,5 @@
+import { ethers } from "ethers";
+
 // TODO
 const contractAddresses = {
     hardhat: {
@@ -17,7 +19,8 @@ const contractAddresses = {
     fantom: {
         better: "",
         btToken: ""
-    }
+    },
+    etherAddress: "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE"
 }
 
 export default contractAddresses;

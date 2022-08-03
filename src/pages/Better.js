@@ -4,4 +4,4 @@ function Better() {
     </>)
 }   
 
-export default Better
+export default Better;

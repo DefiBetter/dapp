@@ -1,7 +1,5 @@
 import { 
-  useNetwork, 
   useContractRead,
-  useAccount, 
   usePrepareContractWrite, 
   useContractWrite, 
   erc20ABI,
@@ -14,9 +12,9 @@ import IERC20MetadataABI from '../static/ABI/IERC20MetadataABI.json'
 import contractAddresses from '../static/contractAddresses'
 import { ethers } from 'ethers';
 
-function Presale() {
+function Presale({connectedAddress, activeChain, isConnected}) {
 
-  const etherAddress = "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE";
+  const etherAddress = contractAddresses.etherAddress;
   const BN = ethers.BigNumber.from;
 
   function isNumeric(n) {
@@ -27,7 +25,7 @@ function Presale() {
     return a.gt(b) ? b : a;
   }
 
-  // TODO input 0.1 crashes
+  // TODO input 0.1 crashes -> define data type probs
   function parseInput(i) {
     if(etherAddress === paymentTokenAddress)
       return ethers.utils.parseEther(!isNumeric(i) ? "0" : i);
@@ -38,11 +36,12 @@ function Presale() {
     }
   }
 
+  /*  
   const { address: connectedAddress, isConnected } = useAccount();
-  const { chain } = useNetwork();
+  const { chain: activeChain } = useNetwork(); */
 
   const presaleContractConfig = {
-    addressOrName: contractAddresses[chain?.network]?.presale,
+    addressOrName: contractAddresses[activeChain?.network]?.presale,
     contractInterface: DutchAuctionABI,
   }
 
@@ -249,17 +248,16 @@ function Presale() {
       }
     });
     console.log("Buying...")
-  }, [input, paymentTokenAddress, executeBuy]);
+  }, [input, paymentTokenAddress, executeBuy, etherAddress]);
 
   // ------------------------------------------------------------------------------------------
 
   if(!isConnected) {
     return <div>Please connect your wallt</div>
-
   }
 
-  if(chain?.unsupported) {
-    return <div>Unsupported chain</div>
+  if(activeChain?.unsupported) {
+    return <div>Unsupported activeChain</div>
   }
 
   return (
@@ -269,7 +267,7 @@ function Presale() {
 
       <form>
 
-        <div onChange={buyingTargetChanged}>
+        <div>
           <label htmlFor='inputField'>Input amount:</label>
           <input
               name="inputField"
@@ -278,31 +276,33 @@ function Presale() {
               placeholder="Buy for..."
               autoComplete='off'
               value={input.toString()}
+              onChange={buyingTargetChanged}
           />
         </div>
 
-        <div readOnly={true}>
+        <div>
           <label htmlFor='outputField'>Output estimate:</label>
           <input
               name="outputField"
               type="text"
               className="input"
               value={output}
+              readOnly={true}
           />
         </div>
 
-        <button 
+        {/* <button 
           onClick={buyFunction}
           disabled={buyingDisabled()}
         >
           Buy
-        </button>
+        </button> */}
 
         <button 
           onClick={allowFunction}
           disabled={allowingDisabled()}
         >
-          Allow
+          Buy
         </button>
 
         {isErrorOutputEstimate && <div>Error occured while fetching data!</div>}
