@@ -8,7 +8,8 @@ import {
 
 import Better from './../pages/Better'
 import Staking from './../pages/Staking'
-import Presale from './../pages/Presale'
+import PublicSale from '../pages/PublicSale'
+import Presale from '../pages/Presale'
 
 import Navbar from './Navbar'
 import WalletConnect from './WalletConnect'
@@ -16,33 +17,28 @@ import SwitchNetwork from './SwitchNetwork'
 
 function Connector() {
 
-  /* const { chain: activeChain } = useNetwork()
-  const { chains, error, isLoading, pendingChainId, switchNetwork } = useSwitchNetwork()
-  const { address: connectedAddress } = useAccount(); */
   const network = useNetwork();
   const networkSwitcher = useSwitchNetwork();
   const account = useAccount();
 
-  /* const chainInfo = {
-    activeChain: activeChain
+  const liStyle = {
+    "display": "inline",
+    "margin": "1rem",
+    "padding": "1rem"
   }
-
-  const networkInfo = {
-    supportedChains: chains,
-    error: error,
-    isLoading: isLoading,
-    pendingChainId: pendingChainId,
-    switchNetwork: switchNetwork
-  }; */
 
   return <>
 
     <Navbar>
-      <ul>
-        <li><NavLink to="/" end>Better</NavLink></li>
-        <li><NavLink to="/staking">Staking</NavLink></li>
-        <li><NavLink to="/presale">Presale</NavLink></li>
+      <ul style={liStyle}>
+        <li style={liStyle}><NavLink to="/" end>Better</NavLink></li>
+        <li style={liStyle}><NavLink to="/staking">Staking</NavLink></li>
+        <li style={liStyle}><NavLink to="/public-sale">Public Sale</NavLink></li>
+        <li style={liStyle}><NavLink to="/presale">Presale</NavLink></li>
       </ul>
+      <br></br>
+      <br></br>
+
       <WalletConnect address={account.address} />
       <SwitchNetwork network={network} networkSwitcher={networkSwitcher} />
     </Navbar>
@@ -51,14 +47,17 @@ function Connector() {
 
       <Route path="/" element={
         <>
-          <h1>better</h1>
-          <Better />
+          <h1>Better</h1>
+          <Better 
+            connectedAddress={account.address} 
+            activeChain={network.chain} 
+            isConnected={account.isConnected}/>
         </>
       } />
 
-      <Route path="/presale" element={<>
-        <h1>Presale</h1>
-        <Presale 
+      <Route path="/public-sale" element={<>
+        <h1>PublicSale</h1>
+        <PublicSale 
           connectedAddress={account.address} 
           activeChain={network.chain} 
           isConnected={account.isConnected} />
@@ -69,6 +68,16 @@ function Connector() {
         <>
           <h1>Staking</h1>
           <Staking 
+            activeChain={network.chain}
+            connectedAddress={account.address}
+          />
+        </>
+      } />
+
+      <Route path="/presale" element={
+        <>
+          <h1>Presale</h1>
+          <Presale 
             activeChain={network.chain}
             connectedAddress={account.address}
           />

@@ -19,7 +19,6 @@ function Staking({activeChain, connectedAddress}) {
     // ---consts--------------------------
 
     const BN = ethers.BigNumber.from;
-
     const stakingContractConfig = {
         addressOrName: contractAddresses[activeChain?.network]?.better,
         contractInterface: BetterABI
