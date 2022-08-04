@@ -68,7 +68,10 @@ function Connector() {
       <Route path="/staking" element={
         <>
           <h1>Staking</h1>
-          <Staking />
+          <Staking 
+            activeChain={network.chain}
+            connectedAddress={account.address}
+          />
         </>
       } />
 
