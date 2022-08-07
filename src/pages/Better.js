@@ -133,9 +133,16 @@ function Better({activeChain, connectedAddress}) {
 
     function getUnderlyingOptions() {
         return underlyingDataArray?.map( (underlyingDataEntry, index) =>
-            <option value={index} key={index}>{underlyingDataEntry.description}</option>
+            <option value={index} key={"underlying"+index}>{underlyingDataEntry.description}</option>
         ) ?? <></>
     }
+
+    /* function getUnderlyingOptionsReact() {
+        return underlyingDataArray?.map( obj => ({
+            value: obj,
+            label: obj.description
+        }))
+    } */
 
     function getBinElements() {
         return [...Array(BINS).keys()].map( k => 
@@ -170,16 +177,32 @@ function Better({activeChain, connectedAddress}) {
     // --- button functions ---------------
 
     function triggerSelectUnderlying(e) {
-        e.target.selected = true
         setUnderlying(underlyingDataArray[e.target.value]);
     }
+
+    /* function triggerSelectUnderlyingReact(v) {
+        setUnderlying(v.value);
+    } */
+
+    const test = useCallback(
+        () => underlying?.description,
+        [underlying]
+    );
+
+    console.log("Underlyings:", underlyingDataArray)
 
     return (<>
         <p>Countdown: 00:00:00</p>
 
-        <select value={underlying?.description} onChange={triggerSelectUnderlying}>
+        <select value={test()} onChange={triggerSelectUnderlying}>
             {getUnderlyingOptions()}
         </select>
+
+        {/* <Select 
+            value={underlying.description}
+            onChange={triggerSelectUnderlyingReact}
+            options={getUnderlyingOptionsReact()}
+        /> */}
 
         <h2>Current price:</h2>
         {underlyingValueToFixed(underlyingPrice || 0) || "Fetching..."}

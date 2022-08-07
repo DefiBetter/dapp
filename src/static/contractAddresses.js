@@ -1,5 +1,3 @@
-import { ethers } from "ethers";
-
 // TODO
 const contractAddresses = {
     hardhat: {
