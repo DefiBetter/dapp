@@ -1,7 +1,13 @@
-function Better() {
-    return (<>
-        Better contents
-    </>)
-}   
+import Chart from "../components/Chart/Chart";
 
-export default Better
+function Better() {
+  return (
+    <>
+      <div className="body">
+        <Chart />
+      </div>
+    </>
+  );
+}
+
+export default Better;
