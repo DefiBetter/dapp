@@ -1,47 +1,13 @@
 import { useEffect } from "react";
 import { multiply, resize, identity, size } from "mathjs";
+import {
+  preProcessData,
+  reflectXAxis,
+  translate,
+  transpose,
+} from "./Transformations";
 
 const Axes = (props) => {
-  const preProcessData = () => {
-    let data = props.data.bars;
-    return data.map((bar) => {
-      return [
-        bar.timestamp, // x value/time
-        bar.closeUsd, // y value/price
-      ];
-    });
-  };
-
-  const transpose = (matrix) => {
-    try {
-      return matrix[0].map((col, i) => matrix.map((row) => row[i]));
-    } catch (e) {
-      return [];
-    }
-  };
-
-  const reflectXAxis = (matrix, x, y) => {
-    matrix = multiply(
-      [
-        [y == true ? -1 : 1, 0],
-        [0, x == true ? -1 : 1],
-      ],
-      matrix
-    );
-    return matrix;
-  };
-
-  const translate = (matrix, x, y) => {
-    matrix = resize(matrix, [3, size(matrix)[1]], 1); // resize 2x2 to 3x3 with x,y,w
-
-    let T = identity(3);
-    T.set([0, 2], x); // move along x axis
-    T.set([1, 2], y); // move along y axis
-
-    matrix = multiply(T, matrix).resize([2, size(matrix)[1]]);
-    return matrix.toArray();
-  };
-
   const dataRange = (data, range, alignMiddle) => {
     data = data.map((a) => {
       return a.slice(-range);
@@ -76,7 +42,7 @@ const Axes = (props) => {
 
   const data2View = (range) => {
     try {
-      let data = transpose(preProcessData());
+      let data = transpose(preProcessData(props.data.bars));
       let _dataRange = dataRange(data, range);
 
       data = translate(data, 0, -(_dataRange[1][2] / 2 + _dataRange[1][0]));

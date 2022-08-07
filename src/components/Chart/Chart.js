@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Axes from "./Axes";
+import BarChart from "./BarChart";
 import LineChart from "./LineChart";
 
 // https://io.dexscreener.com/u/chart/bars/{chain}/{tokenAddress}?from={unixStart}&to={unixEnd}&res={chartMinuteResolution}&cb={barCount}
@@ -65,8 +66,8 @@ const Chart = () => {
   useEffect(() => {
     // fetch data
     getData(
-      "ethereum",
-      "0x290a6a7460b308ee3f19023d2d00de604bcf5b42",
+      "avalanche",
+      "0xbc61c7ecef56e40404fc359ef4dfd6e7528f2b09",
       1659826800000,
       1659829737815,
       60,
@@ -80,6 +81,7 @@ const Chart = () => {
         {/* <line x1={0} y1={0} x2={window.innerWidth} y2={0} stroke="grey" /> */}
         <Axes chartConfig={chartConfig} />
         <LineChart chartConfig={chartConfig} data={data} />
+        {/* <BarChart chartConfig={chartConfig} data={data} /> */}
       </svg>
     </div>
   );
