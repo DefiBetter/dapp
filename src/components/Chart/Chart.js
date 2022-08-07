@@ -13,8 +13,8 @@ const Chart = () => {
   let [chartConfig, setChartConfig] = useState({
     containerWidth: 600,
     containerHeight: 600,
-    chartWidth: 500,
-    chartHeight: 500,
+    chartWidth: 600,
+    chartHeight: 600,
     separatorCountX: 10,
     separatorCountY: 10,
     separatorWidth: 50,
@@ -77,7 +77,7 @@ const Chart = () => {
 
   return (
     <div>
-      <svg width={window.innerWidth} height={window.innerHeight}>
+      <svg width={window.innerWidth / 2} height={window.innerHeight / 2}>
         {/* <line x1={0} y1={0} x2={window.innerWidth} y2={0} stroke="grey" /> */}
         <Axes chartConfig={chartConfig} />
         <LineChart chartConfig={chartConfig} data={data} />

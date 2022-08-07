@@ -1,0 +1,12 @@
+.container {}
+
+.header {}
+
+.body {
+    display: flex;
+    margin: auto;
+}
+
+.body div {
+    margin-right: 10px;
+}
