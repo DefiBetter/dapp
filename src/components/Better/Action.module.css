@@ -1,0 +1,16 @@
+.container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+}
+
+.button {
+    background-color: #2AAEE6;
+    width: 45%;
+    border-radius: 10px;
+    height: 60%;
+    margin: auto;
+    text-align: center;
+    border-width: 1px;
+    color: white;
+}

@@ -1,15 +1,40 @@
+import { useState } from "react";
+import styles from "./Epoch.module.css";
+
 const Epoch = (props) => {
+  const [timeRemaining, setTimeRemaining] = useState(599); // seconds
+  const [endTime, setEndTime] = useState(1661091710); // unix
+
+  const timeRemainingFormatted = () => {
+    let minutes = String((timeRemaining / 60).toFixed(0)).padStart(2, "0");
+    let seconds = String(timeRemaining % 60).padStart(2, "0");
+    return `${minutes}:${seconds}`;
+  };
+
+  const endTimeFormatted = () => {
+    let milliseconds = endTime * 1000;
+    let dateObj = new Date(milliseconds);
+    let humanDateFormat = dateObj.toLocaleString();
+    return humanDateFormat;
+  };
+
   return (
-    <>
-      <div className="epoch-remaining-time">
-        <text>Epoch time remaining:</text>
-        <text>00:02:10</text>
+    <div className={styles.container}>
+      <div className={styles.timeRemaining}>
+        <div>
+          <b>Epoch time remaining:</b>
+        </div>
+        <div className={styles.time}>
+          <b>{timeRemainingFormatted()}</b>
+        </div>
       </div>
-      <div className="epoch-end-time">
-        <text>Epoch end:</text>
-        <text>21:12:00 17:03:2022 UTC</text>
+      <div className={styles.endTime}>
+        <div>
+          <b>Epoch end:</b>
+        </div>
+        <div>{endTimeFormatted()}</div>
       </div>
-    </>
+    </div>
   );
 };
 

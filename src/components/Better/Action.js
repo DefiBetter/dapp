@@ -1,14 +1,19 @@
+import styles from "./Action.module.css";
+
 const Action = (props) => {
+  const deposit = () => {};
+
+  const claim = () => {};
+
   return (
-    <>
-      <div>
-        <text>Deposit</text>
-      </div>
-      <div>
-        <text>Claim</text>
-        <text>123 BNB</text>
-      </div>
-    </>
+    <div className={styles.container}>
+      <button className={styles.button} onClick={deposit}>
+        Deposit
+      </button>
+      <button className={styles.button} onClick={claim}>
+        <div>Claim</div>
+      </button>
+    </div>
   );
 };
 

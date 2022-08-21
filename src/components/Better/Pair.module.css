@@ -1,0 +1,47 @@
+.container {
+    flex: 1;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 0 10px;
+}
+
+.image {
+    height: 0;
+    width: 10%;
+    padding-bottom: 10%;
+    margin-right: 10px;
+    border-radius: 100%;
+    background-color: antiquewhite;
+}
+
+.networkContainer {
+    height: 60%;
+    width: 80%;
+    border-radius: 10px;
+    z-index: 1;
+}
+
+.network {
+    padding: 0 10px;
+    background-color: white;
+    height: 100%;
+    border-radius: inherit;
+    display: flex;
+    align-items: center;
+    border-width: 1px;
+    border-style: solid;
+}
+
+.option {
+    padding: 0 10px;
+    display: flex;
+    align-items: center;
+    margin-top: 5px;
+    background-color: white;
+    height: 100%;
+    border-radius: inherit;
+    z-index: 1;
+    border-width: 1px;
+    border-style: solid;
+}

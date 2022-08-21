@@ -1,33 +1,37 @@
-import "./Detail.css";
+import styled from "styled-components";
+import styles from "./Detail.module.css";
 
 const Detail = (props) => {
   let sampleBins = [
-    { start: 5, end: 4.5 },
-    { start: 4.5, end: 4 },
-    { start: 4, end: 3.5 },
-    { start: 3.5, end: 3 },
-    { start: 3, end: 2.5 },
-    { start: 2.5, end: 2 },
-    { start: 2, end: 1.5 },
+    { upper: 5, lower: 4.5 },
+    { upper: 4.5, lower: 4 },
+    { upper: 4, lower: 3.5 },
+    { upper: 3.5, lower: 3 },
+    { upper: 3, lower: 2.5 },
+    { upper: 2.5, lower: 2 },
+    { upper: 2, lower: 1.5 },
   ];
+
+  const onInput = () => {};
+
   return (
-    <>
-      <div className="bin-container">
-        {sampleBins.map((bin) => {
+    <div className={styles.container}>
+      <div className={styles.binContainer}>
+        {sampleBins.map((bin, i) => {
           return (
-            <div className="bin">
-              <text className="bin-start">{bin.start}</text>
-              <input type="number" placeholder="0" id="" />
+            <div className={styles.bin}>
+              <div className={styles.binUpper}>{bin.upper}</div>
+              <input type="number" min={0} id={`${i}`} onInput={onInput} />
             </div>
           );
         })}
       </div>
-      <div className="tool-container">
+      <div className={styles.toolContainer}>
         <div className="tool-button" id="student-t-distribution"></div>
         <div className="tool-button" id="copy"></div>
-        <div className="statistic"></div>
+        <div className="statistic">hi</div>
       </div>
-    </>
+    </div>
   );
 };
 
