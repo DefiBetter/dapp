@@ -13,6 +13,9 @@ import DutchAuctionABI from "../static/ABI/DutchAuctionABI.json";
 import IERC20MetadataABI from "../static/ABI/IERC20MetadataABI.json";
 import contractAddresses from "../static/contractAddresses";
 import { ethers } from "ethers";
+import Navbar from "../components/Navbar/Navbar";
+
+import styles from "./Presale.module.css";
 
 function Presale() {
   const etherAddress = "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE";
@@ -254,16 +257,79 @@ function Presale() {
   // ------------------------------------------------------------------------------------------
 
   if (!isConnected) {
-    return <div>Please connect your wallt</div>;
+    return (
+      <>
+        <Navbar />
+        <div>Please connect your wallet</div>
+      </>
+    );
   }
 
   if (chain?.unsupported) {
-    return <div>Unsupported chain</div>;
+    return (
+      <>
+        <Navbar />
+        <div>Unsupported chain</div>
+      </>
+    );
   }
 
   return (
     <>
-      <p readOnly={true}>
+      <Navbar />
+      <div className={styles.container}>
+        <div className={styles.innerContainer}>
+          <div className={styles.title}>
+            <div className={styles.titleImage}>
+              <svg>
+                <text x="20" y="50" className={styles.pre}>
+                  Pre
+                </text>
+                <text x="80" y="80" className={styles.sale}>
+                  Sale
+                </text>
+              </svg>
+            </div>
+          </div>
+          <div className={styles.body}>
+            <div className={styles.currentPrice}>
+              <p>
+                <b>Current price:</b> 100 USDC
+              </p>
+            </div>
+            <div className={styles.stats}>
+              <div className={styles.stat}>
+                <div className={styles.header}>Time left</div>
+                <div className={styles.statBody}>2:11:59:47</div>
+              </div>
+              <div className={styles.stat}>
+                <div className={styles.header}>Supply left</div>
+                <div className={styles.statBody}>11,500</div>
+              </div>
+            </div>
+            <div className={styles.actions}>
+              <div className={styles.actionContainer}>
+                <div className={styles.action}>BUY</div>
+                <input
+                  className={styles.amount}
+                  type="number"
+                  placeholder="0"
+                />
+              </div>
+              <div className={styles.actionContainer}>
+                <div className={styles.action}>FOR</div>
+                <input
+                  className={styles.amount}
+                  type="number"
+                  placeholder="0"
+                />
+              </div>
+            </div>
+            <div className={styles.buy}>Buy</div>
+          </div>
+        </div>
+      </div>
+      {/* <p readOnly={true}>
         Payment token allowance: {getPaymentTokenAllowance()}
       </p>
       <p readOnly={true}> Reward token balance: {getRewardTokenBalance()}</p>
@@ -300,7 +366,7 @@ function Presale() {
         </button>
 
         {isErrorOutputEstimate && <div>Error occured while fetching data!</div>}
-      </form>
+      </form> */}
     </>
   );
 }

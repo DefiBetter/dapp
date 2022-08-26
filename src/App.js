@@ -59,24 +59,8 @@ function App() {
     <WagmiConfig client={client}>
       <Routes>
         <Route path="/" element={<Better />} />
-        <Route
-          path="/presale"
-          element={
-            <>
-              <h1>Presale</h1>
-              <Presale />
-            </>
-          }
-        />
-        <Route
-          path="/staking"
-          element={
-            <>
-              <h1>Staking</h1>
-              <Staking />
-            </>
-          }
-        />
+        <Route path="/presale" element={<Presale />} />
+        <Route path="/staking" element={<Staking />} />
       </Routes>
     </WagmiConfig>
   );
