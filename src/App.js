@@ -7,8 +7,6 @@ import { jsonRpcProvider } from "wagmi/providers/jsonRpc";
 
 import { MetaMaskConnector } from "wagmi/connectors/metaMask";
 
-import { WalletConnect } from "./components/web3/WalletConnect";
-import { SwitchNetwork } from "./components/web3/SwitchNetwork";
 import Presale from "./pages/Presale";
 
 import customChains from "./static/chains";
@@ -19,10 +17,11 @@ import Staking from "./pages/Staking";
 // Two popular providers are Alchemy (alchemy.com) and Infura (infura.io)
 const { chains, provider, webSocketProvider } = configureChains(
   [
-    chain.polygon,
+    // chain.polygon,
     customChains.binanceSmartChain,
     customChains.fantomChain,
-    chain.hardhat,
+    { ...chain.hardhat, logo: "hardhat-logo.png" },
+    // chain.hardhat
   ],
   [
     publicProvider(),
@@ -58,10 +57,6 @@ const client = createClient({
 function App() {
   return (
     <WagmiConfig client={client}>
-      <h1>Setup</h1>
-      <WalletConnect />
-      <SwitchNetwork />
-
       <Routes>
         <Route path="/" element={<Better />} />
         <Route

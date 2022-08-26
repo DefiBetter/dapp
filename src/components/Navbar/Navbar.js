@@ -1,4 +1,6 @@
 import { Link } from "react-router-dom";
+import { SwitchNetwork } from "./web3/SwitchNetwork";
+import { WalletConnect } from "./web3/WalletConnect";
 import styles from "./Navbar.module.css";
 
 const Navbar = () => {
@@ -28,7 +30,10 @@ const Navbar = () => {
           <Link to="/faq">FAQ</Link>
         </div>
       </div>
-      <div className={styles.connect}></div>
+      <div className={styles.connect}>
+        <SwitchNetwork />
+        <WalletConnect />
+      </div>
     </div>
   );
 };

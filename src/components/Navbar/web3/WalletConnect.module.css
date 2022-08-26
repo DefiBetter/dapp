@@ -1,0 +1,38 @@
+.container {
+    z-index: 1;
+    height: 40px;
+    border-radius: 10px;
+    min-width: 100px;
+    width: 100%;
+}
+
+.address {
+    background-color: #2AAEE6;
+    height: 100%;
+    border-radius: 10px;
+    width: inherit;
+    border-width: 1px;
+}
+
+.connector {
+    background-color: #2AAEE6;
+    display: block;
+    text-align: center;
+    border-radius: inherit;
+    padding: 10px 0;
+    border-width: 1px;
+    border-style: solid;
+}
+
+.option {
+    /* position: absolute; */
+    background-color: #2AAEE6;
+    z-index: 1;
+    width: inherit;
+    padding: 10px 0;
+    text-align: center;
+    margin-top: 10px;
+    border-radius: inherit;
+    border-width: 1px;
+    border-style: solid;
+}

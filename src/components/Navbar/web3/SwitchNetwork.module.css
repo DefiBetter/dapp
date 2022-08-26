@@ -1,0 +1,20 @@
+.container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-evenly;
+}
+
+.network {
+    border-radius: 100px;
+    height: 40px;
+    width: 40px;
+    margin-right: 10px;
+    /* background-color: darkcyan; */
+    border-width: 0;
+}
+
+.network>img {
+    width: inherit;
+    height: inherit;
+}
