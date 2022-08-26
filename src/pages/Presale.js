@@ -299,11 +299,15 @@ function Presale() {
             </div>
             <div className={styles.stats}>
               <div className={styles.stat}>
-                <div className={styles.header}>Time left</div>
+                <div className={styles.header}>
+                  <b>Time left</b>
+                </div>
                 <div className={styles.statBody}>2:11:59:47</div>
               </div>
               <div className={styles.stat}>
-                <div className={styles.header}>Supply left</div>
+                <div className={styles.header}>
+                  <b>Supply left</b>
+                </div>
                 <div className={styles.statBody}>11,500</div>
               </div>
             </div>
