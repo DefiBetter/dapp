@@ -8,6 +8,29 @@ function Staking() {
       <div className={styles.container}>
         <div className={styles.innerContainer}>
           <div className={styles.assetContainer}>
+            <table className={styles.stakeContainer}>
+              <tr>
+                <td colSpan={2} className={styles.inputAmount}>
+                  <div>
+                    <input type={"number"} />
+                  </div>
+                </td>
+                <td className={styles.zapAmount}>
+                  <div>
+                    <button className={styles.actionInner}>Avax</button>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td colSpan={3} className={styles.action}>
+                  <button className={styles.actionInner}>Bridge</button>
+                </td>
+              </tr>
+            </table>
+          </div>
+        </div>
+        <div className={styles.innerContainer}>
+          <div className={styles.assetContainer}>
             <div className={styles.detailContainer}>
               <div className={styles.detailBack}>
                 <button className={styles.asset}>
@@ -15,7 +38,9 @@ function Staking() {
                 </button>
                 <div className={styles.arrow}>
                   <svg viewBox="0 0 170 15" xmlns="http://www.w3.org/2000/svg">
-                    <polygon points="0,5 0,10 160,10 160,15 170,7.5 160,0 160,5" />
+                    <polygon
+                      points={`0,5 0,10 160,10 160,15 170,7.5 160,0 160,5`}
+                    />
                   </svg>
                 </div>
                 <button className={styles.asset}>
