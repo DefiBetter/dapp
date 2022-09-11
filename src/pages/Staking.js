@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import Button from "../components/common/Button";
 import { Card } from "../components/common/Card";
 import { Container } from "../components/common/Container";
@@ -15,6 +16,63 @@ import StakeDiagram from "../components/Staking/StakeDiagram";
 import styles from "./Staking.module.css";
 
 function Staking() {
+  const [bridgeAmount, setBridgeAmount] = useState(0);
+  const [stakeLpAmount, setStakeLpAmount] = useState(0);
+  const [stakeBtAmount, setStakeBtAmount] = useState(0);
+  const [zapAmount, setZapAmount] = useState(0);
+
+  // bridge
+  const handleSetBridgeAmount = (e) => {
+    console.log("handleSetBridgeAmount");
+    setBridgeAmount(e.target.value ?? 0);
+  };
+
+  const handleOnBridge = (e) => {
+    console.log("handleOnBridge");
+  };
+
+  // lp
+  const handleSetStakeLpAmount = (e) => {
+    console.log("handleSetStakeLpAmount");
+    setStakeLpAmount(e.target.value ?? 0);
+  };
+
+  const handleOnStakeLp = (e) => {
+    console.log("handleOnStakeLp");
+  };
+  const handleOnUnstakeLp = (e) => {
+    console.log("handleOnUnstakeLp");
+  };
+  const handleOnClaimRewardsLp = (e) => {
+    console.log("handleOnClaimRewardsLp");
+  };
+
+  // bt
+  const handleSetStakeBtAmount = (e) => {
+    console.log("handleSetStakeBtAmount");
+    setStakeBtAmount(e.target.value ?? 0);
+  };
+
+  const handleOnStakeBt = (e) => {
+    console.log("handleOnStakeBt");
+  };
+  const handleOnUnstakeBt = (e) => {
+    console.log("handleOnUnstakeBt");
+  };
+  const handleOnClaimRewardsBt = (e) => {
+    console.log("handleOnClaimRewardsBt");
+  };
+
+  // zap
+  const handleSetZapAmount = (e) => {
+    console.log("handleSetZapAmount");
+    setZapAmount(e.target.value ?? 0);
+  };
+
+  const handleOnZap = (e) => {
+    console.log("handleOnZap");
+  };
+
   return (
     <>
       <Navbar />
@@ -53,7 +111,7 @@ function Staking() {
               <Grid>
                 <GridRow>
                   <GridCell2>
-                    <InputNumber />
+                    <InputNumber onChange={handleSetBridgeAmount} />
                   </GridCell2>
                   <GridCell4>
                     <Button>Avax</Button>
@@ -61,7 +119,7 @@ function Staking() {
                 </GridRow>
                 <GridRow>
                   <GridCell colSpan={3}>
-                    <Button>Bridge</Button>
+                    <Button onClick={handleOnBridge}>Bridge</Button>
                   </GridCell>
                 </GridRow>
               </Grid>
@@ -80,26 +138,26 @@ function Staking() {
               <Grid>
                 <GridRow>
                   <GridCell3 colSpan={2}>
-                    <InputNumber />
+                    <InputNumber onChange={handleSetStakeLpAmount} />
                   </GridCell3>
                   <GridCell3>
-                    <InputNumber />
+                    <InputNumber onChange={handleSetZapAmount} />
                   </GridCell3>
                 </GridRow>
                 <GridRow>
                   <GridCell3>
-                    <Button>Stake</Button>
+                    <Button onClick={handleOnStakeLp}>Stake</Button>
                   </GridCell3>
                   <GridCell3>
-                    <Button>Unstake</Button>
+                    <Button onClick={handleOnUnstakeLp}>Unstake</Button>
                   </GridCell3>
                   <GridCell3>
-                    <Button>Zap in</Button>
+                    <Button onClick={handleOnZap}>Zap in</Button>
                   </GridCell3>
                 </GridRow>
                 <GridRow>
                   <GridCell colSpan={3}>
-                    <Button>Claim</Button>
+                    <Button onClick={handleOnClaimRewardsLp}>Claim</Button>
                   </GridCell>
                 </GridRow>
               </Grid>
@@ -116,20 +174,20 @@ function Staking() {
               <Grid>
                 <GridRow>
                   <GridCell colSpan={2}>
-                    <InputNumber />
+                    <InputNumber onChange={handleSetStakeBtAmount} />
                   </GridCell>
                 </GridRow>
                 <GridRow>
                   <GridCell2>
-                    <Button>Stake</Button>
+                    <Button onClick={handleOnStakeBt}>Stake</Button>
                   </GridCell2>
                   <GridCell2>
-                    <Button>Unstake</Button>
+                    <Button onClick={handleOnUnstakeBt}>Unstake</Button>
                   </GridCell2>
                 </GridRow>
                 <GridRow>
                   <GridCell colSpan={2}>
-                    <Button>Claim</Button>
+                    <Button onClick={handleOnClaimRewardsBt}>Claim</Button>
                   </GridCell>
                 </GridRow>
               </Grid>

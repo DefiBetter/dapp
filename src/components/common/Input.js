@@ -9,8 +9,8 @@ const Input = styled.input`
   height: 40px;
 `;
 
-const InputNumber = () => {
-  return <Input type={"number"}></Input>;
+const InputNumber = (props) => {
+  return <Input onChange={props.onChange} type={"number"}></Input>;
 };
 
 export { Input, InputNumber };
