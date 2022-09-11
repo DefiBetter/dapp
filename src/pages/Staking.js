@@ -19,7 +19,35 @@ function Staking() {
     <>
       <Navbar />
       <Container>
-        <div className={styles.innerContainer}>
+        <div className={styles.section}>
+          <Card>
+            <Grid>
+              <GridRow>
+                <GridCell3>
+                  <div className={styles.centerText}>TVL</div>
+                </GridCell3>
+                <GridCell3>
+                  <div className={styles.centerText}>LP</div>
+                </GridCell3>
+                <GridCell3>
+                  <div className={styles.centerText}>BT</div>
+                </GridCell3>
+              </GridRow>
+              <GridRow>
+                <GridCell3>
+                  <div className={styles.centerText}>$10.000M</div>
+                </GridCell3>
+                <GridCell3>
+                  <div className={styles.centerText}>$100.000k</div>
+                </GridCell3>
+                <GridCell3>
+                  <div className={styles.centerText}>$700.000k</div>
+                </GridCell3>
+              </GridRow>
+            </Grid>
+          </Card>
+        </div>
+        <div className={styles.section}>
           <div className={styles.assetContainer}>
             <Card>
               <Grid>
@@ -40,7 +68,7 @@ function Staking() {
             </Card>
           </div>
         </div>
-        <div className={styles.innerContainer}>
+        <div className={styles.section}>
           <div className={styles.assetContainer}>
             <StakeDiagram
               stakeSymbol={"BT-BNB-LP"}
