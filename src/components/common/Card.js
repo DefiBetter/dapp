@@ -6,7 +6,7 @@ const Card = styled.div`
   border-color: #2aaee6;
   background-color: white;
   border-style: solid;
-  padding: 20px;
+  padding: 10px;
 `;
 
 export { Card };

@@ -7,8 +7,8 @@ const Container = styled.div`
   margin: 0 auto;
   display: flex;
   max-height: 1000px;
+  min-height: 900px;
   height: calc(100vw / 2);
-  min-height: 550px;
   flex-direction: column;
   border-width: 2px;
   border-style: solid;
