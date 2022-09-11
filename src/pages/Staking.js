@@ -1,145 +1,114 @@
+import Button from "../components/common/Button";
+import { Card } from "../components/common/Card";
+import { Container } from "../components/common/Container";
+import {
+  Grid,
+  GridCell,
+  GridCell2,
+  GridCell3,
+  GridCell4,
+  GridRow,
+} from "../components/common/Grid";
+import { Input, InputNumber } from "../components/common/Input";
 import Navbar from "../components/Navbar/Navbar";
+import StakeDiagram from "../components/Staking/StakeDiagram";
 import styles from "./Staking.module.css";
 
 function Staking() {
   return (
     <>
       <Navbar />
-      <div className={styles.container}>
+      <Container>
         <div className={styles.innerContainer}>
           <div className={styles.assetContainer}>
-            <table className={styles.stakeContainer}>
-              <tr>
-                <td colSpan={2} className={styles.inputAmount}>
-                  <div>
-                    <input type={"number"} />
-                  </div>
-                </td>
-                <td className={styles.zapAmount}>
-                  <div>
-                    <button className={styles.actionInner}>Avax</button>
-                  </div>
-                </td>
-              </tr>
-              <tr>
-                <td colSpan={3} className={styles.action}>
-                  <button className={styles.actionInner}>Bridge</button>
-                </td>
-              </tr>
-            </table>
+            <Card>
+              <Grid>
+                <GridRow>
+                  <GridCell2>
+                    <InputNumber />
+                  </GridCell2>
+                  <GridCell4>
+                    <Button>Avax</Button>
+                  </GridCell4>
+                </GridRow>
+                <GridRow>
+                  <GridCell colSpan={3}>
+                    <Button>Bridge</Button>
+                  </GridCell>
+                </GridRow>
+              </Grid>
+            </Card>
           </div>
         </div>
         <div className={styles.innerContainer}>
           <div className={styles.assetContainer}>
-            <div className={styles.detailContainer}>
-              <div className={styles.detailBack}>
-                <button className={styles.asset}>
-                  <b>BT-BNB-LP</b>
-                </button>
-                <div className={styles.arrow}>
-                  <svg viewBox="0 0 170 15" xmlns="http://www.w3.org/2000/svg">
-                    <polygon
-                      points={`0,5 0,10 160,10 160,15 170,7.5 160,0 160,5`}
-                    />
-                  </svg>
-                </div>
-                <button className={styles.asset}>
-                  <b>BT</b>
-                </button>
-              </div>
-              <button className={styles.detailFront}>
-                <div className={styles.textFancy}>Stake</div>
-                <div>
-                  <b>BT-BNB-LP</b>
-                </div>
-                <div className={styles.textFancy}>to receive</div>
-                <div>
-                  <b>Better Token</b>
-                </div>
-              </button>
-            </div>
-            <table className={styles.stakeContainer}>
-              <tr>
-                <td colSpan={2} className={styles.inputAmount}>
-                  <div>
-                    <input type={"number"} />
-                  </div>
-                </td>
-                <td className={styles.zapAmount}>
-                  <div>
-                    <input type={"number"} />
-                  </div>
-                </td>
-              </tr>
-              <tr>
-                <td className={styles.action}>
-                  <button className={styles.actionInner}>Stake</button>
-                </td>
-                <td className={styles.action}>
-                  <button className={styles.actionInner}>Unstake</button>
-                </td>
-                <td className={styles.action}>
-                  <button className={styles.actionInner}>Zap in</button>
-                </td>
-              </tr>
-              <tr>
-                <td colSpan={3} className={styles.action}>
-                  <button className={styles.actionInner}>Claim</button>
-                </td>
-              </tr>
-            </table>
+            <StakeDiagram
+              stakeSymbol={"BT-BNB-LP"}
+              rewardSymbol={"BT"}
+              stakeName={"BT-BNB-LP"}
+              rewardName={"Better Token"}
+            />
+            <Card>
+              <Grid>
+                <GridRow>
+                  <GridCell3 colSpan={2}>
+                    <InputNumber />
+                  </GridCell3>
+                  <GridCell3>
+                    <InputNumber />
+                  </GridCell3>
+                </GridRow>
+                <GridRow>
+                  <GridCell3>
+                    <Button>Stake</Button>
+                  </GridCell3>
+                  <GridCell3>
+                    <Button>Unstake</Button>
+                  </GridCell3>
+                  <GridCell3>
+                    <Button>Zap in</Button>
+                  </GridCell3>
+                </GridRow>
+                <GridRow>
+                  <GridCell colSpan={3}>
+                    <Button>Claim</Button>
+                  </GridCell>
+                </GridRow>
+              </Grid>
+            </Card>
           </div>
           <div className={styles.assetContainer}>
-            <div className={styles.detailContainer}>
-              <div className={styles.detailBack}>
-                <button className={styles.asset}>
-                  <b>BT</b>
-                </button>
-                <div className={styles.arrow}>
-                  <svg viewBox="0 0 170 15" xmlns="http://www.w3.org/2000/svg">
-                    <polygon points="0,5 0,10 160,10 160,15 170,7.5 160,0 160,5" />
-                  </svg>
-                </div>
-                <button className={styles.asset}>
-                  <b>BNB</b>
-                </button>
-              </div>
-              <button className={styles.detailFront}>
-                <div className={styles.textFancy}>Stake</div>
-                <div>
-                  <b>Better Token</b>
-                </div>
-                <div className={styles.textFancy}>to receive</div>
-                <div>
-                  <b>BNB</b>
-                </div>
-              </button>
-            </div>
-            <table className={styles.stakeContainer}>
-              <tr>
-                <td colSpan={2} className={styles.inputAmount}>
-                  <div>
-                    <input type={"number"} />
-                  </div>
-                </td>
-              </tr>
-              <tr>
-                <td className={styles.action}>
-                  <button className={styles.actionInner}>Stake</button>
-                </td>
-                <td className={styles.action}>
-                  <button className={styles.actionInner}>Unstake</button>
-                </td>
-              </tr>
-              <tr>
-                <td colSpan={3} className={styles.action}>
-                  <button className={styles.actionInner}>Claim</button>
-                </td>
-              </tr>
-            </table>
+            <StakeDiagram
+              stakeSymbol={"BT"}
+              rewardSymbol={"BNB"}
+              stakeName={"Better Token"}
+              rewardName={"BNB"}
+            />
+            <Card>
+              <Grid>
+                <GridRow>
+                  <GridCell colSpan={2}>
+                    <InputNumber />
+                  </GridCell>
+                </GridRow>
+                <GridRow>
+                  <GridCell2>
+                    <Button>Stake</Button>
+                  </GridCell2>
+                  <GridCell2>
+                    <Button>Unstake</Button>
+                  </GridCell2>
+                </GridRow>
+                <GridRow>
+                  <GridCell colSpan={2}>
+                    <Button>Claim</Button>
+                  </GridCell>
+                </GridRow>
+              </Grid>
+            </Card>
           </div>
         </div>
-      </div>
+      </Container>
     </>
   );
 }

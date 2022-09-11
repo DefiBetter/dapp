@@ -1,0 +1,4 @@
+const theme = {
+  light: {},
+  dark: {},
+};

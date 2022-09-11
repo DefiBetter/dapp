@@ -1,4 +1,4 @@
-.container {
+/* .container {
     width: 100vw;
     max-width: 2000px;
     min-width: 1100px;
@@ -12,7 +12,7 @@
     border-style: solid;
     border-color: #2AAEE6;
     background-color: #CCE5FF;
-}
+} */
 
 .innerContainer {
     max-width: 100%;
@@ -27,59 +27,8 @@
 .assetContainer {
     display: flex;
     flex-direction: column;
-}
-
-.detailContainer {
-    position: relative;
-    width: 100%;
-}
-
-.detailBack {
-    display: flex;
-    flex-direction: row;
-    width: 100%;
-    margin: 20px 0;
-}
-
-.detailFront {
-    background-color: white;
-    border-radius: 10px;
-    border-color: #2AAEE6;
-    border-style: solid;
-    position: absolute;
-    top: 0;
-    left: 150px;
-    width: calc(100% - 300px);
-    align-items: center;
-    height: 140px;
-}
-
-.textFancy {
-    font-size: 1rem;
-    font-family: marguerite;
-    color: #2AAEE6;
-}
-
-.asset {
-    border-radius: 1000px;
-    background-color: #7EA6E0;
-    border-width: 1px;
-    border-color: black;
-    width: 100px;
-    min-width: 100px;
-    min-height: 100px;
-    height: 100px;
-    font-size: 1rem;
-}
-
-.arrow {
-    display: flex;
-    flex-direction: row;
-    width: calc(100% - 40px);
-}
-
-.arrow>svg {
-    fill: #2AAEE6;
+    width: 45%;
+    max-width: 500px;
 }
 
 table,
@@ -90,12 +39,10 @@ td {
     padding: 5px;
 }
 
-.stakeContainer {
+/* .stakeContainer {
     width: 25vw;
     min-width: 400px;
     max-width: 600px;
-    /* border: 1px solid black; */
-    /* table-layout: fixed; */
     margin-top: 20px;
     border-radius: 10px;
     border-width: 2px;
@@ -103,16 +50,16 @@ td {
     background-color: white;
     border-style: solid;
     padding: 20px;
-}
+} */
 
-.stakeContainer input {
+/* .stakeContainer input {
     background-color: white;
     border-color: #2AAEE6;
     border-width: 2px;
     border-radius: 10px;
     border-style: solid;
     height: 40px;
-}
+} */
 
 .inputAmount {
     width: calc(100% / 3 * 2);
