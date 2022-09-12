@@ -1,5 +1,5 @@
 import { ethers } from "ethers";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import Button from "../components/common/Button";
 import { Card } from "../components/common/Card";
 import { Container } from "../components/common/Container";
@@ -277,7 +277,7 @@ function Staking({ activeChain, connectedAddress }) {
     [stakedBalanceSuccess, staked, stakingTokenDecimals]
   );
 
-  // ui code
+  //// ui code
   const [bridgeAmount, setBridgeAmount] = useState(0);
   const [stakeLpAmount, setStakeLpAmount] = useState(0);
   const [stakeBtAmount, setStakeBtAmount] = useState(0);
