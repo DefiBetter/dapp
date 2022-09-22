@@ -6,6 +6,15 @@
     background-color: #D5E7F2;
 }
 
+.totalAmount {
+    border-color: black;
+    border-width: 1px;
+    border-style: solid;
+    text-align: center;
+    background-color: #7EA6E0;
+    border-radius: 10px;
+}
+
 .binContainer {
     width: 50%;
     height: calc(100% / 9 * 7);

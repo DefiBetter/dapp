@@ -14,9 +14,18 @@ const Detail = (props) => {
 
   const onInput = () => {};
 
+  const totalAmount = 10;
+  const gasTokenSymbol = "BNB";
+
   return (
     <div className={styles.container}>
       <div className={styles.binContainer}>
+        <div className={styles.totalAmount}>
+          Adding:{" "}
+          <b>
+            {totalAmount} {gasTokenSymbol}
+          </b>
+        </div>
         {sampleBins.map((bin, i) => {
           return (
             <div className={styles.bin}>
