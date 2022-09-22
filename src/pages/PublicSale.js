@@ -16,7 +16,7 @@ import { ethers } from "ethers";
 
 function PublicSale() {
   const { address: connectedAddress, isConnected } = useAccount();
-  const { chain } = useNetwork();
+  const { activeChain } = useNetwork();
 
   const etherAddress = contractAddresses.etherAddress;
   const BN = ethers.BigNumber.from;

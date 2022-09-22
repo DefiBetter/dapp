@@ -283,66 +283,66 @@ function Better({ activeChain, connectedAddress }) {
     [lastEpochClose, epochDuration, bufferDuration]
   );
 
-  return (
-    <>
-      //
-      https://blog.greenroots.info/how-to-create-a-countdown-timer-using-react-hooks
-      <p>Countdown: 00:00:00</p>
-      {/* <select value={underlying} onChange={triggerSelectUnderlying}>
-      <option>Select underlying...</option>
-      {getUnderlyingOptions()}
-    </select> */}
-      <ul style={inline}>{getUnderlyingOptions()}</ul>
-      <br></br>
-      <br></br>
-      <h2 style={inline}>Current oracle price:</h2>
-      {underlyingValueToFixed(underlyingPrice || 0) || "Fetching..."}
-      <h2 style={inline}>Current epoch:</h2>
-      {parseInt(epoch)}
-      {epochDelta() < 0 ? (
-        <h2 style={inline}>Epoch still running for: {epochDelta()}</h2>
-      ) : (
-        <h2 style={inline}>Epoch closed for {epochDelta()} seconds</h2>
-      )}
-      <br></br>
-      <br></br>
-      <h2 style={inline}>Last epoch close:</h2>
-      {new Date(lastEpochClose * 1000).toLocaleString()}
-      <h2 style={inline}>Betting close:</h2>
-      {new Date((lastEpochClose + epochDuration) * 1000).toLocaleString()}
-      <h2 style={inline}>Current close:</h2>
-      {new Date(
-        (lastEpochClose + epochDuration + bufferDuration) * 1000
-      ).toLocaleString()}
-      <h2>Bins data:</h2>
-      <div>
-        <div style={inline}>Starts</div>
-        <div style={inline}>Values</div>
-        <div style={inline}># bets</div>
-        <div style={inline}>User bets</div>
-      </div>
-      <br></br>
-      {getBinElements()}
-      <button onClick={placeBets}>Place bets</button>
-    </>
-  );
-
   // return (
   //   <>
-  //     <Navbar></Navbar>
-  //     <div className={styles.container}>
-  //       <div className={styles.header}>
-  //         <Pair />
-  //         <Epoch />
-  //         <Action />
-  //       </div>
-  //       <div className={styles.body}>
-  //         <Chart />
-  //         <Detail />
-  //       </div>
+  //     //
+  //     https://blog.greenroots.info/how-to-create-a-countdown-timer-using-react-hooks
+  //     <p>Countdown: 00:00:00</p>
+  //     {/* <select value={underlying} onChange={triggerSelectUnderlying}>
+  //     <option>Select underlying...</option>
+  //     {getUnderlyingOptions()}
+  //   </select> */}
+  //     <ul style={inline}>{getUnderlyingOptions()}</ul>
+  //     <br></br>
+  //     <br></br>
+  //     <h2 style={inline}>Current oracle price:</h2>
+  //     {underlyingValueToFixed(underlyingPrice || 0) || "Fetching..."}
+  //     <h2 style={inline}>Current epoch:</h2>
+  //     {parseInt(epoch)}
+  //     {epochDelta() < 0 ? (
+  //       <h2 style={inline}>Epoch still running for: {epochDelta()}</h2>
+  //     ) : (
+  //       <h2 style={inline}>Epoch closed for {epochDelta()} seconds</h2>
+  //     )}
+  //     <br></br>
+  //     <br></br>
+  //     <h2 style={inline}>Last epoch close:</h2>
+  //     {new Date(lastEpochClose * 1000).toLocaleString()}
+  //     <h2 style={inline}>Betting close:</h2>
+  //     {new Date((lastEpochClose + epochDuration) * 1000).toLocaleString()}
+  //     <h2 style={inline}>Current close:</h2>
+  //     {new Date(
+  //       (lastEpochClose + epochDuration + bufferDuration) * 1000
+  //     ).toLocaleString()}
+  //     <h2>Bins data:</h2>
+  //     <div>
+  //       <div style={inline}>Starts</div>
+  //       <div style={inline}>Values</div>
+  //       <div style={inline}># bets</div>
+  //       <div style={inline}>User bets</div>
   //     </div>
+  //     <br></br>
+  //     {getBinElements()}
+  //     <button onClick={placeBets}>Place bets</button>
   //   </>
   // );
+
+  return (
+    <>
+      <Navbar></Navbar>
+      <div className={styles.container}>
+        <div className={styles.header}>
+          <Pair />
+          <Epoch />
+          <Action />
+        </div>
+        <div className={styles.body}>
+          <Chart />
+          <Detail />
+        </div>
+      </div>
+    </>
+  );
 }
 
 export default Better;
