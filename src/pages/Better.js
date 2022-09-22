@@ -4,6 +4,8 @@ import {
   useContractWrite,
   erc20ABI,
   useWaitForTransaction,
+  useAccount,
+  useNetwork,
 } from "wagmi";
 import { useCallback, useEffect, useState } from "react";
 
@@ -20,7 +22,11 @@ import Chart from "../components/Chart/Chart";
 import Navbar from "../components/Navbar/Navbar";
 import styles from "./Better.module.css";
 
-function Better({ activeChain, connectedAddress }) {
+function Better() {
+  // fetch account and current network
+  const { address: connectedAddress, isConnected } = useAccount();
+  const { chain: activeChain } = useNetwork();
+
   /**   
    * struct UnderlyingData {
           address addr;
