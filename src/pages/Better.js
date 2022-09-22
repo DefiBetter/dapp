@@ -327,6 +327,25 @@ function Better({ activeChain, connectedAddress }) {
   //   </>
   // );
 
+  // if wallet not connected
+  if (!isConnected) {
+    return (
+      <>
+        <Navbar />
+        <div>Please connect your wallet</div>
+      </>
+    );
+  }
+
+  if (activeChain?.unsupported) {
+    return (
+      <>
+        <Navbar />
+        <div>Unsupported chain</div>
+      </>
+    );
+  }
+
   return (
     <>
       <Navbar></Navbar>
