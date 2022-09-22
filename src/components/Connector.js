@@ -1,15 +1,11 @@
 import { useNetwork, useSwitchNetwork, useAccount } from "wagmi";
 
-import { NavLink, Route, Routes } from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
 
 import Better from "./../pages/Better";
 import Staking from "./../pages/Staking";
 import PublicSale from "../pages/PublicSale";
 import Presale from "../pages/Presale";
-
-import Navbar from "./Navbar/Navbar";
-import WalletConnect from "./WalletConnect";
-import SwitchNetwork from "./SwitchNetwork";
 
 function Connector() {
   const network = useNetwork();
@@ -29,11 +25,7 @@ function Connector() {
           path="/"
           element={
             <>
-              <Better
-                connectedAddress={account.address}
-                activeChain={network.chain}
-                isConnected={account.isConnected}
-              />
+              <Better />
             </>
           }
         />
@@ -42,11 +34,7 @@ function Connector() {
           path="/public-sale"
           element={
             <>
-              <PublicSale
-                connectedAddress={account.address}
-                activeChain={network.chain}
-                isConnected={account.isConnected}
-              />
+              <PublicSale />
             </>
           }
         />
@@ -64,10 +52,7 @@ function Connector() {
           path="/presale"
           element={
             <>
-              <Presale
-                activeChain={network.chain}
-                connectedAddress={account.address}
-              />
+              <Presale />
             </>
           }
         />

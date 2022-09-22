@@ -4,6 +4,8 @@ import {
   useContractWrite,
   erc20ABI,
   useWaitForTransaction,
+  useAccount,
+  useNetwork,
 } from "wagmi";
 import { useCallback, useState } from "react";
 
@@ -12,7 +14,10 @@ import IERC20MetadataABI from "../static/ABI/IERC20MetadataABI.json";
 import contractAddresses from "../static/contractAddresses";
 import { ethers } from "ethers";
 
-function PublicSale({ connectedAddress, activeChain, isConnected }) {
+function PublicSale() {
+  const { address: connectedAddress, isConnected } = useAccount();
+  const { chain } = useNetwork();
+
   const etherAddress = contractAddresses.etherAddress;
   const BN = ethers.BigNumber.from;
 

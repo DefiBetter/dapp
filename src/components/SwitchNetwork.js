@@ -14,9 +14,9 @@ export function SwitchNetwork() {
           <div>Connected to unsupported chain with ID {chain.name}</div>
         ))}
 
-      {chains.map((x) => (
+      {supportedChains.map((x) => (
         <button
-          disabled={!switchNetwork || x.id === chain?.id}
+          disabled={!switchNetwork || x.id === activeChain?.id}
           key={x.id}
           onClick={() => switchNetwork?.(x.id)}
         >

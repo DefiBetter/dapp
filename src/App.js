@@ -1,7 +1,5 @@
 import { WagmiConfig, createClient, configureChains, chain } from "wagmi";
 
-import { Route, Routes } from "react-router-dom";
-
 import { publicProvider } from "wagmi/providers/public";
 import { jsonRpcProvider } from "wagmi/providers/jsonRpc";
 
@@ -9,11 +7,7 @@ import { MetaMaskConnector } from "wagmi/connectors/metaMask";
 
 import Connector from "./components/Connector";
 
-import Presale from "./pages/Presale";
-
 import customChains from "./static/chains";
-import Better from "./pages/Better";
-import Staking from "./pages/Staking";
 
 // Configure chains & providers with the Alchemy provider.
 // Two popular providers are Alchemy (alchemy.com) and Infura (infura.io)

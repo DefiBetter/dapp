@@ -26,6 +26,7 @@ const contractAddresses = {
     btStaking: "",
     lpStaking: "",
   },
+  etherAddress: "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",
 };
 
 export default contractAddresses;
