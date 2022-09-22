@@ -21,6 +21,9 @@ const Navbar = () => {
           <Link to="/presale">Presale</Link>
         </div>
         <div className={styles.page}>
+          <Link to="/public-sale">Public Sale</Link>
+        </div>
+        <div className={styles.page}>
           <Link to="/staking">Staking</Link>
         </div>
         <div className={styles.page}>

@@ -30,9 +30,11 @@ import {
 } from "wagmi";
 
 function Staking() {
+  // fetch account and current network
   const { address: connectedAddress, isConnected } = useAccount();
   const { chain: activeChain } = useNetwork();
-  // ---consts--------------------------
+
+  // ---constants-----------------------
 
   const BN = ethers.BigNumber.from;
   const btStakingContractConfig = {
@@ -44,18 +46,21 @@ function Staking() {
   console.log("contractAddresses", contractAddresses);
   console.log("btStakingContractConfig", btStakingContractConfig);
 
-  // ---reads----------------------------
+  // ------vars--------------------------
+  const [bridgeAmount, setBridgeAmount] = useState(0);
+  const [lpAmount, setLpAmount] = useState(0);
+  const [btAmount, setBtAmount] = useState(0);
+  const [zapAmount, setZapAmount] = useState(0);
 
-  // ------consts------------------------
-
-  // staking token addr (Better token)
+  // ---read-----------------------------
+  // Better token address
   let { data: btStakingTokenAddress } = useContractRead({
     ...btStakingContractConfig,
     functionName: "getStakingToken",
   });
   console.log("btStakingTokenAddress", btStakingTokenAddress);
 
-  // staking token decimals
+  // Better token decimals
   const { data: btStakingTokenDecimals } = useContractRead({
     addressOrName: btStakingTokenAddress,
     contractInterface: IERC20MetadataABI,
@@ -63,17 +68,7 @@ function Staking() {
   });
   console.log("btStakingTokenDecimals", btStakingTokenDecimals);
 
-  // ------vars--------------------------
-
-  // const [toStake, setToStake] = useState("0");
-  // const [toUnstake, setToUnstake] = useState("0");
-
-  const [bridgeAmount, setBridgeAmount] = useState(0);
-  const [lpAmount, setLpAmount] = useState(0);
-  const [btAmount, setBtAmount] = useState(0);
-  const [zapAmount, setZapAmount] = useState(0);
-
-  // staking token balance
+  // Better token balance of connected address
   const {
     data: btStakingTokenBalance,
     isSuccess: btStakingTokenBalanceSuccess,
@@ -86,7 +81,7 @@ function Staking() {
     watch: true,
   });
 
-  // staking token allowance
+  // Better token allowance for BT staking contract
   const {
     data: btStakingTokenAllowance,
     isSuccess: btStakingTokenAllowanceSuccess,
@@ -98,7 +93,7 @@ function Staking() {
     watch: true,
   });
 
-  // BT reward token (BNB) balance of connectedAddress
+  // BT staking reward token (BNB) balance
   const {
     data: rewardTokenBalance,
     isSuccess: rewardTokenBalanceSuccess,
@@ -128,8 +123,7 @@ function Staking() {
     });
 
   // ---writes---------------------------
-
-  // BT staking approve --> maybe should change to infinite approval later
+  // BT staking approve (part 1) --> maybe should change to infinite approval later
   const { config: prepareWriteConfigBtApprove } = usePrepareContractWrite({
     addressOrName: btStakingTokenAddress,
     contractInterface: IERC20MetadataABI,
@@ -142,7 +136,7 @@ function Staking() {
         parseStakingInput(btAmount, btStakingTokenDecimals),
         btStakingTokenBalance
           ? BN(btStakingTokenBalance)
-          : ethers.constants.MaxUint256
+          : ethers.constants.MaxUint256 // this is infinite approval, maybe remove or something later
       ),
     ],
   });
@@ -153,21 +147,25 @@ function Staking() {
       : ethers.constants.MaxUint256
   );
 
+  // BT staking approve (part 2)
   const {
     data: btApprovalTx,
     isLoading: isBtApproving,
     write: executeBtStakeApprove,
   } = useContractWrite(prepareWriteConfigBtApprove);
 
-  // stake send
+  // BT staking send (part 1)
   const { config: prepareWriteConfigBtStake } = usePrepareContractWrite({
     ...btStakingContractConfig,
     functionName: "stake",
     args: [0],
   });
+
+  // BT staking send (part 2)
   const { isLoading: isBtStaking, writeAsync: executeBtStake } =
     useContractWrite(prepareWriteConfigBtStake);
 
+  // after approval, prompt staking txn
   useWaitForTransaction({
     hash: btApprovalTx?.hash,
     onSuccess(data) {
@@ -183,16 +181,18 @@ function Staking() {
     },
   });
 
-  // unstake
+  // BT unstaking (part 1)
   const { config: prepareWriteConfigBtUnstake } = usePrepareContractWrite({
     ...btStakingContractConfig,
     functionName: "unstake",
     args: [0], // amount to unstake?
   });
+
+  // BT unstaking (part 2)
   const { isLoading: isBtUnstaking, writeAsync: executeBtUnstake } =
     useContractWrite(prepareWriteConfigBtUnstake);
 
-  // claim
+  // BT staking rewards claim (part 1)
   const { config: prepareWriteConfigBtClaim } = usePrepareContractWrite({
     ...btStakingContractConfig,
     functionName: "claim",
@@ -200,11 +200,12 @@ function Staking() {
       from: connectedAddress,
     },
   });
+
+  // BT staking rewards claim (part 2)
   const { isLoading: isBtClaiming, writeAsync: executeBtClaim } =
     useContractWrite(prepareWriteConfigBtClaim);
 
-  // // ---visibility-----------------------
-
+  // ---visibility-----------------------
   function fetchOrShow(bool, result, dec) {
     if (bool && dec && result) {
       return ethers.utils.formatUnits(result, dec);
@@ -222,8 +223,7 @@ function Staking() {
     [isBtStaking, isBtApproving]
   );
 
-  // // ---functionality--------------------
-
+  // ---functionality--------------------
   function min(a, b) {
     return a.gt(b) ? b : a;
   }
@@ -274,8 +274,7 @@ function Staking() {
     [btStakedBalanceSuccess, btStaked, btStakingTokenDecimals]
   );
 
-  //// ui code
-
+  // ---handle callback-----------------------
   // bridge
   const handleSetBridgeAmount = (e) => {
     console.log("handleSetBridgeAmount");
