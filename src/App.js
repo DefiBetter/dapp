@@ -7,6 +7,8 @@ import { jsonRpcProvider } from "wagmi/providers/jsonRpc";
 
 import { MetaMaskConnector } from "wagmi/connectors/metaMask";
 
+import Connector from "./components/Connector";
+
 import Presale from "./pages/Presale";
 
 import customChains from "./static/chains";
@@ -57,11 +59,7 @@ const client = createClient({
 function App() {
   return (
     <WagmiConfig client={client}>
-      <Routes>
-        <Route path="/" element={<Better />} />
-        <Route path="/presale" element={<Presale />} />
-        <Route path="/staking" element={<Staking />} />
-      </Routes>
+      <Connector />
     </WagmiConfig>
   );
 }
