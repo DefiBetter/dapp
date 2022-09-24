@@ -1,0 +1,19 @@
+.container {
+    display: flex;
+    justify-content: space-evenly;
+}
+
+.timeRemaining {
+    text-align: center;
+    align-self: center;
+
+}
+
+.endTime {
+    text-align: center;
+    align-self: center;
+}
+
+.time {
+    color: #FF9933;
+}

@@ -1,0 +1,25 @@
+.container {
+    width: calc(100%/3 * 2);
+    background-color: #647687;
+}
+
+#dexscreenerEmbed {
+    position: relative;
+    width: 100%;
+    padding-bottom: 125%;
+}
+
+@media(min-width:1400px) {
+    #dexscreenerEmbed {
+        padding-bottom: 65%;
+    }
+}
+
+#dexscreenerEmbed iframe {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    border: 0;
+}

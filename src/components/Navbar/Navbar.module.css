@@ -1,0 +1,76 @@
+@font-face {
+    font-family: "marguerite";
+    src: url("../../static/font/marguerite.ttf");
+}
+
+.container {
+    border-width: 2px;
+    border-style: solid;
+    border-color: #2AAEE6;
+    border-radius: 20px;
+    width: 100vw;
+    max-width: 2000px;
+    min-width: 1100px;
+    height: 100px;
+    margin: auto;
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo {
+    height: 100%;
+    width: 20%;
+    flex: 1;
+}
+
+.defi {
+    font-size: 3rem;
+}
+
+.better {
+    font-family: marguerite;
+    font-size: 3rem;
+    fill: #2AAEE6;
+}
+
+.pages {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    flex: 5;
+    align-items: center;
+}
+
+.page {
+    font-size: 1.5rem;
+    color: #2AAEE6;
+    font-family: marguerite;
+    color: #2AAEE6;
+    text-decoration: underline;
+}
+
+a {
+    text-decoration: none;
+}
+
+a:link,
+a:visited {
+    color: #2AAEE6;
+}
+
+a:hover {
+    color: #2AAEE6;
+}
+
+.connect {
+    display: flex;
+    flex-direction: row;
+    flex: 1.5;
+    justify-content: space-between;
+    align-items: center;
+    height: 40px;
+    margin-right: 10px;
+}

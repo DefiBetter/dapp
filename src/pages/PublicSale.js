@@ -1,18 +1,22 @@
-import { 
+import {
   useContractRead,
-  usePrepareContractWrite, 
-  useContractWrite, 
+  usePrepareContractWrite,
+  useContractWrite,
   erc20ABI,
-  useWaitForTransaction
-} from 'wagmi'
+  useWaitForTransaction,
+  useAccount,
+  useNetwork,
+} from "wagmi";
 import { useCallback, useState } from "react";
 
-import DutchAuctionABI from '../static/ABI/DutchAuctionABI.json'
-import IERC20MetadataABI from '../static/ABI/IERC20MetadataABI.json'
-import contractAddresses from '../static/contractAddresses'
-import { ethers } from 'ethers';
+import DutchAuctionABI from "../static/ABI/DutchAuctionABI.json";
+import IERC20MetadataABI from "../static/ABI/IERC20MetadataABI.json";
+import contractAddresses from "../static/contractAddresses";
+import { ethers } from "ethers";
 
-function PublicSale({connectedAddress, activeChain, isConnected}) {
+function PublicSale() {
+  const { address: connectedAddress, isConnected } = useAccount();
+  const { activeChain } = useNetwork();
 
   const etherAddress = contractAddresses.etherAddress;
   const BN = ethers.BigNumber.from;
@@ -27,23 +31,23 @@ function PublicSale({connectedAddress, activeChain, isConnected}) {
 
   // TODO input 0.1 crashes -> define data type probs
   function parseInput(i) {
-    if(etherAddress === paymentTokenAddress)
+    if (etherAddress === paymentTokenAddress)
       return ethers.utils.parseEther(!isNumeric(i) ? "0" : i);
-    else{
+    else {
       return !isNumeric(i) || !paymentTokenDecimals
         ? BN(0)
-        : BN(i).mul(BN(10).pow(paymentTokenDecimals || 0))
+        : BN(i).mul(BN(10).pow(paymentTokenDecimals || 0));
     }
   }
 
   /*  
-  const { address: connectedAddress, isConnected } = useAccount();
-  const { chain: activeChain } = useNetwork(); */
+    const { address: connectedAddress, isConnected } = useAccount();
+    const { chain: activeChain } = useNetwork(); */
 
   const presaleContractConfig = {
     addressOrName: contractAddresses[activeChain?.network]?.presale,
     contractInterface: DutchAuctionABI,
-  }
+  };
 
   const [input, setInput] = useState("");
   const [output, setOutput] = useState("0");
@@ -53,74 +57,64 @@ function PublicSale({connectedAddress, activeChain, isConnected}) {
   // fetching payment token address
   let { data: paymentTokenAddress } = useContractRead({
     ...presaleContractConfig,
-    functionName: 'paymentToken'
+    functionName: "paymentToken",
   });
 
   // fetching reward token address
   let { data: rewardTokenAddress } = useContractRead({
     ...presaleContractConfig,
-    functionName: 'rewardToken'
+    functionName: "rewardToken",
   });
 
   // fetching reward token decimals
-  const {
-    data: rewardTokenDecimals
-  } = useContractRead({
-      addressOrName: rewardTokenAddress,
-      contractInterface: IERC20MetadataABI,
-      functionName: 'decimals'
+  const { data: rewardTokenDecimals } = useContractRead({
+    addressOrName: rewardTokenAddress,
+    contractInterface: IERC20MetadataABI,
+    functionName: "decimals",
   });
 
   // fetching payment token decimals
-  const {
-    data: paymentTokenDecimals
-  } = useContractRead({
+  const { data: paymentTokenDecimals } = useContractRead({
     addressOrName: paymentTokenAddress,
     contractInterface: IERC20MetadataABI,
-    functionName: 'decimals',
+    functionName: "decimals",
   });
 
   // ---watch variables-----------------------------------------------------------------------------
 
   // fetching payment token allowance
-  const {
-    data: paymentTokenAllowance
-  } = useContractRead({
-      addressOrName: paymentTokenAddress,
-      contractInterface: erc20ABI,
-      functionName: 'allowance',
-      args: [connectedAddress, presaleContractConfig.addressOrName],
-      watch: true
+  const { data: paymentTokenAllowance } = useContractRead({
+    addressOrName: paymentTokenAddress,
+    contractInterface: erc20ABI,
+    functionName: "allowance",
+    args: [connectedAddress, presaleContractConfig.addressOrName],
+    watch: true,
   });
 
   // fetching reward token balance
-  const {
-    data: rewardTokenBalance
-  } = useContractRead({
+  const { data: rewardTokenBalance } = useContractRead({
     addressOrName: rewardTokenAddress,
     contractInterface: erc20ABI,
-    functionName: 'balanceOf',
+    functionName: "balanceOf",
     args: connectedAddress,
-    watch: true
+    watch: true,
   });
 
   // fetching output estimate
-  let { 
-    isError: isErrorOutputEstimate,
-    refetch: refetchOutputEstimate
-  } = useContractRead({
+  let { isError: isErrorOutputEstimate, refetch: refetchOutputEstimate } =
+    useContractRead({
       ...presaleContractConfig,
-      functionName: 'estimateOutput',
+      functionName: "estimateOutput",
       args: parseInput(input),
       watch: true,
       onSuccess(data) {
         // TODO account for decimals of reward token
-        setOutput(ethers.utils.formatEther(data))
+        setOutput(ethers.utils.formatEther(data));
       },
       onError(error) {
         setOutput(error);
-      }
-  });
+      },
+    });
 
   // ---contract writes-----------------------------------------------------------------------------
 
@@ -128,40 +122,35 @@ function PublicSale({connectedAddress, activeChain, isConnected}) {
   const { config: prepareWriteConfigApprove } = usePrepareContractWrite({
     addressOrName: paymentTokenAddress,
     contractInterface: erc20ABI,
-    functionName: 'approve',
+    functionName: "approve",
     args: [
       //spender
       presaleContractConfig.addressOrName,
       //value
-      parseInput(input)
-    ]
+      parseInput(input),
+    ],
   });
 
-  const { 
+  const {
     data: approvalTx,
     isLoading: settingAllowance,
-    write: executeApprovePaymentToken
+    write: executeApprovePaymentToken,
   } = useContractWrite(prepareWriteConfigApprove);
 
   // buy into the presale
   // TODO add buyWithPermit support (automatically try to buy with permit, if not supported fall back to normal one)
   const { config: prepareWriteConfigBuy } = usePrepareContractWrite({
     ...presaleContractConfig,
-    functionName: 'buy',
+    functionName: "buy",
     args:
       paymentTokenAddress === etherAddress
-      ? [0]
-      : [min(parseInput(input), paymentTokenAllowance || 0)],
+        ? [0]
+        : [min(parseInput(input), paymentTokenAllowance || 0)],
     overrides: {
-      value: 
-        (paymentTokenAddress === etherAddress
-        ? parseInput(input)
-        : 0)
-    }
+      value: paymentTokenAddress === etherAddress ? parseInput(input) : 0,
+    },
   });
-  const {
-    write: executeBuy,
-  } = useContractWrite(prepareWriteConfigBuy);
+  const { write: executeBuy } = useContractWrite(prepareWriteConfigBuy);
 
   useWaitForTransaction({
     hash: approvalTx?.hash,
@@ -169,17 +158,23 @@ function PublicSale({connectedAddress, activeChain, isConnected}) {
       executeBuy?.({
         recklesslySetUnpreparedArgs:
           paymentTokenAddress === etherAddress
-          ? [0]
-          : [ethers.utils.parseEther(!isNumeric(input) ? "0" : input).toString()],
+            ? [0]
+            : [
+                ethers.utils
+                  .parseEther(!isNumeric(input) ? "0" : input)
+                  .toString(),
+              ],
         recklesslySetUnpreparedOverrides: {
-          value: 
+          value:
             paymentTokenAddress === etherAddress
-            ? ethers.utils.parseEther(!isNumeric(input) ? "0" : input).toString()
-            : 0
-        }
+              ? ethers.utils
+                  .parseEther(!isNumeric(input) ? "0" : input)
+                  .toString()
+              : 0,
+        },
       });
-    }
-  })
+    },
+  });
 
   // ---callbacks---------------------------------------------------------------------------------
 
@@ -196,119 +191,113 @@ function PublicSale({connectedAddress, activeChain, isConnected}) {
   // ------------------------------------------------------------------------------------------
 
   const buyingTargetChanged = (e) => {
-      setInput(e.target.value);
-      refetchOutputEstimate?.()
+    setInput(e.target.value);
+    refetchOutputEstimate?.();
   };
 
   // ---visibility-----------------------------------------------------------------------------
 
   /* const buyingDisabled = () => {
-    return isBuying || parseInput(input)?.lte(0) || settingAllowance || (
-      (paymentTokenAddress !== etherAddress) && parseInput(input)?.gt(paymentTokenAllowance || 0)
-    )
-  } */
+      return isBuying || parseInput(input)?.lte(0) || settingAllowance || (
+        (paymentTokenAddress !== etherAddress) && parseInput(input)?.gt(paymentTokenAllowance || 0)
+      )
+    } */
 
   const allowingDisabled = () => {
     return (
-      (paymentTokenAddress === etherAddress) 
-      || 
-      settingAllowance 
-      || 
-      parseInput(input)?.lte(paymentTokenAllowance)
-      ||
+      paymentTokenAddress === etherAddress ||
+      settingAllowance ||
+      parseInput(input)?.lte(paymentTokenAllowance) ||
       parseInput(input)?.lte(0)
-    )
-  }
+    );
+  };
 
   // ---functionality---------------------------------------------------------------------------
 
   const allowFunction = (e) => {
     e.preventDefault();
-    if(parseInput(input)?.gt(0)) {
+    if (parseInput(input)?.gt(0)) {
       executeApprovePaymentToken?.();
     }
-    console.log("allowance set")
+    console.log("allowance set");
   };
 
   /* const buyFunction = useCallback((e) => {
-
-    e.preventDefault();
-    // TODO account for decimals correctly
-    executeBuy?.({
-      recklesslySetUnpreparedArgs:
-        paymentTokenAddress === etherAddress
-        ? [0]
-        : [ethers.utils.parseEther(!isNumeric(input) ? "0" : input).toString()],
-      recklesslySetUnpreparedOverrides: {
-        value: 
+  
+      e.preventDefault();
+      // TODO account for decimals correctly
+      executeBuy?.({
+        recklesslySetUnpreparedArgs:
           paymentTokenAddress === etherAddress
-          ? ethers.utils.parseEther(!isNumeric(input) ? "0" : input).toString()
-          : 0
-      }
-    });
-    console.log("Buying...")
-  }, [input, paymentTokenAddress, executeBuy, etherAddress]); */
+          ? [0]
+          : [ethers.utils.parseEther(!isNumeric(input) ? "0" : input).toString()],
+        recklesslySetUnpreparedOverrides: {
+          value: 
+            paymentTokenAddress === etherAddress
+            ? ethers.utils.parseEther(!isNumeric(input) ? "0" : input).toString()
+            : 0
+        }
+      });
+      console.log("Buying...")
+    }, [input, paymentTokenAddress, executeBuy, etherAddress]); */
 
   // ------------------------------------------------------------------------------------------
 
-  if(!isConnected) {
-    return <div>Please connect your wallt</div>
+  if (!isConnected) {
+    return <div>Please connect your wallt</div>;
   }
 
-  if(activeChain?.unsupported) {
-    return <div>Unsupported activeChain</div>
+  if (activeChain?.unsupported) {
+    return <div>Unsupported activeChain</div>;
   }
 
   return (
     <>
-      <p readOnly={true}>Payment token allowance: {getPaymentTokenAllowance()}</p>
-      <p readOnly={true}>   Reward token balance: {getRewardTokenBalance()}</p>
+      <p readOnly={true}>
+        Payment token allowance: {getPaymentTokenAllowance()}
+      </p>
+      <p readOnly={true}> Reward token balance: {getRewardTokenBalance()}</p>
 
       <form>
-
         <div>
-          <label htmlFor='inputField'>Input amount:</label>
+          <label htmlFor="inputField">Input amount:</label>
           <input
-              name="inputField"
-              type="text"
-              className="input"
-              placeholder="Buy for..."
-              autoComplete='off'
-              value={input.toString()}
-              onChange={buyingTargetChanged}
+            name="inputField"
+            type="text"
+            className="input"
+            placeholder="Buy for..."
+            autoComplete="off"
+            value={input.toString()}
+            onChange={buyingTargetChanged}
           />
         </div>
 
         <div>
-          <label htmlFor='outputField'>Output estimate:</label>
+          <label htmlFor="outputField">Output estimate:</label>
           <input
-              name="outputField"
-              type="text"
-              className="input"
-              value={output}
-              readOnly={true}
+            name="outputField"
+            type="text"
+            className="input"
+            value={output}
+            readOnly={true}
           />
         </div>
 
         {/* <button 
-          onClick={buyFunction}
-          disabled={buyingDisabled()}
-        >
-          Buy
-        </button> */}
+            onClick={buyFunction}
+            disabled={buyingDisabled()}
+          >
+            Buy
+          </button> */}
 
-        <button 
-          onClick={allowFunction}
-          disabled={allowingDisabled()}
-        >
+        <button onClick={allowFunction} disabled={allowingDisabled()}>
           Buy
         </button>
 
         {isErrorOutputEstimate && <div>Error occured while fetching data!</div>}
-
       </form>
     </>
-  )
+  );
 }
 
-export default PublicSale
+export default PublicSale;

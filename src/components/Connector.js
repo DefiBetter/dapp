@@ -1,93 +1,64 @@
-import {useNetwork, useSwitchNetwork, useAccount } from "wagmi";
+import { useNetwork, useSwitchNetwork, useAccount } from "wagmi";
 
-import {
-  NavLink,
-  Route,
-  Routes
-} from 'react-router-dom'
+import { Route, Routes } from "react-router-dom";
 
-import Better from './../pages/Better'
-import Staking from './../pages/Staking'
-import PublicSale from '../pages/PublicSale'
-import Presale from '../pages/Presale'
-
-import Navbar from './Navbar'
-import WalletConnect from './WalletConnect'
-import SwitchNetwork from './SwitchNetwork'
+import Better from "./../pages/Better";
+import Staking from "./../pages/Staking";
+import PublicSale from "../pages/PublicSale";
+import Presale from "../pages/Presale";
 
 function Connector() {
-
   const network = useNetwork();
   const networkSwitcher = useSwitchNetwork();
   const account = useAccount();
 
   const liStyle = {
-    "display": "inline",
-    "margin": "1rem",
-    "padding": "1rem"
-  }
+    display: "inline",
+    margin: "1rem",
+    padding: "1rem",
+  };
 
-  return <>
+  return (
+    <>
+      <Routes>
+        <Route
+          path="/"
+          element={
+            <>
+              <Better />
+            </>
+          }
+        />
 
-    <Navbar>
-      <ul style={liStyle}>
-        <li style={liStyle}><NavLink to="/" end>Better</NavLink></li>
-        <li style={liStyle}><NavLink to="/staking">Staking</NavLink></li>
-        <li style={liStyle}><NavLink to="/public-sale">Public Sale</NavLink></li>
-        <li style={liStyle}><NavLink to="/presale">Presale</NavLink></li>
-      </ul>
-      <br></br>
-      <br></br>
+        <Route
+          path="/public-sale"
+          element={
+            <>
+              <PublicSale />
+            </>
+          }
+        />
 
-      <WalletConnect address={account.address} />
-      <SwitchNetwork network={network} networkSwitcher={networkSwitcher} />
-    </Navbar>
+        <Route
+          path="/staking"
+          element={
+            <>
+              <Staking />
+            </>
+          }
+        />
 
-    <Routes>
-
-      <Route path="/" element={
-        <>
-          <h1>Better</h1>
-          <Better 
-            connectedAddress={account.address} 
-            activeChain={network.chain} 
-            isConnected={account.isConnected}/>
-        </>
-      } />
-
-      <Route path="/public-sale" element={<>
-        <h1>PublicSale</h1>
-        <PublicSale 
-          connectedAddress={account.address} 
-          activeChain={network.chain} 
-          isConnected={account.isConnected} />
-      </>
-      } />
-
-      <Route path="/staking" element={
-        <>
-          <h1>Staking</h1>
-          <Staking 
-            activeChain={network.chain}
-            connectedAddress={account.address}
-          />
-        </>
-      } />
-
-      <Route path="/presale" element={
-        <>
-          <h1>Presale</h1>
-          <Presale 
-            activeChain={network.chain}
-            connectedAddress={account.address}
-          />
-        </>
-      } />
-
-    </Routes>
-
-  </>
-
+        <Route
+          path="/presale"
+          element={
+            <>
+              <Presale />
+            </>
+          }
+        />
+      </Routes>
+    </>
+  );
 }
 
 export default Connector;
