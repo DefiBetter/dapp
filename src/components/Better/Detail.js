@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { Card, CardBlueBg } from "../common/Card";
 import styles from "./Detail.module.css";
 
 const Detail = (props) => {
@@ -35,10 +36,17 @@ const Detail = (props) => {
           );
         })}
       </div>
-      <div className={styles.toolContainer}>
-        <div className="tool-button" id="student-t-distribution"></div>
-        <div className="tool-button" id="copy"></div>
-        <div className="statistic">hi</div>
+      <div className={styles.statsContainer}>
+        <Card>
+          My Statistics
+          <CardBlueBg>
+            <b>Position value: 123 BNB</b>
+            <br></br>
+            Number of games: 102
+          </CardBlueBg>
+        </Card>
+        <Card>Better Gains</Card>
+        <Card>Epoch Data</Card>
       </div>
     </div>
   );

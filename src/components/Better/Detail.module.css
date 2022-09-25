@@ -50,19 +50,12 @@ input {
     background-color: #CCE5FF;
 }
 
-.toolContainer {
+.statsContainer {
     width: 50%;
+    display: grid;
+    grid-gap: 10px;
+    padding: 10px 10px;
 }
-
-.tool-button {}
-
-.student-t-distribution {}
-
-.tool-button {}
-
-#copy {}
-
-#statistic {}
 
 /* Chrome, Safari, Edge, Opera */
 input::-webkit-outer-spin-button,

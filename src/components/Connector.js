@@ -6,6 +6,7 @@ import Better from "./../pages/Better";
 import Staking from "./../pages/Staking";
 import PublicSale from "../pages/PublicSale";
 import Presale from "../pages/Presale";
+import Landing from "../pages/Landing";
 
 function Connector() {
   const network = useNetwork();
@@ -21,6 +22,14 @@ function Connector() {
   return (
     <>
       <Routes>
+        <Route
+          path="/landing"
+          element={
+            <>
+              <Landing />
+            </>
+          }
+        />
         <Route
           path="/"
           element={

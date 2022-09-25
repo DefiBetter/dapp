@@ -9,4 +9,8 @@ const Card = styled.div`
   padding: 10px;
 `;
 
-export { Card };
+const CardBlueBg = styled(Card)`
+  background-color: #cce5ff;
+`;
+
+export { Card, CardBlueBg };
