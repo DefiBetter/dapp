@@ -4,16 +4,8 @@
 }
 
 .container {
-    border-width: 2px;
-    border-style: solid;
-    border-color: #2AAEE6;
-    border-radius: 20px;
-    width: 100vw;
-    max-width: 2000px;
     min-width: 1100px;
     height: 100px;
-    margin: auto;
-    margin-bottom: 20px;
     display: flex;
     flex-direction: row;
     justify-content: space-between;
@@ -22,30 +14,25 @@
 
 .logo {
     height: 100%;
-    width: 20%;
+    margin: auto;
+    margin-left: 0.5rem;
     flex: 1;
 }
 
-.defi {
-    font-size: 3rem;
-}
-
-.better {
-    font-family: marguerite;
-    font-size: 3rem;
-    fill: #2AAEE6;
-}
-
 .pages {
+    margin-top: 1rem;
+    margin-right: 8rem;
+    margin-left: 8rem;
     display: flex;
     flex-direction: row;
     justify-content: space-evenly;
-    flex: 5;
+    flex: 3;
     align-items: center;
 }
 
 .page {
-    font-size: 1.5rem;
+    font-size: 2.3rem;
+    font-weight: bold;
     color: #2AAEE6;
     font-family: marguerite;
     color: #2AAEE6;
@@ -71,6 +58,7 @@ a:hover {
     flex: 1.5;
     justify-content: space-between;
     align-items: center;
-    height: 40px;
+    height: 90%;
     margin-right: 10px;
+    cursor: pointer;
 }

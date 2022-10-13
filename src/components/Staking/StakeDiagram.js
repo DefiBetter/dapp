@@ -1,3 +1,4 @@
+import { Card } from "../common/Card";
 import styles from "./StakeDiagram.module.css";
 
 const StakeDiagram = (props) => {
@@ -16,16 +17,23 @@ const StakeDiagram = (props) => {
           <b>{props.rewardSymbol}</b>
         </button>
       </div>
-      <button className={styles.front}>
-        <div className={styles.textFancy}>Stake</div>
-        <div>
-          <b>{props.stakeName}</b>
-        </div>
-        <div className={styles.textFancy}>to receive</div>
-        <div>
-          <b>{props.rewardName}</b>
-        </div>
-      </button>
+      <div className={styles.front}>
+        <Card>
+          <p className={styles.text}>
+            <span className={styles.textFancy}>Stake</span>
+            <span>
+              <br></br>
+              <b>{props.stakeName}</b>
+            </span>
+            <br></br>
+            <span className={styles.textFancy}>to receive</span>
+            <br></br>
+            <span>
+              <b>{props.rewardName}</b>
+            </span>
+          </p>
+        </Card>
+      </div>
     </div>
   );
 };
