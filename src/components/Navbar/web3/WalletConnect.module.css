@@ -1,8 +1,8 @@
 .container {
     z-index: 1;
-    height: 40px;
+    height: 80px;
     border-radius: 10px;
-    min-width: 100px;
+    min-width: 200px;
     width: 100%;
 }
 
@@ -12,16 +12,20 @@
     border-radius: 10px;
     width: inherit;
     border-width: 1px;
+    font-size: 1.5rem;
+    text-align: center;
 }
 
 .connector {
     background-color: #2AAEE6;
     display: block;
+    font-size: 2rem;
     text-align: center;
     border-radius: inherit;
-    padding: 10px 0;
+    padding: 1rem 0;
     border-width: 1px;
     border-style: solid;
+    cursor: pointer;
 }
 
 .option {
@@ -35,4 +39,5 @@
     border-radius: inherit;
     border-width: 1px;
     border-style: solid;
+    font-size: 1.5rem;
 }

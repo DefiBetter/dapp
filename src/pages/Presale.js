@@ -16,6 +16,10 @@ import { ethers } from "ethers";
 import Navbar from "../components/Navbar/Navbar";
 
 import styles from "./Presale.module.css";
+import { AppContainer, Container } from "../components/common/Container";
+import { Card } from "../components/common/Card";
+import { Grid, GridCell, GridCell4, GridRow } from "../components/common/Grid";
+import Button from "../components/common/Button";
 
 function Presale() {
   const etherAddress = "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE";
@@ -258,28 +262,28 @@ function Presale() {
 
   if (!isConnected) {
     return (
-      <>
+      <AppContainer>
         <Navbar />
         <div>Please connect your wallet</div>
-      </>
+      </AppContainer>
     );
   }
 
   if (chain?.unsupported) {
     return (
-      <>
+      <AppContainer>
         <Navbar />
         <div>Unsupported chain</div>
-      </>
+      </AppContainer>
     );
   }
 
   return (
-    <>
+    <AppContainer>
       <Navbar />
-      <div className={styles.container}>
+      <Container>
         <div className={styles.innerContainer}>
-          <div className={styles.title}>
+          <Card>
             <div className={styles.titleImage}>
               <svg>
                 <text x="20" y="50" className={styles.pre}>
@@ -290,49 +294,69 @@ function Presale() {
                 </text>
               </svg>
             </div>
-          </div>
-          <div className={styles.body}>
-            <div className={styles.currentPrice}>
-              <p>
-                <b>Current price:</b> 100 USDC
-              </p>
-            </div>
-            <div className={styles.stats}>
-              <div className={styles.stat}>
-                <div className={styles.header}>
-                  <b>Time left</b>
-                </div>
-                <div className={styles.statBody}>2:11:59:47</div>
-              </div>
-              <div className={styles.stat}>
-                <div className={styles.header}>
-                  <b>Supply left</b>
-                </div>
-                <div className={styles.statBody}>11,500</div>
-              </div>
-            </div>
-            <div className={styles.actions}>
-              <div className={styles.actionContainer}>
-                <div className={styles.action}>BUY</div>
-                <input
-                  className={styles.amount}
-                  type="number"
-                  placeholder="0"
-                />
-              </div>
-              <div className={styles.actionContainer}>
-                <div className={styles.action}>FOR</div>
-                <input
-                  className={styles.amount}
-                  type="number"
-                  placeholder="0"
-                />
-              </div>
-            </div>
-            <div className={styles.buy}>Buy</div>
-          </div>
+          </Card>
+          <Card>
+            <Grid>
+              <GridRow>
+                <GridCell colSpan={4}>
+                  <div className={styles.currentPrice}>
+                    <p>
+                      <b>Current price:</b> 100 USDC
+                    </p>
+                  </div>
+                </GridCell>
+              </GridRow>
+              <GridRow>
+                <GridCell4>
+                  <div className={styles.header}>
+                    <b>Time left</b>
+                  </div>
+                </GridCell4>
+                <GridCell4>
+                  <div className={styles.statBody}>2:11:59:47</div>
+                </GridCell4>
+                <GridCell4>
+                  <div className={styles.header}>
+                    <b>Supply left</b>
+                  </div>
+                </GridCell4>
+                <GridCell4>
+                  <div className={styles.statBody}>11,500</div>
+                </GridCell4>
+              </GridRow>
+              <GridRow>
+                <GridCell>
+                  <div className={styles.action}>BUY</div>
+                </GridCell>
+                <GridCell colSpan={3}>
+                  <input
+                    className={styles.amount}
+                    type="number"
+                    placeholder="0"
+                  />
+                </GridCell>
+              </GridRow>
+              <GridRow>
+                <GridCell>
+                  <div className={styles.action}>FOR</div>
+                </GridCell>
+                <GridCell colSpan={3}>
+                  <input
+                    className={styles.amount}
+                    type="number"
+                    placeholder="0"
+                  />
+                </GridCell>
+              </GridRow>
+              <GridRow>
+                <GridCell colSpan={4}>
+                  <Button>Buy</Button>
+                </GridCell>
+              </GridRow>
+            </Grid>
+          </Card>
         </div>
-      </div>
+      </Container>
       {/* <p readOnly={true}>
         Payment token allowance: {getPaymentTokenAllowance()}
       </p>
@@ -371,7 +395,7 @@ function Presale() {
 
         {isErrorOutputEstimate && <div>Error occured while fetching data!</div>}
       </form> */}
-    </>
+    </AppContainer>
   );
 }
 

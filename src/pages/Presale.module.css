@@ -1,32 +1,11 @@
-.container {
-    width: 100vw;
-    max-width: 2000px;
-    min-width: 1100px;
-    margin: 0 auto;
-    display: flex;
-    max-height: 1000px;
-    height: calc(100vw / 2);
-    min-height: 550px;
-    flex-direction: column;
-    border-width: 2px;
-    border-style: solid;
-    border-color: #2AAEE6;
-    background-color: #CCE5FF;
-}
-
 .innerContainer {
     max-width: 1000px;
     width: 100vw;
     min-width: 1000px;
     margin: auto;
-}
-
-.title {
-    border-radius: 10px;
-    border-width: 2px;
-    border-color: #2AAEE6;
-    background-color: white;
-    border-style: solid;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
 }
 
 .titleImage {
@@ -45,21 +24,11 @@
     fill: #2AAEE6;
 }
 
-.body {
-    margin-top: 20px;
+.currentPrice {
+    background-color: #CCE5FF;
     border-radius: 10px;
     border-width: 2px;
     border-color: #2AAEE6;
-    background-color: white;
-    border-style: solid;
-    padding: 20px;
-}
-
-.currentPrice {
-    background-color: #CCE5FF;
-    border-radius: inherit;
-    border-width: inherit;
-    border-color: inherit;
     border-style: solid;
     text-align: center;
     margin: 20px auto;
@@ -113,9 +82,13 @@
 }
 
 .amount {
-    margin-left: 20px;
     padding: 10px 0;
-    background-color: white;
+    background-color: #CCE5FF;
+    border-radius: 10px;
+    border-width: 2px;
+    border-color: #2AAEE6;
+    border-style: solid;
+    text-align: center;
 }
 
 .buy {
@@ -123,7 +96,6 @@
     border-color: black;
     border-width: 1px;
     border-style: solid;
-    margin-top: 20px;
     background-color: #2AAEE6;
     color: white;
     text-align: center;

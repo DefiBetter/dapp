@@ -7,7 +7,6 @@ const Grid = styled.table`
 
 const GridRow = styled.tr``;
 const GridCell = styled.td`
-  width: 100%;
   padding: 5px;
 `;
 const GridCell2 = styled(GridCell)`

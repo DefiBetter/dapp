@@ -10,6 +10,14 @@
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
+    border-radius: 20px;
+    border-width: 5px;
+    border-color: #2aaee6;
+    background-color: white;
+    border-style: solid;
+    padding: 10px;
+    box-shadow: 5px 5px 10px 0px grey;
+    margin: 1rem 1rem 0 1rem;
 }
 
 .logo {
@@ -21,8 +29,8 @@
 
 .pages {
     margin-top: 1rem;
-    margin-right: 8rem;
-    margin-left: 8rem;
+    margin-right: 2rem;
+    margin-left: 2rem;
     display: flex;
     flex-direction: row;
     justify-content: space-evenly;
@@ -31,7 +39,7 @@
 }
 
 .page {
-    font-size: 2.3rem;
+    font-size: 1.5rem;
     font-weight: bold;
     color: #2AAEE6;
     font-family: marguerite;

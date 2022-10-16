@@ -2,7 +2,7 @@ import { ethers } from "ethers";
 import { useCallback, useState } from "react";
 import Button from "../components/common/Button";
 import { Card } from "../components/common/Card";
-import { Container } from "../components/common/Container";
+import { AppContainer, Container } from "../components/common/Container";
 import {
   Grid,
   GridCell,
@@ -28,6 +28,7 @@ import {
   usePrepareContractWrite,
   useWaitForTransaction,
 } from "wagmi";
+import { CenterText } from "../components/common/Text";
 
 function Staking() {
   // fetch account and current network
@@ -391,152 +392,159 @@ function Staking() {
   }
 
   return (
-    <>
+    <AppContainer>
       <Navbar />
       <Container>
-        <div className={styles.section}>
-          <Card>
-            <Grid>
-              <GridRow>
-                <GridCell3>
-                  <div className={styles.centerText}>TVL</div>
-                </GridCell3>
-                <GridCell3>
-                  <div className={styles.centerText}>LP</div>
-                </GridCell3>
-                <GridCell3>
-                  <div className={styles.centerText}>BT</div>
-                </GridCell3>
-              </GridRow>
-              <GridRow>
-                <GridCell3>
-                  <div className={styles.centerText}>$10.000M</div>
-                </GridCell3>
-                <GridCell3>
-                  <div className={styles.centerText}>$100.000k</div>
-                </GridCell3>
-                <GridCell3>
-                  <div className={styles.centerText}>$700.000k</div>
-                </GridCell3>
-              </GridRow>
-            </Grid>
-          </Card>
-        </div>
-        <div className={styles.section}>
-          <div className={styles.assetContainer}>
-            <Card>
-              <Grid>
-                <GridRow>
-                  <GridCell2>
-                    <InputNumber onChange={handleSetBridgeAmount} />
-                  </GridCell2>
-                  <GridCell4>
-                    <Button>Avax</Button>
-                  </GridCell4>
-                </GridRow>
-                <GridRow>
-                  <GridCell colSpan={3}>
-                    <Button onClick={handleOnBridge}>Bridge</Button>
-                  </GridCell>
-                </GridRow>
-              </Grid>
-            </Card>
+        <div className={styles.innerContainer}>
+          <div className={styles.section}>
+            <div className={styles.assetContainer}>
+              <Card>
+                <Grid>
+                  <GridRow>
+                    <GridCell3>
+                      <CenterText>TVL</CenterText>
+                    </GridCell3>
+                    <GridCell3>
+                      <CenterText>LP</CenterText>
+                    </GridCell3>
+                    <GridCell3>
+                      <CenterText>BT</CenterText>
+                    </GridCell3>
+                  </GridRow>
+                  <GridRow>
+                    <GridCell3>
+                      <CenterText>$10.000M</CenterText>
+                    </GridCell3>
+                    <GridCell3>
+                      <CenterText>$100.000k</CenterText>
+                    </GridCell3>
+                    <GridCell3>
+                      <CenterText>$700.000k</CenterText>
+                    </GridCell3>
+                  </GridRow>
+                </Grid>
+              </Card>
+            </div>
           </div>
-        </div>
-        <div className={styles.section}>
-          <div className={styles.assetContainer}>
-            <StakeDiagram
-              stakeSymbol={"BT-BNB-LP"}
-              rewardSymbol={"BT"}
-              stakeName={"BT-BNB-LP"}
-              rewardName={"Better Token"}
-            />
-            <Card>
-              <Grid>
-                <GridRow>
-                  <GridCell3 colSpan={2}>
-                    <InputNumber onChange={handleSetLpStakeAmount} />
-                  </GridCell3>
-                  <GridCell3>
-                    <InputNumber onChange={handleSetZapAmount} />
-                  </GridCell3>
-                </GridRow>
-                <GridRow>
-                  <GridCell3>
-                    <Button
-                      onClick={handleOnLpStake}
-                      disabled={btStakingDisabled()}
-                    >
-                      Stake
-                    </Button>
-                  </GridCell3>
-                  <GridCell3>
-                    <Button
-                      onClick={handleOnLpUnstake}
-                      disabled={isBtUnstaking || !btStaked}
-                    >
-                      Unstake
-                    </Button>
-                  </GridCell3>
-                  <GridCell3>
-                    <Button onClick={handleOnZap}>Zap in</Button>
-                  </GridCell3>
-                </GridRow>
-                <GridRow>
-                  <GridCell colSpan={3}>
-                    <Button onClick={handleOnLpClaimRewards}>Claim</Button>
-                  </GridCell>
-                </GridRow>
-              </Grid>
-            </Card>
+          <div className={styles.section}>
+            <div className={styles.assetContainer}>
+              <Card>
+                <Grid>
+                  <GridRow>
+                    <GridCell2>
+                      <InputNumber onChange={handleSetBridgeAmount} />
+                    </GridCell2>
+                    <GridCell4>
+                      <Button>Avax</Button>
+                    </GridCell4>
+                  </GridRow>
+                  <GridRow>
+                    <GridCell colSpan={3}>
+                      <Button onClick={handleOnBridge}>Bridge</Button>
+                    </GridCell>
+                  </GridRow>
+                </Grid>
+              </Card>
+            </div>
           </div>
-          <div className={styles.assetContainer}>
-            <StakeDiagram
-              stakeSymbol={"BT"}
-              rewardSymbol={"BNB"}
-              stakeName={"Better Token"}
-              rewardName={"BNB"}
-            />
-            <Card>
-              <Grid>
-                <GridRow>
-                  <GridCell colSpan={2}>
-                    <InputNumber onChange={handleSetBtStakeAmount} />
-                  </GridCell>
-                </GridRow>
-                <GridRow>
-                  <GridCell2>
-                    <Button onClick={handleOnBtStake}>
-                      {btStakingButtonText()}
-                    </Button>
-                  </GridCell2>
-                  <GridCell2>
-                    <Button onClick={handleOnBtUnstake}>
-                      {isBtUnstaking ? "Unstaking..." : "Unstake"}
-                    </Button>
-                  </GridCell2>
-                </GridRow>
-                <GridRow>
-                  <GridCell colSpan={2}>
-                    <Button
-                      onClick={handleOnBtClaimRewards}
-                      disabled={isBtClaiming}
-                    >
-                      Claim&nbsp;&nbsp;&nbsp;&nbsp;
-                      {fetchOrShow(
-                        pendingBtStakingRewardsSuccess,
-                        btStakingRewards,
-                        18
-                      )}
-                    </Button>
-                  </GridCell>
-                </GridRow>
-              </Grid>
-            </Card>
+          <div className={styles.section}>
+            <div className={styles.section2}>
+              <div className={styles.assetContainer}>
+                <StakeDiagram
+                  stakeSymbol={"BT-BNB-LP"}
+                  rewardSymbol={"BT"}
+                  stakeName={"BT-BNB-LP"}
+                  rewardName={"Better Token"}
+                />
+                <Card>
+                  <Grid>
+                    <GridRow>
+                      <GridCell3 colSpan={2}>
+                        <InputNumber onChange={handleSetLpStakeAmount} />
+                      </GridCell3>
+                      <GridCell3>
+                        <InputNumber onChange={handleSetZapAmount} />
+                      </GridCell3>
+                    </GridRow>
+                    <GridRow>
+                      <GridCell3>
+                        <Button
+                          onClick={handleOnLpStake}
+                          disabled={btStakingDisabled()}
+                        >
+                          Stake
+                        </Button>
+                      </GridCell3>
+                      <GridCell3>
+                        <Button
+                          onClick={handleOnLpUnstake}
+                          disabled={isBtUnstaking || !btStaked}
+                        >
+                          Unstake
+                        </Button>
+                      </GridCell3>
+                      <GridCell3>
+                        <Button onClick={handleOnZap}>Zap in</Button>
+                      </GridCell3>
+                    </GridRow>
+                    <GridRow>
+                      <GridCell colSpan={3}>
+                        <Button onClick={handleOnLpClaimRewards}>Claim</Button>
+                      </GridCell>
+                    </GridRow>
+                  </Grid>
+                </Card>
+              </div>
+              <div className={styles.assetContainer}>
+                <StakeDiagram
+                  stakeSymbol={"BT"}
+                  rewardSymbol={"BNB"}
+                  stakeName={"Better Token"}
+                  rewardName={"BNB"}
+                />
+                <Card>
+                  <Grid>
+                    <GridRow>
+                      <GridCell colSpan={2}>
+                        <InputNumber onChange={handleSetBtStakeAmount} />
+                      </GridCell>
+                    </GridRow>
+                    <GridRow>
+                      <GridCell2>
+                        <Button onClick={handleOnBtStake}>
+                          {btStakingButtonText()}
+                        </Button>
+                      </GridCell2>
+                      <GridCell2>
+                        <Button onClick={handleOnBtUnstake}>
+                          {isBtUnstaking ? "Unstaking..." : "Unstake"}
+                        </Button>
+                      </GridCell2>
+                    </GridRow>
+                    <GridRow>
+                      <GridCell colSpan={2}>
+                        <Button
+                          onClick={handleOnBtClaimRewards}
+                          disabled={isBtClaiming}
+                        >
+                          Claim&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp;
+                          {fetchOrShow(
+                            pendingBtStakingRewardsSuccess,
+                            btStakingRewards,
+                            18
+                          )}
+                          &nbsp;)
+                        </Button>
+                      </GridCell>
+                    </GridRow>
+                  </Grid>
+                </Card>
+              </div>
+            </div>
           </div>
         </div>
       </Container>
-    </>
+    </AppContainer>
   );
 }
 

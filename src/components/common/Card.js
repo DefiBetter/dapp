@@ -10,18 +10,13 @@ const Card = styled.div`
   box-shadow: 5px 5px 10px 0px grey;
 `;
 
-const CardMargin = styled(Card)`
-  margin: 1rem;
-`;
-
 const CardBlueBg = styled(Card)`
   background-color: #cce5ff;
+`;
+
+const CardBlueBgBlackBorder = styled(CardBlueBg)`
   border-color: black;
   border-width: 2.5px;
 `;
 
-const CardMarginBlueBg = styled(CardMargin)`
-  background-color: #cce5ff;
-`;
-
-export { Card, CardBlueBg, CardMargin, CardMarginBlueBg };
+export { Card, CardBlueBg };
