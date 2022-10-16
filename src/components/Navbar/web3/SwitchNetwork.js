@@ -3,11 +3,13 @@ import { useNetwork, useSwitchNetwork } from "wagmi";
 import styles from "./SwitchNetwork.module.css";
 
 export function SwitchNetwork() {
-  const { chain } = useNetwork();
+  const { chain: activeChain } = useNetwork();
   const { chains, error, isLoading, pendingChainId, switchNetwork } =
     useSwitchNetwork();
 
   const [network, setNetwork] = useState("");
+
+  console.log("activeChain switch", activeChain);
 
   return (
     <div className={styles.container}>
@@ -20,7 +22,9 @@ export function SwitchNetwork() {
 
       {chains.map((x) => (
         <div
-          className={styles.network}
+          className={`${styles.network} ${
+            activeChain?.id == x.id ? styles.currentChain : null
+          }`}
           // disabled={!switchNetwork || x.id === chain?.id}
           // key={x.id}
           onClick={() => switchNetwork?.(x.id)}
