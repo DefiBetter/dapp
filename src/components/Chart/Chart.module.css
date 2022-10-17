@@ -6,13 +6,11 @@
 #dexscreenerEmbed {
     position: relative;
     width: 100%;
-    padding-bottom: 125%;
+    height: 100%;
 }
 
 @media(min-width:1400px) {
-    #dexscreenerEmbed {
-        padding-bottom: 65%;
-    }
+    #dexscreenerEmbed {}
 }
 
 #dexscreenerEmbed iframe {

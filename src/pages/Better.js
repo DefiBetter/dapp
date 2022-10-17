@@ -21,7 +21,7 @@ import Pair from "../components/Better/Pair";
 import Chart from "../components/Chart/Chart";
 import Navbar from "../components/Navbar/Navbar";
 import styles from "./Better.module.css";
-import { AppContainer } from "../components/common/Container";
+import { AppContainer, Container } from "../components/common/Container";
 
 function Better() {
   // fetch account and current network
@@ -356,7 +356,7 @@ function Better() {
   return (
     <AppContainer>
       <Navbar></Navbar>
-      <div className={styles.container}>
+      <Container>
         <div className={styles.header}>
           <Pair />
           <Epoch />
@@ -366,7 +366,7 @@ function Better() {
           <Chart />
           <Detail />
         </div>
-      </div>
+      </Container>
     </AppContainer>
   );
 }

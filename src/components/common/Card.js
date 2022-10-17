@@ -2,7 +2,7 @@ import styled from "styled-components";
 
 const Card = styled.div`
   border-radius: 20px;
-  border-width: 5px;
+  border-width: 3px;
   border-color: #2aaee6;
   background-color: white;
   border-style: solid;
