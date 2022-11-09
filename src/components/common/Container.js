@@ -22,4 +22,14 @@ const AppContainer = styled.div`
   min-width: 1500px;
 `;
 
-export { Container, AppContainer };
+const InnerContainer = styled.div`
+  max-width: 1000px;
+  width: 100vw;
+  min-width: 1000px;
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+`;
+
+export { Container, AppContainer, InnerContainer };

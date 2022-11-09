@@ -14,7 +14,7 @@ import {
 import { InputNumber } from "../components/common/Input";
 import Navbar from "../components/Navbar/Navbar";
 import StakeDiagram from "../components/Staking/StakeDiagram";
-import contractAddresses from "../static/contractAddresses";
+import { contractAddresses } from "../static/contractAddresses";
 import BetterABI from "../static/ABI/BetterABI.json";
 import IERC20MetadataABI from "../static/ABI/IERC20MetadataABI.json";
 

@@ -11,7 +11,7 @@ import { useCallback, useEffect, useState } from "react";
 
 import BetterABI from "../static/ABI/BetterABI.json";
 import IERC20MetadataABI from "../static/ABI/IERC20MetadataABI.json";
-import contractAddresses from "../static/contractAddresses";
+import { contractAddresses } from "../static/contractAddresses";
 import { ethers } from "ethers";
 
 import Action from "../components/Better/Action";
@@ -363,7 +363,7 @@ function Better() {
           <Action />
         </div>
         <div className={styles.body}>
-          <Chart />
+          <Chart underlying={underlying} />
           <Detail />
         </div>
       </Container>

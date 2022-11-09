@@ -90,17 +90,21 @@
 // export default Chart;
 
 import styles from "./Chart.module.css";
+import { underlyingPairAddress } from "../../static/contractAddresses";
+import { useState } from "react";
 
 const pairAddress = "0xcA75C4aA579c25D6ab3c8Ef9A70859ABF566fA1d"; // need to make this change with selected asset
 
-const Chart = () => {
+const Chart = (props) => {
   return (
     <div className={styles.container}>
       {/* for the time being (before figuring out a place to get raw data) we will be using dex screener */}
       <div id={styles.dexscreenerEmbed}>
         <iframe
-          src={`https://dexscreener.com/polygon/${pairAddress}?embed=1&trades=0&info=0`}
-        ></iframe>
+          src={`https://dexscreener.com/${props.underlying}/${
+            underlyingPairAddress[props.underlying]
+          }?embed=1&trades=0&info=0`}
+        />
       </div>
     </div>
   );
