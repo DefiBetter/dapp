@@ -9,7 +9,7 @@ export function SwitchNetwork() {
 
   const [network, setNetwork] = useState("");
 
-  console.log("activeChain switch", activeChain);
+  // console.log("activeChain switch", activeChain);
 
   return (
     <div className={styles.container}>
@@ -38,7 +38,7 @@ export function SwitchNetwork() {
       ))}
 
       {chains.map((x) => {
-        console.log(x);
+        // console.log(x);
       })}
 
       {/* <div>{error && error.message}</div> */}

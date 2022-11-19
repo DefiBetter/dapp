@@ -1,10 +1,10 @@
 // TODO
 const contractAddresses = {
   hardhat: {
-    better: "0x6EbEAd7C5bc68c80d63B31fC815761aB3BeCd75A",
-    presale: "0xbC373a3a2A2cb66772b6d3e1E8714a631a1F6670",
-    publicSale: "0xec02e0a135409f7Bc1718fA52925B02B0884aE6C",
-    btToken: "0xdD0AEF74980C0d8Ac8b547c80E93895E11fE9Cbe",
+    better: "0x367761085BF3C12e5DA2Df99AC6E1a824612b8fb",
+    presale: "0xfbC22278A96299D91d41C453234d97b4F5Eb9B2d",
+    publicSale: "0xC9a43158891282A2B1475592D5719c001986Aaec",
+    btToken: "0x2B0d36FACD61B71CC05ab8F3D2355ec3631C0dd5",
     btStaking: "",
     lpStaking: "",
   },

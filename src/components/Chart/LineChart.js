@@ -46,11 +46,11 @@ const Axes = (props) => {
       let _dataRange = dataRange(data, range);
 
       data = translate(data, 0, -(_dataRange[1][2] / 2 + _dataRange[1][0]));
-      console.log("data (translated)", data);
+      // console.log("data (translated)", data);
       data = reflectXAxis(data, true, false);
-      console.log("data (reflected)", data);
+      // console.log("data (reflected)", data);
       data = translate(data, 0, _dataRange[1][2] / 2 + _dataRange[1][0]);
-      console.log("data (translated)", data);
+      // console.log("data (translated)", data);
 
       let _viewRange = viewRange();
       let viewRangeValue = [

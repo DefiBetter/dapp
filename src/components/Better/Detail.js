@@ -1,6 +1,17 @@
+import { useState } from "react";
 import styled from "styled-components";
 import { Card, CardBlueBg } from "../common/Card";
 import styles from "./Detail.module.css";
+import DeFiBetterV1ABI from "../../static/ABI/DeFiBetterV1ABI.json";
+import {
+  useAccount,
+  useContractRead,
+  useNetwork,
+  usePrepareContractWrite,
+  useContractWrite,
+} from "wagmi";
+
+import { contractAddresses } from "../../static/contractAddresses";
 
 const Detail = (props) => {
   let sampleBins = [
@@ -13,7 +24,12 @@ const Detail = (props) => {
     { upper: 2, lower: 1.5 },
   ];
 
-  const onInput = () => {};
+  const onInput = (e) => {
+    let temp = props.binAmountList;
+    temp[e.target.id] = e.target.value;
+    props.setBinAmountList(temp);
+    console.log("binAmountList", temp);
+  };
 
   const totalAmount = 10;
   const gasTokenSymbol = "BNB";

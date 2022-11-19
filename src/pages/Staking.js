@@ -15,7 +15,7 @@ import { InputNumber } from "../components/common/Input";
 import Navbar from "../components/Navbar/Navbar";
 import StakeDiagram from "../components/Staking/StakeDiagram";
 import { contractAddresses } from "../static/contractAddresses";
-import BetterABI from "../static/ABI/BetterABI.json";
+import DeFiBetterV1ABI from "../static/ABI/DeFiBetterV1ABI.json";
 import IERC20MetadataABI from "../static/ABI/IERC20MetadataABI.json";
 
 import styles from "./Staking.module.css";
@@ -40,7 +40,7 @@ function Staking() {
   const BN = ethers.BigNumber.from;
   const btStakingContractConfig = {
     addressOrName: contractAddresses[activeChain?.network]?.btStaking,
-    contractInterface: BetterABI,
+    contractInterface: DeFiBetterV1ABI,
   };
   console.log("activeChain", activeChain);
   console.log("connectedAddress", connectedAddress);

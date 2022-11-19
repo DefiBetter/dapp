@@ -1,14 +1,30 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import styles from "./Epoch.module.css";
+import Countdown from "react-countdown";
 
 const Epoch = (props) => {
-  const [timeRemaining, setTimeRemaining] = useState(599); // seconds
+  const [timeRemaining, setTimeRemaining] = useState(600); // seconds
   const [endTime, setEndTime] = useState(1661091710); // unix
 
-  const timeRemainingFormatted = () => {
-    let minutes = String((timeRemaining / 60).toFixed(0)).padStart(2, "0");
-    let seconds = String(timeRemaining % 60).padStart(2, "0");
-    return `${minutes}:${seconds}`;
+  const now = Date.now() + timeRemaining * 1000;
+
+  const calcEpoch = () => {
+    if (props.instrument == null) {
+      return;
+    }
+    console.log("instr", props.instrument);
+    setTimeRemaining(
+      Date.now() -
+        props.instrument.lastEpochClosingTime -
+        props.instrument.epochDurationInSeconds -
+        props.instrument.bufferDurnationInSeconds
+    );
+
+    setEndTime(
+      props.instrument.lastEpochClosingTime +
+        props.instrument.epochDurationInSeconds +
+        props.instrument.bufferDurnationInSeconds
+    );
   };
 
   const endTimeFormatted = () => {
@@ -18,6 +34,12 @@ const Epoch = (props) => {
     return humanDateFormat;
   };
 
+  // useEffect(() => {
+  //   calcEpoch();
+  // }, []);
+
+  console.log("timeRemaining", timeRemaining);
+
   return (
     <div className={styles.container}>
       <div className={styles.timeRemaining}>
@@ -25,7 +47,8 @@ const Epoch = (props) => {
           <b>Epoch time remaining:</b>
         </div>
         <div className={styles.time}>
-          <b>{timeRemainingFormatted()}</b>
+          <Countdown date={Date.now() + timeRemaining * 1000} />
+          {/* <b>{timeRemainingFormatted()}</b> */}
         </div>
       </div>
       <div className={styles.endTime}>
