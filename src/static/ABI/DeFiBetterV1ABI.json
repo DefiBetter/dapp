@@ -109,13 +109,86 @@
     "type": "function"
   },
   {
-    "inputs": [],
-    "name": "getInstrumentSelectors",
+    "inputs": [
+      {
+        "internalType": "bytes32",
+        "name": "instrumentSelector",
+        "type": "bytes32"
+      }
+    ],
+    "name": "getInstrumentBySelector",
     "outputs": [
       {
-        "internalType": "bytes32[]",
+        "components": [
+          {
+            "internalType": "address",
+            "name": "underlying",
+            "type": "address"
+          },
+          {
+            "internalType": "string",
+            "name": "underlyingDescription",
+            "type": "string"
+          },
+          {
+            "internalType": "bool",
+            "name": "enabled",
+            "type": "bool"
+          },
+          {
+            "internalType": "bool",
+            "name": "isVolatilitySource",
+            "type": "bool"
+          },
+          {
+            "internalType": "uint256",
+            "name": "underlyingDecimals",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "epochDurationInSeconds",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "bufferDurationInSeconds",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "fee",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "volatilityMultiplier",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "baseError",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "epoch",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "lastEpochClosingTime",
+            "type": "uint256"
+          },
+          {
+            "internalType": "bytes32",
+            "name": "selector",
+            "type": "bytes32"
+          }
+        ],
+        "internalType": "struct IDefiBetterV1.Instrument",
         "name": "",
-        "type": "bytes32[]"
+        "type": "tuple"
       }
     ],
     "stateMutability": "view",
@@ -164,17 +237,17 @@
           },
           {
             "internalType": "uint256",
-            "name": "baseError",
-            "type": "uint256"
-          },
-          {
-            "internalType": "uint256",
             "name": "fee",
             "type": "uint256"
           },
           {
             "internalType": "uint256",
             "name": "volatilityMultiplier",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "baseError",
             "type": "uint256"
           },
           {
@@ -186,9 +259,14 @@
             "internalType": "uint256",
             "name": "lastEpochClosingTime",
             "type": "uint256"
+          },
+          {
+            "internalType": "bytes32",
+            "name": "selector",
+            "type": "bytes32"
           }
         ],
-        "internalType": "struct IDefiBetterV1.InstrumentInfo[]",
+        "internalType": "struct IDefiBetterV1.Instrument[]",
         "name": "",
         "type": "tuple[]"
       }

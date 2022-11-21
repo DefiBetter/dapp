@@ -28,8 +28,6 @@ function Better() {
   // fetch account and current network
   const { address: connectedAddress, isConnected } = useAccount();
   const { chain: activeChain } = useNetwork();
-  const [instrumentSelectorList, setInstrumentSelectorList] = useState();
-  const [instrumentSelector, setInstrumentSelector] = useState();
   const [instrumentList, setInstrumentList] = useState();
   const [instrument, setInstrument] = useState();
   const [totalEpochDuration, setTotalEpochDuration] = useState();
@@ -48,48 +46,71 @@ function Better() {
 
   console.log("betterContractConfig", betterContractConfig);
 
-  // const { config: config } = usePrepareContractWrite({
-  //   ...betterContractConfig,
-  //   functionName: "openPosition",
-  //   args: [instrumentSelector, binAmountList],
-  // });
-
-  // let { data, isLoading, isSuccess, write } = useContractWrite(config);
-
-  /* Read */
-  // get all instruments selectors
-  const { data: instrumentSelectorsData } = useContractRead({
+  const { config: config } = usePrepareContractWrite({
     ...betterContractConfig,
-    functionName: "getInstrumentSelectors",
-    onSuccess(data) {
-      console.log("akjsdkjja");
-      if (data.length > 0) {
-        // set instrument selector list
-        setInstrumentSelectorList(data);
-        console.log("getInstrumentSelectors", data);
-
-        // set default instrument selector
-        setInstrumentSelector(data[0]);
-      }
-    },
-    onError(error) {
-      console.log("Error", error);
+    functionName: "openPosition",
+    args: [
+      instrument?.selector,
+      binAmountList.map((bin) => {
+        return ethers.utils.parseEther(bin.toString());
+      }),
+      "0",
+    ],
+    overrides: {
+      value: ethers.utils.parseEther(
+        binAmountList.reduce((a, b) => Number(a) + Number(b), 0).toString()
+      ),
     },
   });
+
+  console.log(
+    "TOTAL:",
+    binAmountList.reduce((a, b) => Number(a) + Number(b), 0).toString()
+  );
+  console.log(
+    "BINS",
+    binAmountList.map((bin) => {
+      return ethers.utils.parseEther(bin.toString());
+    })
+  );
+
+  let { data, isLoading, isSuccess, write } = useContractWrite(config);
 
   useContractRead({
     ...betterContractConfig,
-    functionName: "getInstrument",
-    args: [instrumentSelector],
+    functionName: "getEpochData",
+    args: [1, instrument?.selector],
     onSuccess(data) {
-      console.log("data.length", data.length);
       if (data.length > 0) {
-        // set instrument
-        setInstrument(data);
-        console.log("instrument", data);
+        console.log("EPOCH DATA", data);
       }
     },
   });
+
+  /* Read */
+  // get instrument list
+  useContractRead({
+    ...betterContractConfig,
+    functionName: "getInstruments",
+    onSuccess(data) {
+      if (data.length > 0) {
+        // set instrument list
+        setInstrumentList(data);
+        console.log("instrumentList", data);
+
+        // set default instrument
+        setInstrument(data[0]);
+        console.log("instrument", data[0]);
+      }
+    },
+  });
+  console.log(
+    "epoch time",
+    (+instrument?.epochDurationInSeconds.toString() +
+      +instrument?.bufferDurationInSeconds.toString() -
+      (Date.now() / 1000 - +instrument?.lastEpochClosingTime.toString())) /
+      60
+  );
 
   if (!isConnected) {
     return (
@@ -120,10 +141,10 @@ function Better() {
             instrument={instrument}
           />
           <Epoch instrument={instrument} />
-          <Action />
+          <Action write={write} />
         </div>
         <div className={styles.body}>
-          <Chart underlying={{}} />
+          <Chart instrument={instrument} />
           <Detail
             binAmountList={binAmountList}
             setBinAmountList={setBinAmountList}

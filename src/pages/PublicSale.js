@@ -48,8 +48,8 @@ function PublicSale() {
   const { chain } = useNetwork();
 
   const publicSaleContractConfig = {
-    addressOrName: contractAddresses[chain?.network]?.publicSale,
-    contractInterface: DutchAuctionABI,
+    address: contractAddresses[chain?.network]?.publicSale,
+    abi: DutchAuctionABI,
   };
 
   const [input, setInput] = useState("0");
@@ -71,15 +71,14 @@ function PublicSale() {
 
   // fetching reward token decimals
   const { data: rewardTokenDecimals } = useContractRead({
-    addressOrName: rewardTokenAddress,
-    contractInterface: IERC20MetadataABI,
+    ...publicSaleContractConfig,
     functionName: "decimals",
   });
 
   // fetching payment token decimals
   const { data: paymentTokenDecimals } = useContractRead({
-    addressOrName: paymentTokenAddress,
-    contractInterface: IERC20MetadataABI,
+    address: paymentTokenAddress,
+    abi: IERC20MetadataABI,
     functionName: "decimals",
   });
 
@@ -87,10 +86,10 @@ function PublicSale() {
 
   // fetching payment token allowance
   const { data: paymentTokenAllowance } = useContractRead({
-    addressOrName: paymentTokenAddress,
-    contractInterface: erc20ABI,
+    address: paymentTokenAddress,
+    abi: erc20ABI,
     functionName: "allowance",
-    args: [connectedAddress, publicSaleContractConfig.addressOrName],
+    args: [connectedAddress, publicSaleContractConfig.address],
     watch: true,
   });
 
@@ -98,8 +97,8 @@ function PublicSale() {
 
   // fetching reward token balance
   const { data: rewardTokenBalance } = useContractRead({
-    addressOrName: rewardTokenAddress,
-    contractInterface: erc20ABI,
+    address: rewardTokenAddress,
+    abi: erc20ABI,
     functionName: "balanceOf",
     args: connectedAddress,
     watch: true,
@@ -107,10 +106,10 @@ function PublicSale() {
 
   // fetching supply left
   const { data: supplyLeft } = useContractRead({
-    addressOrName: rewardTokenAddress,
-    contractInterface: erc20ABI,
+    address: rewardTokenAddress,
+    abi: erc20ABI,
     functionName: "balanceOf",
-    args: publicSaleContractConfig.addressOrName,
+    args: publicSaleContractConfig.address,
     watch: true,
   });
 
@@ -141,12 +140,12 @@ function PublicSale() {
 
   // sending approval for payment token
   const { config: prepareWriteConfigApprove } = usePrepareContractWrite({
-    addressOrName: paymentTokenAddress,
-    contractInterface: erc20ABI,
+    address: paymentTokenAddress,
+    abi: erc20ABI,
     functionName: "approve",
     args: [
       //spender
-      publicSaleContractConfig.addressOrName,
+      publicSaleContractConfig.address,
       //value
       parseInput(input),
     ],

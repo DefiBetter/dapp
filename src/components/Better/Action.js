@@ -7,7 +7,7 @@ const Action = (props) => {
 
   return (
     <div className={styles.container}>
-      <button className={styles.button} onClick={deposit}>
+      <button className={styles.button} onClick={() => props.write?.()}>
         Deposit
       </button>
       <button className={styles.button} onClick={claim}>
