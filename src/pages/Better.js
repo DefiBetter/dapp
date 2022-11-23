@@ -46,7 +46,8 @@ function Better() {
 
   console.log("betterContractConfig", betterContractConfig);
 
-  const { config: config } = usePrepareContractWrite({
+  // open position
+  const { config: openPositionConfig } = usePrepareContractWrite({
     ...betterContractConfig,
     functionName: "openPosition",
     args: [
@@ -63,32 +64,17 @@ function Better() {
     },
   });
 
-  console.log(
-    "TOTAL:",
-    binAmountList.reduce((a, b) => Number(a) + Number(b), 0).toString()
-  );
-  console.log(
-    "BINS",
-    binAmountList.map((bin) => {
-      return ethers.utils.parseEther(bin.toString());
-    })
-  );
+  let { write: depositWrite } = useContractWrite(openPositionConfig);
 
-  let { data, isLoading, isSuccess, write } = useContractWrite(config);
-
-  useContractRead({
+  // claim rewards
+  const { config: claimBetterRewardsConfig } = usePrepareContractWrite({
     ...betterContractConfig,
-    functionName: "getEpochData",
-    args: [1, instrument?.selector],
-    onSuccess(data) {
-      if (data.length > 0) {
-        console.log("EPOCH DATA", data);
-      }
-    },
+    functionName: "claimBetterRewards",
   });
+  let { write: claimWrite } = useContractWrite(claimBetterRewardsConfig);
 
   /* Read */
-  // get instrument list
+  // instrument list
   useContractRead({
     ...betterContractConfig,
     functionName: "getInstruments",
@@ -104,13 +90,18 @@ function Better() {
       }
     },
   });
-  console.log(
-    "epoch time",
-    (+instrument?.epochDurationInSeconds.toString() +
-      +instrument?.bufferDurationInSeconds.toString() -
-      (Date.now() / 1000 - +instrument?.lastEpochClosingTime.toString())) /
-      60
-  );
+
+  // epoch data for currently selected instrument
+  useContractRead({
+    ...betterContractConfig,
+    functionName: "getEpochData",
+    args: [1, instrument?.selector],
+    onSuccess(data) {
+      if (data.length > 0) {
+        console.log("EPOCH DATA", data);
+      }
+    },
+  });
 
   if (!isConnected) {
     return (
@@ -141,7 +132,7 @@ function Better() {
             instrument={instrument}
           />
           <Epoch instrument={instrument} />
-          <Action write={write} />
+          <Action depositWrite={depositWrite} claimWrite={claimWrite} />
         </div>
         <div className={styles.body}>
           <Chart instrument={instrument} />

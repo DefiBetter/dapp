@@ -1,13 +1,17 @@
 import styles from "./Action.module.css";
 
 const Action = (props) => {
-  const deposit = () => {};
+  const deposit = () => {
+    props.depositWrite?.();
+  };
 
-  const claim = () => {};
+  const claim = () => {
+    props.claimWrite?.();
+  };
 
   return (
     <div className={styles.container}>
-      <button className={styles.button} onClick={() => props.write?.()}>
+      <button className={styles.button} onClick={deposit}>
         Deposit
       </button>
       <button className={styles.button} onClick={claim}>
