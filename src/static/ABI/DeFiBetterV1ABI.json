@@ -7,7 +7,7 @@
         "type": "bytes32"
       }
     ],
-    "name": "checker",
+    "name": "checkerEpochCloseable",
     "outputs": [
       {
         "internalType": "bool",
@@ -24,7 +24,13 @@
     "type": "function"
   },
   {
-    "inputs": [],
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "customGainFeeMultiplier",
+        "type": "uint256"
+      }
+    ],
     "name": "claimBetterRewards",
     "outputs": [],
     "stateMutability": "nonpayable",
@@ -157,7 +163,12 @@
           },
           {
             "internalType": "uint256",
-            "name": "fee",
+            "name": "flatFee",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "gainFee",
             "type": "uint256"
           },
           {
@@ -237,7 +248,12 @@
           },
           {
             "internalType": "uint256",
-            "name": "fee",
+            "name": "flatFee",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "gainFee",
             "type": "uint256"
           },
           {
@@ -275,7 +291,13 @@
     "type": "function"
   },
   {
-    "inputs": [],
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "customGainFeeMultiplier",
+        "type": "uint256"
+      }
+    ],
     "name": "getPendingBetterRewards",
     "outputs": [
       {
@@ -358,6 +380,11 @@
       {
         "internalType": "uint256",
         "name": "customFee",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "customGainFee",
         "type": "uint256"
       }
     ],

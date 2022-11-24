@@ -56,6 +56,7 @@ function Better() {
         return ethers.utils.parseEther(bin.toString());
       }),
       "0",
+      "0",
     ],
     overrides: {
       value: ethers.utils.parseEther(
@@ -70,6 +71,7 @@ function Better() {
   const { config: claimBetterRewardsConfig } = usePrepareContractWrite({
     ...betterContractConfig,
     functionName: "claimBetterRewards",
+    args: ["0"],
   });
   let { write: claimWrite } = useContractWrite(claimBetterRewardsConfig);
 
