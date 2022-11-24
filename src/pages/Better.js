@@ -28,6 +28,8 @@ function Better() {
   // fetch account and current network
   const { address: connectedAddress, isConnected } = useAccount();
   const { chain: activeChain } = useNetwork();
+
+  /* states */
   const [instrumentList, setInstrumentList] = useState();
   const [instrument, setInstrument] = useState();
   const [totalEpochDuration, setTotalEpochDuration] = useState();
@@ -37,6 +39,8 @@ function Better() {
   // detail
   const [binAmountList, setBinAmountList] = useState([0, 0, 0, 0, 0, 0, 0]);
 
+  useEffect(() => {}, [instrument, binAmountList]);
+
   console.log("binAmountList", binAmountList);
 
   const betterContractConfig = {
@@ -45,35 +49,6 @@ function Better() {
   };
 
   console.log("betterContractConfig", betterContractConfig);
-
-  // open position
-  const { config: openPositionConfig } = usePrepareContractWrite({
-    ...betterContractConfig,
-    functionName: "openPosition",
-    args: [
-      instrument?.selector,
-      binAmountList.map((bin) => {
-        return ethers.utils.parseEther(bin.toString());
-      }),
-      "0",
-      "0",
-    ],
-    overrides: {
-      value: ethers.utils.parseEther(
-        binAmountList.reduce((a, b) => Number(a) + Number(b), 0).toString()
-      ),
-    },
-  });
-
-  let { write: depositWrite } = useContractWrite(openPositionConfig);
-
-  // claim rewards
-  const { config: claimBetterRewardsConfig } = usePrepareContractWrite({
-    ...betterContractConfig,
-    functionName: "claimBetterRewards",
-    args: ["0"],
-  });
-  let { write: claimWrite } = useContractWrite(claimBetterRewardsConfig);
 
   /* Read */
   // instrument list
@@ -105,6 +80,8 @@ function Better() {
     },
   });
 
+  // get pending rewards
+
   if (!isConnected) {
     return (
       <>
@@ -134,7 +111,11 @@ function Better() {
             instrument={instrument}
           />
           <Epoch instrument={instrument} />
-          <Action depositWrite={depositWrite} claimWrite={claimWrite} />
+          <Action
+            betterContractConfig={betterContractConfig}
+            instrument={instrument}
+            binAmountList={binAmountList}
+          />
         </div>
         <div className={styles.body}>
           <Chart instrument={instrument} />

@@ -25,7 +25,7 @@ const Detail = (props) => {
   ];
 
   const onInput = (e) => {
-    let temp = props.binAmountList;
+    let temp = [...props.binAmountList];
     temp[e.target.id] = e.target.value;
     props.setBinAmountList(temp);
     console.log("binAmountList", temp);
