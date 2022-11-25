@@ -16,4 +16,28 @@ const CenterText = styled.p`
   margin: 0px 20px;
 `;
 
-export { FancyText, FancyTextWhite, CenterText };
+const SmallText = styled(FancyText)`
+  font-size: 0.75rem;
+  height: 0.75rem;
+  color: inherit;
+`;
+
+const MedText = styled(FancyText)`
+  font-size: 1rem;
+  height: 1.5rem;
+  color: inherit;
+`;
+
+const NormalText = styled.div`
+  font-family: Arial;
+  color: inherit;
+`;
+
+export {
+  FancyText,
+  FancyTextWhite,
+  CenterText,
+  SmallText,
+  MedText,
+  NormalText,
+};

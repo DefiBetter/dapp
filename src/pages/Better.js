@@ -38,10 +38,15 @@ function Better() {
   /* components */
   // detail
   const [binAmountList, setBinAmountList] = useState([0, 0, 0, 0, 0, 0, 0]);
+  const [pendingRewards, setPendingRewards] = useState(0);
+  const [customFlatFee, setCustomFlatFee] = useState(0);
+  const [customGainFee, setCustomGainFee] = useState(0);
 
-  useEffect(() => {}, [instrument, binAmountList]);
+  const [nativeGas, setNativeGas] = useState();
 
-  console.log("binAmountList", binAmountList);
+  useEffect(() => {
+    setNativeGas(contractAddresses[activeChain?.network]?.nativeGas);
+  }, [activeChain]);
 
   const betterContractConfig = {
     address: contractAddresses[activeChain?.network]?.better,
@@ -80,7 +85,17 @@ function Better() {
     },
   });
 
-  // get pending rewards
+  // user pending rewards
+  useContractRead({
+    ...betterContractConfig,
+    functionName: "getPendingBetterRewards",
+    args: [customGainFee],
+    onSuccess(data) {
+      Number(setPendingRewards(ethers.utils.formatEther(data)));
+      console.log("pendingRewards", pendingRewards);
+    },
+    watch: true,
+  });
 
   if (!isConnected) {
     return (
@@ -115,6 +130,10 @@ function Better() {
             betterContractConfig={betterContractConfig}
             instrument={instrument}
             binAmountList={binAmountList}
+            customFlatFee={customFlatFee}
+            customGainFee={customGainFee}
+            pendingRewards={pendingRewards}
+            nativeGas={nativeGas}
           />
         </div>
         <div className={styles.body}>

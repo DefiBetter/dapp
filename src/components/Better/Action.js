@@ -3,25 +3,29 @@ import { ethers } from "ethers";
 
 import { usePrepareContractWrite, useContractWrite } from "wagmi";
 import { useEffect } from "react";
+import Button from "../common/Button";
+import { MedText, NormalText, SmallText } from "../common/Text";
 
-const Action = ({ instrument, binAmountList, betterContractConfig }) => {
-  console.log("ACTION", binAmountList);
+const Action = (props) => {
+  console.log("ACTION", props.binAmountList);
 
   // open position
   const { config: openPositionConfig } = usePrepareContractWrite({
-    ...betterContractConfig,
+    ...props.betterContractConfig,
     functionName: "openPosition",
     args: [
-      instrument?.selector,
-      binAmountList.map((bin) => {
+      props.instrument?.selector,
+      props.binAmountList.map((bin) => {
         return ethers.utils.parseEther(bin.toString());
       }),
-      "0",
-      "0",
+      props.customFlatFee,
+      props.customGainFee,
     ],
     overrides: {
       value: ethers.utils.parseEther(
-        binAmountList.reduce((a, b) => Number(a) + Number(b), 0).toString()
+        props.binAmountList
+          .reduce((a, b) => Number(a) + Number(b), 0)
+          .toString()
       ),
     },
   });
@@ -30,20 +34,23 @@ const Action = ({ instrument, binAmountList, betterContractConfig }) => {
 
   // claim rewards
   const { config: claimBetterRewardsConfig } = usePrepareContractWrite({
-    ...betterContractConfig,
+    ...props.betterContractConfig,
     functionName: "claimBetterRewards",
-    args: ["0"],
+    args: [props.customGainFee],
   });
   let { write: claimWrite } = useContractWrite(claimBetterRewardsConfig);
 
   return (
     <div className={styles.container}>
-      <button className={styles.button} onClick={depositWrite}>
-        Deposit
-      </button>
-      <button className={styles.button} onClick={claimWrite}>
-        <div>Claim</div>
-      </button>
+      <Button onClick={depositWrite}>Deposit</Button>
+      <Button onClick={claimWrite}>
+        <MedText>Claim</MedText>
+        <SmallText>
+          <NormalText>
+            {props.pendingRewards} {props.nativeGas}
+          </NormalText>
+        </SmallText>
+      </Button>
     </div>
   );
 };

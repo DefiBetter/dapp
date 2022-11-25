@@ -7,6 +7,7 @@ const contractAddresses = {
     btToken: "0x2B0d36FACD61B71CC05ab8F3D2355ec3631C0dd5",
     btStaking: "",
     lpStaking: "",
+    nativeGas: "ETH",
   },
   bsc: {
     better: "",
@@ -14,18 +15,21 @@ const contractAddresses = {
     btToken: "0x9300EaF843c00267037358f397437574A1c17daC",
     btStaking: "0x9300EaF843c00267037358f397437574A1c17daC",
     lpStaking: "0x9300EaF843c00267037358f397437574A1c17daC",
+    nativeGas: "BNB",
   },
   polygon: {
     better: "",
     btToken: "",
     btStaking: "",
     lpStaking: "",
+    nativeGas: "MATIC",
   },
   fantom: {
     better: "",
     btToken: "",
     btStaking: "",
     lpStaking: "",
+    nativeGas: "FTM",
   },
   etherAddress: "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",
 };
