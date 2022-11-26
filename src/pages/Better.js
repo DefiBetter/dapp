@@ -35,6 +35,9 @@ function Better() {
 
   // epoch data
   const [epochData, setEpochData] = useState();
+  const [normalisedBinValueList, setNormalisedBinValueList] = useState([
+    0, 0, 0, 0, 0, 0, 0,
+  ]);
 
   /* components */
   // detail
@@ -85,7 +88,24 @@ function Better() {
     args: [1, instrument?.selector],
     onSuccess(data) {
       setEpochData(data);
+      setNormalisedBinValueList(
+        data.binValues.map((v, i, binValues) => {
+          const b = binValues.map((vv) => Number(ethers.utils.formatEther(vv)));
+          console.log(
+            "Number(ethers.utils.formatEther(v))",
+            Number(ethers.utils.formatEther(v))
+          );
+          console.log("B max", Math.max(...b));
+          console.log("B min", Math.min(...b));
+          return Math.max(...b) - Math.min(...b) == 0
+            ? 0
+            : (Number(ethers.utils.formatEther(v)) - Math.min(...b)) /
+                (Math.max(...b) - Math.min(...b));
+        })
+      );
+      console.log("normal binValues", normalisedBinValueList);
     },
+    watch: true,
   });
 
   // user pending rewards
@@ -148,6 +168,7 @@ function Better() {
             setBinAmountList={setBinAmountList}
             pendingRewards={pendingRewards}
             epochData={epochData}
+            normalisedBinValueList={normalisedBinValueList}
           />
         </div>
       </Container>

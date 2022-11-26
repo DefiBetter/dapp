@@ -65,6 +65,10 @@ const Detail = (props) => {
           </div>
         </div>
         {props.epochData?.binValues.map((bin, i) => {
+          console.log(
+            "100 * props.normalisedBinValueList[i]",
+            props.normalisedBinValueList[i]
+          );
           return (
             // <div className={styles.bin}>
             //   <div className={styles.binUpper}>{bin.upper}</div>
@@ -73,6 +77,15 @@ const Detail = (props) => {
             <div className={styles.bin}>
               <CardBlueBgBlackBorder>
                 <input type="number" min={0} id={`${i}`} onInput={onInput} />
+                <div
+                  style={{
+                    backgroundColor: "#80A9E4",
+                    height: "40%",
+                    width: `${100 * props.normalisedBinValueList[i]}%`,
+                    float: "right",
+                    margin: 0,
+                  }}
+                ></div>
               </CardBlueBgBlackBorder>
             </div>
           );
