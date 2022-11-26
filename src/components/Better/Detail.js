@@ -12,6 +12,7 @@ import {
 } from "wagmi";
 import Button from "../common/Button";
 import { MedText, NormalText, SmallText } from "../common/Text";
+import { Grid, GridCell2, GridRow } from "../common/Grid";
 
 const Detail = (props) => {
   const [total, setTotal] = useState(0);
@@ -102,15 +103,128 @@ const Detail = (props) => {
       </div>
       <div className={styles.statsContainer}>
         <Card>
-          My Statistics
+          Epoch Data
           <CardBlueBg>
-            <b>Position value: 123 BNB</b>
-            <br></br>
-            Number of games: 102
+            <Grid>
+              <GridRow>
+                <GridCell2>
+                  <SmallText>Epoch:</SmallText>
+                </GridCell2>
+                <GridCell2>
+                  <SmallText>12</SmallText>
+                </GridCell2>
+              </GridRow>
+              <GridRow>
+                <GridCell2>
+                  <SmallText>Pot size:</SmallText>
+                </GridCell2>
+                <GridCell2>
+                  <SmallText>123 BNB</SmallText>
+                </GridCell2>
+              </GridRow>
+              <GridRow>
+                <GridCell2>
+                  <SmallText>Number of bets:</SmallText>
+                </GridCell2>
+                <GridCell2>
+                  <SmallText>123</SmallText>
+                </GridCell2>
+              </GridRow>
+            </Grid>
           </CardBlueBg>
         </Card>
-        <Card>Better Gains</Card>
-        <Card>Epoch Data</Card>
+        <Card>
+          My Statistics
+          <CardBlueBg>
+            <Grid>
+              <GridRow>
+                <GridCell2>
+                  <SmallText>Position value:</SmallText>
+                </GridCell2>
+                <GridCell2>
+                  <SmallText>123 BNB</SmallText>
+                </GridCell2>
+              </GridRow>
+              <GridRow>
+                <GridCell2>
+                  <SmallText>Pending rewards:</SmallText>
+                </GridCell2>
+                <GridCell2>
+                  <SmallText>19 BNB</SmallText>
+                </GridCell2>
+              </GridRow>
+              <GridRow>
+                <GridCell2>
+                  <SmallText>Number of games:</SmallText>
+                </GridCell2>
+                <GridCell2>
+                  <SmallText>102</SmallText>
+                </GridCell2>
+              </GridRow>
+              <GridRow>
+                <GridCell2>
+                  <SmallText>Biggest gain:</SmallText>
+                </GridCell2>
+                <GridCell2>
+                  <SmallText>+74.12%</SmallText>
+                </GridCell2>
+              </GridRow>
+              <GridRow>
+                <GridCell2>
+                  <SmallText>Most recent gain:</SmallText>
+                </GridCell2>
+                <GridCell2>
+                  <SmallText>+37.12%</SmallText>
+                </GridCell2>
+              </GridRow>
+            </Grid>
+          </CardBlueBg>
+        </Card>
+        <Card>
+          Better Gains
+          <CardBlueBg>
+            <Grid>
+              <GridRow>
+                <GridCell2>
+                  <SmallText>Time left for current week:</SmallText>
+                </GridCell2>
+                <GridCell2>
+                  <SmallText>5d 10h 14min 32s</SmallText>
+                </GridCell2>
+              </GridRow>
+              <GridRow>
+                <GridCell2>
+                  <SmallText>Week's biggest gain so far:</SmallText>
+                </GridCell2>
+                <GridCell2>
+                  <SmallText>
+                    +20.20%<br></br>0xhash
+                  </SmallText>
+                </GridCell2>
+              </GridRow>
+              <GridRow>
+                <GridCell2>
+                  <SmallText>Last week's biggest gain:</SmallText>
+                </GridCell2>
+                <GridCell2>
+                  <SmallText>
+                    +20.20%<br></br>0xhash
+                  </SmallText>
+                </GridCell2>
+              </GridRow>
+              <GridRow>
+                <GridCell2>
+                  <SmallText>Biggest gain of all time:</SmallText>
+                </GridCell2>
+                <GridCell2>
+                  <SmallText>
+                    +20.20%<br></br>0xhash
+                  </SmallText>
+                </GridCell2>
+              </GridRow>
+            </Grid>
+          </CardBlueBg>
+        </Card>
       </div>
     </div>
   );

@@ -16,9 +16,9 @@ const CenterText = styled.p`
   margin: 0px 20px;
 `;
 
-const SmallText = styled(FancyText)`
+const SmallText = styled.div`
   font-size: 0.75rem;
-  height: 0.75rem;
+  // height: 0.75rem;
   color: inherit;
 `;
 
