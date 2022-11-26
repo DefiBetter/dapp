@@ -76,7 +76,16 @@ const Detail = (props) => {
             // </div>
             <div className={styles.bin}>
               <CardBlueBgBlackBorder>
-                <input type="number" min={0} id={`${i}`} onInput={onInput} />
+                <input
+                  type="number"
+                  min={0}
+                  id={`${i}`}
+                  onInput={onInput}
+                  value={
+                    props.binAmountList[i] > 0 ? props.binAmountList[i] : ""
+                  }
+                  placeholder={0}
+                />
                 <div
                   style={{
                     backgroundColor: "#80A9E4",
