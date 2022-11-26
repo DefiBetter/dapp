@@ -32,12 +32,16 @@ function Better() {
   /* states */
   const [instrumentList, setInstrumentList] = useState();
   const [instrument, setInstrument] = useState();
-  const [totalEpochDuration, setTotalEpochDuration] = useState();
-  const [lastEpochClosingTime, setLastEpochClosingTime] = useState();
+
+  // epoch data
+  const [epochData, setEpochData] = useState();
 
   /* components */
   // detail
   const [binAmountList, setBinAmountList] = useState([0, 0, 0, 0, 0, 0, 0]);
+  const [binTotal, setBinTotal] = useState(
+    binAmountList.reduce((a, b) => Number(a) + Number(b), 0)
+  );
   const [pendingRewards, setPendingRewards] = useState(0);
   const [customFlatFee, setCustomFlatFee] = useState(0);
   const [customGainFee, setCustomGainFee] = useState(0);
@@ -46,7 +50,8 @@ function Better() {
 
   useEffect(() => {
     setNativeGas(contractAddresses[activeChain?.network]?.nativeGas);
-  }, [activeChain]);
+    setBinTotal(binAmountList.reduce((a, b) => Number(a) + Number(b), 0));
+  }, [activeChain, binAmountList]);
 
   const betterContractConfig = {
     address: contractAddresses[activeChain?.network]?.better,
@@ -79,9 +84,7 @@ function Better() {
     functionName: "getEpochData",
     args: [1, instrument?.selector],
     onSuccess(data) {
-      if (data.length > 0) {
-        console.log("EPOCH DATA", data);
-      }
+      setEpochData(data);
     },
   });
 
@@ -134,6 +137,8 @@ function Better() {
             customGainFee={customGainFee}
             pendingRewards={pendingRewards}
             nativeGas={nativeGas}
+            setBinAmountList={setBinAmountList}
+            binTotal={binTotal}
           />
         </div>
         <div className={styles.body}>
@@ -141,6 +146,8 @@ function Better() {
           <Detail
             binAmountList={binAmountList}
             setBinAmountList={setBinAmountList}
+            pendingRewards={pendingRewards}
+            epochData={epochData}
           />
         </div>
       </Container>

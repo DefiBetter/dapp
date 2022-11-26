@@ -23,14 +23,21 @@ const Action = (props) => {
     ],
     overrides: {
       value: ethers.utils.parseEther(
-        props.binAmountList
-          .reduce((a, b) => Number(a) + Number(b), 0)
-          .toString()
+        (props.binTotal > props.pendingRewards
+          ? props.binTotal - props.pendingRewards
+          : 0
+        ).toString()
       ),
     },
   });
 
-  let { write: depositWrite } = useContractWrite(openPositionConfig);
+  let { write: depositWrite } = useContractWrite({
+    ...openPositionConfig,
+    onSuccess(data) {
+      props.setBinAmountList([0, 0, 0, 0, 0, 0, 0]);
+      console.log("data action", data);
+    },
+  });
 
   // claim rewards
   const { config: claimBetterRewardsConfig } = usePrepareContractWrite({

@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import styled from "styled-components";
-import { Card, CardBlueBg } from "../common/Card";
+import { Card, CardBlueBg, CardBlueBgBlackBorder } from "../common/Card";
 import styles from "./Detail.module.css";
 import DeFiBetterV1ABI from "../../static/ABI/DeFiBetterV1ABI.json";
 import {
@@ -10,23 +10,22 @@ import {
   usePrepareContractWrite,
   useContractWrite,
 } from "wagmi";
-
-import { contractAddresses } from "../../static/contractAddresses";
+import Button from "../common/Button";
+import { MedText, NormalText, SmallText } from "../common/Text";
 
 const Detail = (props) => {
-  let sampleBins = [
-    { upper: 5, lower: 4.5 },
-    { upper: 4.5, lower: 4 },
-    { upper: 4, lower: 3.5 },
-    { upper: 3.5, lower: 3 },
-    { upper: 3, lower: 2.5 },
-    { upper: 2.5, lower: 2 },
-    { upper: 2, lower: 1.5 },
-  ];
+  const [total, setTotal] = useState(0);
+
+  useEffect(() => {
+    setTotal(
+      props.binAmountList.reduce((a, b) => Number(a) + Number(b), 0).toString()
+    );
+    console.log("total", total);
+  }, [props]);
 
   const onInput = (e) => {
     let temp = [...props.binAmountList];
-    temp[e.target.id] = e.target.value;
+    temp[e.target.id] = e.target.value ? e.target.value : 0;
     props.setBinAmountList(temp);
     console.log("binAmountList", temp);
   };
@@ -37,17 +36,44 @@ const Detail = (props) => {
   return (
     <div className={styles.container}>
       <div className={styles.binContainer}>
-        <div className={styles.totalAmount}>
-          Adding:{" "}
-          <b>
-            {totalAmount} {gasTokenSymbol}
-          </b>
+        <div className={styles.bin}>
+          <div>
+            <div className={styles.binChoice}>
+              <Button>Normal</Button>
+              <Button>Implied</Button>
+            </div>
+            <CardBlueBgBlackBorder>
+              <MedText>
+                <NormalText>
+                  Total: <b>{total}</b>
+                </NormalText>
+              </MedText>
+              <SmallText>
+                <NormalText>
+                  (
+                  <b>
+                    {total - props.pendingRewards > 0
+                      ? total - props.pendingRewards
+                      : 0}
+                  </b>{" "}
+                  +{" "}
+                  {total > props.pendingRewards ? props.pendingRewards : total}{" "}
+                  pending)
+                </NormalText>
+              </SmallText>
+            </CardBlueBgBlackBorder>
+          </div>
         </div>
-        {sampleBins.map((bin, i) => {
+        {props.epochData?.binValues.map((bin, i) => {
           return (
+            // <div className={styles.bin}>
+            //   <div className={styles.binUpper}>{bin.upper}</div>
+            //   <input type="number" min={0} id={`${i}`} onInput={onInput} />
+            // </div>
             <div className={styles.bin}>
-              <div className={styles.binUpper}>{bin.upper}</div>
-              <input type="number" min={0} id={`${i}`} onInput={onInput} />
+              <CardBlueBgBlackBorder>
+                <input type="number" min={0} id={`${i}`} onInput={onInput} />
+              </CardBlueBgBlackBorder>
             </div>
           );
         })}

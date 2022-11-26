@@ -17,34 +17,45 @@
 
 .binContainer {
     width: 50%;
-    height: calc(100% / 9 * 7);
+    height: 100%;
     padding: 0 10px;
     vertical-align: middle;
-    margin: auto 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
 }
 
 .bin {
-    height: calc(100%/7);
+    height: calc(100%/8);
     display: flex;
     flex-direction: column;
+    text-align: center;
+}
+
+.bin > div {
+    margin: auto 0;
+    justify-content: space-between;
+}
+
+.binChoice {
+    display: flex;
+    justify-content: space-between;
 
 }
 
-.binUpper {
-    height: 33%;
-    display: flex;
-    align-items: center;
-    font-size: 1rem;
+.binChoice > button {
+    width: 49%;
+}
+
+.bin > div > div {
+    margin: 10px 0;
 }
 
 
 input {
-    border-width: 1px;
-    border-radius: 10px;
-    border-color: black;
-    height: 66%;
+    border-style: none;
+    height: 100%;
     width: 100%;
-    box-sizing: border-box;
     font-size: 1.25rem;
     text-align: center;
     background-color: #CCE5FF;

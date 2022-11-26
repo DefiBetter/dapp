@@ -12,11 +12,13 @@ const Card = styled.div`
 
 const CardBlueBg = styled(Card)`
   background-color: #cce5ff;
+  border-style: none;
 `;
 
 const CardBlueBgBlackBorder = styled(CardBlueBg)`
   border-color: black;
-  border-width: 2.5px;
+  border-style: solid;
+  border-width: 2px;
 `;
 
-export { Card, CardBlueBg };
+export { Card, CardBlueBg, CardBlueBgBlackBorder };
