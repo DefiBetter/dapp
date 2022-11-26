@@ -1,5 +1,5 @@
 import { ethers } from "ethers";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import Button from "../components/common/Button";
 import { Card } from "../components/common/Card";
 import { AppContainer, Container } from "../components/common/Container";
@@ -39,13 +39,13 @@ function Staking() {
 
   const BN = ethers.BigNumber.from;
   const btStakingContractConfig = {
-    addressOrName: contractAddresses[activeChain?.network]?.btStaking,
-    contractInterface: DeFiBetterV1ABI,
+    address: contractAddresses[activeChain?.network]?.btStaking,
+    abi: DeFiBetterV1ABI,
   };
-  console.log("activeChain", activeChain);
-  console.log("connectedAddress", connectedAddress);
-  console.log("contractAddresses", contractAddresses);
-  console.log("btStakingContractConfig", btStakingContractConfig);
+  // // console.log("activeChain", activeChain);
+  // // console.log("connectedAddress", connectedAddress);
+  // // console.log("contractAddresses", contractAddresses);
+  // // console.log("btStakingContractConfig", btStakingContractConfig);
 
   // ------vars--------------------------
   const [bridgeAmount, setBridgeAmount] = useState(0);
@@ -53,21 +53,29 @@ function Staking() {
   const [btAmount, setBtAmount] = useState(0);
   const [zapAmount, setZapAmount] = useState(0);
 
+  const [lpTokenSymbol, setLpTokenSymbol] = useState();
+
+  useEffect(() => {
+    setLpTokenSymbol(
+      `BT-${contractAddresses[activeChain?.network]?.nativeGas} LP`
+    );
+  }, [activeChain]);
+
   // ---read-----------------------------
   // Better token address
   let { data: btStakingTokenAddress } = useContractRead({
     ...btStakingContractConfig,
     functionName: "getStakingToken",
   });
-  console.log("btStakingTokenAddress", btStakingTokenAddress);
+  // console.log("btStakingTokenAddress", btStakingTokenAddress);
 
   // Better token decimals
   const { data: btStakingTokenDecimals } = useContractRead({
-    addressOrName: btStakingTokenAddress,
-    contractInterface: IERC20MetadataABI,
+    address: btStakingTokenAddress,
+    abi: IERC20MetadataABI,
     functionName: "decimals",
   });
-  console.log("btStakingTokenDecimals", btStakingTokenDecimals);
+  // console.log("btStakingTokenDecimals", btStakingTokenDecimals);
 
   // Better token balance of connected address
   const {
@@ -75,22 +83,24 @@ function Staking() {
     isSuccess: btStakingTokenBalanceSuccess,
     refetch: refetchBtStakingTokenBalance,
   } = useContractRead({
-    addressOrName: btStakingTokenAddress,
-    contractInterface: IERC20MetadataABI,
+    address: btStakingTokenAddress,
+    abi: IERC20MetadataABI,
     functionName: "balanceOf",
-    args: connectedAddress,
+    args: [connectedAddress],
     watch: true,
   });
+
+  // console.log("btStakingTokenBalance", btStakingTokenBalance);
 
   // Better token allowance for BT staking contract
   const {
     data: btStakingTokenAllowance,
     isSuccess: btStakingTokenAllowanceSuccess,
   } = useContractRead({
-    addressOrName: btStakingTokenAddress,
-    contractInterface: IERC20MetadataABI,
+    address: btStakingTokenAddress,
+    abi: IERC20MetadataABI,
     functionName: "allowance",
-    args: [connectedAddress, btStakingContractConfig.addressOrName],
+    args: [connectedAddress, btStakingContractConfig.address],
     watch: true,
   });
 
@@ -100,7 +110,7 @@ function Staking() {
     isSuccess: rewardTokenBalanceSuccess,
     refetch: refetchRewardTokenBalance,
   } = useBalance({
-    addressOrName: connectedAddress,
+    address: connectedAddress,
   });
 
   // currently BT token staked
@@ -126,27 +136,24 @@ function Staking() {
   // ---writes---------------------------
   // BT staking approve (part 1) --> maybe should change to infinite approval later
   const { config: prepareWriteConfigBtApprove } = usePrepareContractWrite({
-    addressOrName: btStakingTokenAddress,
-    contractInterface: IERC20MetadataABI,
+    address: btStakingTokenAddress,
+    abi: IERC20MetadataABI,
     functionName: "approve",
     args: [
       //spender
-      btStakingContractConfig.addressOrName,
+      btStakingContractConfig.address,
       //value
-      min(
-        parseStakingInput(btAmount, btStakingTokenDecimals),
-        btStakingTokenBalance
-          ? BN(btStakingTokenBalance)
-          : ethers.constants.MaxUint256 // this is infinite approval, maybe remove or something later
-      ),
+      parseStakingInput(btAmount.toString(), btStakingTokenDecimals),
     ],
   });
-  console.log(
-    "btStakingTokenBalance",
-    btStakingTokenBalance
-      ? BN(btStakingTokenBalance)
-      : ethers.constants.MaxUint256
-  );
+  // console.log("prepareWriteConfigBtApprove", prepareWriteConfigBtApprove);
+
+  // console.log(
+  //   "btStakingTokenBalance",
+  //   btStakingTokenBalance
+  //     ? BN(btStakingTokenBalance)
+  //     : ethers.constants.MaxUint256
+  // );
 
   // BT staking approve (part 2)
   const {
@@ -154,17 +161,27 @@ function Staking() {
     isLoading: isBtApproving,
     write: executeBtStakeApprove,
   } = useContractWrite(prepareWriteConfigBtApprove);
+  // console.log("executeBtStakeApprove", executeBtStakeApprove);
 
   // BT staking send (part 1)
   const { config: prepareWriteConfigBtStake } = usePrepareContractWrite({
     ...btStakingContractConfig,
     functionName: "stake",
-    args: [0],
+    args: ["1"],
+    onSuccess(data) {
+      // console.log("SHIT1", ethers.utils.parseEther(btAmount.toString()));
+    },
+    watch: true,
   });
 
   // BT staking send (part 2)
-  const { isLoading: isBtStaking, writeAsync: executeBtStake } =
-    useContractWrite(prepareWriteConfigBtStake);
+  const { isLoading: isBtStaking, write: executeBtStake } = useContractWrite({
+    ...prepareWriteConfigBtStake,
+    onSuccess(data) {
+      // console.log("STAKED", data);
+      // console.log("SHIT2", ethers.utils.parseEther(btAmount.toString()));
+    },
+  });
 
   // after approval, prompt staking txn
   useWaitForTransaction({
@@ -178,7 +195,7 @@ function Staking() {
         refetchBtStakingTokenBalance?.();
         refetchBtStaked?.();
       });
-      console.log("Staking...");
+      // console.log("Staking...");
     },
   });
 
@@ -190,7 +207,7 @@ function Staking() {
   });
 
   // BT unstaking (part 2)
-  const { isLoading: isBtUnstaking, writeAsync: executeBtUnstake } =
+  const { isLoading: isBtUnstaking, write: executeBtUnstake } =
     useContractWrite(prepareWriteConfigBtUnstake);
 
   // BT staking rewards claim (part 1)
@@ -203,8 +220,9 @@ function Staking() {
   });
 
   // BT staking rewards claim (part 2)
-  const { isLoading: isBtClaiming, writeAsync: executeBtClaim } =
-    useContractWrite(prepareWriteConfigBtClaim);
+  const { isLoading: isBtClaiming, write: executeBtClaim } = useContractWrite(
+    prepareWriteConfigBtClaim
+  );
 
   // ---visibility-----------------------
   function fetchOrShow(bool, result, dec) {
@@ -234,8 +252,8 @@ function Staking() {
   }
 
   function parseStakingInput(i, tokenDecimals) {
-    console.log("i", i);
-    console.log("tokenDecimals", tokenDecimals);
+    // console.log("i", i);
+    // console.log("tokenDecimals", tokenDecimals);
     if (isNumeric(i) && tokenDecimals) {
       return ethers.utils.parseUnits(i, tokenDecimals);
     }
@@ -278,57 +296,60 @@ function Staking() {
   // ---handle callback-----------------------
   // bridge
   const handleSetBridgeAmount = (e) => {
-    console.log("handleSetBridgeAmount");
+    // console.log("handleSetBridgeAmount");
     setBridgeAmount(e.target.value ?? 0);
   };
 
   const handleOnBridge = (e) => {
-    console.log("handleOnBridge");
+    // console.log("handleOnBridge");
   };
 
   // lp
   const handleSetLpStakeAmount = (e) => {
-    console.log("handleSetLpStakeAmount");
+    // console.log("handleSetLpStakeAmount");
     setLpAmount(e.target.value ?? 0);
   };
 
   const handleOnLpStake = (e) => {
-    console.log("handleOnLpStake");
+    // console.log("handleOnLpStake");
   };
   const handleOnLpUnstake = (e) => {
-    console.log("handleOnLpUnstake");
+    // console.log("handleOnLpUnstake");
   };
   const handleOnLpClaimRewards = (e) => {
-    console.log("handleOnLpClaimRewards");
+    // console.log("handleOnLpClaimRewards");
   };
 
   // bt
   const handleSetBtStakeAmount = (e) => {
-    console.log("handleSetBtStakeAmount");
-    setBtAmount(e.target.value ?? 0);
+    // console.log("handleSetBtStakeAmount");
+    // console.log("e.target.value ?? 0", e.target.value ?? 0);
+    setBtAmount(e.target.value ? e.target.value : 0);
+    // console.log("btAmount", btAmount);
   };
 
   const handleOnBtStake = (e) => {
-    console.log("handleOnBtStake");
+    // console.log("handleOnBtStake");
+    // console.log("executeBtStakeApprove??", executeBtStakeApprove);
     e.preventDefault();
-    console.log("btAmount", btAmount);
-    console.log("parseStakingInput(btAmount)", parseStakingInput(btAmount, 18));
-    console.log(
-      "parseStakingInput(btAmount)?.gt(0)",
-      parseStakingInput(btAmount, 18)?.gt(0)
-    );
+    // console.log("btAmount", btAmount);
+    // console.log("parseStakingInput(btAmount)", parseStakingInput(btAmount, 18));
+    // console.log(
+    //   "parseStakingInput(btAmount)?.gt(0)",
+    //   parseStakingInput(btAmount, 18)?.gt(0)
+    // );
     if (parseStakingInput(btAmount, 18)?.gt(0)) {
-      console.log(
-        "executeBtStakeApprove?.()",
-        executeBtStakeApprove ? "true" : "false"
-      );
+      // console.log(
+      //   "executeBtStakeApprove?.()",
+      //   executeBtStakeApprove ? "true" : "false"
+      // );
       executeBtStakeApprove?.();
-      console.log("Approving...");
+      // console.log("Approving...");
     }
   };
 
   const handleOnBtUnstake = (e) => {
-    console.log("handleOnBtUnstake");
+    // console.log("handleOnBtUnstake");
     e.preventDefault();
     if (parseStakingInput(btAmount)?.gt(0)) {
       executeBtUnstake?.({
@@ -343,12 +364,12 @@ function Staking() {
         refetchBtStaked?.();
         refetchBtStakingTokenBalance?.();
       });
-      console.log("Unstaking...");
+      // console.log("Unstaking...");
     }
   };
 
   const handleOnBtClaimRewards = (e) => {
-    console.log("handleOnBtClaimRewards");
+    // console.log("handleOnBtClaimRewards");
     e.preventDefault();
     if (parseStakingInput(rewardTokenBalance, 18)?.gt(0)) {
       executeBtClaim?.({
@@ -358,18 +379,18 @@ function Staking() {
       }).then(() => {
         refetchRewardTokenBalance?.();
       });
-      console.log("Claiming...");
+      // console.log("Claiming...");
     }
   };
 
   // zap
   const handleSetZapAmount = (e) => {
-    console.log("handleSetZapAmount");
+    // console.log("handleSetZapAmount");
     setZapAmount(e.target.value ?? 0);
   };
 
   const handleOnZap = (e) => {
-    console.log("handleOnZap");
+    // console.log("handleOnZap");
   };
 
   // if wallet not connected
@@ -451,9 +472,9 @@ function Staking() {
             <div className={styles.section2}>
               <div className={styles.assetContainer}>
                 <StakeDiagram
-                  stakeSymbol={"BT-BNB-LP"}
+                  stakeSymbol={lpTokenSymbol}
                   rewardSymbol={"BT"}
-                  stakeName={"BT-BNB-LP"}
+                  stakeName={lpTokenSymbol}
                   rewardName={"Better Token"}
                 />
                 <Card>

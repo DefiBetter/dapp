@@ -32,9 +32,11 @@ function Better() {
   /* states */
   const [instrumentList, setInstrumentList] = useState();
   const [instrument, setInstrument] = useState();
+  console.log("instrument", instrument);
 
   // epoch data
   const [epochData, setEpochData] = useState();
+  console.log("epochData", epochData);
   const [normalisedBinValueList, setNormalisedBinValueList] = useState([
     0, 0, 0, 0, 0, 0, 0,
   ]);
@@ -50,6 +52,12 @@ function Better() {
   const [customGainFee, setCustomGainFee] = useState(0);
 
   const [nativeGas, setNativeGas] = useState();
+
+  const [userPositions, setUserPositions] = useState();
+  console.log("userPositions", userPositions);
+
+  const [userGainsInfo, setUserGainsInfo] = useState();
+  console.log("userGainsInfo", userGainsInfo);
 
   useEffect(() => {
     setNativeGas(contractAddresses[activeChain?.network]?.nativeGas);
@@ -85,7 +93,7 @@ function Better() {
   useContractRead({
     ...betterContractConfig,
     functionName: "getEpochData",
-    args: [1, instrument?.selector],
+    args: [instrument?.epoch, instrument?.selector],
     onSuccess(data) {
       setEpochData(data);
       setNormalisedBinValueList(
@@ -118,6 +126,31 @@ function Better() {
       console.log("pendingRewards", pendingRewards);
     },
     watch: true,
+  });
+
+  // user positions
+  useContractRead({
+    ...betterContractConfig,
+    functionName: "getUserPositions",
+    args: [instrument?.epoch, instrument?.selector],
+    onSuccess(data) {
+      setUserPositions(data);
+    },
+  });
+
+  console.log("connectedAddress", connectedAddress);
+  // user gains info
+  useContractRead({
+    ...betterContractConfig,
+    functionName: "userGainsInfo",
+    args: [connectedAddress],
+    onError(e) {
+      console.log("ERROR", e);
+    },
+    onSuccess(data) {
+      setUserGainsInfo(data);
+      console.log("yesyes", data);
+    },
   });
 
   if (!isConnected) {
@@ -169,6 +202,10 @@ function Better() {
             pendingRewards={pendingRewards}
             epochData={epochData}
             normalisedBinValueList={normalisedBinValueList}
+            instrument={instrument}
+            nativeGas={nativeGas}
+            userPositions={userPositions}
+            userGainsInfo={userGainsInfo}
           />
         </div>
       </Container>

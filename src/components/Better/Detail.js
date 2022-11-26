@@ -14,6 +14,8 @@ import Button from "../common/Button";
 import { MedText, NormalText, SmallText } from "../common/Text";
 import { Grid, GridCell2, GridRow } from "../common/Grid";
 
+import { ethers } from "ethers";
+
 const Detail = (props) => {
   const [total, setTotal] = useState(0);
 
@@ -111,7 +113,11 @@ const Detail = (props) => {
                   <SmallText>Epoch:</SmallText>
                 </GridCell2>
                 <GridCell2>
-                  <SmallText>12</SmallText>
+                  <SmallText>
+                    {props.instrument
+                      ? props.instrument.epoch.toString()
+                      : null}
+                  </SmallText>
                 </GridCell2>
               </GridRow>
               <GridRow>
@@ -119,7 +125,12 @@ const Detail = (props) => {
                   <SmallText>Pot size:</SmallText>
                 </GridCell2>
                 <GridCell2>
-                  <SmallText>123 BNB</SmallText>
+                  <SmallText>
+                    {props.epochData
+                      ? ethers.utils.formatEther(props.epochData.pot)
+                      : null}{" "}
+                    {props.nativeGas ? props.nativeGas : null}
+                  </SmallText>
                 </GridCell2>
               </GridRow>
               <GridRow>
@@ -127,7 +138,11 @@ const Detail = (props) => {
                   <SmallText>Number of bets:</SmallText>
                 </GridCell2>
                 <GridCell2>
-                  <SmallText>123</SmallText>
+                  <SmallText>
+                    {props.epochData
+                      ? props.epochData.numBets.toString()
+                      : null}
+                  </SmallText>
                 </GridCell2>
               </GridRow>
             </Grid>
@@ -142,7 +157,12 @@ const Detail = (props) => {
                   <SmallText>Position value:</SmallText>
                 </GridCell2>
                 <GridCell2>
-                  <SmallText>123 BNB</SmallText>
+                  <SmallText>
+                    {props.userPositions
+                      ?.map((v) => Number(ethers.utils.formatEther(v)))
+                      .reduce((a, b) => a + b)}{" "}
+                    {props.nativeGas}
+                  </SmallText>
                 </GridCell2>
               </GridRow>
               <GridRow>
@@ -150,7 +170,9 @@ const Detail = (props) => {
                   <SmallText>Pending rewards:</SmallText>
                 </GridCell2>
                 <GridCell2>
-                  <SmallText>19 BNB</SmallText>
+                  <SmallText>
+                    {props.pendingRewards} {props.nativeGas}
+                  </SmallText>
                 </GridCell2>
               </GridRow>
               <GridRow>
@@ -158,7 +180,9 @@ const Detail = (props) => {
                   <SmallText>Number of games:</SmallText>
                 </GridCell2>
                 <GridCell2>
-                  <SmallText>102</SmallText>
+                  <SmallText>
+                    {props.userGainsInfo?.numberOfGames.toString()}
+                  </SmallText>
                 </GridCell2>
               </GridRow>
               <GridRow>
@@ -166,7 +190,12 @@ const Detail = (props) => {
                   <SmallText>Biggest gain:</SmallText>
                 </GridCell2>
                 <GridCell2>
-                  <SmallText>+74.12%</SmallText>
+                  <SmallText>
+                    {Number(props.userGainsInfo?.biggestRelativeGainAmount) >= 0
+                      ? "+"
+                      : "-"}
+                    {Number(props.userGainsInfo?.biggestRelativeGainAmount)}%
+                  </SmallText>
                 </GridCell2>
               </GridRow>
               <GridRow>
@@ -174,7 +203,14 @@ const Detail = (props) => {
                   <SmallText>Most recent gain:</SmallText>
                 </GridCell2>
                 <GridCell2>
-                  <SmallText>+37.12%</SmallText>
+                  <SmallText>
+                    {Number(
+                      props.userGainsInfo?.mostRecentRelativeGainAmount
+                    ) >= 0
+                      ? "+"
+                      : "-"}
+                    {Number(props.userGainsInfo?.mostRecentRelativeGainAmount)}%
+                  </SmallText>
                 </GridCell2>
               </GridRow>
             </Grid>

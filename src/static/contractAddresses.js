@@ -5,8 +5,8 @@ const contractAddresses = {
     presale: "0xfbC22278A96299D91d41C453234d97b4F5Eb9B2d",
     publicSale: "0xC9a43158891282A2B1475592D5719c001986Aaec",
     btToken: "0x2B0d36FACD61B71CC05ab8F3D2355ec3631C0dd5",
-    btStaking: "",
-    lpStaking: "",
+    btStaking: "0x367761085BF3C12e5DA2Df99AC6E1a824612b8fb",
+    lpStaking: "0x367761085BF3C12e5DA2Df99AC6E1a824612b8fb",
     nativeGas: "ETH",
   },
   bsc: {
