@@ -75,6 +75,7 @@ function Staking(props) {
     abi: IERC20MetadataABI,
     functionName: "allowance",
     args: [connectedAddress, contractAddresses[activeChain?.network].better],
+    watch: true,
     onError(data) {
       console.log("allowance error", data);
     },
@@ -86,7 +87,7 @@ function Staking(props) {
   console.log("MAX UINT", ethers.constants.MaxUint256.sub("1").toString());
 
   // prepare approve
-  const { config: approveConfig } = usePrepareContractWrite({
+  const { config: approveBtConfig } = usePrepareContractWrite({
     address: contractAddresses[activeChain?.network]?.btToken,
     abi: IERC20MetadataABI,
     functionName: "approve",
@@ -99,14 +100,14 @@ function Staking(props) {
     },
   });
 
-  const { write: approveWrite } = useContractWrite({
-    ...approveConfig,
+  const { write: approveBtWrite } = useContractWrite({
+    ...approveBtConfig,
     onSuccess(data) {
       console.log("infinite approved", data);
     },
   });
 
-  const { config: stakeConfig } = usePrepareContractWrite({
+  const { config: stakeBtConfig } = usePrepareContractWrite({
     ...betterContractConfig,
     functionName: "stake",
     args: [ethers.utils.parseEther(btAmount.toString())],
@@ -120,8 +121,8 @@ function Staking(props) {
     },
   });
 
-  const { write: stakeWrite } = useContractWrite({
-    ...stakeConfig,
+  const { write: stakeBtWrite } = useContractWrite({
+    ...stakeBtConfig,
     onError(e) {
       console.log("error staking", e);
     },
@@ -130,7 +131,23 @@ function Staking(props) {
     },
   });
 
-  console.log("stakeWrite", stakeWrite);
+  console.log("stakeWrite", stakeBtWrite);
+
+  const { config: unstakeBtConfig } = usePrepareContractWrite({
+    ...betterContractConfig,
+    functionName: "unstake",
+    args: [ethers.utils.parseEther(btAmount.toString())],
+    onSuccess(data) {
+      console.log("prepared unstake");
+    },
+  });
+
+  const { write: unstakeBtWrite } = useContractWrite({
+    ...unstakeBtConfig,
+    onSuccess(data) {
+      console.log("unstaked", data);
+    },
+  });
 
   /* handle input amount changes */
   const handleBtAmount = (e) => {
@@ -270,13 +287,13 @@ function Staking(props) {
                         {ethers.BigNumber.from(allowance.toString()).lte(
                           ethers.BigNumber.from("0")
                         ) ? (
-                          <Button onClick={approveWrite}>Approve</Button>
+                          <Button onClick={approveBtWrite}>Approve</Button>
                         ) : (
-                          <Button onClick={stakeWrite}>Stake</Button>
+                          <Button onClick={stakeBtWrite}>Stake</Button>
                         )}
                       </GridCell2>
                       <GridCell2>
-                        <Button onClick={() => {}}>Unstake</Button>
+                        <Button onClick={unstakeBtWrite}>Unstake</Button>
                       </GridCell2>
                     </GridRow>
                     <GridRow>
