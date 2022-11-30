@@ -69,12 +69,12 @@ function Staking(props) {
     abi: DeFiBetterV1ABI,
   };
 
-  // allowance
+  // allowance bt
   useContractRead({
-    address: contractAddresses[activeChain?.network].btToken,
+    address: contractAddresses[activeChain?.network]?.btToken,
     abi: IERC20MetadataABI,
     functionName: "allowance",
-    args: [connectedAddress, contractAddresses[activeChain?.network].better],
+    args: [connectedAddress, contractAddresses[activeChain?.network]?.better],
     watch: true,
     onError(data) {
       console.log("allowance error", data);
@@ -86,7 +86,7 @@ function Staking(props) {
 
   console.log("MAX UINT", ethers.constants.MaxUint256.sub("1").toString());
 
-  // prepare approve
+  // prepare approve bt
   const { config: approveBtConfig } = usePrepareContractWrite({
     address: contractAddresses[activeChain?.network]?.btToken,
     abi: IERC20MetadataABI,
@@ -100,6 +100,7 @@ function Staking(props) {
     },
   });
 
+  // infinite approve bt
   const { write: approveBtWrite } = useContractWrite({
     ...approveBtConfig,
     onSuccess(data) {
@@ -107,6 +108,7 @@ function Staking(props) {
     },
   });
 
+  // prepare stake bt
   const { config: stakeBtConfig } = usePrepareContractWrite({
     ...betterContractConfig,
     functionName: "stake",
@@ -121,6 +123,7 @@ function Staking(props) {
     },
   });
 
+  // stake bt
   const { write: stakeBtWrite } = useContractWrite({
     ...stakeBtConfig,
     onError(e) {
@@ -131,8 +134,7 @@ function Staking(props) {
     },
   });
 
-  console.log("stakeWrite", stakeBtWrite);
-
+  // prepare unstake bt
   const { config: unstakeBtConfig } = usePrepareContractWrite({
     ...betterContractConfig,
     functionName: "unstake",
@@ -142,10 +144,25 @@ function Staking(props) {
     },
   });
 
+  // unstake bt
   const { write: unstakeBtWrite } = useContractWrite({
     ...unstakeBtConfig,
     onSuccess(data) {
       console.log("unstaked", data);
+    },
+  });
+
+  // claim bt rewards
+  const { write: claimBtWrite } = useContractWrite({
+    mode: "recklesslyUnprepared",
+    ...betterContractConfig,
+    functionName: "claim",
+    args: [],
+    onSuccess(data) {
+      console.log("claimed", data);
+    },
+    onError(data) {
+      console.log("claim error", data);
     },
   });
 
@@ -298,7 +315,7 @@ function Staking(props) {
                     </GridRow>
                     <GridRow>
                       <GridCell colSpan={2}>
-                        <Button onClick={() => {}}>Claim</Button>
+                        <Button onClick={claimBtWrite}>Claim</Button>
                       </GridCell>
                     </GridRow>
                   </Grid>
