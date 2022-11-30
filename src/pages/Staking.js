@@ -29,8 +29,9 @@ import {
   useWaitForTransaction,
 } from "wagmi";
 import { CenterText } from "../components/common/Text";
+import { bignumber, bignumberDependencies } from "mathjs";
 
-function Staking() {
+function Staking(props) {
   // fetch account and current network
   const { address: connectedAddress, isConnected } = useAccount();
   const { chain: activeChain } = useNetwork();
@@ -55,342 +56,86 @@ function Staking() {
 
   const [lpTokenSymbol, setLpTokenSymbol] = useState();
 
+  const [allowance, setAllowance] = useState(bignumber("0"));
+
   useEffect(() => {
     setLpTokenSymbol(
       `BT-${contractAddresses[activeChain?.network]?.nativeGas} LP`
     );
   }, [activeChain]);
 
-  // ---read-----------------------------
-  // Better token address
-  let { data: btStakingTokenAddress } = useContractRead({
-    ...btStakingContractConfig,
-    functionName: "getStakingToken",
-  });
-  // console.log("btStakingTokenAddress", btStakingTokenAddress);
+  const betterContractConfig = {
+    address: contractAddresses[activeChain?.network]?.better,
+    abi: DeFiBetterV1ABI,
+  };
 
-  // Better token decimals
-  const { data: btStakingTokenDecimals } = useContractRead({
-    address: btStakingTokenAddress,
-    abi: IERC20MetadataABI,
-    functionName: "decimals",
-  });
-  // console.log("btStakingTokenDecimals", btStakingTokenDecimals);
-
-  // Better token balance of connected address
-  const {
-    data: btStakingTokenBalance,
-    isSuccess: btStakingTokenBalanceSuccess,
-    refetch: refetchBtStakingTokenBalance,
-  } = useContractRead({
-    address: btStakingTokenAddress,
-    abi: IERC20MetadataABI,
-    functionName: "balanceOf",
-    args: [connectedAddress],
-    watch: true,
-  });
-
-  // console.log("btStakingTokenBalance", btStakingTokenBalance);
-
-  // Better token allowance for BT staking contract
-  const {
-    data: btStakingTokenAllowance,
-    isSuccess: btStakingTokenAllowanceSuccess,
-  } = useContractRead({
-    address: btStakingTokenAddress,
+  // allowance
+  useContractRead({
+    address: contractAddresses[activeChain?.network].btToken,
     abi: IERC20MetadataABI,
     functionName: "allowance",
-    args: [connectedAddress, btStakingContractConfig.address],
-    watch: true,
-  });
-
-  // BT staking reward token (BNB) balance
-  const {
-    data: rewardTokenBalance,
-    isSuccess: rewardTokenBalanceSuccess,
-    refetch: refetchRewardTokenBalance,
-  } = useBalance({
-    address: connectedAddress,
-  });
-
-  // currently BT token staked
-  const {
-    data: btStaked,
-    isSuccess: btStakedBalanceSuccess,
-    refetch: refetchBtStaked,
-  } = useContractRead({
-    ...btStakingContractConfig,
-    functionName: "getStaked",
-    overrides: {
-      from: connectedAddress,
+    args: [connectedAddress, contractAddresses[activeChain?.network].better],
+    onError(data) {
+      console.log("allowance error", data);
+    },
+    onSuccess(data) {
+      setAllowance(data);
     },
   });
 
-  // pending BT staking reward tokens (BNB)
-  const { data: btStakingRewards, isSuccess: pendingBtStakingRewardsSuccess } =
-    useContractRead({
-      ...btStakingContractConfig,
-      functionName: "getPendingRewards",
-    });
+  console.log("MAX UINT", ethers.constants.MaxUint256.sub("1").toString());
 
-  // ---writes---------------------------
-  // BT staking approve (part 1) --> maybe should change to infinite approval later
-  const { config: prepareWriteConfigBtApprove } = usePrepareContractWrite({
-    address: btStakingTokenAddress,
+  // prepare approve
+  const { config: approveConfig } = usePrepareContractWrite({
+    address: contractAddresses[activeChain?.network]?.btToken,
     abi: IERC20MetadataABI,
     functionName: "approve",
     args: [
-      //spender
-      btStakingContractConfig.address,
-      //value
-      parseStakingInput(btAmount.toString(), btStakingTokenDecimals),
+      contractAddresses[activeChain?.network]?.better,
+      ethers.constants.MaxUint256.sub("1").toString(),
     ],
+    onSuccess(data) {
+      console.log("approve prepared", data);
+    },
   });
-  // console.log("prepareWriteConfigBtApprove", prepareWriteConfigBtApprove);
 
-  // console.log(
-  //   "btStakingTokenBalance",
-  //   btStakingTokenBalance
-  //     ? BN(btStakingTokenBalance)
-  //     : ethers.constants.MaxUint256
-  // );
+  const { write: approveWrite } = useContractWrite({
+    ...approveConfig,
+    onSuccess(data) {
+      console.log("infinite approved", data);
+    },
+  });
 
-  // BT staking approve (part 2)
-  const {
-    data: btApprovalTx,
-    isLoading: isBtApproving,
-    write: executeBtStakeApprove,
-  } = useContractWrite(prepareWriteConfigBtApprove);
-  // console.log("executeBtStakeApprove", executeBtStakeApprove);
-
-  // BT staking send (part 1)
-  const { config: prepareWriteConfigBtStake } = usePrepareContractWrite({
-    ...btStakingContractConfig,
+  const { config: stakeConfig } = usePrepareContractWrite({
+    ...betterContractConfig,
     functionName: "stake",
-    args: ["1"],
+    args: [ethers.utils.parseEther(btAmount.toString())],
     onSuccess(data) {
-      // console.log("SHIT1", ethers.utils.parseEther(btAmount.toString()));
+      console.log("prepared stake", data);
     },
-    watch: true,
+    onError(data) {
+      console.log("connectedAddress", connectedAddress);
+      console.log("btAmount", btAmount);
+      console.log("prepare stake error", data);
+    },
   });
 
-  // BT staking send (part 2)
-  const { isLoading: isBtStaking, write: executeBtStake } = useContractWrite({
-    ...prepareWriteConfigBtStake,
+  const { write: stakeWrite } = useContractWrite({
+    ...stakeConfig,
+    onError(e) {
+      console.log("error staking", e);
+    },
     onSuccess(data) {
-      // console.log("STAKED", data);
-      // console.log("SHIT2", ethers.utils.parseEther(btAmount.toString()));
+      console.log("staked", data);
     },
   });
 
-  // after approval, prompt staking txn
-  useWaitForTransaction({
-    hash: btApprovalTx?.hash,
-    onSuccess(data) {
-      executeBtStake?.({
-        recklesslySetUnpreparedArgs: [
-          min(parseStakingInput(btAmount), BN(btStakingTokenBalance)),
-        ],
-      }).then(() => {
-        refetchBtStakingTokenBalance?.();
-        refetchBtStaked?.();
-      });
-      // console.log("Staking...");
-    },
-  });
+  console.log("stakeWrite", stakeWrite);
 
-  // BT unstaking (part 1)
-  const { config: prepareWriteConfigBtUnstake } = usePrepareContractWrite({
-    ...btStakingContractConfig,
-    functionName: "unstake",
-    args: [0], // amount to unstake?
-  });
-
-  // BT unstaking (part 2)
-  const { isLoading: isBtUnstaking, write: executeBtUnstake } =
-    useContractWrite(prepareWriteConfigBtUnstake);
-
-  // BT staking rewards claim (part 1)
-  const { config: prepareWriteConfigBtClaim } = usePrepareContractWrite({
-    ...btStakingContractConfig,
-    functionName: "claim",
-    overrides: {
-      from: connectedAddress,
-    },
-  });
-
-  // BT staking rewards claim (part 2)
-  const { isLoading: isBtClaiming, write: executeBtClaim } = useContractWrite(
-    prepareWriteConfigBtClaim
-  );
-
-  // ---visibility-----------------------
-  function fetchOrShow(bool, result, dec) {
-    if (bool && dec && result) {
-      return ethers.utils.formatUnits(result, dec);
-    }
-    return "Fetching...";
-  }
-
-  function btStakingDisabled() {
-    return !parseStakingInput(btAmount).gt(0) || isBtApproving || isBtStaking;
-  }
-
-  const btStakingButtonText = useCallback(
-    () =>
-      isBtApproving ? "Approving..." : isBtStaking ? "Staking..." : "Stake",
-    [isBtStaking, isBtApproving]
-  );
-
-  // ---functionality--------------------
-  function min(a, b) {
-    return a.gt(b) ? b : a;
-  }
-
-  function isNumeric(i) {
-    return !isNaN(parseFloat(i)) && isFinite(i);
-  }
-
-  function parseStakingInput(i, tokenDecimals) {
-    // console.log("i", i);
-    // console.log("tokenDecimals", tokenDecimals);
-    if (isNumeric(i) && tokenDecimals) {
-      return ethers.utils.parseUnits(i, tokenDecimals);
-    }
-    return BN(0);
-  }
-
-  // unused functions at the moment
-  const getBtStakingTokenBalance = useCallback(
-    () =>
-      fetchOrShow(
-        btStakingTokenBalanceSuccess,
-        btStakingTokenBalance,
-        btStakingTokenDecimals
-      ),
-    [
-      btStakingTokenBalanceSuccess,
-      btStakingTokenBalance,
-      btStakingTokenDecimals,
-    ]
-  );
-
-  const getBtStakingTokenAllowance = useCallback(
-    () =>
-      fetchOrShow(
-        btStakingTokenAllowanceSuccess,
-        btStakingTokenAllowance,
-        btStakingTokenDecimals
-      ),
-    [
-      btStakingTokenAllowanceSuccess,
-      btStakingTokenAllowance,
-      btStakingTokenDecimals,
-    ]
-  );
-  const getBtStaked = useCallback(
-    () => fetchOrShow(btStakedBalanceSuccess, btStaked, btStakingTokenDecimals),
-    [btStakedBalanceSuccess, btStaked, btStakingTokenDecimals]
-  );
-
-  // ---handle callback-----------------------
-  // bridge
-  const handleSetBridgeAmount = (e) => {
-    // console.log("handleSetBridgeAmount");
-    setBridgeAmount(e.target.value ?? 0);
-  };
-
-  const handleOnBridge = (e) => {
-    // console.log("handleOnBridge");
-  };
-
-  // lp
-  const handleSetLpStakeAmount = (e) => {
-    // console.log("handleSetLpStakeAmount");
-    setLpAmount(e.target.value ?? 0);
-  };
-
-  const handleOnLpStake = (e) => {
-    // console.log("handleOnLpStake");
-  };
-  const handleOnLpUnstake = (e) => {
-    // console.log("handleOnLpUnstake");
-  };
-  const handleOnLpClaimRewards = (e) => {
-    // console.log("handleOnLpClaimRewards");
-  };
-
-  // bt
-  const handleSetBtStakeAmount = (e) => {
-    // console.log("handleSetBtStakeAmount");
-    // console.log("e.target.value ?? 0", e.target.value ?? 0);
-    setBtAmount(e.target.value ? e.target.value : 0);
-    // console.log("btAmount", btAmount);
-  };
-
-  const handleOnBtStake = (e) => {
-    // console.log("handleOnBtStake");
-    // console.log("executeBtStakeApprove??", executeBtStakeApprove);
-    e.preventDefault();
-    // console.log("btAmount", btAmount);
-    // console.log("parseStakingInput(btAmount)", parseStakingInput(btAmount, 18));
-    // console.log(
-    //   "parseStakingInput(btAmount)?.gt(0)",
-    //   parseStakingInput(btAmount, 18)?.gt(0)
-    // );
-    if (parseStakingInput(btAmount, 18)?.gt(0)) {
-      // console.log(
-      //   "executeBtStakeApprove?.()",
-      //   executeBtStakeApprove ? "true" : "false"
-      // );
-      executeBtStakeApprove?.();
-      // console.log("Approving...");
-    }
-  };
-
-  const handleOnBtUnstake = (e) => {
-    // console.log("handleOnBtUnstake");
-    e.preventDefault();
-    if (parseStakingInput(btAmount)?.gt(0)) {
-      executeBtUnstake?.({
-        recklesslySetUnpreparedArgs: min(
-          parseStakingInput(btAmount),
-          BN(btStaked)
-        ),
-        recklesslySetUnpreparedOverrides: {
-          from: connectedAddress,
-        },
-      }).then(() => {
-        refetchBtStaked?.();
-        refetchBtStakingTokenBalance?.();
-      });
-      // console.log("Unstaking...");
-    }
-  };
-
-  const handleOnBtClaimRewards = (e) => {
-    // console.log("handleOnBtClaimRewards");
-    e.preventDefault();
-    if (parseStakingInput(rewardTokenBalance, 18)?.gt(0)) {
-      executeBtClaim?.({
-        recklesslySetUnpreparedOverrides: {
-          from: connectedAddress,
-        },
-      }).then(() => {
-        refetchRewardTokenBalance?.();
-      });
-      // console.log("Claiming...");
-    }
-  };
-
-  // zap
-  const handleSetZapAmount = (e) => {
-    // console.log("handleSetZapAmount");
-    setZapAmount(e.target.value ?? 0);
-  };
-
-  const handleOnZap = (e) => {
-    // console.log("handleOnZap");
+  /* handle input amount changes */
+  const handleBtAmount = (e) => {
+    console.log("value", e.target.value);
+    setBtAmount(e.target.value);
   };
 
   // if wallet not connected
@@ -453,7 +198,7 @@ function Staking() {
                 <Grid>
                   <GridRow>
                     <GridCell2>
-                      <InputNumber onChange={handleSetBridgeAmount} />
+                      <InputNumber onChange={() => {}} />
                     </GridCell2>
                     <GridCell4>
                       <Button>Avax</Button>
@@ -461,7 +206,7 @@ function Staking() {
                   </GridRow>
                   <GridRow>
                     <GridCell colSpan={3}>
-                      <Button onClick={handleOnBridge}>Bridge</Button>
+                      <Button onClick={() => {}}>Bridge</Button>
                     </GridCell>
                   </GridRow>
                 </Grid>
@@ -481,36 +226,26 @@ function Staking() {
                   <Grid>
                     <GridRow>
                       <GridCell3 colSpan={2}>
-                        <InputNumber onChange={handleSetLpStakeAmount} />
+                        <InputNumber onChange={() => {}} />
                       </GridCell3>
                       <GridCell3>
-                        <InputNumber onChange={handleSetZapAmount} />
+                        <InputNumber onChange={() => {}} />
                       </GridCell3>
                     </GridRow>
                     <GridRow>
                       <GridCell3>
-                        <Button
-                          onClick={handleOnLpStake}
-                          disabled={btStakingDisabled()}
-                        >
-                          Stake
-                        </Button>
+                        <Button onClick={() => {}}>Stake</Button>
                       </GridCell3>
                       <GridCell3>
-                        <Button
-                          onClick={handleOnLpUnstake}
-                          disabled={isBtUnstaking || !btStaked}
-                        >
-                          Unstake
-                        </Button>
+                        <Button onClick={() => {}}>Unstake</Button>
                       </GridCell3>
                       <GridCell3>
-                        <Button onClick={handleOnZap}>Zap in</Button>
+                        <Button onClick={() => {}}>Zap in</Button>
                       </GridCell3>
                     </GridRow>
                     <GridRow>
                       <GridCell colSpan={3}>
-                        <Button onClick={handleOnLpClaimRewards}>Claim</Button>
+                        <Button onClick={() => {}}>Claim</Button>
                       </GridCell>
                     </GridRow>
                   </Grid>
@@ -527,35 +262,26 @@ function Staking() {
                   <Grid>
                     <GridRow>
                       <GridCell colSpan={2}>
-                        <InputNumber onChange={handleSetBtStakeAmount} />
+                        <InputNumber onChange={handleBtAmount} />
                       </GridCell>
                     </GridRow>
                     <GridRow>
                       <GridCell2>
-                        <Button onClick={handleOnBtStake}>
-                          {btStakingButtonText()}
-                        </Button>
+                        {ethers.BigNumber.from(allowance.toString()).lte(
+                          ethers.BigNumber.from("0")
+                        ) ? (
+                          <Button onClick={approveWrite}>Approve</Button>
+                        ) : (
+                          <Button onClick={stakeWrite}>Stake</Button>
+                        )}
                       </GridCell2>
                       <GridCell2>
-                        <Button onClick={handleOnBtUnstake}>
-                          {isBtUnstaking ? "Unstaking..." : "Unstake"}
-                        </Button>
+                        <Button onClick={() => {}}>Unstake</Button>
                       </GridCell2>
                     </GridRow>
                     <GridRow>
                       <GridCell colSpan={2}>
-                        <Button
-                          onClick={handleOnBtClaimRewards}
-                          disabled={isBtClaiming}
-                        >
-                          Claim&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp;
-                          {fetchOrShow(
-                            pendingBtStakingRewardsSuccess,
-                            btStakingRewards,
-                            18
-                          )}
-                          &nbsp;)
-                        </Button>
+                        <Button onClick={() => {}}>Claim</Button>
                       </GridCell>
                     </GridRow>
                   </Grid>
@@ -567,6 +293,338 @@ function Staking() {
       </Container>
     </AppContainer>
   );
+
+  // ---read-----------------------------
+  // Better token address
+  // let { data: btStakingTokenAddress } = useContractRead({
+  //   ...btStakingContractConfig,
+  //   functionName: "getStakingToken",
+  // });
+  // // console.log("btStakingTokenAddress", btStakingTokenAddress);
+
+  // // Better token decimals
+  // const { data: btStakingTokenDecimals } = useContractRead({
+  //   address: btStakingTokenAddress,
+  //   abi: IERC20MetadataABI,
+  //   functionName: "decimals",
+  // });
+  // // console.log("btStakingTokenDecimals", btStakingTokenDecimals);
+
+  // // Better token balance of connected address
+  // const {
+  //   data: btStakingTokenBalance,
+  //   isSuccess: btStakingTokenBalanceSuccess,
+  //   refetch: refetchBtStakingTokenBalance,
+  // } = useContractRead({
+  //   address: btStakingTokenAddress,
+  //   abi: IERC20MetadataABI,
+  //   functionName: "balanceOf",
+  //   args: [connectedAddress],
+  //   watch: true,
+  // });
+
+  // // console.log("btStakingTokenBalance", btStakingTokenBalance);
+
+  // // Better token allowance for BT staking contract
+  // const {
+  //   data: btStakingTokenAllowance,
+  //   isSuccess: btStakingTokenAllowanceSuccess,
+  // } = useContractRead({
+  //   address: btStakingTokenAddress,
+  //   abi: IERC20MetadataABI,
+  //   functionName: "allowance",
+  //   args: [connectedAddress, btStakingContractConfig.address],
+  //   watch: true,
+  // });
+
+  // // BT staking reward token (BNB) balance
+  // const {
+  //   data: rewardTokenBalance,
+  //   isSuccess: rewardTokenBalanceSuccess,
+  //   refetch: refetchRewardTokenBalance,
+  // } = useBalance({
+  //   address: connectedAddress,
+  // });
+
+  // // currently BT token staked
+  // const {
+  //   data: btStaked,
+  //   isSuccess: btStakedBalanceSuccess,
+  //   refetch: refetchBtStaked,
+  // } = useContractRead({
+  //   ...btStakingContractConfig,
+  //   functionName: "getStaked",
+  //   overrides: {
+  //     from: connectedAddress,
+  //   },
+  // });
+
+  // // pending BT staking reward tokens (BNB)
+  // const { data: btStakingRewards, isSuccess: pendingBtStakingRewardsSuccess } =
+  //   useContractRead({
+  //     ...btStakingContractConfig,
+  //     functionName: "getPendingRewards",
+  //   });
+
+  // // ---writes---------------------------
+  // // BT staking approve (part 1) --> maybe should change to infinite approval later
+  // const { config: prepareWriteConfigBtApprove } = usePrepareContractWrite({
+  //   address: btStakingTokenAddress,
+  //   abi: IERC20MetadataABI,
+  //   functionName: "approve",
+  //   args: [
+  //     //spender
+  //     btStakingContractConfig.address,
+  //     //value
+  //     parseStakingInput(btAmount.toString(), btStakingTokenDecimals),
+  //   ],
+  // });
+  // // console.log("prepareWriteConfigBtApprove", prepareWriteConfigBtApprove);
+
+  // // console.log(
+  // //   "btStakingTokenBalance",
+  // //   btStakingTokenBalance
+  // //     ? BN(btStakingTokenBalance)
+  // //     : ethers.constants.MaxUint256
+  // // );
+
+  // // BT staking approve (part 2)
+  // const {
+  //   data: btApprovalTx,
+  //   isLoading: isBtApproving,
+  //   write: executeBtStakeApprove,
+  // } = useContractWrite(prepareWriteConfigBtApprove);
+  // // console.log("executeBtStakeApprove", executeBtStakeApprove);
+
+  // // BT staking send (part 1)
+  // const { config: prepareWriteConfigBtStake } = usePrepareContractWrite({
+  //   ...btStakingContractConfig,
+  //   functionName: "stake",
+  //   args: ["1"],
+  //   onSuccess(data) {
+  //     // console.log("SHIT1", ethers.utils.parseEther(btAmount.toString()));
+  //   },
+  //   watch: true,
+  // });
+
+  // // BT staking send (part 2)
+  // const { isLoading: isBtStaking, write: executeBtStake } = useContractWrite({
+  //   ...prepareWriteConfigBtStake,
+  //   onSuccess(data) {
+  //     // console.log("STAKED", data);
+  //     // console.log("SHIT2", ethers.utils.parseEther(btAmount.toString()));
+  //   },
+  // });
+
+  // // after approval, prompt staking txn
+  // useWaitForTransaction({
+  //   hash: btApprovalTx?.hash,
+  //   onSuccess(data) {
+  //     executeBtStake?.({
+  //       recklesslySetUnpreparedArgs: [
+  //         min(parseStakingInput(btAmount), BN(btStakingTokenBalance)),
+  //       ],
+  //     }).then(() => {
+  //       refetchBtStakingTokenBalance?.();
+  //       refetchBtStaked?.();
+  //     });
+  //     // console.log("Staking...");
+  //   },
+  // });
+
+  // // BT unstaking (part 1)
+  // const { config: prepareWriteConfigBtUnstake } = usePrepareContractWrite({
+  //   ...btStakingContractConfig,
+  //   functionName: "unstake",
+  //   args: [0], // amount to unstake?
+  // });
+
+  // // BT unstaking (part 2)
+  // const { isLoading: isBtUnstaking, write: executeBtUnstake } =
+  //   useContractWrite(prepareWriteConfigBtUnstake);
+
+  // // BT staking rewards claim (part 1)
+  // const { config: prepareWriteConfigBtClaim } = usePrepareContractWrite({
+  //   ...btStakingContractConfig,
+  //   functionName: "claim",
+  //   overrides: {
+  //     from: connectedAddress,
+  //   },
+  // });
+
+  // // BT staking rewards claim (part 2)
+  // const { isLoading: isBtClaiming, write: executeBtClaim } = useContractWrite(
+  //   prepareWriteConfigBtClaim
+  // );
+
+  // // ---visibility-----------------------
+  // function fetchOrShow(bool, result, dec) {
+  //   if (bool && dec && result) {
+  //     return ethers.utils.formatUnits(result, dec);
+  //   }
+  //   return "Fetching...";
+  // }
+
+  // function btStakingDisabled() {
+  //   return !parseStakingInput(btAmount).gt(0) || isBtApproving || isBtStaking;
+  // }
+
+  // const btStakingButtonText = useCallback(
+  //   () =>
+  //     isBtApproving ? "Approving..." : isBtStaking ? "Staking..." : "Stake",
+  //   [isBtStaking, isBtApproving]
+  // );
+
+  // // ---functionality--------------------
+  // function min(a, b) {
+  //   return a.gt(b) ? b : a;
+  // }
+
+  // function isNumeric(i) {
+  //   return !isNaN(parseFloat(i)) && isFinite(i);
+  // }
+
+  // function parseStakingInput(i, tokenDecimals) {
+  //   // console.log("i", i);
+  //   // console.log("tokenDecimals", tokenDecimals);
+  //   if (isNumeric(i) && tokenDecimals) {
+  //     return ethers.utils.parseUnits(i, tokenDecimals);
+  //   }
+  //   return BN(0);
+  // }
+
+  // // unused functions at the moment
+  // const getBtStakingTokenBalance = useCallback(
+  //   () =>
+  //     fetchOrShow(
+  //       btStakingTokenBalanceSuccess,
+  //       btStakingTokenBalance,
+  //       btStakingTokenDecimals
+  //     ),
+  //   [
+  //     btStakingTokenBalanceSuccess,
+  //     btStakingTokenBalance,
+  //     btStakingTokenDecimals,
+  //   ]
+  // );
+
+  // const getBtStakingTokenAllowance = useCallback(
+  //   () =>
+  //     fetchOrShow(
+  //       btStakingTokenAllowanceSuccess,
+  //       btStakingTokenAllowance,
+  //       btStakingTokenDecimals
+  //     ),
+  //   [
+  //     btStakingTokenAllowanceSuccess,
+  //     btStakingTokenAllowance,
+  //     btStakingTokenDecimals,
+  //   ]
+  // );
+  // const getBtStaked = useCallback(
+  //   () => fetchOrShow(btStakedBalanceSuccess, btStaked, btStakingTokenDecimals),
+  //   [btStakedBalanceSuccess, btStaked, btStakingTokenDecimals]
+  // );
+
+  // // ---handle callback-----------------------
+  // // bridge
+  // const handleSetBridgeAmount = (e) => {
+  //   // console.log("handleSetBridgeAmount");
+  //   setBridgeAmount(e.target.value ?? 0);
+  // };
+
+  // const handleOnBridge = (e) => {
+  //   // console.log("handleOnBridge");
+  // };
+
+  // // lp
+  // const handleSetLpStakeAmount = (e) => {
+  //   // console.log("handleSetLpStakeAmount");
+  //   setLpAmount(e.target.value ?? 0);
+  // };
+
+  // const handleOnLpStake = (e) => {
+  //   // console.log("handleOnLpStake");
+  // };
+  // const handleOnLpUnstake = (e) => {
+  //   // console.log("handleOnLpUnstake");
+  // };
+  // const handleOnLpClaimRewards = (e) => {
+  //   // console.log("handleOnLpClaimRewards");
+  // };
+
+  // // bt
+  // const handleSetBtStakeAmount = (e) => {
+  //   // console.log("handleSetBtStakeAmount");
+  //   // console.log("e.target.value ?? 0", e.target.value ?? 0);
+  //   setBtAmount(e.target.value ? e.target.value : 0);
+  //   // console.log("btAmount", btAmount);
+  // };
+
+  // const handleOnBtStake = (e) => {
+  //   // console.log("handleOnBtStake");
+  //   // console.log("executeBtStakeApprove??", executeBtStakeApprove);
+  //   e.preventDefault();
+  //   // console.log("btAmount", btAmount);
+  //   // console.log("parseStakingInput(btAmount)", parseStakingInput(btAmount, 18));
+  //   // console.log(
+  //   //   "parseStakingInput(btAmount)?.gt(0)",
+  //   //   parseStakingInput(btAmount, 18)?.gt(0)
+  //   // );
+  //   if (parseStakingInput(btAmount, 18)?.gt(0)) {
+  //     // console.log(
+  //     //   "executeBtStakeApprove?.()",
+  //     //   executeBtStakeApprove ? "true" : "false"
+  //     // );
+  //     executeBtStakeApprove?.();
+  //     // console.log("Approving...");
+  //   }
+  // };
+
+  // const handleOnBtUnstake = (e) => {
+  //   // console.log("handleOnBtUnstake");
+  //   e.preventDefault();
+  //   if (parseStakingInput(btAmount)?.gt(0)) {
+  //     executeBtUnstake?.({
+  //       recklesslySetUnpreparedArgs: min(
+  //         parseStakingInput(btAmount),
+  //         BN(btStaked)
+  //       ),
+  //       recklesslySetUnpreparedOverrides: {
+  //         from: connectedAddress,
+  //       },
+  //     }).then(() => {
+  //       refetchBtStaked?.();
+  //       refetchBtStakingTokenBalance?.();
+  //     });
+  //     // console.log("Unstaking...");
+  //   }
+  // };
+
+  // const handleOnBtClaimRewards = (e) => {
+  //   // console.log("handleOnBtClaimRewards");
+  //   e.preventDefault();
+  //   if (parseStakingInput(rewardTokenBalance, 18)?.gt(0)) {
+  //     executeBtClaim?.({
+  //       recklesslySetUnpreparedOverrides: {
+  //         from: connectedAddress,
+  //       },
+  //     }).then(() => {
+  //       refetchRewardTokenBalance?.();
+  //     });
+  //     // console.log("Claiming...");
+  //   }
+  // };
+
+  // // zap
+  // const handleSetZapAmount = (e) => {
+  //   // console.log("handleSetZapAmount");
+  //   setZapAmount(e.target.value ?? 0);
+  // };
+
+  // const handleOnZap = (e) => {
+  //   // console.log("handleOnZap");
+  // };
 }
 
 export default Staking;
