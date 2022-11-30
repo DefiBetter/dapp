@@ -36,6 +36,8 @@ const Detail = (props) => {
   const totalAmount = 10;
   const gasTokenSymbol = "BNB";
 
+  console.log("props.userPosition", props.userPosition);
+
   return (
     <div className={styles.container}>
       <div className={styles.binContainer}>
@@ -55,12 +57,14 @@ const Detail = (props) => {
                 <NormalText>
                   (
                   <b>
-                    {total - props.pendingRewards > 0
-                      ? total - props.pendingRewards
+                    {total - props.pendingBetterBalance > 0
+                      ? total - props.pendingBetterBalance
                       : 0}
                   </b>{" "}
                   +{" "}
-                  {total > props.pendingRewards ? props.pendingRewards : total}{" "}
+                  {total > props.pendingBetterBalance
+                    ? props.pendingBetterBalance
+                    : total}{" "}
                   pending)
                 </NormalText>
               </SmallText>
@@ -158,9 +162,10 @@ const Detail = (props) => {
                 </GridCell2>
                 <GridCell2>
                   <SmallText>
-                    {props.userPositions
-                      ?.map((v) => Number(ethers.utils.formatEther(v)))
-                      .reduce((a, b) => a + b)}{" "}
+                    {props.userPosition
+                      ?.slice(0, 1)[0]
+                      .map((v, i) => ethers.utils.formatEther(v))
+                      .reduce((a, b) => +a + +b)}{" "}
                     {props.nativeGas}
                   </SmallText>
                 </GridCell2>
@@ -171,7 +176,7 @@ const Detail = (props) => {
                 </GridCell2>
                 <GridCell2>
                   <SmallText>
-                    {props.pendingRewards} {props.nativeGas}
+                    {props.pendingBetterBalance} {props.nativeGas}
                   </SmallText>
                 </GridCell2>
               </GridRow>

@@ -23,8 +23,8 @@ const Action = (props) => {
     ],
     overrides: {
       value: ethers.utils.parseEther(
-        (props.binTotal > props.pendingRewards
-          ? props.binTotal - props.pendingRewards
+        (props.binTotal > props.pendingBetterBalance
+          ? props.binTotal - props.pendingBetterBalance
           : 0
         ).toString()
       ),
@@ -54,7 +54,7 @@ const Action = (props) => {
         <MedText>Claim</MedText>
         <SmallText>
           <NormalText>
-            {props.pendingRewards} {props.nativeGas}
+            {props.pendingBetterBalance} {props.nativeGas}
           </NormalText>
         </SmallText>
       </Button>

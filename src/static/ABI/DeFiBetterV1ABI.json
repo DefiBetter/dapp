@@ -482,6 +482,11 @@
       },
       {
         "internalType": "uint256",
+        "name": "closeTime",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
         "name": "binStart",
         "type": "uint256"
       },
@@ -709,24 +714,11 @@
   {
     "inputs": [
       {
-        "internalType": "uint256",
-        "name": "customGainFeeMultiplier",
-        "type": "uint256"
+        "internalType": "address",
+        "name": "user",
+        "type": "address"
       }
     ],
-    "name": "getPendingBetterRewards",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "totalRewards",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
     "name": "getPendingRewards",
     "outputs": [
       {
@@ -778,7 +770,13 @@
     "type": "function"
   },
   {
-    "inputs": [],
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "user",
+        "type": "address"
+      }
+    ],
     "name": "getStaked",
     "outputs": [
       {
@@ -916,6 +914,69 @@
   {
     "inputs": [
       {
+        "internalType": "address",
+        "name": "user",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "customGainFeeMultiplier",
+        "type": "uint256"
+      }
+    ],
+    "name": "getUserPendingBetterBalance",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "totalRewards",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "user",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_epoch",
+        "type": "uint256"
+      },
+      {
+        "internalType": "bytes32",
+        "name": "instrumentSelector",
+        "type": "bytes32"
+      }
+    ],
+    "name": "getUserPosition",
+    "outputs": [
+      {
+        "internalType": "uint256[7]",
+        "name": "",
+        "type": "uint256[7]"
+      },
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "user",
+        "type": "address"
+      },
+      {
         "internalType": "bytes32",
         "name": "instrumentSelector",
         "type": "bytes32"
@@ -945,22 +1006,44 @@
   {
     "inputs": [
       {
-        "internalType": "uint256",
-        "name": "_epoch",
-        "type": "uint256"
-      },
-      {
-        "internalType": "bytes32",
-        "name": "instrumentSelctor",
-        "type": "bytes32"
+        "internalType": "address",
+        "name": "addr",
+        "type": "address"
       }
     ],
-    "name": "getUserPositions",
+    "name": "getVolatilityInfo",
     "outputs": [
       {
-        "internalType": "uint256[7]",
-        "name": "",
-        "type": "uint256[7]"
+        "components": [
+          {
+            "internalType": "uint256",
+            "name": "currentVolatility",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "mean",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "m2",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "heartbeat",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "lastUpdateTimestamp",
+            "type": "uint256"
+          }
+        ],
+        "internalType": "struct DefiBetterV1.VolatilityData",
+        "name": "i",
+        "type": "tuple"
       }
     ],
     "stateMutability": "view",
@@ -1140,6 +1223,25 @@
     "inputs": [
       {
         "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "name": "pendingNonRewardBalances",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
         "name": "target",
         "type": "address"
       }
@@ -1259,6 +1361,24 @@
       }
     ],
     "name": "setInstrumentEnabled",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bool",
+        "name": "targetState",
+        "type": "bool"
+      },
+      {
+        "internalType": "bytes32",
+        "name": "selector",
+        "type": "bytes32"
+      }
+    ],
+    "name": "setInstrumentEnabledBySelector",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"

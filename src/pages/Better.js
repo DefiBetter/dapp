@@ -47,14 +47,14 @@ function Better() {
   const [binTotal, setBinTotal] = useState(
     binAmountList.reduce((a, b) => Number(a) + Number(b), 0)
   );
-  const [pendingRewards, setPendingRewards] = useState(0);
+  const [pendingBetterBalance, setPendingBetterBalance] = useState(0);
   const [customFlatFee, setCustomFlatFee] = useState(0);
   const [customGainFee, setCustomGainFee] = useState(0);
 
   const [nativeGas, setNativeGas] = useState();
 
-  const [userPositions, setUserPositions] = useState();
-  console.log("userPositions", userPositions);
+  const [userPosition, setUserPosition] = useState();
+  console.log("userPosition", userPosition);
 
   const [userGainsInfo, setUserGainsInfo] = useState();
   console.log("userGainsInfo", userGainsInfo);
@@ -119,11 +119,11 @@ function Better() {
   // user pending rewards
   useContractRead({
     ...betterContractConfig,
-    functionName: "getPendingBetterRewards",
+    functionName: "getUserPendingBetterBalance",
     args: [customGainFee],
     onSuccess(data) {
-      Number(setPendingRewards(ethers.utils.formatEther(data)));
-      console.log("pendingRewards", pendingRewards);
+      Number(setPendingBetterBalance(ethers.utils.formatEther(data)));
+      console.log("pendingBetterBalance", pendingBetterBalance);
     },
     watch: true,
   });
@@ -131,10 +131,15 @@ function Better() {
   // user positions
   useContractRead({
     ...betterContractConfig,
-    functionName: "getUserPositions",
-    args: [instrument?.epoch, instrument?.selector],
+    functionName: "getUserPosition",
+    args: [connectedAddress, instrument?.epoch, instrument?.selector],
+    watch: true,
     onSuccess(data) {
-      setUserPositions(data);
+      console.log("getUserPosition read");
+      setUserPosition(data);
+    },
+    onError(data) {
+      console.log("getUserPosition error", data);
     },
   });
 
@@ -188,7 +193,7 @@ function Better() {
             binAmountList={binAmountList}
             customFlatFee={customFlatFee}
             customGainFee={customGainFee}
-            pendingRewards={pendingRewards}
+            pendingBetterBalance={pendingBetterBalance}
             nativeGas={nativeGas}
             setBinAmountList={setBinAmountList}
             binTotal={binTotal}
@@ -199,12 +204,12 @@ function Better() {
           <Detail
             binAmountList={binAmountList}
             setBinAmountList={setBinAmountList}
-            pendingRewards={pendingRewards}
+            pendingBetterBalance={pendingBetterBalance}
             epochData={epochData}
             normalisedBinValueList={normalisedBinValueList}
             instrument={instrument}
             nativeGas={nativeGas}
-            userPositions={userPositions}
+            userPosition={userPosition}
             userGainsInfo={userGainsInfo}
           />
         </div>
