@@ -10,6 +10,7 @@ const Button = styled.button`
   font-family: marguerite;
   color: white;
   height: 40px;
+  cursor: pointer;
 `;
 
 export default Button;

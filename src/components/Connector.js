@@ -23,27 +23,25 @@ function Connector() {
     <>
       <Routes>
         <Route
-          path="/landing"
-          element={
-            <>
-              <Landing />
-            </>
-          }
-        />
-        <Route
           path="/"
           element={
             <>
-              <Better />
-            </>
-          }
-        />
-
-        <Route
-          path="/public-sale"
-          element={
-            <>
-              <PublicSale />
+              {console.log(
+                "env",
+                process.env.REACT_APP_LANDING_PHASE,
+                process.env.REACT_APP_PRESALE_PHASE,
+                process.env.REACT_APP_PUBLIC_SALE_PHASE,
+                process.env.REACT_APP_LAUNCH_PHASE
+              )}
+              {process.env.REACT_APP_LANDING_PHASE == "true" ? (
+                <Landing />
+              ) : process.env.REACT_APP_PRESALE_PHASE == "true" ? (
+                <Presale />
+              ) : process.env.REACT_APP_PUBLIC_SALE_PHASE == "true" ? (
+                <PublicSale />
+              ) : process.env.REACT_APP_LAUNCH_PHASE == "true" ? (
+                <Better />
+              ) : null}
             </>
           }
         />
@@ -57,14 +55,7 @@ function Connector() {
           }
         />
 
-        <Route
-          path="/presale"
-          element={
-            <>
-              <Presale />
-            </>
-          }
-        />
+        <Route path="/vaults" element={<></>} />
       </Routes>
     </>
   );
