@@ -1,4 +1,6 @@
 import styled from "styled-components";
+import Button from "./Button";
+import { NormalText } from "./Text";
 
 const Input = styled.input`
   background-color: white;
@@ -9,15 +11,41 @@ const Input = styled.input`
   height: 40px;
 `;
 
-const InputNumber = (props) => {
+const MaxButton = (props) => {
   return (
-    <Input
-      onChange={props.onChange}
-      type={"number"}
-      min={props.min}
-      placeholder={props.placeholder}
-      value={props.value}
-    ></Input>
+    <div
+      styles={{
+        width: "100px",
+      }}
+    >
+      <Button {...props} />
+    </div>
+  );
+};
+
+const InputNumber = (props) => {
+  const setMax = () => {
+    props.setValue(props.max);
+  };
+
+  return (
+    <div
+      style={{
+        display: "flex",
+      }}
+    >
+      <Input
+        onChange={props.onChange}
+        type={"number"}
+        min={props.min}
+        placeholder={props.placeholder}
+        value={props.value}
+        max={props.max}
+      ></Input>
+      <MaxButton onClick={setMax}>
+        <NormalText>MAX</NormalText>
+      </MaxButton>
+    </div>
   );
 };
 

@@ -304,8 +304,10 @@ function Staking(props) {
                         <InputNumber
                           onChange={handleBtAmount}
                           min={0}
+                          max={1000}
                           placeholder={0}
                           value={btAmount > 0 ? btAmount : ""}
+                          setValue={setBtAmount}
                         />
                       </GridCell>
                     </GridRow>
