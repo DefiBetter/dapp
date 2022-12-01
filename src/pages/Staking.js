@@ -131,6 +131,7 @@ function Staking(props) {
     },
     onSuccess(data) {
       console.log("staked", data);
+      setBtAmount(0);
     },
   });
 
@@ -169,7 +170,7 @@ function Staking(props) {
   /* handle input amount changes */
   const handleBtAmount = (e) => {
     console.log("value", e.target.value);
-    setBtAmount(e.target.value);
+    setBtAmount(e.target.value ? e.target.value : 0);
   };
 
   // if wallet not connected
@@ -288,15 +289,24 @@ function Staking(props) {
               <div className={styles.assetContainer}>
                 <StakeDiagram
                   stakeSymbol={"BT"}
-                  rewardSymbol={"BNB"}
+                  rewardSymbol={
+                    contractAddresses[activeChain?.network]?.nativeGas
+                  }
                   stakeName={"Better Token"}
-                  rewardName={"BNB"}
+                  rewardName={
+                    contractAddresses[activeChain?.network]?.nativeGas
+                  }
                 />
                 <Card>
                   <Grid>
                     <GridRow>
                       <GridCell colSpan={2}>
-                        <InputNumber onChange={handleBtAmount} />
+                        <InputNumber
+                          onChange={handleBtAmount}
+                          min={0}
+                          placeholder={0}
+                          value={btAmount > 0 ? btAmount : ""}
+                        />
                       </GridCell>
                     </GridRow>
                     <GridRow>

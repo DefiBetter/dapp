@@ -10,7 +10,15 @@ const Input = styled.input`
 `;
 
 const InputNumber = (props) => {
-  return <Input onChange={props.onChange} type={"number"}></Input>;
+  return (
+    <Input
+      onChange={props.onChange}
+      type={"number"}
+      min={props.min}
+      placeholder={props.placeholder}
+      value={props.value}
+    ></Input>
+  );
 };
 
 export { Input, InputNumber };
