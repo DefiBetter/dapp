@@ -73,15 +73,22 @@ const Epoch = (props) => {
           <b>Epoch time remaining:</b>
         </div>
         <div className={styles.time}>
-          <Countdown
-            date={
-              (props.instrument
-                ? +props.instrument.lastEpochClosingTime +
+          {props.instrument ? (
+            <Countdown
+              key={
+                (+props.instrument.lastEpochClosingTime +
                   +props.instrument.epochDurationInSeconds +
-                  +props.instrument.bufferDurationInSeconds
-                : Date.now()) * 1000
-            }
-          />
+                  +props.instrument.bufferDurationInSeconds) *
+                1000
+              }
+              date={
+                (+props.instrument.lastEpochClosingTime +
+                  +props.instrument.epochDurationInSeconds +
+                  +props.instrument.bufferDurationInSeconds) *
+                1000
+              }
+            />
+          ) : null}
           {/* <b>{timeRemainingFormatted()}</b> */}
         </div>
       </div>
