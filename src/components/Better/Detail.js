@@ -17,12 +17,57 @@ import { Grid, GridCell2, GridRow } from "../common/Grid";
 import { ethers } from "ethers";
 import truncateEthAddress from "truncate-eth-address";
 import { contractAddresses } from "../../static/contractAddresses";
+import Countdown from "react-countdown";
 
 const Detail = (props) => {
   const { chain: activeChain } = useNetwork();
   const [total, setTotal] = useState(0);
   const [rewardPeriodLength, setRewardPeriodLength] = useState(0); // seconds
   const [timeLeftCurrentPeriod, setTimeLeftCurrentPeriod] = useState(0); // seconds
+  const [binBorderList, setBinBorderList] = useState([
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+  ]);
+  console.log("binBorderList", binBorderList);
+
+  useEffect(() => {
+    setTotal(
+      props.binAmountList.reduce((a, b) => Number(a) + Number(b), 0).toString()
+    );
+    console.log("total", total);
+
+    if (props.epochData) {
+      console.log(
+        `props.epochData.binValues.map((bin, i) =>
+      ethers.utils.formatEther(
+        props.epochData.binSize.mul(i + 1).add(props.epochData.binStart)
+      )
+    )`,
+        props.epochData.binValues.map((bin, i) =>
+          ethers.utils.formatEther(
+            props.epochData.binSize.mul(i + 1).add(props.epochData.binStart)
+          )
+        )
+      );
+
+      const t = props.epochData.binValues.map((bin, i) =>
+        ethers.utils.formatEther(
+          props.epochData.binSize.mul(i + 1).add(props.epochData.binStart)
+        )
+      );
+      setBinBorderList([
+        ethers.utils.formatEther(props.epochData.binStart),
+        ...t,
+      ]);
+      console.log("binBorderList", binBorderList);
+    }
+  }, [props]);
 
   // current period
   const [
@@ -48,13 +93,6 @@ const Detail = (props) => {
     globalBiggestRelativeGainAddress,
     setGlobalBiggestRelativeGainAddress,
   ] = useState("");
-
-  useEffect(() => {
-    setTotal(
-      props.binAmountList.reduce((a, b) => Number(a) + Number(b), 0).toString()
-    );
-    console.log("total", total);
-  }, [props]);
 
   const onInput = (e) => {
     let temp = [...props.binAmountList];
@@ -239,11 +277,9 @@ const Detail = (props) => {
             // </div>
             <div className={styles.bin}>
               <div>
-                {ethers.utils.formatEther(
-                  props.epochData.binSize
-                    .mul(props.epochData.binValues.length - i)
-                    .add(props.epochData.binStart)
-                )}
+                {props.epochData
+                  ? binBorderList[props.epochData.binValues.length - i]
+                  : null}
               </div>
               <CardBlueBgBlackBorder>
                 <input
@@ -275,7 +311,7 @@ const Detail = (props) => {
           );
         })}
         <div className={styles.bin}>
-          <div>{ethers.utils.formatEther(props.epochData.binStart)}</div>
+          <div>{binBorderList[0]}</div>
           <div className={styles.binChoice}>
             <Button>Normal</Button>
             <Button>Implied</Button>
@@ -405,7 +441,15 @@ const Detail = (props) => {
                   <SmallText>Time left for current week:</SmallText>
                 </GridCell2>
                 <GridCell2>
-                  <SmallText>{timeLeftCurrentPeriod.toFixed(2)}</SmallText>
+                  <SmallText>
+                    {timeLeftCurrentPeriod.toFixed(2)}
+                    {timeLeftCurrentPeriod ? (
+                      <Countdown
+                        key={Date.now() + timeLeftCurrentPeriod * 1000}
+                        date={Date.now() + timeLeftCurrentPeriod * 1000}
+                      />
+                    ) : null}
+                  </SmallText>
                 </GridCell2>
               </GridRow>
               <GridRow>
