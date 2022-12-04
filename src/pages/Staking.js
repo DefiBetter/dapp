@@ -409,7 +409,7 @@ function Staking(props) {
                           </GridCell4>
                           <GridCell4>
                             <b>
-                              {0}{" "}
+                              {}{" "}
                               {`BT-${
                                 contractAddresses[activeChain?.network]
                                   ?.nativeGas
