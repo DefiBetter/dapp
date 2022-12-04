@@ -5,6 +5,7 @@ const contractAddresses = {
     presale: "0xfbC22278A96299D91d41C453234d97b4F5Eb9B2d",
     publicSale: "0xC9a43158891282A2B1475592D5719c001986Aaec",
     btToken: "0x2B0d36FACD61B71CC05ab8F3D2355ec3631C0dd5",
+    lpToken: "0x2B0d36FACD61B71CC05ab8F3D2355ec3631C0dd5",
     btStaking: "0x367761085BF3C12e5DA2Df99AC6E1a824612b8fb",
     lpStaking: "0x367761085BF3C12e5DA2Df99AC6E1a824612b8fb",
     nativeGas: "ETH",
@@ -13,6 +14,7 @@ const contractAddresses = {
     better: "",
     presale: "0xC6C5A911d6960F5175CE049399E9e9859401969e",
     btToken: "0x9300EaF843c00267037358f397437574A1c17daC",
+    lpToken: "0x9300EaF843c00267037358f397437574A1c17daC",
     btStaking: "0x9300EaF843c00267037358f397437574A1c17daC",
     lpStaking: "0x9300EaF843c00267037358f397437574A1c17daC",
     nativeGas: "BNB",
@@ -20,6 +22,7 @@ const contractAddresses = {
   polygon: {
     better: "",
     btToken: "",
+    lpToken: "",
     btStaking: "",
     lpStaking: "",
     nativeGas: "MATIC",
@@ -27,6 +30,7 @@ const contractAddresses = {
   fantom: {
     better: "",
     btToken: "",
+    lpToken: "",
     btStaking: "",
     lpStaking: "",
     nativeGas: "FTM",

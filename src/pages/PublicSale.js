@@ -331,7 +331,7 @@ function PublicSale() {
                   </div>
                 </GridCell4>
                 <GridCell4>
-                  <div className={styles.statBody}>2:11:59:47</div>
+                  <div className={styles.statBody}>{}</div>
                 </GridCell4>
                 <GridCell4>
                   <div className={styles.header}>

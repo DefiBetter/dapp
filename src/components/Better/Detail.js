@@ -15,9 +15,39 @@ import { MedText, NormalText, SmallText } from "../common/Text";
 import { Grid, GridCell2, GridRow } from "../common/Grid";
 
 import { ethers } from "ethers";
+import truncateEthAddress from "truncate-eth-address";
+import { contractAddresses } from "../../static/contractAddresses";
 
 const Detail = (props) => {
+  const { chain: activeChain } = useNetwork();
   const [total, setTotal] = useState(0);
+  const [rewardPeriodLength, setRewardPeriodLength] = useState(0); // seconds
+  const [timeLeftCurrentPeriod, setTimeLeftCurrentPeriod] = useState(0); // seconds
+
+  // current period
+  const [
+    globalBiggestRelativeGainCurrentPeriodAddress,
+    setGlobalBiggestRelativeGainCurrentPeriodAddress,
+  ] = useState("");
+  const [weekBiggestRelativeGainAmount, setWeekBiggestRelativeGainAmount] =
+    useState();
+
+  // past period
+  const [
+    globalBiggestRelativeGainPastPeriodAddress,
+    setGlobalBiggestRelativeGainPastPeriodAddress,
+  ] = useState("");
+  const [
+    lastWeekBiggestRelativeGainAmount,
+    setLastWeekBiggestRelativeGainAmount,
+  ] = useState();
+
+  // all time
+  const [globalBiggestRelativeGain, setGlobalBiggestRelativeGain] = useState();
+  const [
+    globalBiggestRelativeGainAddress,
+    setGlobalBiggestRelativeGainAddress,
+  ] = useState("");
 
   useEffect(() => {
     setTotal(
@@ -38,43 +68,160 @@ const Detail = (props) => {
 
   console.log("props.userPosition", props.userPosition);
 
+  useContractRead({
+    ...props.betterContractConfig,
+    functionName: "rewardPeriodLength",
+    args: [],
+    onError(data) {
+      console.log("rewardPeriodLength error", data);
+    },
+    onSuccess(data) {
+      setRewardPeriodLength(data.toString());
+      console.log("rewardPeriodLength", data.toString());
+    },
+  });
+
+  useContractRead({
+    ...props.betterContractConfig,
+    functionName: "rewardPeriodStart",
+    args: [],
+    onError(data) {
+      console.log("rewardPeriodStart error", data);
+    },
+    onSuccess(data) {
+      console.log(
+        "rewardPeriodStart",
+        rewardPeriodLength - (Date.now() / 1000 - +data.toString())
+      );
+      setTimeLeftCurrentPeriod(
+        rewardPeriodLength - (Date.now() / 1000 - +data.toString())
+      );
+    },
+    watch: true,
+  });
+
+  useContractRead({
+    ...props.betterContractConfig,
+    functionName: "globalBiggestRelativeGainCurrentPeriodAddress",
+    args: [],
+    onError(data) {
+      console.log("globalBiggestRelativeGainCurrentPeriodAddress error", data);
+    },
+    onSuccess(data) {
+      console.log("globalBiggestRelativeGainCurrentPeriodAddress", data);
+      setGlobalBiggestRelativeGainCurrentPeriodAddress(data);
+    },
+  });
+
+  useContractRead({
+    ...props.betterContractConfig,
+    functionName: "globalBiggestRelativeGainPastPeriodAddress",
+    args: [],
+    onError(data) {
+      console.log("globalBiggestRelativeGainPastPeriodAddress error", data);
+    },
+    onSuccess(data) {
+      console.log("globalBiggestRelativeGainPastPeriodAddress", data);
+      setGlobalBiggestRelativeGainPastPeriodAddress(data);
+    },
+  });
+
+  useContractRead({
+    ...props.betterContractConfig,
+    functionName: "userGainsInfo",
+    args: [globalBiggestRelativeGainCurrentPeriodAddress],
+    onError(data) {
+      console.log("userGainsInfo.biggestRelativeGainAmount error", data);
+    },
+    onSuccess(data) {
+      console.log(
+        "userGainsInfo.biggestRelativeGainAmount",
+        data.biggestRelativeGainAmount
+      );
+      setWeekBiggestRelativeGainAmount(data.biggestRelativeGainAmount);
+    },
+  });
+
+  useContractRead({
+    ...props.betterContractConfig,
+    functionName: "userGainsInfo",
+    args: [globalBiggestRelativeGainPastPeriodAddress],
+    onError(data) {
+      console.log("userGainsInfo.biggestRelativeGainAmount (past) error", data);
+    },
+    onSuccess(data) {
+      console.log(
+        "userGainsInfo.biggestRelativeGainAmount (past)",
+        data.biggestRelativeGainAmount
+      );
+      setLastWeekBiggestRelativeGainAmount(data.biggestRelativeGainAmount);
+    },
+  });
+
+  useContractRead({
+    ...props.betterContractConfig,
+    functionName: "globalBiggestRelativeGain",
+    args: [],
+    onError(data) {
+      console.log("globalBiggestRelativeGain error", data);
+    },
+    onSuccess(data) {
+      console.log("globalBiggestRelativeGain", data);
+      setGlobalBiggestRelativeGain(data);
+    },
+  });
+
+  useContractRead({
+    ...props.betterContractConfig,
+    functionName: "globalBiggestRelativeGainAddress",
+    args: [],
+    onError(data) {
+      console.log("globalBiggestRelativeGainAddress error", data);
+    },
+    onSuccess(data) {
+      console.log("globalBiggestRelativeGainAddress", data);
+      setGlobalBiggestRelativeGainAddress(data);
+    },
+  });
+
   return (
     <div className={styles.container}>
       <div className={styles.binContainer}>
         <div className={styles.bin}>
-          <div>
-            <div className={styles.binChoice}>
-              <Button>Normal</Button>
-              <Button>Implied</Button>
-            </div>
-            <CardBlueBgBlackBorder>
-              <MedText>
-                <NormalText>
-                  Total: <b>{total}</b>
-                </NormalText>
-              </MedText>
-              <SmallText>
-                <NormalText>
-                  (
-                  <b>
-                    {total - props.pendingBetterBalance > 0
-                      ? total - props.pendingBetterBalance
-                      : 0}
-                  </b>{" "}
-                  +{" "}
-                  {total > props.pendingBetterBalance
-                    ? props.pendingBetterBalance
-                    : total}{" "}
-                  pending)
-                </NormalText>
-              </SmallText>
-            </CardBlueBgBlackBorder>
-          </div>
+          <CardBlueBgBlackBorder>
+            <MedText>
+              <NormalText>
+                Total position size:{" "}
+                <b>
+                  {total} {contractAddresses[activeChain?.network]?.nativeGas}
+                </b>
+              </NormalText>
+            </MedText>
+            <SmallText>
+              <NormalText>
+                (
+                <b>
+                  {total - props.pendingBetterBalance > 0
+                    ? total - props.pendingBetterBalance
+                    : 0}
+                </b>{" "}
+                +{" "}
+                {total > props.pendingBetterBalance
+                  ? props.pendingBetterBalance
+                  : total}{" "}
+                pending)
+              </NormalText>
+            </SmallText>
+          </CardBlueBgBlackBorder>
         </div>
-        {props.epochData?.binValues.map((bin, i) => {
+        {props.epochData?.binValues.map((binValue, i) => {
           console.log(
             "100 * props.normalisedBinValueList[i]",
             props.normalisedBinValueList[i]
+          );
+          console.log(
+            "binValue",
+            ethers.utils.formatEther(binValue.toString())
           );
           return (
             // <div className={styles.bin}>
@@ -100,12 +247,23 @@ const Detail = (props) => {
                     width: `${100 * props.normalisedBinValueList[i]}%`,
                     float: "right",
                     margin: 0,
+                    textAlign: "right",
                   }}
-                ></div>
+                >
+                  {+ethers.utils.formatEther(binValue.toString()) > 0
+                    ? +ethers.utils.formatEther(binValue.toString())
+                    : null}
+                </div>
               </CardBlueBgBlackBorder>
             </div>
           );
         })}
+        <div className={styles.bin}>
+          <div className={styles.binChoice}>
+            <Button>Normal</Button>
+            <Button>Implied</Button>
+          </div>
+        </div>
       </div>
       <div className={styles.statsContainer}>
         <Card>
@@ -230,7 +388,7 @@ const Detail = (props) => {
                   <SmallText>Time left for current week:</SmallText>
                 </GridCell2>
                 <GridCell2>
-                  <SmallText>5d 10h 14min 32s</SmallText>
+                  <SmallText>{timeLeftCurrentPeriod.toFixed(2)}</SmallText>
                 </GridCell2>
               </GridRow>
               <GridRow>
@@ -239,7 +397,11 @@ const Detail = (props) => {
                 </GridCell2>
                 <GridCell2>
                   <SmallText>
-                    +20.20%<br></br>0xhash
+                    {Number(weekBiggestRelativeGainAmount) >= 0 ? "+" : "-"}
+                    {Number(weekBiggestRelativeGainAmount)}%<br></br>
+                    {truncateEthAddress(
+                      globalBiggestRelativeGainCurrentPeriodAddress
+                    )}
                   </SmallText>
                 </GridCell2>
               </GridRow>
@@ -249,7 +411,11 @@ const Detail = (props) => {
                 </GridCell2>
                 <GridCell2>
                   <SmallText>
-                    +20.20%<br></br>0xhash
+                    {Number(lastWeekBiggestRelativeGainAmount) >= 0 ? "+" : "-"}
+                    {Number(lastWeekBiggestRelativeGainAmount)}%<br></br>
+                    {truncateEthAddress(
+                      globalBiggestRelativeGainPastPeriodAddress
+                    )}
                   </SmallText>
                 </GridCell2>
               </GridRow>
@@ -259,7 +425,9 @@ const Detail = (props) => {
                 </GridCell2>
                 <GridCell2>
                   <SmallText>
-                    +20.20%<br></br>0xhash
+                    {Number(globalBiggestRelativeGain) >= 0 ? "+" : "-"}
+                    {Number(globalBiggestRelativeGain)}%<br></br>
+                    {truncateEthAddress(globalBiggestRelativeGainAddress)}
                   </SmallText>
                 </GridCell2>
               </GridRow>

@@ -120,10 +120,13 @@ function Better() {
   useContractRead({
     ...betterContractConfig,
     functionName: "getUserPendingBetterBalance",
-    args: [customGainFee],
+    args: [connectedAddress, customGainFee],
     onSuccess(data) {
       Number(setPendingBetterBalance(ethers.utils.formatEther(data)));
-      console.log("pendingBetterBalance", pendingBetterBalance);
+      console.log("pendingBetterBalance", data);
+    },
+    onError(data) {
+      console.log("pendingBetterBalance error", data);
     },
     watch: true,
   });
@@ -149,12 +152,12 @@ function Better() {
     ...betterContractConfig,
     functionName: "userGainsInfo",
     args: [connectedAddress],
-    onError(e) {
-      console.log("ERROR", e);
+    onError(data) {
+      console.log("userGainsInfo error", data);
     },
     onSuccess(data) {
       setUserGainsInfo(data);
-      console.log("yesyes", data);
+      console.log("userGainsInfo", data);
     },
   });
 
@@ -211,6 +214,7 @@ function Better() {
             nativeGas={nativeGas}
             userPosition={userPosition}
             userGainsInfo={userGainsInfo}
+            betterContractConfig={betterContractConfig}
           />
         </div>
       </Container>

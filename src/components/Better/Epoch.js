@@ -3,7 +3,16 @@ import styles from "./Epoch.module.css";
 import Countdown from "react-countdown";
 
 const Epoch = (props) => {
-  const [timeRemaining, setTimeRemaining] = useState(600); // seconds
+  console.log("props.instrument", props.instrument);
+  console.log(
+    `props.instrument?.lastEpochClosingTime -
+    props.instrument?.epochDurationInSeconds -
+    props.instrument?.bufferDurationInSeconds`,
+    +props.instrument?.lastEpochClosingTime -
+      +props.instrument?.epochDurationInSeconds -
+      +props.instrument?.bufferDurationInSeconds
+  );
+  const [timeRemaining, setTimeRemaining] = useState(0); // seconds
   const [endTime, setEndTime] = useState(1661091710); // unix
 
   const now = Date.now() + timeRemaining * 1000;
@@ -12,12 +21,12 @@ const Epoch = (props) => {
     if (props.instrument == null) {
       return;
     }
-    console.log("instr", props.instrument);
+
     setTimeRemaining(
       Date.now() -
-        props.instrument.lastEpochClosingTime -
-        props.instrument.epochDurationInSeconds -
-        props.instrument.bufferDurnationInSeconds
+        props.instrument?.lastEpochClosingTime -
+        props.instrument?.epochDurationInSeconds -
+        props.instrument?.bufferDurnationInSeconds
     );
 
     setEndTime(
@@ -28,9 +37,14 @@ const Epoch = (props) => {
   };
 
   const endTimeFormatted = () => {
-    let milliseconds = endTime * 1000;
+    let milliseconds =
+      (props.instrument?.lastEpochClosingTime +
+        props.instrument?.epochDurationInSeconds +
+        props.instrument?.bufferDurnationInSeconds) *
+      1000;
     let dateObj = new Date(milliseconds);
     let humanDateFormat = dateObj.toLocaleString();
+    console.log("humanDateFormat", humanDateFormat);
     return humanDateFormat;
   };
 
@@ -47,7 +61,17 @@ const Epoch = (props) => {
           <b>Epoch time remaining:</b>
         </div>
         <div className={styles.time}>
-          <Countdown date={Date.now() + timeRemaining * 1000} />
+          <Countdown
+            date={
+              props.instrument
+                ? Date.now() +
+                  (+props.instrument?.lastEpochClosingTime -
+                    +props.instrument?.epochDurationInSeconds -
+                    +props.instrument?.bufferDurationInSeconds) *
+                    1000
+                : 0
+            }
+          />
           {/* <b>{timeRemainingFormatted()}</b> */}
         </div>
       </div>
