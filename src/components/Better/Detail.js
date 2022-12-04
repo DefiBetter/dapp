@@ -241,7 +241,7 @@ const Detail = (props) => {
               <div>
                 {ethers.utils.formatEther(
                   props.epochData.binSize
-                    .mul(i + 1)
+                    .mul(props.epochData.binValues.length - i)
                     .add(props.epochData.binStart)
                 )}
               </div>
