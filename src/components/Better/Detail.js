@@ -184,6 +184,15 @@ const Detail = (props) => {
     },
   });
 
+  props.epochData?.binValues.map((bin, i) => {
+    console.log(
+      "bin borders",
+      ethers.utils.formatEther(
+        props.epochData.binSize.mul(i).add(props.epochData.binStart)
+      )
+    );
+  });
+
   return (
     <div className={styles.container}>
       <div className={styles.binContainer}>
@@ -229,6 +238,13 @@ const Detail = (props) => {
             //   <input type="number" min={0} id={`${i}`} onInput={onInput} />
             // </div>
             <div className={styles.bin}>
+              <div>
+                {ethers.utils.formatEther(
+                  props.epochData.binSize
+                    .mul(i + 1)
+                    .add(props.epochData.binStart)
+                )}
+              </div>
               <CardBlueBgBlackBorder>
                 <input
                   type="number"
@@ -259,6 +275,7 @@ const Detail = (props) => {
           );
         })}
         <div className={styles.bin}>
+          <div>{ethers.utils.formatEther(props.epochData.binStart)}</div>
           <div className={styles.binChoice}>
             <Button>Normal</Button>
             <Button>Implied</Button>
