@@ -193,7 +193,11 @@ function Better() {
             />
           </div>
           <div className={styles.body}>
-            <Chart instrument={instrument} />
+            <Chart
+              instrument={instrument}
+              epochData={epochData}
+              betterContractConfig={betterContractConfig}
+            />
             <Detail
               binAmountList={binAmountList}
               setBinAmountList={setBinAmountList}

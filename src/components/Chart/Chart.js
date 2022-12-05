@@ -92,20 +92,79 @@
 import styles from "./Chart.module.css";
 import { underlyingPairAddress } from "../../static/contractAddresses";
 import { useState } from "react";
+import { useContractRead } from "wagmi";
+import { ethers } from "ethers";
+import { Grid, GridCell2, GridRow } from "../common/Grid";
 
 const pairAddress = "0xcA75C4aA579c25D6ab3c8Ef9A70859ABF566fA1d"; // need to make this change with selected asset
 
 const Chart = (props) => {
+  /* states */
+  // last epoch data
+  const [lastEpochData, setLastEpochData] = useState();
+
+  // current epoch data
+  const [currentPrice, setCurrentPrice] = useState(0);
+  const [lastUpdated, setLastUpdated] = useState(0);
+
+  /* contract read/write */
+  useContractRead({
+    ...props.betterContractConfig,
+    functionName: "getEpochData",
+    args: [props.instrument?.epoch - 1, props.instrument?.selector],
+    onError(data) {
+      console.log("getEpochData error", data);
+    },
+    onSuccess(data) {
+      console.log("getEpochData", data);
+      setLastEpochData(data);
+    },
+  });
+
+  // get underlying price and last updated
+  useContractRead({
+    ...props.betterContractConfig,
+    functionName: "getUnderlyingPrice",
+    args: [props.instrument?.underlying],
+    onError(data) {
+      console.log("getUnderlyingPrice error", data);
+    },
+    onSuccess(data) {
+      console.log("getUnderlyingPrice", data);
+      setCurrentPrice(+ethers.utils.formatEther(data[0]));
+      setLastUpdated(+data[1].toString());
+    },
+    watch: true,
+  });
+
   return (
     <div className={styles.container}>
       {/* for the time being (before figuring out a place to get raw data) we will be using dex screener */}
-      <div id={styles.dexscreenerEmbed}>
+      {/* <div id={styles.dexscreenerEmbed}>
         <iframe
           src={`https://dexscreener.com/${props.underlying}/${
             underlyingPairAddress[props.underlying]
           }?embed=1&trades=0&info=0`}
         />
-      </div>
+      </div> */}
+      <Grid>
+        <GridRow>
+          <GridCell2>Last Epoch Closing Price:</GridCell2>
+          <GridCell2>
+            {lastEpochData
+              ? ethers.utils.formatEther(lastEpochData.closingPrice)
+              : null}
+          </GridCell2>
+        </GridRow>
+        <GridRow>
+          <GridCell2> Current Epoch Price:</GridCell2>
+          <GridCell2>{currentPrice}</GridCell2>
+        </GridRow>
+        <GridRow>
+          <GridCell2> Last updated (current price):</GridCell2>
+          <GridCell2>{new Date(lastUpdated * 1000).toISOString()}</GridCell2>
+        </GridRow>
+      </Grid>
     </div>
   );
 };

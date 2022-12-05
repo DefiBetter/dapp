@@ -84,6 +84,11 @@
   },
   {
     "inputs": [],
+    "name": "OracleNotUpdated",
+    "type": "error"
+  },
+  {
+    "inputs": [],
     "name": "ProtocolAlreadyStarted",
     "type": "error"
   },
@@ -303,30 +308,6 @@
     "name": "changePubliclyClaimableStatus",
     "outputs": [],
     "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "bytes32",
-        "name": "instrumentSelector",
-        "type": "bytes32"
-      }
-    ],
-    "name": "checkerEpochCloseable",
-    "outputs": [
-      {
-        "internalType": "bool",
-        "name": "canExec",
-        "type": "bool"
-      },
-      {
-        "internalType": "bytes",
-        "name": "execPayload",
-        "type": "bytes"
-      }
-    ],
-    "stateMutability": "view",
     "type": "function"
   },
   {
@@ -852,6 +833,11 @@
         "internalType": "uint256",
         "name": "",
         "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
       }
     ],
     "stateMutability": "view",
@@ -1141,6 +1127,30 @@
         "internalType": "uint256",
         "name": "",
         "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bytes32",
+        "name": "instrumentSelector",
+        "type": "bytes32"
+      }
+    ],
+    "name": "isEpochCloseable",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "canExec",
+        "type": "bool"
+      },
+      {
+        "internalType": "bytes",
+        "name": "execPayload",
+        "type": "bytes"
       }
     ],
     "stateMutability": "view",
