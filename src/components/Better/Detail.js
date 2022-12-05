@@ -275,12 +275,24 @@ const Detail = (props) => {
             <div className={styles.bin}>
               <div
                 style={{
-                  textAlign: "left",
+                  display: "flex",
                 }}
               >
-                {props.epochData
-                  ? binBorderList[props.epochData.binValues.length - i]
-                  : null}
+                <div
+                  style={{
+                    textAlign: "left",
+                  }}
+                >
+                  {props.epochData
+                    ? binBorderList[props.epochData.binValues.length - i]
+                    : null}
+                </div>
+                <div>
+                  {+ethers.utils.formatEther(binValue.toString()) > 0
+                    ? ethers.utils.formatEther(binValue.toString()) +
+                      props.nativeGas
+                    : null}
+                </div>
               </div>
               <CardBlueBgBlackBorder>
                 <input
@@ -302,11 +314,7 @@ const Detail = (props) => {
                     margin: 0,
                     textAlign: "right",
                   }}
-                >
-                  {+ethers.utils.formatEther(binValue.toString()) > 0
-                    ? +ethers.utils.formatEther(binValue.toString())
-                    : null}
-                </div>
+                ></div>
               </CardBlueBgBlackBorder>
             </div>
           );
