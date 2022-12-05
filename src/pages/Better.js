@@ -6,6 +6,7 @@ import {
   useWaitForTransaction,
   useAccount,
   useNetwork,
+  useContractReads,
 } from "wagmi";
 import { useCallback, useEffect, useState } from "react";
 
@@ -23,55 +24,51 @@ import { AppContainer, Container } from "../components/common/Container";
 
 // ABIs
 import DeFiBetterV1ABI from "../static/ABI/DeFiBetterV1ABI.json";
+import AggregatorV3InterfaceABI from "../static/ABI/AggregatorV3InterfaceABI.json";
+import Connect from "../components/common/Connect";
 
 function Better() {
-  // fetch account and current network
+  /* account, network, configs */
+  // account
   const { address: connectedAddress, isConnected } = useAccount();
+
+  // network
   const { chain: activeChain } = useNetwork();
 
-  /* states */
-  const [instrumentList, setInstrumentList] = useState();
-  const [instrument, setInstrument] = useState();
-  console.log("instrument", instrument);
-
-  // epoch data
-  const [epochData, setEpochData] = useState();
-  console.log("epochData", epochData);
-  const [normalisedBinValueList, setNormalisedBinValueList] = useState([
-    0, 0, 0, 0, 0, 0, 0,
-  ]);
-
-  /* components */
-  // detail
-  const [binAmountList, setBinAmountList] = useState([0, 0, 0, 0, 0, 0, 0]);
-  const [binTotal, setBinTotal] = useState(
-    binAmountList.reduce((a, b) => Number(a) + Number(b), 0)
-  );
-  const [pendingBetterBalance, setPendingBetterBalance] = useState(0);
-  const [customFlatFee, setCustomFlatFee] = useState(0);
-  const [customGainFee, setCustomGainFee] = useState(0);
-
-  const [nativeGas, setNativeGas] = useState();
-
-  const [userPosition, setUserPosition] = useState();
-  console.log("userPosition", userPosition);
-
-  const [userGainsInfo, setUserGainsInfo] = useState();
-  console.log("userGainsInfo", userGainsInfo);
-
-  useEffect(() => {
-    setNativeGas(contractAddresses[activeChain?.network]?.nativeGas);
-    setBinTotal(binAmountList.reduce((a, b) => Number(a) + Number(b), 0));
-  }, [activeChain, binAmountList]);
-
+  // contract config
   const betterContractConfig = {
     address: contractAddresses[activeChain?.network]?.better,
     abi: DeFiBetterV1ABI,
   };
 
-  console.log("betterContractConfig", betterContractConfig);
+  /* states */
+  // current instrument
+  const [instrumentList, setInstrumentList] = useState();
+  const [instrument, setInstrument] = useState();
 
-  /* Read */
+  // epoch data
+  const [epochData, setEpochData] = useState();
+  const [normalisedBinValueList, setNormalisedBinValueList] = useState([
+    0, 0, 0, 0, 0, 0, 0,
+  ]);
+
+  // bin data
+  const [binAmountList, setBinAmountList] = useState([0, 0, 0, 0, 0, 0, 0]);
+  const [binTotal, setBinTotal] = useState(0);
+
+  // user data
+  const [pendingBetterBalance, setPendingBetterBalance] = useState(0);
+  const [userPosition, setUserPosition] = useState();
+  const [userGainsInfo, setUserGainsInfo] = useState();
+
+  // better
+  const [customFlatFee, setCustomFlatFee] = useState(0);
+  const [customGainFee, setCustomGainFee] = useState(0);
+
+  // misc
+  const [nativeGas, setNativeGas] = useState();
+
+  /* contract read/write */
   // instrument list
   useContractRead({
     ...betterContractConfig,
@@ -80,11 +77,9 @@ function Better() {
       if (data.length > 0) {
         // set instrument list
         setInstrumentList(data);
-        console.log("instrumentList", data);
 
         // set default instrument
         setInstrument(data[0]);
-        console.log("instrument", data[0]);
       }
     },
   });
@@ -99,19 +94,12 @@ function Better() {
       setNormalisedBinValueList(
         data.binValues.map((v, i, binValues) => {
           const b = binValues.map((vv) => Number(ethers.utils.formatEther(vv)));
-          console.log(
-            "Number(ethers.utils.formatEther(v))",
-            Number(ethers.utils.formatEther(v))
-          );
-          console.log("B max", Math.max(...b));
-          console.log("B min", Math.min(...b));
           return Math.max(...b) - Math.min(...b) == 0
             ? 0
             : (Number(ethers.utils.formatEther(v)) - Math.min(...b)) /
                 (Math.max(...b) - Math.min(...b));
         })
       );
-      console.log("normal binValues", normalisedBinValueList);
     },
     watch: true,
   });
@@ -123,10 +111,10 @@ function Better() {
     args: [connectedAddress, customGainFee],
     onSuccess(data) {
       Number(setPendingBetterBalance(ethers.utils.formatEther(data)));
-      console.log("pendingBetterBalance", data);
+      // console.log("pendingBetterBalance", data);
     },
     onError(data) {
-      console.log("pendingBetterBalance error", data);
+      // console.log("pendingBetterBalance error", data);
     },
     watch: true,
   });
@@ -138,411 +126,91 @@ function Better() {
     args: [connectedAddress, instrument?.epoch, instrument?.selector],
     watch: true,
     onSuccess(data) {
-      console.log("getUserPosition read");
       setUserPosition(data);
+      // console.log("getUserPosition", data);
     },
     onError(data) {
-      console.log("getUserPosition error", data);
+      // console.log("getUserPosition error", data);
     },
+    watch: true,
   });
 
-  console.log("connectedAddress", connectedAddress);
   // user gains info
   useContractRead({
     ...betterContractConfig,
     functionName: "userGainsInfo",
     args: [connectedAddress],
     onError(data) {
-      console.log("userGainsInfo error", data);
+      // console.log("userGainsInfo error", data);
     },
     onSuccess(data) {
       setUserGainsInfo(data);
-      console.log("userGainsInfo", data);
+      // console.log("userGainsInfo", data);
     },
+    watch: true,
   });
 
-  if (!isConnected) {
-    return (
-      <>
-        <Navbar />
-        <div>Please connect your wallet</div>
-      </>
-    );
-  }
+  // chainlink instrument price history
+  const aggContractConfig = {
+    address: "",
+    abi: AggregatorV3InterfaceABI,
+  };
+  useContractReads({
+    contracts: [{}],
+  });
 
-  if (activeChain?.unsupported) {
-    return (
-      <>
-        <Navbar />
-        <div>Unsupported chain</div>
-      </>
-    );
-  }
+  /* useEffect */
+  useEffect(() => {
+    // set nativeGas for current network
+    setNativeGas(contractAddresses[activeChain?.network]?.nativeGas);
+
+    // set bin total
+    setBinTotal(binAmountList.reduce((a, b) => Number(a) + Number(b), 0));
+  }, [activeChain, binAmountList]);
 
   return (
-    <AppContainer>
-      <Navbar></Navbar>
-      <Container>
-        <div className={styles.header}>
-          <Pair
-            instrumentList={instrumentList}
-            setInstrument={setInstrument}
-            instrument={instrument}
-          />
-          <Epoch instrument={instrument} />
-          <Action
-            betterContractConfig={betterContractConfig}
-            instrument={instrument}
-            binAmountList={binAmountList}
-            customFlatFee={customFlatFee}
-            customGainFee={customGainFee}
-            pendingBetterBalance={pendingBetterBalance}
-            nativeGas={nativeGas}
-            setBinAmountList={setBinAmountList}
-            binTotal={binTotal}
-          />
-        </div>
-        <div className={styles.body}>
-          <Chart instrument={instrument} />
-          <Detail
-            binAmountList={binAmountList}
-            setBinAmountList={setBinAmountList}
-            pendingBetterBalance={pendingBetterBalance}
-            epochData={epochData}
-            normalisedBinValueList={normalisedBinValueList}
-            instrument={instrument}
-            nativeGas={nativeGas}
-            userPosition={userPosition}
-            userGainsInfo={userGainsInfo}
-            betterContractConfig={betterContractConfig}
-          />
-        </div>
-      </Container>
-    </AppContainer>
+    <Connect isConnected={isConnected} activeChain={activeChain}>
+      <AppContainer>
+        <Navbar></Navbar>
+        <Container>
+          <div className={styles.header}>
+            <Pair
+              instrumentList={instrumentList}
+              setInstrument={setInstrument}
+              instrument={instrument}
+            />
+            <Epoch instrument={instrument} />
+            <Action
+              betterContractConfig={betterContractConfig}
+              instrument={instrument}
+              binAmountList={binAmountList}
+              customFlatFee={customFlatFee}
+              customGainFee={customGainFee}
+              pendingBetterBalance={pendingBetterBalance}
+              nativeGas={nativeGas}
+              setBinAmountList={setBinAmountList}
+              binTotal={binTotal}
+            />
+          </div>
+          <div className={styles.body}>
+            <Chart instrument={instrument} />
+            <Detail
+              binAmountList={binAmountList}
+              setBinAmountList={setBinAmountList}
+              pendingBetterBalance={pendingBetterBalance}
+              epochData={epochData}
+              normalisedBinValueList={normalisedBinValueList}
+              instrument={instrument}
+              nativeGas={nativeGas}
+              userPosition={userPosition}
+              userGainsInfo={userGainsInfo}
+              betterContractConfig={betterContractConfig}
+            />
+          </div>
+        </Container>
+      </AppContainer>
+    </Connect>
   );
-
-  // const {} = useContractRead({
-  //   ...betterContractConfig,
-  //   functionName: "getInstrumentSelectors",
-  //   onSuccess(data) {
-  //     if (data.length > 0) {
-  //       // set selector
-  //       for (let i = 0; i < instrumentList.length; i++) {
-  //         if (instrumentList[i].)
-  //       }
-  //     }
-  //   }
-  // })
-
-  /* Write */
-
-  /**   
-   * struct UnderlyingData {
-          address addr;
-          string description;
-          uint decimals;
-      }
-
-      function getBinData(address underlying) external view returns(uint, uint);
-      function getEpochData(uint _epoch, address underlying) external view returns(
-          uint pot,
-          uint numBets,
-          uint closingPrice,
-          uint binStart,
-          uint binSize,
-          uint16[7] memory betsPerBin,
-          uint[7] memory binValues // holding worth of each bin
-      );
-
-      function getUserPositions(uint _epoch, address _underlying) external view returns(uint[7] memory);
-
-      function placeTrades(address underlying, uint[7] calldata amounts) external payable;
-      function claimBetterRewards() external;
-
-      function getUnderlyings() external view returns(address[] memory);
-      function getUnderlyingPrice(address underlying) external view returns(uint);
-      function getUnderlyingsDecimalsDescription() external view returns(UnderlyingData[] memory data);
-      function getPendingBetterRewards() external view returns(uint);
-   */
-
-  // TODO rerender when epoch timer runs out
-  // TODO disable betting when in buffer time
-
-  // ### CONSTS ##########################
-
-  // const BN = ethers.BigNumber.from;
-  // const betterContractConfig = {
-  //   addressOrName: contractAddresses[activeChain?.network]?.better,
-  //   contractInterface: BetterABI,
-  // };
-  // const BINS = 7;
-  // const inline = { display: "inline", padding: "1rem" };
-
-  // // ### STATES ##########################
-
-  // const [underlying, setUnderlying] = useState({});
-  // const [binBorders, setBinBorders] = useState({});
-  // const [betSizes, setBetSizes] = useState(Array(BINS).fill(BN(0)));
-  // const [betSizeSum, setBetSizeSum] = useState(BN(0));
-
-  // useEffect(() => {
-  //   setBetSizeSum(betSizes.reduce((a, b) => a.add(b)));
-  // }, [betSizes]);
-
-  // // ### CALLBACKS #######################
-
-  // // ### READS ###########################
-
-  // // ---update on page load---------------
-
-  // // underlyings decimals + descriptions
-  // const { data: underlyingDataArray } = useContractRead({
-  //   ...betterContractConfig,
-  //   functionName: "getUnderlyingsDecimalsDescription",
-  //   onSuccess(data) {
-  //     if (underlying && Object.keys(underlying).length === 0) {
-  //       setUnderlying(data[0]);
-  //     }
-  //   },
-  // });
-
-  // // epoch duration
-  // const { data: epochDuration } = useContractRead({
-  //   ...betterContractConfig,
-  //   functionName: "epochDurationInSeconds",
-  //   select: (data) => parseInt(data),
-  // });
-
-  // // buffer duration
-  // const { data: bufferDuration } = useContractRead({
-  //   ...betterContractConfig,
-  //   functionName: "bufferDurationInSeconds",
-  //   select: (data) => parseInt(data),
-  // });
-
-  // // ---update on epoch-------------------
-
-  // // last epoch end
-  // const { data: lastEpochClose } = useContractRead({
-  //   ...betterContractConfig,
-  //   functionName: "lastEpochClose",
-  //   watch: true,
-  //   select: (data) => parseInt(data),
-  // });
-
-  // // bin starts & sizes
-  // const underlyingValueToFixed = (v) =>
-  //   parseFloat(ethers.utils.formatEther(v)).toFixed(3);
-
-  // const { data: binData } = useContractRead({
-  //   ...betterContractConfig,
-  //   functionName: "getBinData",
-  //   args: [underlying?.addr],
-  //   watch: true,
-  //   onSuccess(data) {
-  //     setBinBorders(
-  //       [...Array(BINS).keys()].map((i) => data[0].add(data[1].mul(i)))
-  //     );
-  //   },
-  // });
-
-  // // ---update per block------------------
-
-  // // epoch
-  // const { data: epoch } = useContractRead({
-  //   ...betterContractConfig,
-  //   functionName: "epoch",
-  // });
-
-  // // epoch data (pot, bin values, etc.)
-  // const { data: epochData } = useContractRead({
-  //   ...betterContractConfig,
-  //   functionName: "getEpochData",
-  //   args: [epoch, underlying.addr],
-  // });
-
-  // // underlying price
-  // const { data: underlyingPrice } = useContractRead({
-  //   ...betterContractConfig,
-  //   functionName: "getUnderlyingPrice",
-  //   args: [underlying?.addr],
-  // });
-
-  // // ### WRITES ##########################
-
-  // // place trades
-  // const { config: placeBetsConfig } = usePrepareContractWrite({
-  //   ...betterContractConfig,
-  //   functionName: "placeTrades",
-  //   args: [
-  //     underlying.addr, // underlying
-  //     Array(BINS).fill(0), // array with respecitve bin amounts
-  //   ],
-  //   overrides: {
-  //     from: connectedAddress,
-  //     value: 10000,
-  //   },
-  // });
-
-  // const { write: executePlaceBets } = useContractWrite(placeBetsConfig);
-
-  // // claim rewards
-
-  // // ### MISC ############################
-
-  // // --- data getters -------------------
-
-  // /* const getUnderlyingOptions = useCallback(
-  //   () => underlyingDataArray?.map((underlyingDataEntry, index) =>
-  //       <option
-  //         value={index}
-  //         key={index}
-  //       >
-  //         {underlyingDataEntry.description}
-  //       </option>
-  //     ) ?? <></>,
-  //   [underlyingDataArray]
-  // ); */
-
-  // const getUnderlyingOptions = useCallback(
-  //   () =>
-  //     underlyingDataArray?.map((underlyingDataEntry) => (
-  //       <button
-  //         onClick={() => setUnderlying(underlyingDataEntry)}
-  //         style={inline}
-  //         key={"underlyingButton" + underlyingDataEntry.description}
-  //       >
-  //         {underlyingDataEntry.description}
-  //       </button>
-  //     )) ?? <></>,
-  //   [underlyingDataArray]
-  // );
-
-  // function getBinElements() {
-  //   return [...Array(BINS).keys()].map((k) => (
-  //     <>
-  //       <p aria-readonly={true} id={"bin" + k} key={"bin" + k} style={inline}>
-  //         {underlyingValueToFixed(binBorders[k] ?? 0)}
-  //       </p>
-
-  //       <p
-  //         aria-readonly={true}
-  //         id={"binValue" + k}
-  //         key={"binValue" + k}
-  //         style={inline}
-  //       >
-  //         {underlyingValueToFixed(epochData?.binValues[k] ?? 0)}
-  //       </p>
-
-  //       <p
-  //         aria-readonly={true}
-  //         id={"betsPerBin" + k}
-  //         key={"betsPerBin" + k}
-  //         style={inline}
-  //       >
-  //         {epochData?.betsPerBin[k] ?? 0}
-  //       </p>
-
-  //       <input
-  //         type="number"
-  //         style={inline}
-  //         id={"inputField" + k}
-  //         key={"inputField" + k}
-  //         onChange={betsInputHandler(k)}
-  //       ></input>
-
-  //       <br></br>
-  //     </>
-  //   ));
-  // }
-
-  // // --- button functions ---------------
-
-  // /* function triggerSelectUnderlying(e) {
-  //   setUnderlying(underlyingDataArray[e.target.value]);
-  // } */
-
-  // function betsInputHandler(k) {
-  //   return (e) => {
-  //     setBetSizes(
-  //       betSizes?.map((v, i) =>
-  //         i === k ? v.add(ethers.utils.parseUnits(e.target.value, 18)) : v
-  //       )
-  //     );
-  //   };
-  // }
-
-  // const placeBets = useCallback(() => {
-  //   console.log("Placing bets...");
-  //   console.log("function:", executePlaceBets);
-  //   console.log(
-  //     "bets input:",
-  //     betSizes.map((x) => x.toString())
-  //   );
-  //   executePlaceBets?.({
-  //     recklesslySetUnpreparedArgs: [
-  //       underlying.addr, // underlying
-  //       betSizes, // array with respecitve bin amounts
-  //     ],
-  //     recklesslySetUnpreparedOverrides: {
-  //       from: connectedAddress,
-  //       value: betSizeSum,
-  //     },
-  //   });
-  // }, [underlying, betSizes, betSizeSum]);
-
-  // const epochDelta = useCallback(
-  //   () =>
-  //     Math.floor(Date.now() / 1000) -
-  //     (lastEpochClose + epochDuration + bufferDuration),
-  //   [lastEpochClose, epochDuration, bufferDuration]
-  // );
-
-  // return (
-  //   <>
-  //     //
-  //     https://blog.greenroots.info/how-to-create-a-countdown-timer-using-react-hooks
-  //     <p>Countdown: 00:00:00</p>
-  //     {/* <select value={underlying} onChange={triggerSelectUnderlying}>
-  //     <option>Select underlying...</option>
-  //     {getUnderlyingOptions()}
-  //   </select> */}
-  //     <ul style={inline}>{getUnderlyingOptions()}</ul>
-  //     <br></br>
-  //     <br></br>
-  //     <h2 style={inline}>Current oracle price:</h2>
-  //     {underlyingValueToFixed(underlyingPrice || 0) || "Fetching..."}
-  //     <h2 style={inline}>Current epoch:</h2>
-  //     {parseInt(epoch)}
-  //     {epochDelta() < 0 ? (
-  //       <h2 style={inline}>Epoch still running for: {epochDelta()}</h2>
-  //     ) : (
-  //       <h2 style={inline}>Epoch closed for {epochDelta()} seconds</h2>
-  //     )}
-  //     <br></br>
-  //     <br></br>
-  //     <h2 style={inline}>Last epoch close:</h2>
-  //     {new Date(lastEpochClose * 1000).toLocaleString()}
-  //     <h2 style={inline}>Betting close:</h2>
-  //     {new Date((lastEpochClose + epochDuration) * 1000).toLocaleString()}
-  //     <h2 style={inline}>Current close:</h2>
-  //     {new Date(
-  //       (lastEpochClose + epochDuration + bufferDuration) * 1000
-  //     ).toLocaleString()}
-  //     <h2>Bins data:</h2>
-  //     <div>
-  //       <div style={inline}>Starts</div>
-  //       <div style={inline}>Values</div>
-  //       <div style={inline}># bets</div>
-  //       <div style={inline}>User bets</div>
-  //     </div>
-  //     <br></br>
-  //     {getBinElements()}
-  //     <button onClick={placeBets}>Place bets</button>
-  //   </>
-  // );
-
-  // if wallet not connected
 }
 
 export default Better;

@@ -3,52 +3,16 @@ import styles from "./Epoch.module.css";
 import Countdown from "react-countdown";
 
 const Epoch = (props) => {
-  console.log("props.instrument", props.instrument);
-  console.log(
-    `(props.instrument
-      ? +props.instrument.lastEpochClosingTime +
-        +props.instrument.epochDurationInSeconds +
-        +props.instrument.bufferDurationInSeconds
-      : 0) * 1000`,
-    (props.instrument
-      ? +props.instrument.lastEpochClosingTime +
-        +props.instrument.epochDurationInSeconds +
-        +props.instrument.bufferDurationInSeconds
-      : 0) * 1000
-  );
-  const [timeRemaining, setTimeRemaining] = useState(0); // seconds
-  const [endTime, setEndTime] = useState(1661091710); // unix
-
-  const now = Date.now() + timeRemaining * 1000;
-
-  const calcEpoch = () => {
-    if (props.instrument == null) {
-      return;
-    }
-
-    setTimeRemaining(
-      Date.now() -
-        props.instrument?.lastEpochClosingTime -
-        props.instrument?.epochDurationInSeconds -
-        props.instrument?.bufferDurnationInSeconds
-    );
-
-    setEndTime(
-      props.instrument.lastEpochClosingTime +
-        props.instrument.epochDurationInSeconds +
-        props.instrument.bufferDurnationInSeconds
+  const countdownDate = () => {
+    return (
+      (+props.instrument?.lastEpochClosingTime +
+        +props.instrument?.epochDurationInSeconds +
+        +props.instrument?.bufferDurationInSeconds) *
+      1000
     );
   };
 
   const endTimeFormatted = () => {
-    console.log(
-      `props.instrument?.lastEpochClosingTime +
-    props.instrument?.epochDurationInSeconds +
-    props.instrument?.bufferDurationInSeconds`,
-      +props.instrument?.lastEpochClosingTime +
-        +props.instrument?.epochDurationInSeconds +
-        +props.instrument?.bufferDurationInSeconds
-    );
     let milliseconds =
       (+props.instrument?.lastEpochClosingTime +
         +props.instrument?.epochDurationInSeconds +
@@ -60,12 +24,6 @@ const Epoch = (props) => {
     return humanDateFormat;
   };
 
-  // useEffect(() => {
-  //   calcEpoch();
-  // }, []);
-
-  console.log("timeRemaining", timeRemaining);
-
   return (
     <div className={styles.container}>
       <div className={styles.timeRemaining}>
@@ -73,22 +31,8 @@ const Epoch = (props) => {
           <b>Epoch time remaining:</b>
         </div>
         <div className={styles.time}>
-          {props.instrument ? (
-            <Countdown
-              key={
-                (+props.instrument.lastEpochClosingTime +
-                  +props.instrument.epochDurationInSeconds +
-                  +props.instrument.bufferDurationInSeconds) *
-                1000
-              }
-              date={
-                (+props.instrument.lastEpochClosingTime +
-                  +props.instrument.epochDurationInSeconds +
-                  +props.instrument.bufferDurationInSeconds) *
-                1000
-              }
-            />
-          ) : null}
+          <Countdown key={countdownDate()} date={countdownDate()} />
+
           {/* <b>{timeRemainingFormatted()}</b> */}
         </div>
       </div>

@@ -1,15 +1,7 @@
 import { useEffect, useState } from "react";
-import styled from "styled-components";
 import { Card, CardBlueBg, CardBlueBgBlackBorder } from "../common/Card";
 import styles from "./Detail.module.css";
-import DeFiBetterV1ABI from "../../static/ABI/DeFiBetterV1ABI.json";
-import {
-  useAccount,
-  useContractRead,
-  useNetwork,
-  usePrepareContractWrite,
-  useContractWrite,
-} from "wagmi";
+import { useContractRead, useNetwork } from "wagmi";
 import Button from "../common/Button";
 import { MedText, NormalText, SmallText } from "../common/Text";
 import { Grid, GridCell2, GridRow } from "../common/Grid";
@@ -20,7 +12,12 @@ import { contractAddresses } from "../../static/contractAddresses";
 import Countdown from "react-countdown";
 
 const Detail = (props) => {
+  /* account, network, configs */
+  // network
   const { chain: activeChain } = useNetwork();
+
+  /* states */
+  //
   const [total, setTotal] = useState(0);
   const [rewardPeriodLength, setRewardPeriodLength] = useState(0); // seconds
   const [timeLeftCurrentPeriod, setTimeLeftCurrentPeriod] = useState(0); // seconds
@@ -57,12 +54,12 @@ const Detail = (props) => {
       );
 
       const t = props.epochData.binValues.map((bin, i) =>
-        ethers.utils.formatEther(
+        (+ethers.utils.formatEther(
           props.epochData.binSize.mul(i + 1).add(props.epochData.binStart)
-        )
+        )).toPrecision(5)
       );
       setBinBorderList([
-        ethers.utils.formatEther(props.epochData.binStart),
+        (+ethers.utils.formatEther(props.epochData.binStart)).toPrecision(5),
         ...t,
       ]);
       console.log("binBorderList", binBorderList);
