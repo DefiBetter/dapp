@@ -273,7 +273,11 @@ const Detail = (props) => {
             //   <input type="number" min={0} id={`${i}`} onInput={onInput} />
             // </div>
             <div className={styles.bin}>
-              <div>
+              <div
+                style={{
+                  textAlign: "left",
+                }}
+              >
                 {props.epochData
                   ? binBorderList[props.epochData.binValues.length - i]
                   : null}
@@ -308,7 +312,13 @@ const Detail = (props) => {
           );
         })}
         <div className={styles.bin}>
-          <div>{binBorderList[0]}</div>
+          <div
+            style={{
+              textAlign: "left",
+            }}
+          >
+            {binBorderList[0]}
+          </div>
           <div className={styles.binChoice}>
             <Button>Normal</Button>
             <Button>Implied</Button>
