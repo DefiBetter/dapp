@@ -82,6 +82,7 @@ function Better() {
         setInstrument(data[0]);
       }
     },
+    watch: true
   });
 
   // epoch data for currently selected instrument
