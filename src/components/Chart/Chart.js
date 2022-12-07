@@ -92,9 +92,12 @@
 import styles from "./Chart.module.css";
 import { underlyingPairAddress } from "../../static/contractAddresses";
 import { useState } from "react";
-import { useContractRead } from "wagmi";
+import { useContractRead, useContractReads } from "wagmi";
 import { ethers } from "ethers";
 import { Grid, GridCell2, GridRow } from "../common/Grid";
+
+import AggregatorV3InterfaceABI from "../../static/ABI/AggregatorV3InterfaceABI.json";
+/* global BigInt */
 
 const pairAddress = "0xcA75C4aA579c25D6ab3c8Ef9A70859ABF566fA1d"; // need to make this change with selected asset
 
@@ -133,6 +136,38 @@ const Chart = (props) => {
       console.log("getUnderlyingPrice", data);
       setCurrentPrice(+ethers.utils.formatEther(data[0]));
       setLastUpdated(+data[1].toString());
+    },
+    watch: true,
+  });
+
+  const aggregatorContractConfig = {
+    address: props.instrument?.underlying,
+    abi: AggregatorV3InterfaceABI,
+  };
+  console.log("aggregatorContractConfig", aggregatorContractConfig);
+
+  useContractRead({
+    ...aggregatorContractConfig,
+    args: [],
+    functionName: "latestRoundData",
+    onError(data) {
+      console.log("latestRoundData error", data);
+    },
+    onSuccess(data) {
+      console.log("latestRoundData", data);
+      // console.log("latestRoundData.roundId", 92233720368547771158n);
+      // console.log("latestRoundData phaseId", 92233720368547771158n >> 64n);
+      // console.log(
+      //   "latestRoundData aggregatorRoundId",
+      //   92233720368547771158n & 0xffffffffffffffffn
+      // );
+      const roundId = BigInt(data.roundId);
+      const phaseId = roundId >> 64n;
+      const aggregatorRoundId = roundId & 0xffffffffffffffffn;
+
+      console.log("latestRoundData roundId", roundId);
+      console.log("latestRoundData phaseId", phaseId);
+      console.log("latestRoundData aggregatorRoundId", aggregatorRoundId);
     },
     watch: true,
   });
