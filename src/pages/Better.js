@@ -44,6 +44,7 @@ function Better() {
   /* states */
   // current instrument
   const [instrumentList, setInstrumentList] = useState();
+  const [instrumentSelector, setInstrumentSelector] = useState();
   const [instrument, setInstrument] = useState();
 
   // epoch data
@@ -62,8 +63,8 @@ function Better() {
   const [userGainsInfo, setUserGainsInfo] = useState();
 
   // better
-  const [customFlatFee, setCustomFlatFee] = useState(0);
-  const [customGainFee, setCustomGainFee] = useState(0);
+  const [customFlatFee, setCustomFlatFee] = useState(10 * 1000);
+  const [customGainFee, setCustomGainFee] = useState(10 * 1000);
 
   // misc
   const [nativeGas, setNativeGas] = useState();
@@ -79,10 +80,26 @@ function Better() {
         setInstrumentList(data);
 
         // set default instrument
-        setInstrument(data[0]);
+        setInstrumentSelector(data[0].selector);
       }
     },
-    watch: true
+  });
+
+  // instrument
+  const [count, setCount] = useState(0);
+  const { refetch: getInstrumentBySelectorRefetch } = useContractRead({
+    ...betterContractConfig,
+    functionName: "getInstrumentBySelector",
+    args: [instrumentSelector],
+    onError(data) {
+      console.log("getInstrumentBySelector error", data);
+    },
+    onSuccess(data) {
+      console.log("getInstrumentBySelector", data);
+      setCount(count + 1);
+      console.log("getInstrumentBySelector count", count);
+      setInstrument(data);
+    },
   });
 
   // epoch data for currently selected instrument
@@ -180,7 +197,10 @@ function Better() {
               setInstrument={setInstrument}
               instrument={instrument}
             />
-            <Epoch instrument={instrument} />
+            <Epoch
+              instrument={instrument}
+              getInstrumentBySelectorRefetch={getInstrumentBySelectorRefetch}
+            />
             <Action
               betterContractConfig={betterContractConfig}
               instrument={instrument}

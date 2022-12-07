@@ -31,7 +31,16 @@ const Epoch = (props) => {
           <b>Epoch time remaining:</b>
         </div>
         <div className={styles.time}>
-          <Countdown key={countdownDate()} date={countdownDate()} />
+          <Countdown
+            key={countdownDate()}
+            date={countdownDate()}
+            onComplete={() => {
+              console.log("countdown complete");
+              props.getInstrumentBySelectorRefetch();
+              console.log("countdown refetch");
+              console.log("countdown instrument", props.instrument);
+            }}
+          />
 
           {/* <b>{timeRemainingFormatted()}</b> */}
         </div>

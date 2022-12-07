@@ -290,6 +290,7 @@ const Detail = (props) => {
                 <div>
                   {+ethers.utils.formatEther(binValue.toString()) > 0
                     ? ethers.utils.formatEther(binValue.toString()) +
+                      " " +
                       props.nativeGas
                     : null}
                 </div>
@@ -325,7 +326,7 @@ const Detail = (props) => {
               textAlign: "left",
             }}
           >
-            {binBorderList[0]}
+            {binBorderList[0]} {props.nativeGas}
           </div>
           <div className={styles.binChoice}>
             <Button>Normal</Button>
