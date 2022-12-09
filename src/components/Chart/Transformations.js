@@ -29,12 +29,16 @@ export const reflectXAxis = (matrix, x, y) => {
 };
 
 export const translate = (matrix, x, y) => {
+  console.log("translate matrix original", matrix);
   matrix = resize(matrix, [3, size(matrix)[1]], 1); // resize 2x2 to 3x3 with x,y,w
+  console.log("translate size(matrix)[1]", size(matrix)[1]);
+  console.log("translate matrix 1", matrix);
 
   let T = identity(3);
   T.set([0, 2], x); // move along x axis
   T.set([1, 2], y); // move along y axis
 
   matrix = multiply(T, matrix).resize([2, size(matrix)[1]]);
+  console.log("translate matrix 2", matrix);
   return matrix.toArray();
 };

@@ -24,10 +24,10 @@ const Axes = (props) => {
       let yRange = yMax - yMin;
 
       /* logic to see which points to anchor in the y axis */
-      let yMiddle = data[1][data[1].length - 1];
+      let yMiddle = Number(data[1][data[1].length - 1]);
       console.log("dataRange yMiddle", yMiddle);
       let rangeYMin = yMiddle - yMin;
-      let rangeYMax = yMiddle - yMax;
+      let rangeYMax = yMax - yMiddle;
       console.log("dataRange rangeYMin", rangeYMin);
       console.log("dataRange rangeYMax", rangeYMax);
 
@@ -73,10 +73,15 @@ const Axes = (props) => {
       console.log("data2View translate 3", data);
       data = reflectXAxis(data, true, false);
       console.log("data2View reflect 4", data);
+      console.log(
+        "data2View _dataRange[1][2] / 2 + _dataRange[1][0]",
+        _dataRange[1][2] / 2 + _dataRange[1][0]
+      );
       data = translate(data, 0, _dataRange[1][2] / 2 + _dataRange[1][0]);
       console.log("data2View translate 5", data);
 
       let _viewRange = viewRange();
+      console.log("data2View _viewRange 6", _viewRange);
       let viewRangeValue = [
         _viewRange[0][1] - _viewRange[0][0],
         _viewRange[1][1] - _viewRange[1][0],
@@ -90,14 +95,14 @@ const Axes = (props) => {
             _viewRange[i][0]
         )
       );
-      console.log("data2View viewMatrix 6", viewMatrix);
+      console.log("data2View viewMatrix 7", viewMatrix);
 
       let offsetY =
         viewMatrix[1][viewMatrix[1].length - 1] -
         props.chartConfig.middleCoord()[1];
 
       viewMatrix = translate(viewMatrix, 0, -offsetY);
-      console.log("data2View viewMatrix 7", viewMatrix);
+      console.log("data2View viewMatrix 8", viewMatrix);
       return viewMatrix;
     } catch (e) {
       return [];
