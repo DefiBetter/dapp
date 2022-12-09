@@ -265,13 +265,13 @@ const Chart = (props) => {
       containerRef.current.offsetWidth,
       containerRef.current.offsetHeight
     );
-    // setChartConfig({
-    //   ...chartConfig,
-    //   containerWidth: containerRef.current.offsetWidth * 0.5,
-    //   containerHeight: containerRef.current.offsetHeight * 0.5,
-    //   chartWidth: containerRef.current.offsetWidth * 0.5,
-    //   chartHeight: containerRef.current.offsetHeight * 0.5,
-    // });
+    setChartConfig({
+      ...chartConfig,
+      containerWidth: containerRef.current.offsetWidth,
+      containerHeight: containerRef.current.offsetHeight,
+      chartWidth: containerRef.current.offsetWidth * 0.9,
+      chartHeight: containerRef.current.offsetHeight * 0.9,
+    });
   }, []);
   return (
     <div className={styles.container} ref={containerRef}>
@@ -283,7 +283,7 @@ const Chart = (props) => {
           }?embed=1&trades=0&info=0`}
         />
       </div> */}
-      <svg width={600} height={600} style={{ backgroundColor: "white" }}>
+      <svg width={"100%"} height={"100%"} style={{ backgroundColor: "white" }}>
         {" "}
         {/* <line x1={0} y1={0} x2={window.innerWidth} y2={0} stroke="grey" /> */}
         <Axes chartConfig={chartConfig} />
