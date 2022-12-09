@@ -9,9 +9,11 @@ import {
 
 const Axes = (props) => {
   const dataRange = (data, range, alignMiddle) => {
+    console.log("dataRange data", data);
     data = data.map((a) => {
       return a.slice(-range);
     });
+    console.log("dataRange sliced", data);
     try {
       let xMax = Math.max(...data[0]);
       let xMin = Math.min(...data[0]);
@@ -21,10 +23,30 @@ const Axes = (props) => {
       let xRange = xMax - xMin;
       let yRange = yMax - yMin;
 
-      return [
-        [xMin, xMax, xRange],
-        [yMin, yMax, yRange],
-      ];
+      /* logic to see which points to anchor in the y axis */
+      let yMiddle = data[1][data[1].length - 1];
+      console.log("dataRange yMiddle", yMiddle);
+      let rangeYMin = yMiddle - yMin;
+      let rangeYMax = yMiddle - yMax;
+      console.log("dataRange rangeYMin", rangeYMin);
+      console.log("dataRange rangeYMax", rangeYMax);
+
+      if (rangeYMin > rangeYMax) {
+        return [
+          [xMin, xMax, xRange],
+          [yMin, yMiddle, yMiddle - yMin],
+        ];
+      } else {
+        return [
+          [xMin, xMax, xRange],
+          [yMiddle, yMax, yMax - yMiddle],
+        ];
+      }
+
+      // return [
+      //   [xMin, xMax, xRange],
+      //   [yMin, yMax, yRange],
+      // ];
     } catch (e) {
       return [];
     }
@@ -35,7 +57,7 @@ const Axes = (props) => {
       [0 + props.chartConfig.paddingX(), props.chartConfig.middleCoord()[0]],
       [
         0 + props.chartConfig.paddingY(),
-        props.chartConfig.paddingY() + props.chartConfig.chartHeight,
+        props.chartConfig.paddingY() + props.chartConfig.chartHeight / 2,
       ],
     ];
   };
@@ -43,14 +65,16 @@ const Axes = (props) => {
   const data2View = (range) => {
     try {
       let data = transpose(preProcessData(props.data.bars));
+      console.log("data2View transpose 1", data);
       let _dataRange = dataRange(data, range);
+      console.log("data2View _dataRange 2", _dataRange);
 
       data = translate(data, 0, -(_dataRange[1][2] / 2 + _dataRange[1][0]));
-      // console.log("data (translated)", data);
+      console.log("data2View translate 3", data);
       data = reflectXAxis(data, true, false);
-      // console.log("data (reflected)", data);
+      console.log("data2View reflect 4", data);
       data = translate(data, 0, _dataRange[1][2] / 2 + _dataRange[1][0]);
-      // console.log("data (translated)", data);
+      console.log("data2View translate 5", data);
 
       let _viewRange = viewRange();
       let viewRangeValue = [
@@ -66,13 +90,14 @@ const Axes = (props) => {
             _viewRange[i][0]
         )
       );
+      console.log("data2View viewMatrix 6", viewMatrix);
 
       let offsetY =
         viewMatrix[1][viewMatrix[1].length - 1] -
         props.chartConfig.middleCoord()[1];
 
       viewMatrix = translate(viewMatrix, 0, -offsetY);
-
+      console.log("data2View viewMatrix 7", viewMatrix);
       return viewMatrix;
     } catch (e) {
       return [];
@@ -92,7 +117,7 @@ const Axes = (props) => {
           <circle
             cx={coord[0]}
             cy={Number(coord[1])}
-            r={0}
+            r={2}
             fill="red"
             className="circle"
           />
@@ -120,7 +145,7 @@ const Axes = (props) => {
 
   return (
     <>
-      {plotData(320)}
+      {plotData(200)}
       {/* <circle cx="1" cy="1" r={100} fill="red" /> */}
     </>
   );

@@ -91,13 +91,15 @@
 
 import styles from "./Chart.module.css";
 import { underlyingPairAddress } from "../../static/contractAddresses";
-import { useState } from "react";
+import { useState, useRef, useLayoutEffect } from "react";
 import { useContractRead, useContractReads } from "wagmi";
-import { ethers } from "ethers";
+import { BigNumber, ethers } from "ethers";
 import { Grid, GridCell2, GridRow } from "../common/Grid";
 
 import AggregatorV3InterfaceABI from "../../static/ABI/AggregatorV3InterfaceABI.json";
 /* global BigInt */
+import LineChart from "./LineChart";
+import Axes from "./Axes";
 
 const pairAddress = "0xcA75C4aA579c25D6ab3c8Ef9A70859ABF566fA1d"; // need to make this change with selected asset
 
@@ -109,6 +111,18 @@ const Chart = (props) => {
   // current epoch data
   const [currentPrice, setCurrentPrice] = useState(0);
   const [lastUpdated, setLastUpdated] = useState(0);
+
+  // chart data
+  const [chartData, setChartData] = useState({ bars: [] });
+  // it uses the schema below:
+  // {
+  //   bars: [
+  //     {
+  //       timestamp: "number",
+  //       closeUsd: "0.08402733329706040926",
+  //     },
+  //   ];
+  // }
 
   /* contract read/write */
   useContractRead({
@@ -146,6 +160,7 @@ const Chart = (props) => {
   };
   console.log("aggregatorContractConfig", aggregatorContractConfig);
 
+  const [latestRoundData, setLatestRoundData] = useState([0n, 0n, 0n]);
   useContractRead({
     ...aggregatorContractConfig,
     args: [],
@@ -168,12 +183,98 @@ const Chart = (props) => {
       console.log("latestRoundData roundId", roundId);
       console.log("latestRoundData phaseId", phaseId);
       console.log("latestRoundData aggregatorRoundId", aggregatorRoundId);
+
+      console.log(
+        "latestRoundData roundId - aggregatorRoundId + 1",
+        BigNumber.from((roundId - aggregatorRoundId + BigInt(1)).toString())
+      );
+
+      setLatestRoundData([roundId, phaseId, aggregatorRoundId]);
     },
     watch: true,
   });
 
+  useContractReads({
+    contracts: (() => {
+      {
+        let temp = [];
+        for (let i = 0; i < 100; i++) {
+          temp.push({
+            ...aggregatorContractConfig,
+            functionName: "getRoundData",
+            args: [BigNumber.from((latestRoundData[0] - BigInt(i)).toString())],
+          });
+        }
+        console.log("temp", temp.reverse());
+        return temp;
+      }
+    })(),
+    onError(data) {
+      console.log("useContractReads error", data);
+    },
+    onSuccess(data) {
+      console.log(
+        "useContractReads",
+        data.map((d) => {
+          return {
+            closeUsd: ethers.utils.formatUnits(d.answer, 8),
+            timestamp: +d.updatedAt.toString(),
+          };
+        })
+      );
+      setChartData({
+        bars: data.map((d) => {
+          return {
+            closeUsd: ethers.utils.formatUnits(d.answer, 8),
+            timestamp: +d.updatedAt.toString(),
+          };
+        }),
+      });
+    },
+    watch: true,
+  });
+  console.log("chartData", chartData);
+
+  let [chartConfig, setChartConfig] = useState({
+    containerWidth: 600,
+    containerHeight: 600,
+    chartWidth: 500,
+    chartHeight: 500,
+    separatorCountX: 10,
+    separatorCountY: 10,
+    separatorWidth: 50,
+    paddingX: function () {
+      return (this.containerWidth - this.chartWidth) / 2;
+    },
+    paddingY: function () {
+      return (this.containerHeight - this.chartHeight) / 2;
+    },
+    middleCoord: function () {
+      return [
+        this.chartWidth / 2 + this.paddingX(),
+        this.chartHeight / 2 + this.paddingY(),
+      ];
+    },
+  });
+
+  const containerRef = useRef(null);
+
+  useLayoutEffect(() => {
+    console.log(
+      "containerRef",
+      containerRef.current.offsetWidth,
+      containerRef.current.offsetHeight
+    );
+    // setChartConfig({
+    //   ...chartConfig,
+    //   containerWidth: containerRef.current.offsetWidth * 0.5,
+    //   containerHeight: containerRef.current.offsetHeight * 0.5,
+    //   chartWidth: containerRef.current.offsetWidth * 0.5,
+    //   chartHeight: containerRef.current.offsetHeight * 0.5,
+    // });
+  }, []);
   return (
-    <div className={styles.container}>
+    <div className={styles.container} ref={containerRef}>
       {/* for the time being (before figuring out a place to get raw data) we will be using dex screener */}
       {/* <div id={styles.dexscreenerEmbed}>
         <iframe
@@ -182,6 +283,13 @@ const Chart = (props) => {
           }?embed=1&trades=0&info=0`}
         />
       </div> */}
+      <svg width={600} height={600} style={{ backgroundColor: "white" }}>
+        {" "}
+        {/* <line x1={0} y1={0} x2={window.innerWidth} y2={0} stroke="grey" /> */}
+        <Axes chartConfig={chartConfig} />
+        <LineChart chartConfig={chartConfig} data={chartData} />
+        {/* <BarChart chartConfig={chartConfig} data={data} /> */}{" "}
+      </svg>
       <Grid>
         <GridRow>
           <GridCell2>Last Epoch Closing Price:</GridCell2>
