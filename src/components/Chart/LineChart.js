@@ -10,8 +10,8 @@ import {
 } from "./Transformations";
 
 const LineChart = (props) => {
-  const data2View = (data, range) => {
-    /* data needs to be transformed correctly to display data depending on the (type, range) of the chart:
+  const getDataPointList = (data) => {
+    /* data needs to be transformed correctly to display data depending on the xType and yType of the chart:
     - xType (x axis scaling):
       - trailing => mid coord is fixed to the latest price
       - epoch => mid coord is fixed to the calculated epoch start price via better.epochTransition()
@@ -22,6 +22,8 @@ const LineChart = (props) => {
       - 1SD => scale to fit the historical price based on the biggest difference between 1 SD values and mid coord
       - 2SD => scale to fit the historical price based on the biggest difference between 2 SD values and mid coord
     */
+    let dataPointList = [];
+    console.log("plotData data", data);
 
     data = transpose(data);
     console.log("data2View transpose", data);
@@ -35,72 +37,60 @@ const LineChart = (props) => {
     );
 
     // transformations
-    let svgViewMatrix = data2SvgView(
+    data = data2SvgView(
       data,
       oldRangeInfo,
       newRangeInfo,
       props.chartConfig.containerHeight
     );
 
-    return svgViewMatrix;
-  };
+    data = transpose(data);
+    console.log("plotData transpose", data);
 
-  const plotData = (data, range) => {
-    let dataPoints = [];
-    try {
-      console.log("plotData data", data);
-      data = data2View(data, range);
+    // plot circle points are coords
+    data.map((coord) => {
+      coord = [coord[0], Number(coord[1])];
+      dataPointList.push(
+        <circle
+          cx={coord[0]}
+          cy={Number(coord[1])}
+          r={2}
+          fill="red"
+          className="circle"
+        />
+      );
+    });
 
-      data = transpose(data);
-      console.log("plotData transpose", data);
-
-      data.map((coord) => {
+    // plot lines between coords
+    data.map((coord, i) => {
+      if (i < data.length - 1) {
         coord = [coord[0], Number(coord[1])];
-        dataPoints.push(
-          <circle
-            cx={coord[0]}
-            cy={Number(coord[1])}
-            r={2}
-            fill="red"
-            className="circle"
+        let coordNext = [data[i + 1][0], Number(data[i + 1][1])];
+        dataPointList.push(
+          <line
+            x1={coord[0]}
+            y1={coord[1]}
+            x2={coordNext[0]}
+            y2={coordNext[1]}
+            stroke="grey"
           />
         );
-      });
+      }
+    });
 
-      data.map((coord, i) => {
-        if (i < data.length - 1) {
-          coord = [coord[0], Number(coord[1])];
-          let coordNext = [data[i + 1][0], Number(data[i + 1][1])];
-          dataPoints.push(
-            <line
-              x1={coord[0]}
-              y1={coord[1]}
-              x2={coordNext[0]}
-              y2={coordNext[1]}
-              stroke="grey"
-            />
-          );
-        }
-      });
-
-      data.map((coord, i) => {
-        let yPad = props.chartConfig.paddingY() + props.chartConfig.chartHeight;
-        dataPoints.push(
-          <text x={100} y={yPad} fill="red">
-            bitch
-          </text>
-        );
-      });
-    } catch {}
-    return dataPoints;
+    // plot bitch
+    data.map((coord, i) => {
+      let yPad = props.chartConfig.paddingY() + props.chartConfig.chartHeight;
+      dataPointList.push(
+        <text x={100} y={yPad} fill="red">
+          bitch
+        </text>
+      );
+    });
+    return dataPointList;
   };
 
-  return (
-    <>
-      {plotData(props.data, 200)}
-      {/* <circle cx="1" cy="1" r={100} fill="red" /> */}
-    </>
-  );
+  return <>{props.data ? getDataPointList(props.data, 200) : null}</>;
 };
 
 export default LineChart;

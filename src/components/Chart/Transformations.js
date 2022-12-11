@@ -75,8 +75,11 @@ export const data2SvgView = (
   containerHeight
 ) => {
   let svgViewMatrix = scale(data, oldRangeInfo, newRangeInfo);
+  console.log("data2SvgView svgViewMatrix", svgViewMatrix);
   svgViewMatrix = reflect(svgViewMatrix, true, false);
+  console.log("data2SvgView reflect", svgViewMatrix);
   svgViewMatrix = translate(svgViewMatrix, 0, containerHeight);
+  console.log("data2SvgView translate", svgViewMatrix);
 
   return svgViewMatrix;
 };

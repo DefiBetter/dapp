@@ -114,15 +114,6 @@ const Chart = (props) => {
 
   // chart data
   const [chartData, setChartData] = useState();
-  // it uses the schema below:
-  // {
-  //   bars: [
-  //     {
-  //       timestamp: "number",
-  //       closeUsd: "0.08402733329706040926",
-  //     },
-  //   ];
-  // }
 
   // chart config
   let [chartConfig, setChartConfig] = useState({
@@ -130,9 +121,7 @@ const Chart = (props) => {
     containerHeight: 600,
     chartWidth: 500,
     chartHeight: 500,
-    separatorCountX: 10,
-    separatorCountY: 10,
-    separatorWidth: 50,
+    
     paddingX: function () {
       return (this.containerWidth - this.chartWidth) / 2;
     },
@@ -145,7 +134,7 @@ const Chart = (props) => {
     getRangeInfoX: function (data, type) {
       let xMin, xMax, xRange;
       let xNewMin, xNewMax, xNewRange;
-      let yMiddle;
+      let middleCoords;
       if (type == "trailing") {
         /* old range */
         xMin = Math.min(...data[0]);
@@ -156,7 +145,10 @@ const Chart = (props) => {
         xNewMin = this.paddingX();
         xNewMax = this.middleCoord()[0];
         xNewRange = xNewMax - xNewMin;
-        yMiddle = data[1][data[0].length - 1];
+        middleCoords = [
+          data[0][data[0].length - 1],
+          data[1][data[0].length - 1],
+        ];
       } else if (type == "epoch") {
       } else if (type == "historical") {
       }
@@ -165,17 +157,18 @@ const Chart = (props) => {
       let newRangeInfo = [xNewMin, xNewMax, xNewRange];
       console.log("getRangeInfoX rangeInfo", rangeInfo);
       console.log("getRangeInfoX newRangeInfo", newRangeInfo);
-      console.log("getRangeInfoX { rangeInfo, newRangeInfo, yMiddle }", {
+      console.log("getRangeInfoX { rangeInfo, newRangeInfo, middleCoords }", {
         rangeInfo,
         newRangeInfo,
-        yMiddle,
+        middleCoords,
       });
-      return { rangeInfo, newRangeInfo, yMiddle };
+      return { rangeInfo, newRangeInfo, middleCoords };
     },
-    getRangeInfoY: function (data, type, yMiddle) {
-      console.log("getRangeInfoY", [data, type, yMiddle]);
+    getRangeInfoY: function (data, type, middleCoords) {
+      console.log("getRangeInfoY", [data, type, middleCoords]);
       let yMin, yMax, yRange;
       let yNewMin, yNewMax, yNewRange;
+      let yMiddle = middleCoords[1];
       if (type == "minMax") {
         /* old range */
         yMin = Math.min(...data[1]);
@@ -230,19 +223,20 @@ const Chart = (props) => {
           [0, 0, 0],
           [0, 0, 0],
         ];
-      let yMiddle;
+      let middleCoords;
       // setting x values for scaling
       ({
         rangeInfo: oldRangeInfo[0],
         newRangeInfo: newRangeInfo[0],
-        yMiddle,
+        middleCoords,
       } = this.getRangeInfoX(data, xType));
 
       // setting y values for scaling
       ({ rangeInfo: oldRangeInfo[1], newRangeInfo: newRangeInfo[1] } =
-        this.getRangeInfoY(data, yType, yMiddle));
+        this.getRangeInfoY(data, yType, middleCoords));
 
-      return { oldRangeInfo, newRangeInfo };
+      console.log("rangeInfo", { oldRangeInfo, newRangeInfo, middleCoords });
+      return { oldRangeInfo, newRangeInfo, middleCoords };
     },
   });
 
@@ -320,7 +314,7 @@ const Chart = (props) => {
     contracts: (() => {
       {
         let temp = [];
-        for (let i = 0; i < 10; i++) {
+        for (let i = 0; i < 20; i++) {
           temp.push({
             ...aggregatorContractConfig,
             functionName: "getRoundData",
