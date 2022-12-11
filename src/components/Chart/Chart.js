@@ -124,6 +124,26 @@ const Chart = (props) => {
   //   ];
   // }
 
+  // chart config
+  let [chartConfig, setChartConfig] = useState({
+    containerWidth: 600,
+    containerHeight: 600,
+    chartWidth: 500,
+    chartHeight: 500,
+    separatorCountX: 10,
+    separatorCountY: 10,
+    separatorWidth: 50,
+    paddingX: function () {
+      return (this.containerWidth - this.chartWidth) / 2;
+    },
+    paddingY: function () {
+      return (this.containerHeight - this.chartHeight) / 2;
+    },
+    middleCoord: function () {
+      return [this.containerWidth / 2, this.containerHeight / 2];
+    },
+  });
+
   /* contract read/write */
   useContractRead({
     ...props.betterContractConfig,
@@ -198,7 +218,7 @@ const Chart = (props) => {
     contracts: (() => {
       {
         let temp = [];
-        for (let i = 0; i < 100; i++) {
+        for (let i = 0; i < 10; i++) {
           temp.push({
             ...aggregatorContractConfig,
             functionName: "getRoundData",
@@ -217,7 +237,7 @@ const Chart = (props) => {
         "useContractReads",
         data.map((d) => {
           return {
-            closeUsd: ethers.utils.formatUnits(d.answer, 8),
+            closeUsd: +ethers.utils.formatUnits(d.answer, 8),
             timestamp: +d.updatedAt.toString(),
           };
         })
@@ -225,7 +245,7 @@ const Chart = (props) => {
       setChartData({
         bars: data.map((d) => {
           return {
-            closeUsd: ethers.utils.formatUnits(d.answer, 8),
+            closeUsd: +ethers.utils.formatUnits(d.answer, 8),
             timestamp: +d.updatedAt.toString(),
           };
         }),
@@ -234,28 +254,6 @@ const Chart = (props) => {
     watch: true,
   });
   console.log("chartData", chartData);
-
-  let [chartConfig, setChartConfig] = useState({
-    containerWidth: 600,
-    containerHeight: 600,
-    chartWidth: 500,
-    chartHeight: 500,
-    separatorCountX: 10,
-    separatorCountY: 10,
-    separatorWidth: 50,
-    paddingX: function () {
-      return (this.containerWidth - this.chartWidth) / 2;
-    },
-    paddingY: function () {
-      return (this.containerHeight - this.chartHeight) / 2;
-    },
-    middleCoord: function () {
-      return [
-        this.chartWidth / 2 + this.paddingX(),
-        this.chartHeight / 2 + this.paddingY(),
-      ];
-    },
-  });
 
   const containerRef = useRef(null);
 

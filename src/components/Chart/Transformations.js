@@ -17,11 +17,11 @@ export const transpose = (matrix) => {
   }
 };
 
-export const reflectXAxis = (matrix, x, y) => {
+export const reflect = (matrix, xAxis, yAxis) => {
   matrix = multiply(
     [
-      [y == true ? -1 : 1, 0],
-      [0, x == true ? -1 : 1],
+      [yAxis == true ? -1 : 1, 0],
+      [0, xAxis == true ? -1 : 1],
     ],
     matrix
   );
@@ -41,4 +41,28 @@ export const translate = (matrix, x, y) => {
   matrix = multiply(T, matrix).resize([2, size(matrix)[1]]);
   console.log("translate matrix 2", matrix);
   return matrix.toArray();
+};
+
+export const scale = (matrix, oldRangeInfo, newRangeInfo) => {
+  /* matrix structure:
+  matrix = [[x1, x2, ...xn],
+            [y1, y2, ...yn]]
+  
+  range info:
+  rangeInfo = [axisMin, axisMax, axisRange]
+  
+  scaling formula:
+  dataScaled = (data - oldMin) / oldRange * newRange + newMin */
+
+  console.log("scale matrix", matrix);
+  console.log("scale oldRangeInfo", oldRangeInfo);
+  console.log("scale newRangeInfo", newRangeInfo);
+
+  return matrix.map((axis, i) => {
+    const [oldMin, oldRange] = oldRangeInfo[i].splice(1);
+    const [newMin, newRange] = newRangeInfo[i].splice(1);
+    return axis.map(
+      (value) => ((value - oldMin) / oldRange) * newRange + newMin
+    );
+  });
 };
