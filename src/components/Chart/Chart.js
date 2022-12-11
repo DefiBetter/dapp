@@ -113,7 +113,7 @@ const Chart = (props) => {
   const [lastUpdated, setLastUpdated] = useState(0);
 
   // chart data
-  const [chartData, setChartData] = useState({ bars: [] });
+  const [chartData, setChartData] = useState();
   // it uses the schema below:
   // {
   //   bars: [
@@ -141,6 +141,108 @@ const Chart = (props) => {
     },
     middleCoord: function () {
       return [this.containerWidth / 2, this.containerHeight / 2];
+    },
+    getRangeInfoX: function (data, type) {
+      let xMin, xMax, xRange;
+      let xNewMin, xNewMax, xNewRange;
+      let yMiddle;
+      if (type == "trailing") {
+        /* old range */
+        xMin = Math.min(...data[0]);
+        xMax = Math.max(...data[0]);
+        xRange = xMax - xMin;
+
+        /* new range */
+        xNewMin = this.paddingX();
+        xNewMax = this.middleCoord()[0];
+        xNewRange = xNewMax - xNewMin;
+        yMiddle = data[1][data[0].length - 1];
+      } else if (type == "epoch") {
+      } else if (type == "historical") {
+      }
+
+      let rangeInfo = [xMin, xMax, xRange];
+      let newRangeInfo = [xNewMin, xNewMax, xNewRange];
+      console.log("getRangeInfoX rangeInfo", rangeInfo);
+      console.log("getRangeInfoX newRangeInfo", newRangeInfo);
+      console.log("getRangeInfoX { rangeInfo, newRangeInfo, yMiddle }", {
+        rangeInfo,
+        newRangeInfo,
+        yMiddle,
+      });
+      return { rangeInfo, newRangeInfo, yMiddle };
+    },
+    getRangeInfoY: function (data, type, yMiddle) {
+      console.log("getRangeInfoY", [data, type, yMiddle]);
+      let yMin, yMax, yRange;
+      let yNewMin, yNewMax, yNewRange;
+      if (type == "minMax") {
+        /* old range */
+        yMin = Math.min(...data[1]);
+        yMax = Math.max(...data[1]);
+        yRange = yMax - yMin;
+
+        // logic to see which points to anchor in the y axis
+        let diffMin = yMiddle - yMin;
+        let diffMax = yMax - yMiddle;
+        if (diffMin > diffMax) {
+          yMax = yMiddle;
+          yRange = yMiddle - yMin;
+          console.log("getRangeInfoY yMin", yMin);
+
+          yNewMin = this.paddingY();
+          console.log("getRangeInfoY yNewMin", yNewMin);
+          yNewMax = this.middleCoord()[1];
+        } else {
+          yMin = yMiddle;
+          yRange = yMax - yMiddle;
+
+          yNewMin = this.middleCoord()[1];
+          console.log("getRangeInfoY yNewMin", yNewMin);
+          yNewMax = this.paddingY() + this.chartHeight;
+        }
+
+        /* new range */
+        // yNewMin = props.chartConfig.paddingY();
+        // yNewMax =
+        //   props.chartConfig.paddingY() + props.chartConfig.chartHeight / 2;
+        yNewRange = yNewMax - yNewMin;
+      } else if (type == "1SD") {
+      } else if (type == "2SD") {
+      }
+
+      let rangeInfo = [yMin, yMax, yRange];
+      console.log("getRangeInfoY rangeInfo", rangeInfo);
+      let newRangeInfo = [yNewMin, yNewMax, yNewRange];
+      console.log("getRangeInfoY newRangeInfo", newRangeInfo);
+      console.log("getRangeInfoY { rangeInfo, newRangeInfo }", {
+        rangeInfo,
+        newRangeInfo,
+      });
+      return { rangeInfo, newRangeInfo };
+    },
+    rangeInfo: function (data, xType = "trailing", yType = "minMax") {
+      let oldRangeInfo = [
+          [0, 0, 0],
+          [0, 0, 0],
+        ],
+        newRangeInfo = [
+          [0, 0, 0],
+          [0, 0, 0],
+        ];
+      let yMiddle;
+      // setting x values for scaling
+      ({
+        rangeInfo: oldRangeInfo[0],
+        newRangeInfo: newRangeInfo[0],
+        yMiddle,
+      } = this.getRangeInfoX(data, xType));
+
+      // setting y values for scaling
+      ({ rangeInfo: oldRangeInfo[1], newRangeInfo: newRangeInfo[1] } =
+        this.getRangeInfoY(data, yType, yMiddle));
+
+      return { oldRangeInfo, newRangeInfo };
     },
   });
 
@@ -236,20 +338,20 @@ const Chart = (props) => {
       console.log(
         "useContractReads",
         data.map((d) => {
-          return {
-            closeUsd: +ethers.utils.formatUnits(d.answer, 8),
-            timestamp: +d.updatedAt.toString(),
-          };
+          return [
+            +d.updatedAt.toString(),
+            +ethers.utils.formatUnits(d.answer, 8),
+          ];
         })
       );
-      setChartData({
-        bars: data.map((d) => {
-          return {
-            closeUsd: +ethers.utils.formatUnits(d.answer, 8),
-            timestamp: +d.updatedAt.toString(),
-          };
-        }),
-      });
+      setChartData(
+        data.map((d) => {
+          return [
+            +d.updatedAt.toString(),
+            +ethers.utils.formatUnits(d.answer, 8),
+          ];
+        })
+      );
     },
     watch: true,
   });
@@ -284,7 +386,7 @@ const Chart = (props) => {
       <svg width={"100%"} height={"100%"} style={{ backgroundColor: "white" }}>
         {" "}
         {/* <line x1={0} y1={0} x2={window.innerWidth} y2={0} stroke="grey" /> */}
-        <Axes chartConfig={chartConfig} />
+        <Axes chartConfig={chartConfig} data={chartData} />
         <LineChart chartConfig={chartConfig} data={chartData} />
         {/* <BarChart chartConfig={chartConfig} data={data} /> */}{" "}
       </svg>

@@ -66,3 +66,17 @@ export const scale = (matrix, oldRangeInfo, newRangeInfo) => {
     );
   });
 };
+
+/* chain transformations */
+export const data2SvgView = (
+  data,
+  oldRangeInfo,
+  newRangeInfo,
+  containerHeight
+) => {
+  let svgViewMatrix = scale(data, oldRangeInfo, newRangeInfo);
+  svgViewMatrix = reflect(svgViewMatrix, true, false);
+  svgViewMatrix = translate(svgViewMatrix, 0, containerHeight);
+
+  return svgViewMatrix;
+};
