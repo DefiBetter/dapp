@@ -2,6 +2,24 @@ import { useEffect, useState } from "react";
 import { data2SvgView, transpose } from "./Transformations";
 
 const Axes = (props) => {
+  const timeRange2TimeInterval = (range) => {
+    console.log("timeRange2TimeInterval range", range);
+    // range in seconds
+    // if (range < 60 * 60) {
+    //   return 5 * 60; // 5 mins interval
+    // } else if (range < 2 * 60 * 60) {
+    //   return 10 * 60;
+    // } else if (range < 4 * 60 * 60) {
+    //   return 20 * 60;
+    // } else if (range < 8 * 60 * 60) {
+    //   return 40 * 60;
+    // } else if (range < 16 * 60 * 60) {
+    //   return 80 * 60;
+    // }
+    let temp = range / (60 * 60);
+    return 10 * Math.ceil(temp) * 60;
+  };
+
   const getXAxisData = () => {
     let data = transpose(props.data);
     console.log("getXAxisData data", data);
@@ -17,7 +35,9 @@ const Axes = (props) => {
     let xLabelCoordList = [];
     let xAxisRange = data[0][data[0].length - 1] - data[0][0]; // seconds
     console.log("getXAxisData xAxisRange", xAxisRange);
-    let interval = 5 * 60; // seconds
+
+    let interval = timeRange2TimeInterval(xAxisRange);
+    console.log("getXAxisData interval", interval);
     let xMiddle = middleCoords[0];
     console.log("getXAxisData xMiddle", xMiddle);
 

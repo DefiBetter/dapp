@@ -121,7 +121,7 @@ const Chart = (props) => {
     containerHeight: 600,
     chartWidth: 500,
     chartHeight: 500,
-    
+
     paddingX: function () {
       return (this.containerWidth - this.chartWidth) / 2;
     },
@@ -314,7 +314,7 @@ const Chart = (props) => {
     contracts: (() => {
       {
         let temp = [];
-        for (let i = 0; i < 20; i++) {
+        for (let i = 0; i < 200; i++) {
           temp.push({
             ...aggregatorContractConfig,
             functionName: "getRoundData",
