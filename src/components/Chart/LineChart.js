@@ -16,11 +16,13 @@ const LineChart = (props) => {
       - trailing => mid coord is fixed to the latest price
       - epoch => mid coord is fixed to the calculated epoch start price via better.epochTransition()
       - historical => latest price is shown at the right most side of the chart, and historical prices are shown
+      - nEpoch => coord for y mid fixed, but the x coord is calculated based on the number of historical epoch user wants to view. eg. n = 9 epochs, x coord is 90% chart width, as remaining 10% represents current epoch
 
     - yType (y axis scaling):
       - minMax => scale to fit the historical price based on the biggest difference between min/max and mid coord
       - 1SD => scale to fit the historical price based on the biggest difference between 1 SD values and mid coord
       - 2SD => scale to fit the historical price based on the biggest difference between 2 SD values and mid coord
+      - binBorder => scale to align with the bin border
     */
     let dataPointList = [];
     console.log("plotData data", data);

@@ -99,7 +99,8 @@ import { Grid, GridCell2, GridRow } from "../common/Grid";
 import AggregatorV3InterfaceABI from "../../static/ABI/AggregatorV3InterfaceABI.json";
 /* global BigInt */
 import LineChart from "./LineChart";
-import Axes from "./Axes";
+import Axes from "./ChartBackground";
+import ChartBackground from "./ChartBackground";
 
 const pairAddress = "0xcA75C4aA579c25D6ab3c8Ef9A70859ABF566fA1d"; // need to make this change with selected asset
 
@@ -314,7 +315,7 @@ const Chart = (props) => {
     contracts: (() => {
       {
         let temp = [];
-        for (let i = 0; i < 200; i++) {
+        for (let i = 0; i < 50; i++) {
           temp.push({
             ...aggregatorContractConfig,
             functionName: "getRoundData",
@@ -380,7 +381,7 @@ const Chart = (props) => {
       <svg width={"100%"} height={"100%"} style={{ backgroundColor: "white" }}>
         {" "}
         {/* <line x1={0} y1={0} x2={window.innerWidth} y2={0} stroke="grey" /> */}
-        <Axes chartConfig={chartConfig} data={chartData} />
+        <ChartBackground chartConfig={chartConfig} data={chartData} />
         <LineChart chartConfig={chartConfig} data={chartData} />
         {/* <BarChart chartConfig={chartConfig} data={data} /> */}{" "}
       </svg>
