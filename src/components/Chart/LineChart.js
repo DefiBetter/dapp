@@ -2,128 +2,120 @@ import { useEffect } from "react";
 import { multiply, resize, identity, size } from "mathjs";
 import {
   preProcessData,
-  reflectXAxis,
+  reflect,
   translate,
   transpose,
+  scale,
+  data2SvgView,
+  rangeInfo,
 } from "./Transformations";
 
-const Axes = (props) => {
-  const dataRange = (data, range, alignMiddle) => {
-    data = data.map((a) => {
-      return a.slice(-range);
-    });
-    try {
-      let xMax = Math.max(...data[0]);
-      let xMin = Math.min(...data[0]);
-      let yMin = Math.min(...data[1]);
-      let yMax = Math.max(...data[1]);
+const LineChart = (props) => {
+  const getDataPointList = (data) => {
+    /* data needs to be transformed correctly to display data depending on the xType and yType of the chart:
+    - xType (x axis scaling):
+      - trailing => mid coord is fixed to the latest price
+      - epoch => mid coord is fixed to the calculated epoch start price via better.epochTransition()
+      - historical => latest price is shown at the right most side of the chart, and historical prices are shown
+      - nEpoch => coord for y mid fixed, but the x coord is calculated based on the number of historical epoch user wants to view. eg. n = 9 epochs, x coord is 90% chart width, as remaining 10% represents current epoch
 
-      let xRange = xMax - xMin;
-      let yRange = yMax - yMin;
+    - yType (y axis scaling):
+      - minMax => scale to fit the historical price based on the biggest difference between min/max and mid coord
+      - 1SD => scale to fit the historical price based on the biggest difference between 1 SD values and mid coord
+      - 2SD => scale to fit the historical price based on the biggest difference between 2 SD values and mid coord
+      - binBorder => scale to align with the bin border
+    */
+    let dataPointList = [];
+    console.log("getDataPointList data", data);
 
-      return [
-        [xMin, xMax, xRange],
-        [yMin, yMax, yRange],
-      ];
-    } catch (e) {
-      return [];
-    }
-  };
+    data = transpose(data);
+    console.log("getDataPointList transpose", data);
 
-  const viewRange = () => {
-    return [
-      [0 + props.chartConfig.paddingX(), props.chartConfig.middleCoord()[0]],
-      [
-        0 + props.chartConfig.paddingY(),
-        props.chartConfig.paddingY() + props.chartConfig.chartHeight,
-      ],
-    ];
-  };
+    const { oldRangeInfo, newRangeInfo, epochStartPoint } =
+      props.rangeInfo(data);
 
-  const data2View = (range) => {
-    try {
-      let data = transpose(preProcessData(props.data.bars));
-      let _dataRange = dataRange(data, range);
+    console.log("getDataPointList epochStartPoint", Date(epochStartPoint[0]));
+    console.log(
+      "getDataPointList oldRangeInfo, newRangeInfo",
+      oldRangeInfo,
+      newRangeInfo
+    );
 
-      data = translate(data, 0, -(_dataRange[1][2] / 2 + _dataRange[1][0]));
-      console.log("data (translated)", data);
-      data = reflectXAxis(data, true, false);
-      console.log("data (reflected)", data);
-      data = translate(data, 0, _dataRange[1][2] / 2 + _dataRange[1][0]);
-      console.log("data (translated)", data);
+    data[0].push(epochStartPoint[0]);
+    data[1].push(epochStartPoint[1]);
+    // transformations
+    data = data2SvgView(
+      data,
+      oldRangeInfo,
+      newRangeInfo,
+      props.chartConfig.containerHeight
+    );
 
-      let _viewRange = viewRange();
-      let viewRangeValue = [
-        _viewRange[0][1] - _viewRange[0][0],
-        _viewRange[1][1] - _viewRange[1][0],
-      ];
+    data = transpose(data);
+    let ePoint = data.pop();
+    console.log("getDataPointList transpose", data);
+    console.log("getDataPointList ePoint", ePoint);
 
-      let viewMatrix = data.map((axis, i) =>
-        axis.map(
-          (value) =>
-            ((value - _dataRange[i][0]) * viewRangeValue[i]) /
-              _dataRange[i][2] +
-            _viewRange[i][0]
-        )
+    // plot circle points are coords
+    data.map((coord) => {
+      coord = [coord[0], Number(coord[1])];
+      dataPointList.push(
+        <circle
+          cx={coord[0]}
+          cy={Number(coord[1])}
+          r={2}
+          fill="red"
+          className="circle"
+        />
       );
+    });
 
-      let offsetY =
-        viewMatrix[1][viewMatrix[1].length - 1] -
-        props.chartConfig.middleCoord()[1];
+    dataPointList.push(
+      <circle
+        cx={ePoint[0]}
+        cy={ePoint[1]}
+        r={2}
+        fill="blue"
+        className="circle"
+      />
+    );
 
-      viewMatrix = translate(viewMatrix, 0, -offsetY);
-
-      return viewMatrix;
-    } catch (e) {
-      return [];
-    }
-  };
-
-  const plotData = (range) => {
-    try {
-      let data = data2View(range);
-
-      data = transpose(data);
-
-      let dataPoints = [];
-      data.map((coord) => {
+    // plot lines between coords
+    data.map((coord, i) => {
+      if (i < data.length - 1) {
         coord = [coord[0], Number(coord[1])];
-        dataPoints.push(
-          <circle
-            cx={coord[0]}
-            cy={Number(coord[1])}
-            r={0}
-            fill="red"
-            className="circle"
+        let coordNext = [data[i + 1][0], Number(data[i + 1][1])];
+        dataPointList.push(
+          <line
+            x1={coord[0]}
+            y1={coord[1]}
+            x2={coordNext[0]}
+            y2={coordNext[1]}
+            stroke="grey"
           />
         );
-      });
+      }
+    });
 
-      data.map((coord, i) => {
-        if (i < data.length - 1) {
-          coord = [coord[0], Number(coord[1])];
-          let coordNext = [data[i + 1][0], Number(data[i + 1][1])];
-          dataPoints.push(
-            <line
-              x1={coord[0]}
-              y1={coord[1]}
-              x2={coordNext[0]}
-              y2={coordNext[1]}
-              stroke="grey"
-            />
-          );
-        }
-      });
-      return dataPoints;
-    } catch (e) {}
+    // plot bitch
+    data.map((coord, i) => {
+      let yPad = props.chartConfig.paddingY() + props.chartConfig.chartHeight;
+      dataPointList.push(
+        <text x={100} y={yPad} fill="red">
+          bitch
+        </text>
+      );
+    });
+    return dataPointList;
   };
+
+  console.log("LineChart epochData", props.epochData);
 
   return (
     <>
-      {plotData(320)}
-      {/* <circle cx="1" cy="1" r={100} fill="red" /> */}
+      {props.data && props.epochData ? getDataPointList(props.data, 200) : null}
     </>
   );
 };
 
-export default Axes;
+export default LineChart;

@@ -17,52 +17,55 @@
 
 .binContainer {
     width: 50%;
-    height: calc(100% / 9 * 7);
+    height: 100%;
     padding: 0 10px;
     vertical-align: middle;
-    margin: auto 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
 }
 
 .bin {
-    height: calc(100%/7);
+    height: calc(100%/9);
     display: flex;
     flex-direction: column;
-
+    text-align: center;
 }
 
-.binUpper {
-    height: 33%;
+.bin > div {
+    margin: auto 0;
+    justify-content: space-between;
+}
+
+.binChoice {
     display: flex;
-    align-items: center;
-    font-size: 1rem;
+    justify-content: space-between;
+
 }
 
+.binChoice > button {
+    width: 49%;
+}
+
+.bin > div > div {
+    margin: 10px 0;
+}
 
 input {
-    border-width: 1px;
-    border-radius: 10px;
-    border-color: black;
-    height: 66%;
+    border-style: none;
+    height: 100%;
     width: 100%;
-    box-sizing: border-box;
     font-size: 1.25rem;
     text-align: center;
     background-color: #CCE5FF;
 }
 
-.toolContainer {
+.statsContainer {
     width: 50%;
+    display: grid;
+    grid-gap: 10px;
+    padding: 10px 10px;
 }
-
-.tool-button {}
-
-.student-t-distribution {}
-
-.tool-button {}
-
-#copy {}
-
-#statistic {}
 
 /* Chrome, Safari, Edge, Opera */
 input::-webkit-outer-spin-button,

@@ -2,34 +2,51 @@ import { useState } from "react";
 import styles from "./Pair.module.css";
 
 const Pair = (props) => {
-  const [showOptions, setShowOptions] = useState(false);
-  const [currentPair, setCurrentPair] = useState("");
-
-  let sampleOptions = ["Ethereum", "Avalanche"];
+  const [showInstrumentList, setShowInstrumentList] = useState(false);
+  // const [currentPair, setCurrentPair] = useState("");
 
   const toggleOptions = () => {
     console.log("toggled");
-    setShowOptions(!showOptions);
+    setShowInstrumentList(!showInstrumentList);
+  };
+
+  const Instrument = ({ instrument }) => {
+    return (
+      <div
+        className={styles.option}
+        onClick={() => {
+          props.setInstrument(instrument);
+        }}
+      >
+        {`${instrument?.underlyingDescription.replaceAll(" ", "")} ${
+          (+instrument?.epochDurationInSeconds.toString() +
+            +instrument?.bufferDurationInSeconds.toString()) /
+          60
+        }m (${(+instrument?.volatilityMultiplier.toString() / 10000).toFixed(
+          1
+        )} SD  E)`}
+      </div>
+    );
   };
 
   return (
     <div className={styles.container}>
       <div className={styles.image} />
       <div className={styles.networkContainer} onClick={toggleOptions}>
-        <div className={styles.network}>
-          {currentPair == "" ? "Select pair..." : currentPair}
-        </div>
-        {showOptions
-          ? sampleOptions.map((option) => (
-              <div
-                className={styles.option}
-                onClick={() => {
-                  setCurrentPair(`${option}`);
-                  console.log(currentPair);
-                }}
-              >
-                {option}
-              </div>
+        <div
+          className={styles.network}
+        >{`${props.instrument?.underlyingDescription.replaceAll(" ", "")} ${
+          (+props.instrument?.epochDurationInSeconds.toString() +
+            +props.instrument?.bufferDurationInSeconds.toString()) /
+          60
+        }m (${(
+          +props.instrument?.volatilityMultiplier.toString() / 10000
+        ).toFixed(1)} SD ${
+          +props.instrument?.baseError.toString() / 10000
+        } E)`}</div>
+        {showInstrumentList
+          ? props.instrumentList?.map((instrument) => (
+              <Instrument instrument={instrument} />
             ))
           : null}
       </div>

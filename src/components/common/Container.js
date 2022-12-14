@@ -1,19 +1,35 @@
 import styled from "styled-components";
 
 const Container = styled.div`
-  width: 100vw;
-  max-width: 2000px;
-  min-width: 1100px;
-  margin: 0 auto;
+  margin: 1rem;
   display: flex;
-  max-height: 1000px;
   min-height: 900px;
-  height: calc(100vw / 2);
   flex-direction: column;
   border-width: 2px;
   border-style: solid;
   border-color: #2aaee6;
+  border-radius: 20px;
+  border-width: 5px;
   background-color: #cce5ff;
+  box-shadow: 5px 5px 10px 0px grey;
+  flex: 1;
 `;
 
-export { Container };
+const AppContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  min-width: 1500px;
+`;
+
+const InnerContainer = styled.div`
+  max-width: 1000px;
+  width: 100vw;
+  min-width: 1000px;
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+`;
+
+export { Container, AppContainer, InnerContainer };

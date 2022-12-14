@@ -12,16 +12,17 @@
 }
 
 .front {
-    background-color: white;
-    border-radius: 10px;
-    border-color: #2AAEE6;
-    border-style: solid;
     position: absolute;
     top: 0;
     left: 150px;
     width: calc(100% - 300px);
     align-items: center;
     height: 140px;
+}
+
+.text {
+    text-align: center;
+    margin: 0;
 }
 
 .asset {
