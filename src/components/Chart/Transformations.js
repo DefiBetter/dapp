@@ -60,8 +60,8 @@ export const scale = (matrix, oldRangeInfo, newRangeInfo) => {
   console.log("scale newRangeInfo", newRangeInfo);
 
   return matrix.map((axis, i) => {
-    const [oldMin, oldRange] = oldRangeInfo[i].splice(1);
-    const [newMin, newRange] = newRangeInfo[i].splice(1);
+    const [oldMin, oldRange] = [...oldRangeInfo[i]].splice(1);
+    const [newMin, newRange] = [...newRangeInfo[i]].splice(1);
     console.log("scale [oldMin, oldRange]", [oldMin, oldRange]);
     console.log("scale [newMin, newRange]", [newMin, newRange]);
     return axis.map(
