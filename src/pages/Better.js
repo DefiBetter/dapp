@@ -104,7 +104,7 @@ function Better() {
       console.log("getInstrumentBySelector count", count);
       setInstrument(data);
     },
-    // watch: true,
+    watch: true,
   });
 
   console.log("getInstrumentBySelector getStatus", getStatus);
