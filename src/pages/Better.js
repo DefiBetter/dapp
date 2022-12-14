@@ -86,11 +86,9 @@ function Better() {
   });
 
   // instrument
-  const [count, setCount] = useState(0);
   const {
     refetch: getInstrumentBySelectorRefetch,
     isRefetching: getInstrumentBySelectorIsRefetching,
-    status: getStatus,
   } = useContractRead({
     ...betterContractConfig,
     functionName: "getInstrumentBySelector",
@@ -99,15 +97,26 @@ function Better() {
       console.log("getInstrumentBySelector error", data);
     },
     onSuccess(data) {
-      console.log("getInstrumentBySelector", data);
-      setCount(count + 1);
-      console.log("getInstrumentBySelector count", count);
-      setInstrument(data);
+      // console.log("getInstrumentBySelector", data);
+      if (data.selector == instrument.selector) {
+        console.log("getInstrumentBySelector same selector");
+        if (data.epoch != instrument.epoch) {
+          console.log("getInstrumentBySelector diff epoch");
+          console.log("getInstrumentBySelector data.epoch", data.epoch);
+          console.log(
+            "getInstrumentBySelector instrument.epoch",
+            instrument.epoch
+          );
+          setInstrument(data);
+        } else {
+          console.log("getInstrumentBySelector same epoch");
+        }
+      } else {
+        console.log("getInstrumentBySelector diff selector");
+      }
     },
     watch: true,
   });
-
-  console.log("getInstrumentBySelector getStatus", getStatus);
 
   // epoch data for currently selected instrument
   useContractRead({

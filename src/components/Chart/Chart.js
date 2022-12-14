@@ -228,7 +228,7 @@ const Chart = (props) => {
     contracts: (() => {
       {
         let temp = [];
-        for (let i = 0; i < 50; i++) {
+        for (let i = 0; i < 30; i++) {
           temp.push({
             ...aggregatorContractConfig,
             functionName: "getRoundData",
