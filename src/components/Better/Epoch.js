@@ -24,6 +24,7 @@ const Epoch = (props) => {
     return humanDateFormat;
   };
 
+  console.log("isRefetching", props.getInstrumentBySelectorIsRefetching);
   return (
     <div className={styles.container}>
       <div className={styles.timeRemaining}>
@@ -31,16 +32,25 @@ const Epoch = (props) => {
           <b>Epoch time remaining:</b>
         </div>
         <div className={styles.time}>
-          <Countdown
-            key={countdownDate()}
-            date={countdownDate()}
-            onComplete={() => {
-              console.log("countdown complete");
-              props.getInstrumentBySelectorRefetch();
-              console.log("countdown refetch");
-              console.log("countdown instrument", props.instrument);
-            }}
-          />
+          {props.getInstrumentBySelectorIsRefetching ? null : (
+            <Countdown
+              key={props.instrument?.epoch}
+              date={
+                (+props.instrument?.lastEpochClosingTime +
+                  +props.instrument?.epochDurationInSeconds +
+                  +props.instrument?.bufferDurationInSeconds) *
+                1000
+              }
+              onComplete={() => {
+                console.log("countdown complete");
+                props.getInstrumentBySelectorRefetch().then((result) => {
+                  props.setInstrument(result);
+                });
+                console.log("countdown refetch");
+                console.log("countdown instrument", props.instrument);
+              }}
+            />
+          )}
 
           {/* <b>{timeRemainingFormatted()}</b> */}
         </div>
