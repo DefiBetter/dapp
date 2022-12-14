@@ -98,6 +98,34 @@ const ChartBackground = (props) => {
         </text>
       );
 
+      // buffer time line
+      let bufferTime =
+        +props.lastEpochData.closeTime.toString() +
+        +props.instrument.epochDurationInSeconds.toString();
+
+      let bufferCoord = transpose([[bufferTime, 0]]);
+
+      console.log("getVerticalBackground transpose", bufferCoord);
+
+      bufferCoord = data2SvgView(
+        bufferCoord,
+        oldRangeInfo,
+        newRangeInfo,
+        props.chartConfig.containerHeight
+      );
+      console.log("getVerticalBackground bufferCoord", bufferCoord);
+
+      dataPointList.push(
+        <line
+          x1={bufferCoord[0]}
+          y1={0}
+          x2={bufferCoord[0]}
+          y2={props.chartConfig.containerHeight}
+          stroke="grey"
+          strokeDasharray="5"
+        />
+      );
+
       // vertical guide lines on chart
       // dataPointList.push(
       //   <line
