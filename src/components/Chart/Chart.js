@@ -124,6 +124,16 @@ const Chart = (props) => {
     chartHeight: 0,
     epochCount: 1,
     scaleType: { x: "nEpoch", y: "binBorder" },
+    xLabelStart: function (xData) {
+      if (this.scaleType.x == "nEpoch") {
+        return this.middleCoord;
+      }
+    },
+    yLabelStart: function (yData) {
+      if (this.scaleType.y == "binBorder") {
+        return this.paddingY();
+      }
+    },
     paddingX: function () {
       return (this.containerWidth - this.chartWidth) / 2;
     },
@@ -302,13 +312,14 @@ const Chart = (props) => {
   const yRangeInfo = (yData) => {
     let yMin, yMax, yRange;
     let yNewMin, yNewMax, yNewRange;
+    let yLabelSize;
 
     let yType = chartConfig.scaleType.y;
     if (yType == "binBorder") {
+      yLabelSize = +ethers.utils.formatEther(props.epochData.binSize);
+
       yMin = +ethers.utils.formatEther(props.epochData.binStart);
-      yMax =
-        +ethers.utils.formatEther(props.epochData.binStart) +
-        +ethers.utils.formatEther(props.epochData.binSize) * 7;
+      yMax = yMin + yLabelSize * 7;
       yRange = yMax - yMin;
 
       yNewMin = chartConfig.paddingY();
@@ -318,7 +329,7 @@ const Chart = (props) => {
 
     let rangeInfo = [yMin, yMax, yRange];
     let newRangeInfo = [yNewMin, yNewMax, yNewRange];
-    return { rangeInfo, newRangeInfo };
+    return { rangeInfo, newRangeInfo, yLabelSize };
   };
 
   const rangeInfo = (data) => {
@@ -332,11 +343,15 @@ const Chart = (props) => {
         [0, 0, 0],
         [0, 0, 0],
       ];
+    let yLabelSize;
 
     ({ rangeInfo: oldRangeInfo[0], newRangeInfo: newRangeInfo[0] } =
       xRangeInfo(xData));
-    ({ rangeInfo: oldRangeInfo[1], newRangeInfo: newRangeInfo[1] } =
-      yRangeInfo(yData));
+    ({
+      rangeInfo: oldRangeInfo[1],
+      newRangeInfo: newRangeInfo[1],
+      yLabelSize,
+    } = yRangeInfo(yData));
 
     let epochStartPoint = [
       oldRangeInfo[0][1],
@@ -348,7 +363,7 @@ const Chart = (props) => {
     console.log("rangeInfo newRangeInfo", newRangeInfo);
     console.log("rangeInfo epochStartPoint", epochStartPoint);
 
-    return { oldRangeInfo, newRangeInfo, epochStartPoint };
+    return { oldRangeInfo, newRangeInfo, epochStartPoint, yLabelSize };
   };
 
   /* useEffect */

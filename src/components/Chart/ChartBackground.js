@@ -26,92 +26,105 @@ const ChartBackground = (props) => {
     return +ethers.utils.formatEther(props.epochData.binSize);
   };
 
-  // const getVerticalBackground = () => {
-  //   let data = transpose(props.data);
-  //   const { oldRangeInfo, newRangeInfo, middleCoords } = rangeInfo(
-  //     data,
-  //     props.chartConfig,
-  //     props.epochData,
-  //     props.instrument
-  //   );
+  const getVerticalBackground = () => {
+    let data = transpose(props.data);
+    const {
+      oldRangeInfo,
+      newRangeInfo,
+      epochStartPoint: middleCoords,
+    } = props.rangeInfo(data);
+    console.log(
+      "getVerticalBackground { oldRangeInfo, newRangeInfo, middleCoords }",
+      { oldRangeInfo, newRangeInfo, middleCoords }
+    );
 
-  //   let dataPointList = [];
+    let dataPointList = [];
 
-  //   /* generate data points for x axis labels */
-  //   let xLabelCoordList = [];
-  //   let xAxisRange = data[0][data[0].length - 1] - data[0][0]; // seconds
+    /* generate data points for x axis labels */
+    let xLabelCoordList = [];
+    let xAxisRange = data[0][data[0].length - 1] - data[0][0]; // seconds
 
-  //   let interval = timeRange2TimeInterval(xAxisRange);
-  //   let xMiddle = middleCoords[0];
+    let interval = timeRange2TimeInterval(xAxisRange);
+    let xMiddle = middleCoords[0];
 
-  //   // historical time
-  //   for (let i = 0; i < xAxisRange / interval; i++) {
-  //     xLabelCoordList.push([xMiddle - interval * i, 0]);
-  //   }
+    // historical time
+    for (let i = 0; i < xAxisRange / interval; i++) {
+      xLabelCoordList.push([xMiddle - interval * i, 0]);
+    }
 
-  //   // future time
-  //   for (let i = 0; i < xAxisRange / interval; i++) {
-  //     xLabelCoordList.push([xMiddle + interval * i, 0]);
-  //   }
+    // future time
+    for (let i = 0; i < xAxisRange / interval; i++) {
+      xLabelCoordList.push([xMiddle + interval * i, 0]);
+    }
 
-  //   // get x labels for each coord
-  //   let xLabelList = transpose(xLabelCoordList)[0];
-  //   xLabelList = xLabelList.map((dateTime) => {
-  //     const dt = new Date(dateTime * 1000);
-  //     return `${("0" + dt.getHours()).slice(-2)}:${(
-  //       "0" + dt.getMinutes()
-  //     ).slice(-2)}:${("0" + dt.getSeconds()).slice(-2)}`;
-  //   });
+    // get x labels for each coord
+    let xLabelList = transpose(xLabelCoordList)[0];
+    xLabelList = xLabelList.map((dateTime) => {
+      const dt = new Date(dateTime * 1000);
+      return `${("0" + dt.getHours()).slice(-2)}:${(
+        "0" + dt.getMinutes()
+      ).slice(-2)}:${("0" + dt.getSeconds()).slice(-2)}`;
+    });
 
-  //   // scale coords to fit svg
-  //   xLabelCoordList = transpose(xLabelCoordList);
-  //   xLabelCoordList = data2SvgView(
-  //     xLabelCoordList,
-  //     oldRangeInfo,
-  //     newRangeInfo,
-  //     props.chartConfig.containerHeight
-  //   );
+    // scale coords to fit svg
+    xLabelCoordList = transpose(xLabelCoordList);
+    xLabelCoordList = data2SvgView(
+      xLabelCoordList,
+      oldRangeInfo,
+      newRangeInfo,
+      props.chartConfig.containerHeight
+    );
 
-  //   // move data to correct position
-  //   xLabelCoordList[1] = xLabelCoordList[0].map(
-  //     () => props.chartConfig.chartHeight + props.chartConfig.paddingY()
-  //   );
+    // move data to correct position
+    xLabelCoordList[1] = xLabelCoordList[0].map(
+      () => props.chartConfig.containerHeight
+    );
+    console.log("getVerticalBackground xLabelCoordList", xLabelCoordList);
 
-  //   xLabelCoordList = transpose(xLabelCoordList);
+    xLabelCoordList = transpose(xLabelCoordList);
 
-  //   // add label element
-  //   xLabelCoordList.map((x, i) => {
-  //     // text
-  //     dataPointList.push(
-  //       <text x={x[0]} y={x[1] + 20} fill="red" textAnchor="middle">
-  //         {xLabelList[i]}
-  //       </text>
-  //     );
+    // add label element
+    xLabelCoordList.map((x, i) => {
+      // text
+      dataPointList.push(
+        <text
+          x={x[0]}
+          y={x[1]}
+          fill="red"
+          textAnchor="middle"
+          alignmentBaseline="text-after-edge"
+        >
+          {xLabelList[i]}
+        </text>
+      );
 
-  //     // vertical lines on chart
-  //     dataPointList.push(
-  //       <line
-  //         x1={x[0]}
-  //         y1={props.chartConfig.containerHeight}
-  //         x2={x[0]}
-  //         y2={0}
-  //         stroke="grey"
-  //         strokeDasharray="5"
-  //       />
-  //     );
-  //   });
+      // vertical guide lines on chart
+      // dataPointList.push(
+      //   <line
+      //     x1={x[0]}
+      //     y1={props.chartConfig.containerHeight}
+      //     x2={x[0]}
+      //     y2={0}
+      //     stroke="grey"
+      //     strokeDasharray="5"
+      //   />
+      // );
+    });
 
-  //   return dataPointList;
-  // };
+    return dataPointList;
+  };
 
   // const getHorizontalBackground = () => {
+  //   console.log("getHorizontalBackground chartConfig", props.chartConfig);
   //   let data = transpose(props.data);
-  //   const { oldRangeInfo, newRangeInfo, middleCoords } = rangeInfo(
-  //     data,
-  //     props.chartConfig,
-  //     props.epochData,
-  //     props.instrument
-  //   );
+  //   const { oldRangeInfo, newRangeInfo, middleCoords, yLabelSize } =
+  //     props.rangeInfo(
+  //       data,
+  //       props.chartConfig,
+  //       props.epochData,
+  //       props.instrument
+  //     );
+  //   console.log("getHorizontalBackground yLabelSize", yLabelSize);
   //   console.log("getHorizontalBackground transpose", transpose);
   //   console.log(
   //     "getHorizontalBackground { oldRangeInfo, newRangeInfo, middleCoords }",
@@ -131,15 +144,9 @@ const ChartBackground = (props) => {
   //   console.log("getHorizontalBackground yMiddle", yMiddle);
 
   //   // lower prices
-  //   for (let i = 0; i < yAxisRange / interval; i++) {
-  //     yLabelCoordList.push([0, yMiddle - interval * i]);
-  //   }
 
   //   // higher prices
-  //   for (let i = 0; i < yAxisRange / interval; i++) {
-  //     yLabelCoordList.push([0, yMiddle + interval * i]);
-  //   }
-  //   console.log("getHorizontalBackground yLabelCoordList", yLabelCoordList);
+
   //   // get y labels for each coord
   //   let yLabelList = transpose(yLabelCoordList)[1];
   //   console.log("getHorizontalBackground yLabelList", yLabelList);
@@ -197,8 +204,8 @@ const ChartBackground = (props) => {
 
   return (
     <>
-      {/* {props.data && props.epochData ? getVerticalBackground() : null}
-      {props.data && props.epochData ? getHorizontalBackground() : null} */}
+      {props.data && props.epochData ? getVerticalBackground() : null}
+      {/* {props.data && props.epochData ? getHorizontalBackground() : null} */}
       {/* x axis */}
       <line
         x1={props.chartConfig.paddingX() + 0}
