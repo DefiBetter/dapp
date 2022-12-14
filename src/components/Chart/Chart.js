@@ -118,11 +118,12 @@ const Chart = (props) => {
 
   // chart config
   let [chartConfig, setChartConfig] = useState({
-    containerWidth: 600,
-    containerHeight: 600,
-    chartWidth: 500,
-    chartHeight: 500,
-
+    containerWidth: 0,
+    containerHeight: 0,
+    chartWidth: 0,
+    chartHeight: 0,
+    epochCount: 1,
+    scaleType: { x: "nEpoch", y: "binBorder" },
     paddingX: function () {
       return (this.containerWidth - this.chartWidth) / 2;
     },
@@ -132,116 +133,13 @@ const Chart = (props) => {
     middleCoord: function () {
       return [this.containerWidth / 2, this.containerHeight / 2];
     },
-    getRangeInfoX: function (data, type) {
-      let xMin, xMax, xRange;
-      let xNewMin, xNewMax, xNewRange;
-      let middleCoords;
-      if (type == "trailing") {
-        /* old range */
-        xMin = Math.min(...data[0]);
-        xMax = Math.max(...data[0]);
-        xRange = xMax - xMin;
-
-        /* new range */
-        xNewMin = this.paddingX();
-        xNewMax = this.middleCoord()[0];
-        xNewRange = xNewMax - xNewMin;
-        middleCoords = [
-          data[0][data[0].length - 1],
-          data[1][data[0].length - 1],
-        ];
-      } else if (type == "epoch") {
-      } else if (type == "historical") {
-      }
-
-      let rangeInfo = [xMin, xMax, xRange];
-      let newRangeInfo = [xNewMin, xNewMax, xNewRange];
-      console.log("getRangeInfoX rangeInfo", rangeInfo);
-      console.log("getRangeInfoX newRangeInfo", newRangeInfo);
-      console.log("getRangeInfoX { rangeInfo, newRangeInfo, middleCoords }", {
-        rangeInfo,
-        newRangeInfo,
-        middleCoords,
-      });
-      return { rangeInfo, newRangeInfo, middleCoords };
-    },
-    getRangeInfoY: function (data, type, middleCoords) {
-      console.log("getRangeInfoY", [data, type, middleCoords]);
-      let yMin, yMax, yRange;
-      let yNewMin, yNewMax, yNewRange;
-      let yMiddle = middleCoords[1];
-      if (type == "minMax") {
-        /* old range */
-        yMin = Math.min(...data[1]);
-        yMax = Math.max(...data[1]);
-        yRange = yMax - yMin;
-
-        // logic to see which points to anchor in the y axis
-        let diffMin = yMiddle - yMin;
-        let diffMax = yMax - yMiddle;
-        if (diffMin > diffMax) {
-          yMax = yMiddle;
-          yRange = yMiddle - yMin;
-          console.log("getRangeInfoY yMin", yMin);
-
-          yNewMin = this.paddingY();
-          console.log("getRangeInfoY yNewMin", yNewMin);
-          yNewMax = this.middleCoord()[1];
-        } else {
-          yMin = yMiddle;
-          yRange = yMax - yMiddle;
-
-          yNewMin = this.middleCoord()[1];
-          console.log("getRangeInfoY yNewMin", yNewMin);
-          yNewMax = this.paddingY() + this.chartHeight;
-        }
-
-        /* new range */
-        // yNewMin = props.chartConfig.paddingY();
-        // yNewMax =
-        //   props.chartConfig.paddingY() + props.chartConfig.chartHeight / 2;
-        yNewRange = yNewMax - yNewMin;
-      } else if (type == "1SD") {
-      } else if (type == "2SD") {
-      }
-
-      let rangeInfo = [yMin, yMax, yRange];
-      console.log("getRangeInfoY rangeInfo", rangeInfo);
-      let newRangeInfo = [yNewMin, yNewMax, yNewRange];
-      console.log("getRangeInfoY newRangeInfo", newRangeInfo);
-      console.log("getRangeInfoY { rangeInfo, newRangeInfo }", {
-        rangeInfo,
-        newRangeInfo,
-      });
-      return { rangeInfo, newRangeInfo };
-    },
-    rangeInfo: function (data, xType = "trailing", yType = "minMax") {
-      let oldRangeInfo = [
-          [0, 0, 0],
-          [0, 0, 0],
-        ],
-        newRangeInfo = [
-          [0, 0, 0],
-          [0, 0, 0],
-        ];
-      let middleCoords;
-      // setting x values for scaling
-      ({
-        rangeInfo: oldRangeInfo[0],
-        newRangeInfo: newRangeInfo[0],
-        middleCoords,
-      } = this.getRangeInfoX(data, xType));
-
-      // setting y values for scaling
-      ({ rangeInfo: oldRangeInfo[1], newRangeInfo: newRangeInfo[1] } =
-        this.getRangeInfoY(data, yType, middleCoords));
-
-      console.log("rangeInfo", { oldRangeInfo, newRangeInfo, middleCoords });
-      return { oldRangeInfo, newRangeInfo, middleCoords };
-    },
   });
 
+  // latest round data from chainlink
+  const [latestRoundData, setLatestRoundData] = useState([0n, 0n, 0n]);
+
   /* contract read/write */
+  // get last epoch data
   useContractRead({
     ...props.betterContractConfig,
     functionName: "getEpochData",
@@ -251,8 +149,12 @@ const Chart = (props) => {
     },
     onSuccess(data) {
       console.log("getEpochData", data);
+      console.log("getEpochData last epoch", props.instrument?.epoch - 1);
+      console.log("getEpochData selector", props.instrument?.selector);
+      console.log("yyy closeTime", data.closeTime.toString());
       setLastEpochData(data);
     },
+    watch: true,
   });
 
   // get underlying price and last updated
@@ -271,13 +173,13 @@ const Chart = (props) => {
     watch: true,
   });
 
+  // aggregator config
   const aggregatorContractConfig = {
     address: props.instrument?.underlying,
     abi: AggregatorV3InterfaceABI,
   };
-  console.log("aggregatorContractConfig", aggregatorContractConfig);
 
-  const [latestRoundData, setLatestRoundData] = useState([0n, 0n, 0n]);
+  // latestRoundData
   useContractRead({
     ...aggregatorContractConfig,
     args: [],
@@ -286,7 +188,7 @@ const Chart = (props) => {
       console.log("latestRoundData error", data);
     },
     onSuccess(data) {
-      console.log("latestRoundData", data);
+      console.log("yyy latest round data", data);
       // console.log("latestRoundData.roundId", 92233720368547771158n);
       // console.log("latestRoundData phaseId", 92233720368547771158n >> 64n);
       // console.log(
@@ -311,6 +213,7 @@ const Chart = (props) => {
     watch: true,
   });
 
+  // get historical prices
   useContractReads({
     contracts: (() => {
       {
@@ -331,7 +234,7 @@ const Chart = (props) => {
     },
     onSuccess(data) {
       console.log(
-        "useContractReads",
+        "yyy historical price",
         data.map((d) => {
           return [
             +d.updatedAt.toString(),
@@ -352,8 +255,105 @@ const Chart = (props) => {
   });
   console.log("chartData", chartData);
 
-  const containerRef = useRef(null);
+  /* chart helper functions */
 
+  const xRangeInfo = (xData) => {
+    let xMin, xMax, xRange;
+    let xNewMin, xNewMax, xNewRange;
+
+    let xType = chartConfig.scaleType.x;
+    if (xType == "nEpoch") {
+      let n = chartConfig.epochCount;
+      let totalEpochTime =
+        +props.instrument.bufferDurationInSeconds.toString() +
+        +props.instrument.epochDurationInSeconds.toString();
+      let epochStartTime = +lastEpochData.closeTime.toString();
+      console.log("getDataPointList epochStartTime", Date(epochStartTime));
+
+      // old range
+      console.log("xRangeInfo n", n);
+      console.log("xRangeInfo epochStartTime", epochStartTime);
+      console.log("xRangeInfo totalEpochTime", totalEpochTime);
+      xMin = epochStartTime - totalEpochTime * n;
+      console.log("xRangeInfo xMin", xMin);
+      xMax = epochStartTime;
+      console.log("xRangeInfo xMax", xMax);
+      xRange = xMax - xMin;
+
+      // new range
+      xNewMin = 0;
+      xNewMax = (chartConfig.containerWidth * n) / (n + 1);
+      xNewRange = xNewMax - xNewMin;
+    } else if (xType == "trailing") {
+      xMin = Math.min(...xData);
+      xMax = Math.max(...xData);
+      xRange = xMax - xMin;
+
+      xNewMin = chartConfig.paddingX();
+      xNewMax = chartConfig.middleCoord()[0];
+      xNewRange = xNewMax - xNewMin;
+    }
+
+    let rangeInfo = [xMin, xMax, xRange];
+    let newRangeInfo = [xNewMin, xNewMax, xNewRange];
+    return { rangeInfo, newRangeInfo };
+  };
+
+  const yRangeInfo = (yData) => {
+    let yMin, yMax, yRange;
+    let yNewMin, yNewMax, yNewRange;
+
+    let yType = chartConfig.scaleType.y;
+    if (yType == "binBorder") {
+      yMin = +ethers.utils.formatEther(props.epochData.binStart);
+      yMax =
+        +ethers.utils.formatEther(props.epochData.binStart) +
+        +ethers.utils.formatEther(props.epochData.binSize) * 7;
+      yRange = yMax - yMin;
+
+      yNewMin = chartConfig.paddingY();
+      yNewMax = chartConfig.paddingY() + chartConfig.chartHeight;
+      yNewRange = yNewMax - yNewMin;
+    }
+
+    let rangeInfo = [yMin, yMax, yRange];
+    let newRangeInfo = [yNewMin, yNewMax, yNewRange];
+    return { rangeInfo, newRangeInfo };
+  };
+
+  const rangeInfo = (data) => {
+    let xData = data[0];
+    let yData = data[1];
+    let oldRangeInfo = [
+        [0, 0, 0],
+        [0, 0, 0],
+      ],
+      newRangeInfo = [
+        [0, 0, 0],
+        [0, 0, 0],
+      ];
+
+    ({ rangeInfo: oldRangeInfo[0], newRangeInfo: newRangeInfo[0] } =
+      xRangeInfo(xData));
+    ({ rangeInfo: oldRangeInfo[1], newRangeInfo: newRangeInfo[1] } =
+      yRangeInfo(yData));
+
+    let epochStartPoint = [
+      oldRangeInfo[0][1],
+      oldRangeInfo[1][0] + oldRangeInfo[1][2] / 2,
+    ];
+
+    console.log("rangeInfo data", data);
+    console.log("rangeInfo oldRangeInfo", oldRangeInfo);
+    console.log("rangeInfo newRangeInfo", newRangeInfo);
+    console.log("rangeInfo epochStartPoint", epochStartPoint);
+
+    return { oldRangeInfo, newRangeInfo, epochStartPoint };
+  };
+
+  /* useEffect */
+  // chart config based on parent component
+  const containerRef = useRef(null);
   useLayoutEffect(() => {
     console.log(
       "containerRef",
@@ -365,9 +365,10 @@ const Chart = (props) => {
       containerWidth: containerRef.current.offsetWidth,
       containerHeight: containerRef.current.offsetHeight,
       chartWidth: containerRef.current.offsetWidth * 0.9,
-      chartHeight: containerRef.current.offsetHeight * 0.9,
+      chartHeight: (containerRef.current.offsetHeight * 7) / 9,
     });
   }, []);
+
   return (
     <div className={styles.container} ref={containerRef}>
       {/* for the time being (before figuring out a place to get raw data) we will be using dex screener */}
@@ -381,8 +382,22 @@ const Chart = (props) => {
       <svg width={"100%"} height={"100%"} style={{ backgroundColor: "white" }}>
         {" "}
         {/* <line x1={0} y1={0} x2={window.innerWidth} y2={0} stroke="grey" /> */}
-        <ChartBackground chartConfig={chartConfig} data={chartData} />
-        <LineChart chartConfig={chartConfig} data={chartData} />
+        <ChartBackground
+          chartConfig={chartConfig}
+          data={chartData}
+          epochData={props.epochData}
+          lastEpochData={lastEpochData}
+          instrument={props.instrument}
+          rangeInfo={rangeInfo}
+        />
+        <LineChart
+          chartConfig={chartConfig}
+          data={chartData}
+          epochData={props.epochData}
+          lastEpochData={lastEpochData}
+          instrument={props.instrument}
+          rangeInfo={rangeInfo}
+        />
         {/* <BarChart chartConfig={chartConfig} data={data} /> */}{" "}
       </svg>
       <Grid>

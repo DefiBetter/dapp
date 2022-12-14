@@ -7,6 +7,7 @@ import {
   transpose,
   scale,
   data2SvgView,
+  rangeInfo,
 } from "./Transformations";
 
 const LineChart = (props) => {
@@ -25,19 +26,23 @@ const LineChart = (props) => {
       - binBorder => scale to align with the bin border
     */
     let dataPointList = [];
-    console.log("plotData data", data);
+    console.log("getDataPointList data", data);
 
     data = transpose(data);
-    console.log("data2View transpose", data);
+    console.log("getDataPointList transpose", data);
 
-    const { oldRangeInfo, newRangeInfo } = props.chartConfig.rangeInfo(data);
+    const { oldRangeInfo, newRangeInfo, epochStartPoint } =
+      props.rangeInfo(data);
 
+    console.log("getDataPointList epochStartPoint", Date(epochStartPoint[0]));
     console.log(
-      "data2View oldRangeInfo, newRangeInfo",
+      "getDataPointList oldRangeInfo, newRangeInfo",
       oldRangeInfo,
       newRangeInfo
     );
 
+    data[0].push(epochStartPoint[0]);
+    data[1].push(epochStartPoint[1]);
     // transformations
     data = data2SvgView(
       data,
@@ -47,7 +52,9 @@ const LineChart = (props) => {
     );
 
     data = transpose(data);
-    console.log("plotData transpose", data);
+    let ePoint = data.pop();
+    console.log("getDataPointList transpose", data);
+    console.log("getDataPointList ePoint", ePoint);
 
     // plot circle points are coords
     data.map((coord) => {
@@ -62,6 +69,16 @@ const LineChart = (props) => {
         />
       );
     });
+
+    dataPointList.push(
+      <circle
+        cx={ePoint[0]}
+        cy={ePoint[1]}
+        r={2}
+        fill="blue"
+        className="circle"
+      />
+    );
 
     // plot lines between coords
     data.map((coord, i) => {
@@ -92,7 +109,13 @@ const LineChart = (props) => {
     return dataPointList;
   };
 
-  return <>{props.data ? getDataPointList(props.data, 200) : null}</>;
+  console.log("LineChart epochData", props.epochData);
+
+  return (
+    <>
+      {props.data && props.epochData ? getDataPointList(props.data, 200) : null}
+    </>
+  );
 };
 
 export default LineChart;

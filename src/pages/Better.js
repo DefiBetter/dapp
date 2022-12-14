@@ -87,7 +87,11 @@ function Better() {
 
   // instrument
   const [count, setCount] = useState(0);
-  const { refetch: getInstrumentBySelectorRefetch } = useContractRead({
+  const {
+    refetch: getInstrumentBySelectorRefetch,
+    isRefetching: getInstrumentBySelectorIsRefetching,
+    status: getStatus,
+  } = useContractRead({
     ...betterContractConfig,
     functionName: "getInstrumentBySelector",
     args: [instrumentSelector],
@@ -100,7 +104,10 @@ function Better() {
       console.log("getInstrumentBySelector count", count);
       setInstrument(data);
     },
+    // watch: true,
   });
+
+  console.log("getInstrumentBySelector getStatus", getStatus);
 
   // epoch data for currently selected instrument
   useContractRead({
@@ -168,15 +175,6 @@ function Better() {
     watch: true,
   });
 
-  // chainlink instrument price history
-  const aggContractConfig = {
-    address: "",
-    abi: AggregatorV3InterfaceABI,
-  };
-  useContractReads({
-    contracts: [{}],
-  });
-
   /* useEffect */
   useEffect(() => {
     // set nativeGas for current network
@@ -199,7 +197,11 @@ function Better() {
             />
             <Epoch
               instrument={instrument}
+              setInstrument={setInstrument}
               getInstrumentBySelectorRefetch={getInstrumentBySelectorRefetch}
+              getInstrumentBySelectorIsRefetching={
+                getInstrumentBySelectorIsRefetching
+              }
             />
             <Action
               betterContractConfig={betterContractConfig}
