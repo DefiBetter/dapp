@@ -39,7 +39,7 @@ function Connector() {
                 <Presale />
               ) : process.env.REACT_APP_PUBLIC_SALE_PHASE == "true" ? (
                 <PublicSale />
-              ) : process.env.REACT_APP_LAUNCH_PHASE == "true" ? (
+              ) : true ? (
                 <Better />
               ) : null}
             </>
