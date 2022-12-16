@@ -156,15 +156,30 @@ function Better() {
   // user positions
   useContractRead({
     ...betterContractConfig,
-    functionName: "getUserPosition",
-    args: [connectedAddress, instrument?.epoch, instrument?.selector],
+    functionName: "getUserPositionValueForInstrument",
+    args: [
+      connectedAddress,
+      instrument?.selector,
+      instrument?.epoch,
+      10000,
+      10000,
+      binAmountList,
+    ],
     watch: true,
     onSuccess(data) {
       setUserPosition(data);
-      // console.log("getUserPosition", data);
+      console.log("getUserPositionValueForInstrument", data);
     },
     onError(data) {
-      // console.log("getUserPosition error", data);
+      console.log("getUserPositionValueForInstrument args", [
+        connectedAddress,
+        instrument?.selector,
+        instrument?.epoch,
+        10000,
+        10000,
+        binAmountList,
+      ]);
+      console.log("getUserPositionValueForInstrument error", data);
     },
     watch: true,
   });
