@@ -389,10 +389,8 @@ const Detail = (props) => {
                 </GridCell2>
                 <GridCell2>
                   <SmallText>
-                    {props.userPosition
-                      ?.slice(0, 1)[0]
-                      .map((v, i) => ethers.utils.formatEther(v))
-                      .reduce((a, b) => +a + +b)}{" "}
+                    {ethers.utils.formatEther(props.userPosition || 0)}
+                    {" "}
                     {props.nativeGas}
                   </SmallText>
                 </GridCell2>
