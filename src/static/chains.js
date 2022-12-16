@@ -54,6 +54,24 @@ const customChains = {
     testnet: false,
     logo: "fantom-logo.png",
   },
+  defiBetterChain: {
+    id: 12345,
+    name: "Defi Better",
+    network: "defibetter",
+    nativeCurrency: {
+      decimals: 18,
+      name: "better",
+      symbol: "BETTER",
+    },
+    rpcUrls: {
+      default: process.env.REACT_APP_DEFI_BETTER_RPC_URL,
+    },
+    blockExplorers: {
+      default: { name: "BETTERScan", url: "https://ftmscan.com/" },
+    },
+    testnet: false,
+    logo: "fantom-logo.png",
+  },
 };
 
 export default customChains;
