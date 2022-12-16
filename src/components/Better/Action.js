@@ -49,7 +49,18 @@ const Action = (props) => {
 
   return (
     <div className={styles.container}>
-      <Button onClick={depositWrite}>Deposit</Button>
+      <Button
+        onClick={depositWrite}
+        disabled={
+          Date.now() / 1000 >
+          +props.instrument?.lastEpochClosingTime.toString() +
+            +props.instrument?.epochDurationInSeconds.toString()
+            ? true
+            : false
+        }
+      >
+        Deposit
+      </Button>
       <Button onClick={claimWrite}>
         <MedText>Claim</MedText>
         <SmallText>

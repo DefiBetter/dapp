@@ -9,6 +9,7 @@
     "@web3-react/core": "^6.1.9",
     "mathjs": "^11.0.1",
     "react": "^18.2.0",
+    "react-content-loader": "^6.2.0",
     "react-countdown": "^2.3.3",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.3.0",

@@ -11,6 +11,14 @@ const Button = styled.button`
   color: white;
   height: 40px;
   cursor: pointer;
+  &:enabled {
+    &:active {
+      background-color: rgba(42, 174, 230, 0.5);
+    }
+  }
+  &:disabled {
+    cursor: not-allowed;
+  }
 `;
 
 export default Button;
