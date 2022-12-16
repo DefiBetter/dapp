@@ -26,4 +26,3 @@ yarn-error.log*
 /misc
 git_command.txt
 .gitignore
-src/static/contractAddresses.js

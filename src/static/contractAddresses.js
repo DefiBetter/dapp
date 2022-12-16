@@ -10,6 +10,16 @@ const contractAddresses = {
     lpStaking: "0x367761085BF3C12e5DA2Df99AC6E1a824612b8fb",
     nativeGas: "ETH",
   },
+  defibetter: {
+    better: "0xdb01265Db404b2474C8Fa2406987D9eB6bCa5db3",
+    presale: "0xfbC22278A96299D91d41C453234d97b4F5Eb9B2d",
+    publicSale: "0xC9a43158891282A2B1475592D5719c001986Aaec",
+    btToken: "0x9300eaf843c00267037358f397437574a1c17dac",
+    btStaking: "0xa2153a46df5b35f12f2bdd959fa22d675546f11f",
+    lpToken: "0x2B0d36FACD61B71CC05ab8F3D2355ec3631C0dd5",
+    lpStaking: "0x367761085BF3C12e5DA2Df99AC6E1a824612b8fb",
+    nativeGas: "BETTER",
+  },
   bsc: {
     better: "0xdb01265Db404b2474C8Fa2406987D9eB6bCa5db3",
     presale: "0xC6C5A911d6960F5175CE049399E9e9859401969e",
