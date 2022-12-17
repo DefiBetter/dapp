@@ -91,7 +91,7 @@
 
 import styles from "./Chart.module.css";
 import { underlyingPairAddress } from "../../static/contractAddresses";
-import { useState, useRef, useLayoutEffect } from "react";
+import { useState, useRef, useLayoutEffect, useEffect } from "react";
 import { useContractRead, useContractReads } from "wagmi";
 import { BigNumber, ethers } from "ethers";
 import { Grid, GridCell2, GridRow } from "../common/Grid";
@@ -189,6 +189,10 @@ const Chart = (props) => {
     abi: AggregatorV3InterfaceABI,
   };
 
+  const aggregatorInterface = new ethers.utils.Interface(
+    AggregatorV3InterfaceABI
+  );
+
   // latestRoundData
   useContractRead({
     ...aggregatorContractConfig,
@@ -223,46 +227,114 @@ const Chart = (props) => {
     watch: true,
   });
 
+  const [oracleMultiCall, setOracleMultiCall] = useState();
+
   // get historical prices
-  useContractReads({
-    contracts: (() => {
-      {
-        let temp = [];
-        for (let i = 0; i < 30; i++) {
-          temp.push({
-            ...aggregatorContractConfig,
-            functionName: "getRoundData",
-            args: [BigNumber.from((latestRoundData[0] - BigInt(i)).toString())],
-          });
+  useContractRead({
+    ...props.betterContractConfig,
+    functionName: "multiCall",
+    args: [
+      ...(() => {
+        let addressList = [];
+        let encodedDataList = [];
+        for (let i = 0; i < 50 && !(BigInt(i) > latestRoundData[0]); i++) {
+          console.log("multiCall compare", !(BigInt(i) > latestRoundData[0]));
+          console.log("multiCall i", BigInt(i));
+          console.log("multiCall latestRoundData", latestRoundData);
+          console.log("multiCall latestRoundData[0]", latestRoundData[0]);
+          addressList.push(aggregatorContractConfig.address);
+          console.log(
+            "multiCall diff",
+            BigNumber.from((latestRoundData[0] - BigInt(i)).toString())
+          );
+          encodedDataList.push(
+            aggregatorInterface.encodeFunctionData("getRoundData", [
+              BigNumber.from((latestRoundData[0] - BigInt(i)).toString()),
+            ])
+          );
         }
-        console.log("temp", temp.reverse());
-        return temp;
-      }
-    })(),
+        console.log("multiCall addressList", addressList);
+        console.log("multiCall encodedDataList", encodedDataList);
+
+        console.log("multiCall return", [addressList, encodedDataList]);
+        return [addressList, encodedDataList];
+      })(),
+    ],
     onError(data) {
-      console.log("useContractReads error", data);
+      console.log("multiCall error", data);
     },
     onSuccess(data) {
-      console.log(
-        "yyy historical price",
-        data.map((d) => {
-          return [
-            +d.updatedAt.toString(),
-            +ethers.utils.formatUnits(d.answer, 8),
-          ];
-        })
-      );
+      console.log("multiCall success");
+      // decode
+      let decodedResultList = [];
+
+      for (let d of data) {
+        console.log("multiCall success d", d);
+        console.log("multiCall success d type", typeof d);
+        console.log("multiCall success aggregator", aggregatorInterface);
+        decodedResultList.push(
+          aggregatorInterface.decodeFunctionResult("getRoundData", d)
+        );
+        console.log("multiCall success decodedResultList", decodedResultList);
+      }
+
+      console.log("multiCall success", decodedResultList);
+
       setChartData(
-        data.map((d) => {
+        decodedResultList.map((r) => {
+          console.log("multiCall success setChart", [
+            +r.updatedAt.toString(),
+            ethers.utils.formatUnits(r.answer, 8),
+          ]);
           return [
-            +d.updatedAt.toString(),
-            +ethers.utils.formatUnits(d.answer, 8),
+            +r.updatedAt.toString(),
+            +ethers.utils.formatUnits(r.answer, 8),
           ];
         })
       );
     },
-    watch: true,
   });
+
+  // get historical prices
+  // useContractReads({
+  //   contracts: (() => {
+  //     {
+  //       let temp = [];
+  //       for (let i = 0; i < 5; i++) {
+  //         temp.push({
+  //           ...aggregatorContractConfig,
+  //           functionName: "getRoundData",
+  //           args: [BigNumber.from((latestRoundData[0] - BigInt(i)).toString())],
+  //         });
+  //       }
+  //       console.log("temp", temp.reverse());
+  //       return temp;
+  //     }
+  //   })(),
+  //   onError(data) {
+  //     console.log("useContractReads error", data);
+  //   },
+  //   onSuccess(data) {
+  //     console.log(
+  //       "yyy historical price",
+  //       data.map((d) => {
+  //         return [
+  //           +d.updatedAt.toString(),
+  //           +ethers.utils.formatUnits(d.answer, 8),
+  //         ];
+  //       })
+  //     );
+  //     setChartData(
+  //       data.map((d) => {
+  //         return [
+  //           +d.updatedAt.toString(),
+  //           +ethers.utils.formatUnits(d.answer, 8),
+  //         ];
+  //       })
+  //     );
+  //   },
+  //   watch: true,
+  // });
   console.log("chartData", chartData);
 
   /* chart helper functions */

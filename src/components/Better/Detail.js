@@ -258,7 +258,9 @@ const Detail = (props) => {
             </SmallText>
           </CardBlueBgBlackBorder>
         </div>
-        {props.epochData?.binValues.map((binValue, i) => {
+        {props.epochData?.binValues.map((binValue, i, binValues) => {
+          i = binValues.length - 1 - i;
+          binValue = binValues[i];
           console.log(
             "100 * props.normalisedBinValueList[i]",
             props.normalisedBinValueList[i]
@@ -326,7 +328,7 @@ const Detail = (props) => {
               textAlign: "left",
             }}
           >
-            {binBorderList[0]} {props.nativeGas}
+            {binBorderList[0]}
           </div>
           <div className={styles.binChoice}>
             <Button>Normal</Button>
@@ -389,8 +391,7 @@ const Detail = (props) => {
                 </GridCell2>
                 <GridCell2>
                   <SmallText>
-                    {ethers.utils.formatEther(props.userPosition || 0)}
-                    {" "}
+                    {ethers.utils.formatEther(props.userPosition || 0)}{" "}
                     {props.nativeGas}
                   </SmallText>
                 </GridCell2>
