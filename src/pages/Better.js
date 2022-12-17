@@ -41,6 +41,8 @@ function Better() {
     abi: DeFiBetterV1ABI,
   };
 
+  const betterInterface = new ethers.utils.Interface(DeFiBetterV1ABI);
+
   /* states */
   // current instrument
   const [instrumentList, setInstrumentList] = useState();
