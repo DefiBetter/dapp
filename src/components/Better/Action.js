@@ -3,7 +3,7 @@ import { ethers } from "ethers";
 
 import { usePrepareContractWrite, useContractWrite } from "wagmi";
 import { useEffect } from "react";
-import Button from "../common/Button";
+import Button, { ButtonDisabled } from "../common/Button";
 import { MedText, NormalText, SmallText } from "../common/Text";
 
 const Action = (props) => {
@@ -51,18 +51,14 @@ const Action = (props) => {
 
   return (
     <div className={styles.container}>
-      <Button
-        onClick={depositWrite}
-        disabled={
-          Date.now() / 1000 >
-          +props.instrument.lastEpochClosingTime.toString() +
-            +props.instrument.epochDurationInSeconds.toString()
-            ? true
-            : false
-        }
-      >
-        Deposit
-      </Button>
+      {Date.now() / 1000 >
+      +props.instrument.lastEpochClosingTime.toString() +
+        +props.instrument.epochDurationInSeconds.toString() ? (
+        <ButtonDisabled disabled>Deposit</ButtonDisabled>
+      ) : (
+        <Button onClick={depositWrite}>Deposit</Button>
+      )}
+
       <Button onClick={claimWrite}>
         <MedText>Claim</MedText>
         <SmallText>

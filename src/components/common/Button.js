@@ -21,4 +21,8 @@ const Button = styled.button`
   }
 `;
 
+export const ButtonDisabled = styled(Button)`
+  background-color: grey;
+`;
+
 export default Button;
