@@ -41,10 +41,6 @@ function Staking() {
     address: contractAddresses[activeChain?.network]?.btStaking,
     abi: DeFiBetterV1ABI,
   };
-  // // console.log("activeChain", activeChain);
-  // // console.log("connectedAddress", connectedAddress);
-  // // console.log("contractAddresses", contractAddresses);
-  // // console.log("btStakingContractConfig", btStakingContractConfig);
 
   // ------vars--------------------------
   const [bridgeAmount, setBridgeAmount] = useState(0);
@@ -77,16 +73,12 @@ function Staking() {
     abi: IERC20MetadataABI,
     functionName: "allowance",
     args: [connectedAddress, contractAddresses[activeChain?.network]?.better],
-    watch: true,
-    onError(data) {
-      console.log("allowance bt error", data);
-    },
+    // watch: true,
+    onError(data) {},
     onSuccess(data) {
       setBtAllowance(data);
     },
   });
-
-  console.log("MAX UINT", ethers.constants.MaxUint256.sub("1").toString());
 
   // prepare approve bt
   const { config: approveBtConfig } = usePrepareContractWrite({
@@ -97,17 +89,13 @@ function Staking() {
       contractAddresses[activeChain?.network]?.better,
       ethers.constants.MaxUint256.sub("1").toString(),
     ],
-    onSuccess(data) {
-      console.log("approve prepared", data);
-    },
+    onSuccess(data) {},
   });
 
   // infinite approve bt
   const { write: approveBtWrite } = useContractWrite({
     ...approveBtConfig,
-    onSuccess(data) {
-      console.log("infinite approved", data);
-    },
+    onSuccess(data) {},
   });
 
   // prepare stake bt
@@ -115,24 +103,15 @@ function Staking() {
     ...betterContractConfig,
     functionName: "stake",
     args: [ethers.utils.parseEther(btAmount.toString())],
-    onSuccess(data) {
-      console.log("prepared stake", data);
-    },
-    onError(data) {
-      console.log("connectedAddress", connectedAddress);
-      console.log("btAmount", btAmount);
-      console.log("prepare stake error", data);
-    },
+    onSuccess(data) {},
+    onError(data) {},
   });
 
   // stake bt
   const { write: stakeBtWrite } = useContractWrite({
     ...stakeBtConfig,
-    onError(e) {
-      console.log("error staking", e);
-    },
+    onError(e) {},
     onSuccess(data) {
-      console.log("staked", data);
       setBtAmount(0);
     },
   });
@@ -142,17 +121,13 @@ function Staking() {
     ...betterContractConfig,
     functionName: "unstake",
     args: [ethers.utils.parseEther(btAmount.toString())],
-    onSuccess(data) {
-      console.log("prepared unstake");
-    },
+    onSuccess(data) {},
   });
 
   // unstake bt
   const { write: unstakeBtWrite } = useContractWrite({
     ...unstakeBtConfig,
-    onSuccess(data) {
-      console.log("unstaked", data);
-    },
+    onSuccess(data) {},
   });
 
   // claim bt rewards
@@ -161,12 +136,8 @@ function Staking() {
     ...betterContractConfig,
     functionName: "claim",
     args: [],
-    onSuccess(data) {
-      console.log("claimed", data);
-    },
-    onError(data) {
-      console.log("claim error", data);
-    },
+    onSuccess(data) {},
+    onError(data) {},
   });
 
   // balance of bt
@@ -175,13 +146,10 @@ function Staking() {
     abi: IERC20MetadataABI,
     functionName: "balanceOf",
     args: [connectedAddress],
-    watch: true,
-    onError(data) {
-      console.log("balanceOf bt error", data);
-    },
+    // watch: true,
+    onError(data) {},
     onSuccess(data) {
       setBtBalance(ethers.utils.formatEther(data));
-      console.log("balanceOf bt", ethers.utils.formatEther(data));
     },
   });
 
@@ -192,16 +160,12 @@ function Staking() {
     abi: IERC20MetadataABI,
     functionName: "allowance",
     args: [connectedAddress, contractAddresses[activeChain?.network]?.better],
-    watch: true,
-    onError(data) {
-      console.log("allowance lp error", data);
-    },
+    // watch: true,
+    onError(data) {},
     onSuccess(data) {
       setLpAllowance(data);
     },
   });
-
-  console.log("MAX UINT", ethers.constants.MaxUint256.sub("1").toString());
 
   // prepare approve lp
   const { config: approveLpConfig } = usePrepareContractWrite({
@@ -212,17 +176,13 @@ function Staking() {
       contractAddresses[activeChain?.network]?.better,
       ethers.constants.MaxUint256.sub("1").toString(),
     ],
-    onSuccess(data) {
-      console.log("approve prepared", data);
-    },
+    onSuccess(data) {},
   });
 
   // infinite approve lp
   const { write: approveLpWrite } = useContractWrite({
     ...approveLpConfig,
-    onSuccess(data) {
-      console.log("infinite approved", data);
-    },
+    onSuccess(data) {},
   });
 
   // prepare stake lp
@@ -230,24 +190,15 @@ function Staking() {
     ...betterContractConfig,
     functionName: "stake",
     args: [ethers.utils.parseEther(lpAmount.toString())],
-    onSuccess(data) {
-      console.log("prepared stake", data);
-    },
-    onError(data) {
-      console.log("connectedAddress", connectedAddress);
-      console.log("lpAmount", lpAmount);
-      console.log("prepare stake error", data);
-    },
+    onSuccess(data) {},
+    onError(data) {},
   });
 
   // stake lp
   const { write: stakeLpWrite } = useContractWrite({
     ...stakeLpConfig,
-    onError(e) {
-      console.log("error staking", e);
-    },
+    onError(e) {},
     onSuccess(data) {
-      console.log("staked", data);
       setBtAmount(0);
     },
   });
@@ -257,17 +208,13 @@ function Staking() {
     ...betterContractConfig,
     functionName: "unstake",
     args: [ethers.utils.parseEther(lpAmount.toString())],
-    onSuccess(data) {
-      console.log("prepared unstake");
-    },
+    onSuccess(data) {},
   });
 
   // unstake lp
   const { write: unstakeLpWrite } = useContractWrite({
     ...unstakeLpConfig,
-    onSuccess(data) {
-      console.log("unstaked", data);
-    },
+    onSuccess(data) {},
   });
 
   // claim lp rewards
@@ -276,12 +223,8 @@ function Staking() {
     ...betterContractConfig,
     functionName: "claim",
     args: [],
-    onSuccess(data) {
-      console.log("claimed", data);
-    },
-    onError(data) {
-      console.log("claim error", data);
-    },
+    onSuccess(data) {},
+    onError(data) {},
   });
 
   // balance of lp
@@ -290,24 +233,19 @@ function Staking() {
     abi: IERC20MetadataABI,
     functionName: "balanceOf",
     args: [connectedAddress],
-    watch: true,
-    onError(data) {
-      console.log("balanceOf lp error", data);
-    },
+    // watch: true,
+    onError(data) {},
     onSuccess(data) {
       setLpBalance(ethers.utils.formatEther(data));
-      console.log("balanceOf lp", ethers.utils.formatEther(data));
     },
   });
 
   /* handle input amount changes */
   const handleBtAmount = (e) => {
-    console.log("value", e.target.value);
     setBtAmount(e.target.value ? e.target.value : 0);
   };
 
   const handleLpAmount = (e) => {
-    console.log("value", e.target.value);
     setLpAmount(e.target.value ? e.target.value : 0);
   };
 
@@ -383,7 +321,6 @@ function Staking() {
                             onChange={handleLpAmount}
                             min={0}
                             max={() => {
-                              console.log("lpBalance", lpBalance);
                               return lpBalance;
                             }}
                             placeholder={0}

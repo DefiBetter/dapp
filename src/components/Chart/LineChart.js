@@ -26,20 +26,11 @@ const LineChart = (props) => {
       - binBorder => scale to align with the bin border
     */
     let dataPointList = [];
-    console.log("getDataPointList data", data);
 
     data = transpose(data);
-    console.log("getDataPointList transpose", data);
 
     const { oldRangeInfo, newRangeInfo, epochStartPoint } =
       props.rangeInfo(data);
-
-    console.log("getDataPointList epochStartPoint", Date(epochStartPoint[0]));
-    console.log(
-      "getDataPointList oldRangeInfo, newRangeInfo",
-      oldRangeInfo,
-      newRangeInfo
-    );
 
     data[0].push(epochStartPoint[0]);
     data[1].push(epochStartPoint[1]);
@@ -53,8 +44,6 @@ const LineChart = (props) => {
 
     data = transpose(data);
     let ePoint = data.pop();
-    console.log("getDataPointList transpose", data);
-    console.log("getDataPointList ePoint", ePoint);
 
     // plot circle points are coords
     data.map((coord) => {
@@ -108,8 +97,6 @@ const LineChart = (props) => {
     });
     return dataPointList;
   };
-
-  console.log("LineChart epochData", props.epochData);
 
   return (
     <>

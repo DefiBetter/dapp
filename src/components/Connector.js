@@ -26,13 +26,6 @@ function Connector() {
           path="/"
           element={
             <>
-              {console.log(
-                "env",
-                process.env.REACT_APP_LANDING_PHASE,
-                process.env.REACT_APP_PRESALE_PHASE,
-                process.env.REACT_APP_PUBLIC_SALE_PHASE,
-                process.env.REACT_APP_LAUNCH_PHASE
-              )}
               {process.env.REACT_APP_LANDING_PHASE == "true" ? (
                 <Landing />
               ) : process.env.REACT_APP_PRESALE_PHASE == "true" ? (

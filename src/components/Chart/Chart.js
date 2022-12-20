@@ -40,7 +40,6 @@
 //     chartResolution,
 //     barCount
 //   ) => {
-//     // console.log(tries);
 //     fetch(
 //       `http://localhost:4000/u/chart/bars/${chain}/${contractAddress}?from=${unixStart}&to=${unixEnd}&res=${chartResolution}&cb=${barCount}`
 //     )
@@ -57,7 +56,6 @@
 //             barCount
 //           );
 //         } else {
-//           console.log(data);
 //           setData(data);
 //         }
 //       });
@@ -154,17 +152,11 @@ const Chart = (props) => {
     ...props.betterContractConfig,
     functionName: "getEpochData",
     args: [props.instrument?.epoch - 1, props.instrument?.selector],
-    onError(data) {
-      console.log("getEpochData error", data);
-    },
+    onError(data) {},
     onSuccess(data) {
-      console.log("getEpochData", data);
-      console.log("getEpochData last epoch", props.instrument?.epoch - 1);
-      console.log("getEpochData selector", props.instrument?.selector);
-      console.log("yyy closeTime", data.closeTime.toString());
       setLastEpochData(data);
     },
-    watch: true,
+    // watch: true,
   });
 
   // get underlying price and last updated
@@ -172,15 +164,12 @@ const Chart = (props) => {
     ...props.betterContractConfig,
     functionName: "getUnderlyingPrice",
     args: [props.instrument?.underlying],
-    onError(data) {
-      console.log("getUnderlyingPrice error", data);
-    },
+    onError(data) {},
     onSuccess(data) {
-      console.log("getUnderlyingPrice", data);
       setCurrentPrice(+ethers.utils.formatEther(data[0]));
       setLastUpdated(+data[1].toString());
     },
-    watch: true,
+    // watch: true,
   });
 
   // aggregator config
@@ -198,36 +187,16 @@ const Chart = (props) => {
     ...aggregatorContractConfig,
     args: [],
     functionName: "latestRoundData",
-    onError(data) {
-      console.log("latestRoundData error", data);
-    },
+    onError(data) {},
     onSuccess(data) {
-      console.log("yyy latest round data", data);
-      // console.log("latestRoundData.roundId", 92233720368547771158n);
-      // console.log("latestRoundData phaseId", 92233720368547771158n >> 64n);
-      // console.log(
-      //   "latestRoundData aggregatorRoundId",
-      //   92233720368547771158n & 0xffffffffffffffffn
-      // );
       const roundId = BigInt(data.roundId);
       const phaseId = roundId >> 64n;
       const aggregatorRoundId = roundId & 0xffffffffffffffffn;
-
-      console.log("latestRoundData roundId", roundId);
-      console.log("latestRoundData phaseId", phaseId);
-      console.log("latestRoundData aggregatorRoundId", aggregatorRoundId);
-
-      console.log(
-        "latestRoundData roundId - aggregatorRoundId + 1",
-        BigNumber.from((roundId - aggregatorRoundId + BigInt(1)).toString())
-      );
 
       setLatestRoundData([roundId, phaseId, aggregatorRoundId]);
     },
     watch: true,
   });
-
-  const [oracleMultiCall, setOracleMultiCall] = useState();
 
   // get historical prices
   useContractRead({
@@ -238,54 +207,31 @@ const Chart = (props) => {
         let addressList = [];
         let encodedDataList = [];
         for (let i = 0; i < 50 && !(BigInt(i) > latestRoundData[0]); i++) {
-          console.log("multiCall compare", !(BigInt(i) > latestRoundData[0]));
-          console.log("multiCall i", BigInt(i));
-          console.log("multiCall latestRoundData", latestRoundData);
-          console.log("multiCall latestRoundData[0]", latestRoundData[0]);
           addressList.push(aggregatorContractConfig.address);
-          console.log(
-            "multiCall diff",
-            BigNumber.from((latestRoundData[0] - BigInt(i)).toString())
-          );
+
           encodedDataList.push(
             aggregatorInterface.encodeFunctionData("getRoundData", [
               BigNumber.from((latestRoundData[0] - BigInt(i)).toString()),
             ])
           );
         }
-        console.log("multiCall addressList", addressList);
-        console.log("multiCall encodedDataList", encodedDataList);
 
-        console.log("multiCall return", [addressList, encodedDataList]);
         return [addressList, encodedDataList];
       })(),
     ],
-    onError(data) {
-      console.log("multiCall error", data);
-    },
+    onError(data) {},
     onSuccess(data) {
-      console.log("multiCall success");
       // decode
       let decodedResultList = [];
 
       for (let d of data) {
-        console.log("multiCall success d", d);
-        console.log("multiCall success d type", typeof d);
-        console.log("multiCall success aggregator", aggregatorInterface);
         decodedResultList.push(
           aggregatorInterface.decodeFunctionResult("getRoundData", d)
         );
-        console.log("multiCall success decodedResultList", decodedResultList);
       }
-
-      console.log("multiCall success", decodedResultList);
 
       setChartData(
         decodedResultList.map((r) => {
-          console.log("multiCall success setChart", [
-            +r.updatedAt.toString(),
-            ethers.utils.formatUnits(r.answer, 8),
-          ]);
           return [
             +r.updatedAt.toString(),
             +ethers.utils.formatUnits(r.answer, 8),
@@ -307,23 +253,12 @@ const Chart = (props) => {
   //           args: [BigNumber.from((latestRoundData[0] - BigInt(i)).toString())],
   //         });
   //       }
-  //       console.log("temp", temp.reverse());
   //       return temp;
   //     }
   //   })(),
   //   onError(data) {
-  //     console.log("useContractReads error", data);
   //   },
   //   onSuccess(data) {
-  //     console.log(
-  //       "yyy historical price",
-  //       data.map((d) => {
-  //         return [
-  //           +d.updatedAt.toString(),
-  //           +ethers.utils.formatUnits(d.answer, 8),
-  //         ];
-  //       })
-  //     );
   //     setChartData(
   //       data.map((d) => {
   //         return [
@@ -335,10 +270,8 @@ const Chart = (props) => {
   //   },
   //   watch: true,
   // });
-  console.log("chartData", chartData);
 
   /* chart helper functions */
-
   const xRangeInfo = (xData) => {
     let xMin, xMax, xRange;
     let xNewMin, xNewMax, xNewRange;
@@ -350,16 +283,10 @@ const Chart = (props) => {
         +props.instrument.bufferDurationInSeconds.toString() +
         +props.instrument.epochDurationInSeconds.toString();
       let epochStartTime = +lastEpochData.closeTime.toString();
-      console.log("getDataPointList epochStartTime", Date(epochStartTime));
 
       // old range
-      console.log("xRangeInfo n", n);
-      console.log("xRangeInfo epochStartTime", epochStartTime);
-      console.log("xRangeInfo totalEpochTime", totalEpochTime);
       xMin = epochStartTime - totalEpochTime * n;
-      console.log("xRangeInfo xMin", xMin);
       xMax = epochStartTime;
-      console.log("xRangeInfo xMax", xMax);
       xRange = xMax - xMin;
 
       // new range
@@ -430,11 +357,6 @@ const Chart = (props) => {
       oldRangeInfo[1][0] + oldRangeInfo[1][2] / 2,
     ];
 
-    console.log("rangeInfo data", data);
-    console.log("rangeInfo oldRangeInfo", oldRangeInfo);
-    console.log("rangeInfo newRangeInfo", newRangeInfo);
-    console.log("rangeInfo epochStartPoint", epochStartPoint);
-
     return { oldRangeInfo, newRangeInfo, epochStartPoint, yLabelSize };
   };
 
@@ -442,11 +364,6 @@ const Chart = (props) => {
   // chart config based on parent component
   const containerRef = useRef(null);
   useLayoutEffect(() => {
-    console.log(
-      "containerRef",
-      containerRef.current.offsetWidth,
-      containerRef.current.offsetHeight
-    );
     setChartConfig({
       ...chartConfig,
       containerWidth: containerRef.current.offsetWidth,

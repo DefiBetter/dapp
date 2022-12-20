@@ -229,7 +229,6 @@ function PublicSale() {
   //   if (parseInput(input)?.gt(0)) {
   //     executeApprovePaymentToken?.();
   //   }
-  //   console.log("allowance set");
   // };
 
   /* const buyFunction = useCallback((e) => {
@@ -248,7 +247,6 @@ function PublicSale() {
             : 0
         }
       });
-      console.log("Buying...")
     }, [input, paymentTokenAddress, executeBuy, etherAddress]); */
 
   // ------------------------------------------------------------------------------------------

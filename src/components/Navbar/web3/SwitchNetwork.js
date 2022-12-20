@@ -7,10 +7,6 @@ export function SwitchNetwork() {
   const { chains, error, isLoading, pendingChainId, switchNetwork } =
     useSwitchNetwork();
 
-  const [network, setNetwork] = useState("");
-
-  // console.log("activeChain switch", activeChain);
-
   return (
     <div className={styles.container}>
       {/* {chain &&
@@ -36,10 +32,6 @@ export function SwitchNetwork() {
           {/* {isLoading && pendingChainId === x.id && " (switching)"} */}
         </div>
       ))}
-
-      {chains.map((x) => {
-        // console.log(x);
-      })}
 
       {/* <div>{error && error.message}</div> */}
     </div>

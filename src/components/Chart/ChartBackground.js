@@ -4,7 +4,6 @@ import { data2SvgView, transpose } from "./Transformations";
 
 const ChartBackground = (props) => {
   const timeRange2TimeInterval = (range) => {
-    console.log("timeRange2TimeInterval range", range);
     // range in seconds
     // if (range < 60 * 60) {
     //   return 5 * 60; // 5 mins interval
@@ -18,7 +17,6 @@ const ChartBackground = (props) => {
     //   return 80 * 60;
     // }
     let temp = range / (1 * 60);
-    console.log("timeRange2TimeInterval temp", temp);
     return Math.ceil(temp) * 10;
   };
 
@@ -33,10 +31,6 @@ const ChartBackground = (props) => {
       newRangeInfo,
       epochStartPoint: middleCoords,
     } = props.rangeInfo(data);
-    console.log(
-      "getVerticalBackground { oldRangeInfo, newRangeInfo, middleCoords }",
-      { oldRangeInfo, newRangeInfo, middleCoords }
-    );
 
     let dataPointList = [];
 
@@ -79,7 +73,6 @@ const ChartBackground = (props) => {
     xLabelCoordList[1] = xLabelCoordList[0].map(
       () => props.chartConfig.containerHeight
     );
-    console.log("getVerticalBackground xLabelCoordList", xLabelCoordList);
 
     xLabelCoordList = transpose(xLabelCoordList);
 
@@ -105,15 +98,12 @@ const ChartBackground = (props) => {
 
       let bufferCoord = transpose([[bufferTime, 0]]);
 
-      console.log("getVerticalBackground transpose", bufferCoord);
-
       bufferCoord = data2SvgView(
         bufferCoord,
         oldRangeInfo,
         newRangeInfo,
         props.chartConfig.containerHeight
       );
-      console.log("getVerticalBackground bufferCoord", bufferCoord);
 
       dataPointList.push(
         <line
@@ -143,7 +133,6 @@ const ChartBackground = (props) => {
   };
 
   const getHorizontalBackground = () => {
-    console.log("getHorizontalBackground chartConfig", props.chartConfig);
     let data = transpose(props.data);
     const {
       oldRangeInfo,
@@ -156,32 +145,21 @@ const ChartBackground = (props) => {
       props.epochData,
       props.instrument
     );
-    console.log("getHorizontalBackground yLabelSize", yLabelSize);
-    console.log("getHorizontalBackground transpose", transpose);
-    console.log(
-      "getHorizontalBackground { oldRangeInfo, newRangeInfo, middleCoords }",
-      { oldRangeInfo, newRangeInfo, middleCoords }
-    );
 
     let dataPointList = [];
 
     /* generate coord for y axis labels */
     let yLabelCoordList = [];
     let yAxisRange = oldRangeInfo[1][2];
-    console.log("getHorizontalBackground yAxisRange", yAxisRange);
 
     let interval = priceRange2PriceInterval();
-    console.log("getHorizontalBackground interval", interval);
 
     for (let i = 0; i < 8; i++) {
       yLabelCoordList.push([0, oldRangeInfo[1][0] + yLabelSize * i]);
     }
 
-    console.log("getHorizontalBackground yLabelCoordList", yLabelCoordList);
-
     // get y labels for each coord
     let yLabelList = transpose(yLabelCoordList)[1];
-    console.log("getHorizontalBackground yLabelList", yLabelList);
     yLabelList = yLabelList.map((price) => price.toPrecision(5));
 
     // scale coords to fit svg
@@ -202,7 +180,6 @@ const ChartBackground = (props) => {
 
     // add label element
     yLabelCoordList.map((y, i) => {
-      console.log("getHorizontalBackground y", y);
       // text string
       dataPointList.push(
         <text

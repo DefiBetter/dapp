@@ -20,7 +20,7 @@ const Detail = (props) => {
   //
   const [total, setTotal] = useState(0);
   const [rewardPeriodLength, setRewardPeriodLength] = useState(0); // seconds
-  const [timeLeftCurrentPeriod, setTimeLeftCurrentPeriod] = useState(0); // seconds
+  const [currentPeriodEndTime, setCurrentPeriodEndTime] = useState(0); // seconds
   const [binBorderList, setBinBorderList] = useState([
     "0",
     "0",
@@ -31,28 +31,13 @@ const Detail = (props) => {
     "0",
     "0",
   ]);
-  console.log("binBorderList", binBorderList);
 
   useEffect(() => {
     setTotal(
       props.binAmountList.reduce((a, b) => Number(a) + Number(b), 0).toString()
     );
-    console.log("total", total);
 
     if (props.epochData) {
-      console.log(
-        `props.epochData.binValues.map((bin, i) =>
-      ethers.utils.formatEther(
-        props.epochData.binSize.mul(i + 1).add(props.epochData.binStart)
-      )
-    )`,
-        props.epochData.binValues.map((bin, i) =>
-          ethers.utils.formatEther(
-            props.epochData.binSize.mul(i + 1).add(props.epochData.binStart)
-          )
-        )
-      );
-
       const t = props.epochData.binValues.map((bin, i) =>
         (+ethers.utils.formatEther(
           props.epochData.binSize.mul(i + 1).add(props.epochData.binStart)
@@ -62,7 +47,6 @@ const Detail = (props) => {
         (+ethers.utils.formatEther(props.epochData.binStart)).toPrecision(5),
         ...t,
       ]);
-      console.log("binBorderList", binBorderList);
     }
   }, [props]);
 
@@ -95,24 +79,18 @@ const Detail = (props) => {
     let temp = [...props.binAmountList];
     temp[e.target.id] = e.target.value ? e.target.value : 0;
     props.setBinAmountList(temp);
-    console.log("binAmountList", temp);
+    props.setBinTotal(temp.reduce((a, b) => +a + +b, 0));
+    props.openPositionConfigRefetch();
   };
 
-  const totalAmount = 10;
-  const gasTokenSymbol = "BNB";
-
-  console.log("props.userPosition", props.userPosition);
-
+  /* contract read/writes */
   useContractRead({
     ...props.betterContractConfig,
     functionName: "rewardPeriodLength",
     args: [],
-    onError(data) {
-      console.log("rewardPeriodLength error", data);
-    },
+    onError(data) {},
     onSuccess(data) {
-      setRewardPeriodLength(data.toString());
-      console.log("rewardPeriodLength", data.toString());
+      setRewardPeriodLength(+data.toString());
     },
   });
 
@@ -120,30 +98,20 @@ const Detail = (props) => {
     ...props.betterContractConfig,
     functionName: "rewardPeriodStart",
     args: [],
-    onError(data) {
-      console.log("rewardPeriodStart error", data);
-    },
+    onError(data) {},
     onSuccess(data) {
-      console.log(
-        "rewardPeriodStart",
-        rewardPeriodLength - (Date.now() / 1000 - +data.toString())
-      );
-      setTimeLeftCurrentPeriod(
-        rewardPeriodLength - (Date.now() / 1000 - +data.toString())
-      );
+      console.log("start", data.toString());
+      console.log("rewardPeriodLength", rewardPeriodLength);
+      setCurrentPeriodEndTime(+data.toString() + rewardPeriodLength);
     },
-    watch: true,
   });
 
   useContractRead({
     ...props.betterContractConfig,
     functionName: "globalBiggestRelativeGainCurrentPeriodAddress",
     args: [],
-    onError(data) {
-      console.log("globalBiggestRelativeGainCurrentPeriodAddress error", data);
-    },
+    onError(data) {},
     onSuccess(data) {
-      console.log("globalBiggestRelativeGainCurrentPeriodAddress", data);
       setGlobalBiggestRelativeGainCurrentPeriodAddress(data);
     },
   });
@@ -152,11 +120,8 @@ const Detail = (props) => {
     ...props.betterContractConfig,
     functionName: "globalBiggestRelativeGainPastPeriodAddress",
     args: [],
-    onError(data) {
-      console.log("globalBiggestRelativeGainPastPeriodAddress error", data);
-    },
+    onError(data) {},
     onSuccess(data) {
-      console.log("globalBiggestRelativeGainPastPeriodAddress", data);
       setGlobalBiggestRelativeGainPastPeriodAddress(data);
     },
   });
@@ -165,14 +130,8 @@ const Detail = (props) => {
     ...props.betterContractConfig,
     functionName: "userGainsInfo",
     args: [globalBiggestRelativeGainCurrentPeriodAddress],
-    onError(data) {
-      console.log("userGainsInfo.biggestRelativeGainAmount error", data);
-    },
+    onError(data) {},
     onSuccess(data) {
-      console.log(
-        "userGainsInfo.biggestRelativeGainAmount",
-        data.biggestRelativeGainAmount
-      );
       setWeekBiggestRelativeGainAmount(data.biggestRelativeGainAmount);
     },
   });
@@ -181,14 +140,8 @@ const Detail = (props) => {
     ...props.betterContractConfig,
     functionName: "userGainsInfo",
     args: [globalBiggestRelativeGainPastPeriodAddress],
-    onError(data) {
-      console.log("userGainsInfo.biggestRelativeGainAmount (past) error", data);
-    },
+    onError(data) {},
     onSuccess(data) {
-      console.log(
-        "userGainsInfo.biggestRelativeGainAmount (past)",
-        data.biggestRelativeGainAmount
-      );
       setLastWeekBiggestRelativeGainAmount(data.biggestRelativeGainAmount);
     },
   });
@@ -197,11 +150,8 @@ const Detail = (props) => {
     ...props.betterContractConfig,
     functionName: "globalBiggestRelativeGain",
     args: [],
-    onError(data) {
-      console.log("globalBiggestRelativeGain error", data);
-    },
+    onError(data) {},
     onSuccess(data) {
-      console.log("globalBiggestRelativeGain", data);
       setGlobalBiggestRelativeGain(data);
     },
   });
@@ -210,22 +160,10 @@ const Detail = (props) => {
     ...props.betterContractConfig,
     functionName: "globalBiggestRelativeGainAddress",
     args: [],
-    onError(data) {
-      console.log("globalBiggestRelativeGainAddress error", data);
-    },
+    onError(data) {},
     onSuccess(data) {
-      console.log("globalBiggestRelativeGainAddress", data);
       setGlobalBiggestRelativeGainAddress(data);
     },
-  });
-
-  props.epochData?.binValues.map((bin, i) => {
-    console.log(
-      "bin borders",
-      ethers.utils.formatEther(
-        props.epochData.binSize.mul(i).add(props.epochData.binStart)
-      )
-    );
   });
 
   return (
@@ -261,14 +199,7 @@ const Detail = (props) => {
         {props.epochData?.binValues.map((binValue, i, binValues) => {
           i = binValues.length - 1 - i;
           binValue = binValues[i];
-          console.log(
-            "100 * props.normalisedBinValueList[i]",
-            props.normalisedBinValueList[i]
-          );
-          console.log(
-            "binValue",
-            ethers.utils.formatEther(binValue.toString())
-          );
+
           return (
             // <div className={styles.bin}>
             //   <div className={styles.binUpper}>{bin.upper}</div>
@@ -457,11 +388,10 @@ const Detail = (props) => {
                 </GridCell2>
                 <GridCell2>
                   <SmallText>
-                    {timeLeftCurrentPeriod.toFixed(2)}
-                    {timeLeftCurrentPeriod ? (
+                    {currentPeriodEndTime ? (
                       <Countdown
-                        key={Date.now() + timeLeftCurrentPeriod * 1000}
-                        date={Date.now() + timeLeftCurrentPeriod * 1000}
+                        key={currentPeriodEndTime * 1000}
+                        date={currentPeriodEndTime * 1000}
                       />
                     ) : null}
                   </SmallText>

@@ -35,12 +35,6 @@ function PublicSale() {
 
   // TODO input 0.1 crashes
   function parseInput(i) {
-    console.log("INPUT i", i);
-    console.log(
-      "INPUT parseUnits",
-      ethers.utils.parseUnits(i, paymentTokenDecimals).toString()
-    );
-    console.log("DECIMALS", paymentTokenDecimals);
     return ethers.utils.parseUnits(i, paymentTokenDecimals);
   }
 
@@ -90,10 +84,8 @@ function PublicSale() {
     abi: erc20ABI,
     functionName: "allowance",
     args: [connectedAddress, publicSaleContractConfig.address],
-    watch: true,
+    // watch: true,
   });
-
-  console.log("paymentTokenAllowance", paymentTokenAllowance);
 
   // fetching reward token balance
   const { data: rewardTokenBalance } = useContractRead({
@@ -101,7 +93,7 @@ function PublicSale() {
     abi: erc20ABI,
     functionName: "balanceOf",
     args: connectedAddress,
-    watch: true,
+    // watch: true,
   });
 
   // fetching supply left
@@ -110,10 +102,8 @@ function PublicSale() {
     abi: erc20ABI,
     functionName: "balanceOf",
     args: publicSaleContractConfig.address,
-    watch: true,
+    // watch: true,
   });
-
-  console.log("rewardTokenBalance", rewardTokenBalance);
 
   // fetching output estimate
   let { isError: isErrorOutputEstimate, refetch: refetchOutputEstimate } =
@@ -121,20 +111,15 @@ function PublicSale() {
       ...publicSaleContractConfig,
       functionName: "estimateOutput",
       args: parseInput(input),
-      watch: true,
+      // watch: true,
       onSuccess(data) {
         // TODO account for decimals of reward token
-        console.log("OUTPUT", data);
-        console.log("OUTPUT FORMAT", ethers.utils.formatEther(data));
         setOutput(ethers.utils.formatEther(data));
       },
       onError(error) {
-        console.log("setOutput", error);
         setOutput(error);
       },
     });
-
-  console.log("output", output);
 
   // ---contract writes-----------------------------------------------------------------------------
 
@@ -245,7 +230,6 @@ function PublicSale() {
     if (parseInput(input)?.gt(0)) {
       executeApprovePaymentToken?.();
     }
-    console.log("allowance set");
   };
 
   const buyFunction = useCallback(
@@ -270,7 +254,6 @@ function PublicSale() {
               : 0,
         },
       });
-      console.log("Buying...");
     },
     [input, paymentTokenAddress, executeBuy]
   );
