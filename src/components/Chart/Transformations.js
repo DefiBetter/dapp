@@ -2,12 +2,15 @@ import { ethers } from "ethers";
 import { identity, multiply, resize, size } from "mathjs";
 
 export const preProcessData = (data) => {
-  return data.map((bar) => {
-    return [
-      bar.timestamp, // x value/time
-      bar.closeUsd, // y value/price
-    ];
-  });
+  // console.log("preProcessData", data);
+
+  const result = Object.keys(data).map((roundId) => [
+    data[roundId].time,
+    data[roundId].price,
+  ]);
+
+  // console.log("preProcessData result", result);
+  return result;
 };
 
 export const transpose = (matrix) => {

@@ -97,7 +97,7 @@ function Better() {
     args: [instrumentSelector],
     onError(data) {},
     onSuccess(data) {
-      console.log("instrument watching...");
+      // console.log("instrument watching...");
       if (!instrument) {
         setInstrument(data);
       }
@@ -167,14 +167,14 @@ function Better() {
       setUserPosition(data);
     },
     onError(data) {
-      console.log([
-        connectedAddress,
-        instrument?.selector,
-        instrument?.epoch,
-        10000,
-        10000,
-        binAmountList,
-      ]);
+      // console.log([
+      //   connectedAddress,
+      //   instrument?.selector,
+      //   instrument?.epoch,
+      //   10000,
+      //   10000,
+      //   binAmountList,
+      // ]);
     },
     watch: true,
   });

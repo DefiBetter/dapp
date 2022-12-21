@@ -29,7 +29,7 @@ const Action = (props) => {
     },
     onError(data) {},
     onSuccess(data) {
-      console.log("prepared openPosition");
+      // console.log("prepared openPosition");
     },
   });
 

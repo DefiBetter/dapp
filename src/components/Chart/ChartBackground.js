@@ -1,6 +1,6 @@
 import { ethers } from "ethers";
 import { useEffect, useState } from "react";
-import { data2SvgView, transpose } from "./Transformations";
+import { data2SvgView, preProcessData, transpose } from "./Transformations";
 
 const ChartBackground = (props) => {
   const timeRange2TimeInterval = (range) => {
@@ -25,7 +25,8 @@ const ChartBackground = (props) => {
   };
 
   const getVerticalBackground = () => {
-    let data = transpose(props.data);
+    let data = preProcessData(props.data);
+    data = transpose(data);
     const {
       oldRangeInfo,
       newRangeInfo,
@@ -133,7 +134,8 @@ const ChartBackground = (props) => {
   };
 
   const getHorizontalBackground = () => {
-    let data = transpose(props.data);
+    let data = preProcessData(props.data);
+    data = transpose(data);
     const {
       oldRangeInfo,
       newRangeInfo,
