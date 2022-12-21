@@ -39,15 +39,7 @@ const Epoch = (props) => {
                 props.setInstrument({ ...props.instrument, ...result.data });
               });
             }}
-          >
-            {/* {console.log(
-              "loading new countdown... time:",
-              (+props.instrument.lastEpochClosingTime +
-                +props.instrument.epochDurationInSeconds +
-                +props.instrument.bufferDurationInSeconds) *
-                1000
-            )} */}
-          </Countdown>
+          ></Countdown>
 
           {/* <b>{timeRemainingFormatted()}</b> */}
         </div>

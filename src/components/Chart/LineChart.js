@@ -27,18 +27,11 @@ const LineChart = (props) => {
     */
     let dataPointList = [];
 
-    // console.log("getDataPointList data", data);
     data = preProcessData(data).sort((a, b) => a[0] - b[0]);
-    // console.log("getDataPointList preProcessData", data);
     data = transpose(data);
-    // console.log("getDataPointList transpose", data);
 
     const { oldRangeInfo, newRangeInfo, epochStartPoint } =
       props.rangeInfo(data);
-    // console.log(
-    //   "getDataPointList { oldRangeInfo, newRangeInfo, epochStartPoint }",
-    //   { oldRangeInfo, newRangeInfo, epochStartPoint }
-    // );
 
     data[0].push(epochStartPoint[0]);
     data[1].push(epochStartPoint[1]);
@@ -103,7 +96,6 @@ const LineChart = (props) => {
         </text>
       );
     });
-    // console.log("getDataPointList dataPointList", dataPointList);
     return dataPointList;
   };
 

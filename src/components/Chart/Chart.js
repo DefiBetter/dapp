@@ -120,7 +120,7 @@ const Chart = (props) => {
     containerHeight: 0,
     chartWidth: 0,
     chartHeight: 0,
-    epochCount: 9,
+    epochCount: 1,
     scaleType: { x: "nEpoch", y: "binBorder" },
     xLabelStart: function (xData) {
       if (this.scaleType.x == "nEpoch") {
@@ -198,173 +198,6 @@ const Chart = (props) => {
     watch: true,
   });
 
-  // get historical prices
-  // const [roundIdList, setRoundIdList] = useState();
-  // const [multiCallList, setMultiCallList] = useState();
-  // const [fetchHistoricalPrice, setFetchHistoricalPrice] = useState(true);
-  // useEffect(() => {
-  //   if (fetchHistoricalPrice) {
-  //     const interval = setInterval(() => {
-  //       const newMultiCallList = (() => {
-  //         let addressList = [];
-  //         let encodedDataList = [];
-  //         let newRoundIdList = [];
-  //         for (
-  //           let i = 0, j = 0;
-  //           j < 100 && !(BigInt(i) > latestRoundData[0]);
-  //           i++
-  //         ) {
-  //           // console.log("useEffect for i", i);
-  //           // console.log("useEffect for j", j);
-
-  //           const currentRoundId = (latestRoundData[0] - BigInt(i)).toString();
-  //           // console.log("useEffect currentRoundId", currentRoundId);
-  //           // console.log("useEffect chartData", chartData);
-  //           // console.log(
-  //           //   "useEffect !chartData?.[currentRoundId]",
-  //           //   !chartData?.[currentRoundId]
-  //           // );
-
-  //           if (!chartData?.[currentRoundId]) {
-  //             addressList.push(aggregatorContractConfig.address);
-
-  //             encodedDataList.push(
-  //               aggregatorInterface.encodeFunctionData("getRoundData", [
-  //                 BigNumber.from(currentRoundId),
-  //               ])
-  //             );
-  //             newRoundIdList.push(currentRoundId);
-  //             j++;
-  //           }
-  //         }
-
-  //         // console.log("useEffect newRoundIdList", newRoundIdList);
-  //         setRoundIdList(newRoundIdList);
-
-  //         // check of reached oldestTime
-  //         const oldestTime =
-  //           +props.instrument.lastEpochClosingTime.toString() -
-  //           (+props.instrument.epochDurationInSeconds.toString() -
-  //             +props.instrument.bufferDurationInSeconds.toString()) *
-  //             chartConfig.epochCount;
-
-  //         const roundIdList = Object.keys(chartData || {});
-  //         const timeList = roundIdList.map((r) => chartData[r].time);
-  //         const chartDataOldestTime = Math.min(...timeList);
-
-  //         // console.log(
-  //         //   "useEffect roundIdList timeList chartDataOldestTime",
-  //         //   roundIdList,
-  //         //   timeList,
-  //         //   chartDataOldestTime,
-  //         //   oldestTime
-  //         // );
-
-  //         if (chartDataOldestTime > oldestTime) {
-  //           // console.log("useEffect greater");
-  //         } else {
-  //           // console.log("useEffect less");
-  //           setFetchHistoricalPrice(false);
-  //         }
-
-  //         return [addressList, encodedDataList];
-  //       })();
-  //       // console.log("useEffect newMultiCallList", newMultiCallList);
-
-  //       setMultiCallList(newMultiCallList);
-  //     }, 1000);
-  //     return () => clearInterval(interval);
-  //   }
-  // }, [latestRoundData]);
-
-  // useContractRead({
-  //   ...props.betterContractConfig,
-  //   functionName: "multiCall",
-  //   args: multiCallList,
-  //   onError(data) {
-  //     // console.log("multiCall error", data);
-  //   },
-  //   onSuccess(data) {
-  //     // console.log("multiCall success", data);
-  //     // decode
-  //     let decodedResultList = [];
-
-  //     for (let d of data) {
-  //       decodedResultList.push(
-  //         aggregatorInterface.decodeFunctionResult("getRoundData", d)
-  //       );
-  //     }
-
-  //     let newChartData = {};
-  //     decodedResultList.map((r, i) => {
-  //       const round = {
-  //         time: +r.updatedAt.toString(),
-  //         price: +ethers.utils.formatUnits(r.answer, 8),
-  //       };
-  //       newChartData[roundIdList[i]] = round;
-  //     });
-  //     if (chartData) {
-  //       setChartData({ ...chartData, ...newChartData });
-  //     } else {
-  //       setChartData(newChartData);
-  //     }
-  //   },
-  // });
-
-  // // track latest price
-  // useContractRead({
-  //   ...props.betterContractConfig,
-  //   functionName: "multiCall",
-  //   args: [
-  //     ...(() => {
-  //       let addressList = [];
-  //       let encodedDataList = [];
-  //       let newRoundIdList = [];
-  //       for (let i = 0; i < 5 && !(BigInt(i) > latestRoundData[0]); i++) {
-  //         const currentRoundId = (latestRoundData[0] - BigInt(i)).toString();
-  //         addressList.push(aggregatorContractConfig.address);
-
-  //         encodedDataList.push(
-  //           aggregatorInterface.encodeFunctionData("getRoundData", [
-  //             BigNumber.from(currentRoundId),
-  //           ])
-  //         );
-  //         newRoundIdList.push(currentRoundId);
-  //       }
-
-  //       return [addressList, encodedDataList];
-  //     })(),
-  //   ],
-  //   onError(data) {
-  //     // console.log("multiCall error", data);
-  //   },
-  //   onSuccess(data) {
-  //     // console.log("multiCall tracking", data);
-  //     // decode
-  //     let decodedResultList = [];
-
-  //     for (let d of data) {
-  //       decodedResultList.push(
-  //         aggregatorInterface.decodeFunctionResult("getRoundData", d)
-  //       );
-  //     }
-
-  //     let newChartData = {};
-  //     decodedResultList.map((r, i) => {
-  //       const round = {
-  //         time: +r.updatedAt.toString(),
-  //         price: +ethers.utils.formatUnits(r.answer, 8),
-  //       };
-  //       newChartData[roundIdList[i]] = round;
-  //     });
-  //     if (chartData) {
-  //       setChartData({ ...chartData, ...newChartData });
-  //     } else {
-  //       setChartData(newChartData);
-  //     }
-  //   },
-  // });
-
   const [pointer, setPointer] = useState(0n);
   const [instrumentRef, setInstrumentRef] = useState();
   const [latestRoundDataRef, setLatestRoundDataRef] = useState();
@@ -372,10 +205,8 @@ const Chart = (props) => {
     if (!latestRoundDataRef) {
       setLatestRoundDataRef(latestRoundData);
     } else if (latestRoundDataRef != latestRoundData) {
-      console.log("resetting pointer");
       setPointer(latestRoundData[0]);
     } else {
-      console.log("resetting pointer aborted");
     }
   }, [latestRoundData]);
 
@@ -383,14 +214,8 @@ const Chart = (props) => {
     if (!instrumentRef) {
       setInstrumentRef(props.instrument);
     } else if (instrumentRef != props.instrument) {
-      console.log("resetting chartData");
       setChartData(undefined);
     } else {
-      console.log(
-        "resetting chartData aborted",
-        props.instrument.epoch.toString(),
-        instrumentRef.epoch.toString()
-      );
     }
   }, [props.instrument]);
 
@@ -399,7 +224,6 @@ const Chart = (props) => {
     ...props.betterContractConfig,
     functionName: "multiCall",
     args: (() => {
-      console.log("pointer", pointer);
       let addressList = [];
       let encodedDataList = [];
       let newRoundIdList = [];
@@ -417,9 +241,7 @@ const Chart = (props) => {
       roundIdList = newRoundIdList;
       return [addressList, encodedDataList];
     })(),
-    onError(data) {
-      console.log("multiCall error", data);
-    },
+    onError(data) {},
     onSuccess(data) {
       // decode
       let decodedResultList = [];
@@ -439,14 +261,11 @@ const Chart = (props) => {
         newChartData[roundIdList[i]] = round;
       });
       if (chartData) {
-        console.log("newChartData", newChartData);
         setChartData({ ...chartData, ...newChartData });
 
         // fetch historical data if not enough
         const timeList = Object.values(chartData).map((r) => r.time);
-        console.log("timeList", timeList);
         const minTime = Math.min(...timeList);
-        console.log("minTime", minTime);
 
         const oldestTime =
           +props.instrument.lastEpochClosingTime.toString() -
@@ -454,18 +273,12 @@ const Chart = (props) => {
             props.instrument.bufferDurationInSeconds.toString()) *
             chartConfig.epochCount;
 
-        console.log("minTime oldestTime", oldestTime);
-        console.log("minTime minTime > oldestTime", minTime > oldestTime);
-
         if (minTime > oldestTime) {
           const newPointer = pointer - 50n;
-          console.log("minTime newPointer", newPointer);
           setPointer(newPointer);
           getRoundDataMultiCallRefetch();
-          console.log("resetting fetch new data");
         }
       } else {
-        console.log("resetting chartData");
         setChartData(newChartData);
       }
     },

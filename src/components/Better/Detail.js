@@ -100,8 +100,6 @@ const Detail = (props) => {
     args: [],
     onError(data) {},
     onSuccess(data) {
-      // console.log("start", data.toString());
-      // console.log("rewardPeriodLength", rewardPeriodLength);
       setCurrentPeriodEndTime(+data.toString() + rewardPeriodLength);
     },
   });
