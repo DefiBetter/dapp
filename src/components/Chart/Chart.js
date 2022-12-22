@@ -99,6 +99,7 @@ import AggregatorV3InterfaceABI from "../../static/ABI/AggregatorV3InterfaceABI.
 import LineChart from "./LineChart";
 import Axes from "./ChartBackground";
 import ChartBackground from "./ChartBackground";
+import SdCone from "./SdCone";
 
 const pairAddress = "0xcA75C4aA579c25D6ab3c8Ef9A70859ABF566fA1d"; // need to make this change with selected asset
 
@@ -414,6 +415,22 @@ const Chart = (props) => {
           lastEpochData={lastEpochData}
           instrument={props.instrument}
           rangeInfo={rangeInfo}
+        />
+        <SdCone
+          epochData={props.epochData}
+          data={chartData}
+          instrument={props.instrument}
+          rangeInfo={rangeInfo}
+          sdCount={2}
+          chartConfig={chartConfig}
+        />
+        <SdCone
+          epochData={props.epochData}
+          data={chartData}
+          instrument={props.instrument}
+          rangeInfo={rangeInfo}
+          sdCount={1}
+          chartConfig={chartConfig}
         />
         {/* <BarChart chartConfig={chartConfig} data={data} /> */}{" "}
       </svg>

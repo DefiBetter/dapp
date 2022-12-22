@@ -1,5 +1,92 @@
+import { ethers } from "ethers";
+import { transpose } from "mathjs";
+import { data2SvgView, preProcessData } from "./Transformations";
+
 const SdCone = (props) => {
-  return {props.};
+  const getDataPointList = (data) => {
+    const binMin = +ethers.utils.formatEther(props.epochData.binStart);
+    const binMax =
+      binMin + +ethers.utils.formatEther(props.epochData.binSize) * 7;
+    console.log("binMin", binMin);
+    console.log("binMax", binMax);
+    const binRange = binMax - binMin;
+    console.log("binRange", binRange);
+    const sd =
+      (binRange / (+props.instrument.volatilityMultiplier.toString() / 10000)) *
+      props.sdCount;
+    console.log("sd", sd);
+    console.log("props.sdCount", props.sdCount);
+
+    let dataPointList = [];
+    data = preProcessData(data).sort((a, b) => a[0] - b[0]);
+    data = transpose(data);
+
+    const { oldRangeInfo, newRangeInfo, epochStartPoint } =
+      props.rangeInfo(data);
+
+    console.log("epochStartPoint", epochStartPoint);
+
+    const epochTimeRange =
+      +props.instrument.epochDurationInSeconds.toString() +
+      +props.instrument.bufferDurationInSeconds.toString();
+    const timeInterval = epochTimeRange / 100;
+
+    /* generate SD points*/
+    const generateSdPointList = (position) => {
+      console.log("position", position);
+      let multiplier = 1;
+      if (position == "lower") {
+        multiplier = -1;
+      } else if (position == "upper") {
+        multiplier = 1;
+      }
+      let sdPointList = [];
+      for (let i = 0; i <= 100; i++) {
+        const sdPoint =
+          epochStartPoint[1] +
+          ((Math.sqrt((timeInterval * i) / epochTimeRange) * sd) / 2) *
+            multiplier;
+        // console.log("i sdPoint", i, sdPoint);
+
+        sdPointList.push([epochStartPoint[0] + timeInterval * i, sdPoint]);
+      }
+      sdPointList = transpose(sdPointList);
+      console.log("sdPointList", sdPointList);
+
+      let newDataPointList = data2SvgView(
+        sdPointList,
+        oldRangeInfo,
+        newRangeInfo,
+        props.chartConfig.containerHeight
+      );
+      console.log("newDataPointList", newDataPointList);
+      newDataPointList = transpose(newDataPointList);
+      console.log("newDataPointList", newDataPointList);
+      dataPointList = dataPointList.concat(newDataPointList);
+      console.log("dataPointList", dataPointList);
+
+      // plot sd cone upper
+      dataPointList.map((coord) => {
+        console.log("plotting coord", coord);
+        dataPointList.push(
+          <circle
+            cx={coord[0]}
+            cy={coord[1]}
+            r={2}
+            fill="red"
+            className="circle"
+          />
+        );
+      });
+    };
+
+    generateSdPointList("upper");
+    generateSdPointList("lower");
+
+    return dataPointList;
+  };
+
+  return <>{props.data ? getDataPointList(props.data) : null}</>;
 };
 
 export default SdCone;
