@@ -78,57 +78,89 @@ const ChartBackground = (props) => {
     xLabelCoordList = transpose(xLabelCoordList);
 
     // add label element
-    xLabelCoordList.map((x, i) => {
-      // text
-      dataPointList.push(
-        <text
-          x={x[0]}
-          y={x[1]}
-          fill="red"
-          textAnchor="middle"
-          alignmentBaseline="text-after-edge"
-        >
-          {xLabelList[i]}
-        </text>
-      );
+    // xLabelCoordList.map((x, i) => {
+    //   // text
+    //   dataPointList.push(
+    //     <text
+    //       x={x[0]}
+    //       y={x[1]}
+    //       fill="red"
+    //       textAnchor="middle"
+    //       alignmentBaseline="text-after-edge"
+    //     >
+    //       {xLabelList[i]}
+    //     </text>
+    //   );
+    // });
 
-      // buffer time line
-      let bufferTime =
-        +props.lastEpochData.closeTime.toString() +
-        +props.instrument.epochDurationInSeconds.toString();
+    // buffer time line
+    let bufferTime =
+      +props.lastEpochData.closeTime.toString() +
+      +props.instrument.epochDurationInSeconds.toString();
 
-      let bufferCoord = transpose([[bufferTime, 0]]);
+    let bufferCoord = transpose([[bufferTime, 0]]);
 
-      bufferCoord = data2SvgView(
-        bufferCoord,
-        oldRangeInfo,
-        newRangeInfo,
-        props.chartConfig.containerHeight
-      );
+    bufferCoord = data2SvgView(
+      bufferCoord,
+      oldRangeInfo,
+      newRangeInfo,
+      props.chartConfig.containerHeight
+    );
 
-      dataPointList.push(
-        <line
-          x1={bufferCoord[0]}
-          y1={0}
-          x2={bufferCoord[0]}
-          y2={props.chartConfig.containerHeight}
-          stroke="grey"
-          strokeDasharray="5"
-        />
-      );
+    dataPointList.push(
+      <line
+        x1={bufferCoord[0]}
+        y1={0}
+        x2={bufferCoord[0]}
+        y2={props.chartConfig.containerHeight}
+        stroke="grey"
+        strokeDasharray="5"
+      />
+    );
 
-      // vertical guide lines on chart
-      // dataPointList.push(
-      //   <line
-      //     x1={x[0]}
-      //     y1={props.chartConfig.containerHeight}
-      //     x2={x[0]}
-      //     y2={0}
-      //     stroke="grey"
-      //     strokeDasharray="5"
-      //   />
-      // );
-    });
+    // epoch start line
+    let ePoint = data2SvgView(
+      [[middleCoords[0]], [middleCoords[1]]],
+      oldRangeInfo,
+      newRangeInfo,
+      props.chartConfig.containerHeight
+    );
+
+    dataPointList.push(
+      <line
+        x1={ePoint[0]}
+        y1={props.chartConfig.containerHeight}
+        x2={ePoint[0]}
+        y2={props.chartConfig.containerHeight / 2}
+        stroke="grey"
+        strokeDasharray="5"
+      />
+    );
+
+    // epoch start text
+    dataPointList.push(
+      <text
+        x={ePoint[0]}
+        y={props.chartConfig.containerHeight}
+        fill="red"
+        textAnchor="middle"
+        alignmentBaseline="text-after-edge"
+      >
+        Epoch start
+      </text>
+    );
+
+    // vertical guide lines on chart
+    // dataPointList.push(
+    //   <line
+    //     x1={x[0]}
+    //     y1={props.chartConfig.containerHeight}
+    //     x2={x[0]}
+    //     y2={0}
+    //     stroke="grey"
+    //     strokeDasharray="5"
+    //   />
+    // );
 
     return dataPointList;
   };

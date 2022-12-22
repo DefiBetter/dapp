@@ -26,7 +26,6 @@ const SdCone = (props) => {
 
     /* generate SD points*/
     const generateSdPointList = (position) => {
-      console.log("position", position);
       let multiplier = 1;
       if (position == "lower") {
         multiplier = -1;
