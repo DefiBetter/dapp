@@ -7,15 +7,10 @@ const SdCone = (props) => {
     const binMin = +ethers.utils.formatEther(props.epochData.binStart);
     const binMax =
       binMin + +ethers.utils.formatEther(props.epochData.binSize) * 7;
-    console.log("binMin", binMin);
-    console.log("binMax", binMax);
     const binRange = binMax - binMin;
-    console.log("binRange", binRange);
     const sd =
       (binRange / (+props.instrument.volatilityMultiplier.toString() / 10000)) *
       props.sdCount;
-    console.log("sd", sd);
-    console.log("props.sdCount", props.sdCount);
 
     let dataPointList = [];
     data = preProcessData(data).sort((a, b) => a[0] - b[0]);
@@ -23,8 +18,6 @@ const SdCone = (props) => {
 
     const { oldRangeInfo, newRangeInfo, epochStartPoint } =
       props.rangeInfo(data);
-
-    console.log("epochStartPoint", epochStartPoint);
 
     const epochTimeRange =
       +props.instrument.epochDurationInSeconds.toString() +
@@ -46,12 +39,10 @@ const SdCone = (props) => {
           epochStartPoint[1] +
           ((Math.sqrt((timeInterval * i) / epochTimeRange) * sd) / 2) *
             multiplier;
-        // console.log("i sdPoint", i, sdPoint);
 
         sdPointList.push([epochStartPoint[0] + timeInterval * i, sdPoint]);
       }
       sdPointList = transpose(sdPointList);
-      console.log("sdPointList", sdPointList);
 
       let newDataPointList = data2SvgView(
         sdPointList,
@@ -59,24 +50,39 @@ const SdCone = (props) => {
         newRangeInfo,
         props.chartConfig.containerHeight
       );
-      console.log("newDataPointList", newDataPointList);
       newDataPointList = transpose(newDataPointList);
-      console.log("newDataPointList", newDataPointList);
-      dataPointList = dataPointList.concat(newDataPointList);
-      console.log("dataPointList", dataPointList);
 
-      // plot sd cone upper
-      dataPointList.map((coord) => {
-        console.log("plotting coord", coord);
-        dataPointList.push(
-          <circle
-            cx={coord[0]}
-            cy={coord[1]}
-            r={2}
-            fill="red"
-            className="circle"
-          />
-        );
+      // // plot sd cone
+      // newDataPointList.map((coord) => {
+      //   dataPointList.push(
+      //     <circle
+      //       cx={coord[0]}
+      //       cy={coord[1]}
+      //       r={2}
+      //       fill="red"
+      //       className="circle"
+      //     />
+      //   );
+      // });
+
+      // plot lines between coords
+      newDataPointList.map((coord, i) => {
+        if (i < newDataPointList.length - 1) {
+          coord = [coord[0], Number(coord[1])];
+          let coordNext = [
+            newDataPointList[i + 1][0],
+            Number(newDataPointList[i + 1][1]),
+          ];
+          dataPointList.push(
+            <line
+              x1={coord[0]}
+              y1={coord[1]}
+              x2={coordNext[0]}
+              y2={coordNext[1]}
+              stroke="grey"
+            />
+          );
+        }
       });
     };
 
