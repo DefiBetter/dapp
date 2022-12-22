@@ -15,7 +15,7 @@ import { InputNumber } from "../components/common/Input";
 import Navbar from "../components/Navbar/Navbar";
 import StakeDiagram from "../components/Staking/StakeDiagram";
 import { contractAddresses } from "../static/contractAddresses";
-import DeFiBetterV1ABI from "../static/ABI/DeFiBetterV1ABI.json";
+import BtStakingABI from "../static/ABI/BtStakingABI.json";
 import IERC20MetadataABI from "../static/ABI/IERC20MetadataABI.json";
 
 import styles from "./Staking.module.css";
@@ -39,7 +39,7 @@ function Staking() {
   const BN = ethers.BigNumber.from;
   const btStakingContractConfig = {
     address: contractAddresses[activeChain?.network]?.btStaking,
-    abi: DeFiBetterV1ABI,
+    abi: BtStakingABI,
   };
 
   // ------vars--------------------------
@@ -56,15 +56,17 @@ function Staking() {
   const [btBalance, setBtBalance] = useState(0);
   const [lpBalance, setLpBalance] = useState(0);
 
+  const [totalBtStaked, setTotalBtStaked] = useState(0);
+
   useEffect(() => {
     setLpTokenSymbol(
       `BT-${contractAddresses[activeChain?.network]?.nativeGas} LP`
     );
   }, [activeChain]);
 
-  const betterContractConfig = {
-    address: contractAddresses[activeChain?.network]?.better,
-    abi: DeFiBetterV1ABI,
+  const stakingPoolContractConfig = {
+    address: contractAddresses[activeChain?.network]?.btStaking,
+    abi: BtStakingABI,
   };
 
   // btAllowance bt
@@ -72,11 +74,15 @@ function Staking() {
     address: contractAddresses[activeChain?.network]?.btToken,
     abi: IERC20MetadataABI,
     functionName: "allowance",
-    args: [connectedAddress, contractAddresses[activeChain?.network]?.better],
+    args: [
+      connectedAddress,
+      contractAddresses[activeChain?.network]?.btStaking,
+    ],
     // watch: true,
     onError(data) {},
     onSuccess(data) {
       setBtAllowance(data);
+      console.log("allowance", data.toString());
     },
   });
 
@@ -86,7 +92,7 @@ function Staking() {
     abi: IERC20MetadataABI,
     functionName: "approve",
     args: [
-      contractAddresses[activeChain?.network]?.better,
+      stakingPoolContractConfig.address,
       ethers.constants.MaxUint256.sub("1").toString(),
     ],
     onSuccess(data) {},
@@ -100,7 +106,7 @@ function Staking() {
 
   // prepare stake bt
   const { config: stakeBtConfig } = usePrepareContractWrite({
-    ...betterContractConfig,
+    ...stakingPoolContractConfig,
     functionName: "stake",
     args: [ethers.utils.parseEther(btAmount.toString())],
     onSuccess(data) {},
@@ -118,7 +124,7 @@ function Staking() {
 
   // prepare unstake bt
   const { config: unstakeBtConfig } = usePrepareContractWrite({
-    ...betterContractConfig,
+    ...stakingPoolContractConfig,
     functionName: "unstake",
     args: [ethers.utils.parseEther(btAmount.toString())],
     onSuccess(data) {},
@@ -133,7 +139,7 @@ function Staking() {
   // claim bt rewards
   const { write: claimBtWrite } = useContractWrite({
     mode: "recklesslyUnprepared",
-    ...betterContractConfig,
+    ...stakingPoolContractConfig,
     functionName: "claim",
     args: [],
     onSuccess(data) {},
@@ -159,7 +165,7 @@ function Staking() {
     address: contractAddresses[activeChain?.network]?.lpToken,
     abi: IERC20MetadataABI,
     functionName: "allowance",
-    args: [connectedAddress, contractAddresses[activeChain?.network]?.better],
+    args: [connectedAddress, stakingPoolContractConfig.address],
     // watch: true,
     onError(data) {},
     onSuccess(data) {
@@ -173,7 +179,7 @@ function Staking() {
     abi: IERC20MetadataABI,
     functionName: "approve",
     args: [
-      contractAddresses[activeChain?.network]?.better,
+      stakingPoolContractConfig.address,
       ethers.constants.MaxUint256.sub("1").toString(),
     ],
     onSuccess(data) {},
@@ -187,7 +193,7 @@ function Staking() {
 
   // prepare stake lp
   const { config: stakeLpConfig } = usePrepareContractWrite({
-    ...betterContractConfig,
+    ...stakingPoolContractConfig,
     functionName: "stake",
     args: [ethers.utils.parseEther(lpAmount.toString())],
     onSuccess(data) {},
@@ -205,7 +211,7 @@ function Staking() {
 
   // prepare unstake lp
   const { config: unstakeLpConfig } = usePrepareContractWrite({
-    ...betterContractConfig,
+    ...stakingPoolContractConfig,
     functionName: "unstake",
     args: [ethers.utils.parseEther(lpAmount.toString())],
     onSuccess(data) {},
@@ -220,7 +226,7 @@ function Staking() {
   // claim lp rewards
   const { write: claimLpWrite } = useContractWrite({
     mode: "recklesslyUnprepared",
-    ...betterContractConfig,
+    ...stakingPoolContractConfig,
     functionName: "claim",
     args: [],
     onSuccess(data) {},
@@ -240,8 +246,22 @@ function Staking() {
     },
   });
 
+  // total bt staked
+  useContractRead({
+    address: contractAddresses[activeChain?.network]?.btToken,
+    abi: IERC20MetadataABI,
+    functionName: "balanceOf",
+    args: [btStakingContractConfig.address],
+    onError(data) {},
+    onSuccess(data) {
+      setTotalBtStaked(ethers.utils.formatEther(data));
+    },
+    watch: true,
+  });
+
   /* handle input amount changes */
   const handleBtAmount = (e) => {
+    console.log("e.target.value", e.target.value);
     setBtAmount(e.target.value ? e.target.value : 0);
   };
 
@@ -373,7 +393,7 @@ function Staking() {
                               </CardBlueBgBlackBorder>
                             </GridCell4>
                             <GridCell4>
-                              <b>{0} BT</b>
+                              <b>{totalBtStaked} BT</b>
                             </GridCell4>
                             <GridCell4>
                               <CardBlueBgBlackBorder>
