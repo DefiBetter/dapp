@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { SwitchNetwork } from "./web3/SwitchNetwork";
 import { WalletConnect } from "./web3/WalletConnect";
 import styles from "./Navbar.module.css";
+import { FancyText, UnderlineText } from "../common/Text";
 
 const Navbar = () => {
   return (
@@ -13,15 +14,21 @@ const Navbar = () => {
         />
       </Link>
       <div className={styles.pages}>
-        <div className={styles.page}>
-          <Link to="/staking">Staking</Link>
-        </div>
-        <div className={styles.page}>
-          <Link to="/vaults">Strategy vaults</Link>
-        </div>
-        <div className={styles.page}>
-          <Link to="/documentation">Documentation</Link>
-        </div>
+        <FancyText>
+          <UnderlineText>
+            <Link to="/staking">Staking</Link>
+          </UnderlineText>
+        </FancyText>
+        <FancyText>
+          <UnderlineText>
+            <Link to="/vaults">Strategy vaults</Link>
+          </UnderlineText>
+        </FancyText>
+        <FancyText>
+          <UnderlineText>
+            <Link to="/documentation">Documentation</Link>
+          </UnderlineText>
+        </FancyText>
       </div>
       <div className={styles.connect}>
         <SwitchNetwork />
