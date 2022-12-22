@@ -1,6 +1,12 @@
 .container {
     width: calc(100%/3 * 2);
     background-color: #647687;
+    position: relative;
+}
+
+.chartOverlay {
+position: absolute;
+top: 0;
 }
 
 #dexscreenerEmbed {

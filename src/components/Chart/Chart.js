@@ -92,7 +92,7 @@ import { underlyingPairAddress } from "../../static/contractAddresses";
 import { useState, useRef, useLayoutEffect, useEffect } from "react";
 import { useContractRead, useContractReads } from "wagmi";
 import { BigNumber, ethers } from "ethers";
-import { Grid, GridCell2, GridRow } from "../common/Grid";
+import { Grid, GridCell2, GridCell3, GridRow } from "../common/Grid";
 
 import AggregatorV3InterfaceABI from "../../static/ABI/AggregatorV3InterfaceABI.json";
 /* global BigInt */
@@ -164,13 +164,13 @@ const Chart = (props) => {
   useContractRead({
     ...props.betterContractConfig,
     functionName: "getUnderlyingPrice",
-    args: [props.instrument?.underlying],
+    args: [props.instrument.underlying],
     onError(data) {},
     onSuccess(data) {
       setCurrentPrice(+ethers.utils.formatEther(data[0]));
       setLastUpdated(+data[1].toString());
     },
-    // watch: true,
+    watch: true,
   });
 
   // aggregator config
@@ -434,24 +434,33 @@ const Chart = (props) => {
         />
         {/* <BarChart chartConfig={chartConfig} data={data} /> */}{" "}
       </svg>
-      <Grid>
-        <GridRow>
-          <GridCell2>Last Epoch Closing Price:</GridCell2>
-          <GridCell2>
-            {lastEpochData
-              ? ethers.utils.formatEther(lastEpochData.closingPrice)
-              : null}
-          </GridCell2>
-        </GridRow>
-        <GridRow>
-          <GridCell2> Current Epoch Price:</GridCell2>
-          <GridCell2>{currentPrice}</GridCell2>
-        </GridRow>
-        <GridRow>
-          <GridCell2> Last updated (current price):</GridCell2>
-          <GridCell2>{new Date(lastUpdated * 1000).toISOString()}</GridCell2>
-        </GridRow>
-      </Grid>
+      <div className={styles.chartOverlay}>
+        <Grid>
+          <GridRow>
+            <GridCell3>
+              <GridCell2>Epoch open price:</GridCell2>
+              <GridCell2>
+                {lastEpochData
+                  ? ethers.utils.formatEther(lastEpochData.closingPrice)
+                  : null}
+              </GridCell2>
+            </GridCell3>
+            <GridCell3>
+              <GridCell2> Current price:</GridCell2>
+              <GridCell2>{currentPrice}</GridCell2>
+            </GridCell3>
+            <GridCell3>
+              <GridCell2> Last updated:</GridCell2>
+              <GridCell2>
+                {(() => {
+                  const dt = new Date(lastUpdated * 1000);
+                  return `${dt.getHours()}:${dt.getMinutes()}:${dt.getSeconds()}`;
+                })()}
+              </GridCell2>
+            </GridCell3>
+          </GridRow>
+        </Grid>
+      </div>
     </div>
   );
 };

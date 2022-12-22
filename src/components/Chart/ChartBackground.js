@@ -215,17 +215,17 @@ const ChartBackground = (props) => {
     // add label element
     yLabelCoordList.map((y, i) => {
       // text string
-      dataPointList.push(
-        <text
-          x={y[0] - 5}
-          y={y[1]}
-          fill="red"
-          textAnchor="end"
-          alignmentBaseline="middle"
-        >
-          {yLabelList[i]}
-        </text>
-      );
+      // dataPointList.push(
+      //   <text
+      //     x={y[0] - 5}
+      //     y={y[1]}
+      //     fill="red"
+      //     textAnchor="end"
+      //     alignmentBaseline="middle"
+      //   >
+      //     {yLabelList[i]}
+      //   </text>
+      // );
 
       // vertical lines on chart
       dataPointList.push(
