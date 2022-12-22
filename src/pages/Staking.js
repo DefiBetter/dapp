@@ -78,12 +78,12 @@ function Staking() {
       connectedAddress,
       contractAddresses[activeChain?.network]?.btStaking,
     ],
-    // watch: true,
     onError(data) {},
     onSuccess(data) {
       setBtAllowance(data);
       console.log("allowance", data.toString());
     },
+    watch: true,
   });
 
   // prepare approve bt

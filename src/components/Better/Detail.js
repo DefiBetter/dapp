@@ -214,9 +214,7 @@ const Detail = (props) => {
                     textAlign: "left",
                   }}
                 >
-                  {props.epochData
-                    ? binBorderList[props.epochData.binValues.length - i]
-                    : null}
+                  {props.epochData ? binBorderList[i + 1] : null}
                 </div>
                 <div>
                   {+ethers.utils.formatEther(binValue.toString()) > 0
