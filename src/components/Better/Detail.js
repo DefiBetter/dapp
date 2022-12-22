@@ -233,7 +233,13 @@ const Detail = (props) => {
                   value={
                     props.binAmountList[i] > 0 ? props.binAmountList[i] : ""
                   }
-                  placeholder={0}
+                  placeholder={`Bin ${i + 1} (${
+                    i + 1 > 4
+                      ? `Bull ${i + 1 - 4}`
+                      : i + 1 < 4
+                      ? `Bear ${4 - (i + 1)}`
+                      : `Neutral`
+                  }) `}
                 />
                 <div
                   style={{
