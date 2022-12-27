@@ -1,10 +1,9 @@
 import { ethers } from "ethers";
 import { useEffect, useState } from "react";
-import { data2SvgView, transpose } from "./Transformations";
+import { data2SvgView, preProcessData, transpose } from "./Transformations";
 
 const ChartBackground = (props) => {
   const timeRange2TimeInterval = (range) => {
-    console.log("timeRange2TimeInterval range", range);
     // range in seconds
     // if (range < 60 * 60) {
     //   return 5 * 60; // 5 mins interval
@@ -18,7 +17,6 @@ const ChartBackground = (props) => {
     //   return 80 * 60;
     // }
     let temp = range / (1 * 60);
-    console.log("timeRange2TimeInterval temp", temp);
     return Math.ceil(temp) * 10;
   };
 
@@ -27,16 +25,13 @@ const ChartBackground = (props) => {
   };
 
   const getVerticalBackground = () => {
-    let data = transpose(props.data);
+    let data = preProcessData(props.data);
+    data = transpose(data);
     const {
       oldRangeInfo,
       newRangeInfo,
       epochStartPoint: middleCoords,
     } = props.rangeInfo(data);
-    console.log(
-      "getVerticalBackground { oldRangeInfo, newRangeInfo, middleCoords }",
-      { oldRangeInfo, newRangeInfo, middleCoords }
-    );
 
     let dataPointList = [];
 
@@ -79,72 +74,100 @@ const ChartBackground = (props) => {
     xLabelCoordList[1] = xLabelCoordList[0].map(
       () => props.chartConfig.containerHeight
     );
-    console.log("getVerticalBackground xLabelCoordList", xLabelCoordList);
 
     xLabelCoordList = transpose(xLabelCoordList);
 
     // add label element
-    xLabelCoordList.map((x, i) => {
-      // text
-      dataPointList.push(
-        <text
-          x={x[0]}
-          y={x[1]}
-          fill="red"
-          textAnchor="middle"
-          alignmentBaseline="text-after-edge"
-        >
-          {xLabelList[i]}
-        </text>
-      );
+    // xLabelCoordList.map((x, i) => {
+    //   // text
+    //   dataPointList.push(
+    //     <text
+    //       x={x[0]}
+    //       y={x[1]}
+    //       fill="red"
+    //       textAnchor="middle"
+    //       alignmentBaseline="text-after-edge"
+    //     >
+    //       {xLabelList[i]}
+    //     </text>
+    //   );
+    // });
 
-      // buffer time line
-      let bufferTime =
-        +props.lastEpochData.closeTime.toString() +
-        +props.instrument.epochDurationInSeconds.toString();
+    // buffer time line
+    let bufferTime =
+      +props.lastEpochData.closeTime.toString() +
+      +props.instrument.epochDurationInSeconds.toString();
 
-      let bufferCoord = transpose([[bufferTime, 0]]);
+    let bufferCoord = transpose([[bufferTime, 0]]);
 
-      console.log("getVerticalBackground transpose", bufferCoord);
+    bufferCoord = data2SvgView(
+      bufferCoord,
+      oldRangeInfo,
+      newRangeInfo,
+      props.chartConfig.containerHeight
+    );
 
-      bufferCoord = data2SvgView(
-        bufferCoord,
-        oldRangeInfo,
-        newRangeInfo,
-        props.chartConfig.containerHeight
-      );
-      console.log("getVerticalBackground bufferCoord", bufferCoord);
+    dataPointList.push(
+      <line
+        x1={bufferCoord[0]}
+        y1={0}
+        x2={bufferCoord[0]}
+        y2={props.chartConfig.containerHeight}
+        stroke="black"
+        strokeDasharray="5"
+      />
+    );
 
-      dataPointList.push(
-        <line
-          x1={bufferCoord[0]}
-          y1={0}
-          x2={bufferCoord[0]}
-          y2={props.chartConfig.containerHeight}
-          stroke="grey"
-          strokeDasharray="5"
-        />
-      );
+    // epoch start line
+    let ePoint = data2SvgView(
+      [[middleCoords[0]], [middleCoords[1]]],
+      oldRangeInfo,
+      newRangeInfo,
+      props.chartConfig.containerHeight
+    );
 
-      // vertical guide lines on chart
-      // dataPointList.push(
-      //   <line
-      //     x1={x[0]}
-      //     y1={props.chartConfig.containerHeight}
-      //     x2={x[0]}
-      //     y2={0}
-      //     stroke="grey"
-      //     strokeDasharray="5"
-      //   />
-      // );
-    });
+    dataPointList.push(
+      <line
+        x1={ePoint[0]}
+        y1={props.chartConfig.containerHeight}
+        x2={ePoint[0]}
+        y2={props.chartConfig.containerHeight / 2}
+        stroke="black"
+        strokeDasharray="5"
+      />
+    );
+
+    // epoch start text
+    dataPointList.push(
+      <text
+        x={ePoint[0]}
+        y={props.chartConfig.containerHeight}
+        fill="#C4DCF5"
+        textAnchor="middle"
+        alignmentBaseline="text-after-edge"
+      >
+        Epoch start
+      </text>
+    );
+
+    // vertical guide lines on chart
+    // dataPointList.push(
+    //   <line
+    //     x1={x[0]}
+    //     y1={props.chartConfig.containerHeight}
+    //     x2={x[0]}
+    //     y2={0}
+    //     stroke="grey"
+    //     strokeDasharray="5"
+    //   />
+    // );
 
     return dataPointList;
   };
 
   const getHorizontalBackground = () => {
-    console.log("getHorizontalBackground chartConfig", props.chartConfig);
-    let data = transpose(props.data);
+    let data = preProcessData(props.data);
+    data = transpose(data);
     const {
       oldRangeInfo,
       newRangeInfo,
@@ -156,32 +179,21 @@ const ChartBackground = (props) => {
       props.epochData,
       props.instrument
     );
-    console.log("getHorizontalBackground yLabelSize", yLabelSize);
-    console.log("getHorizontalBackground transpose", transpose);
-    console.log(
-      "getHorizontalBackground { oldRangeInfo, newRangeInfo, middleCoords }",
-      { oldRangeInfo, newRangeInfo, middleCoords }
-    );
 
     let dataPointList = [];
 
     /* generate coord for y axis labels */
     let yLabelCoordList = [];
     let yAxisRange = oldRangeInfo[1][2];
-    console.log("getHorizontalBackground yAxisRange", yAxisRange);
 
     let interval = priceRange2PriceInterval();
-    console.log("getHorizontalBackground interval", interval);
 
     for (let i = 0; i < 8; i++) {
       yLabelCoordList.push([0, oldRangeInfo[1][0] + yLabelSize * i]);
     }
 
-    console.log("getHorizontalBackground yLabelCoordList", yLabelCoordList);
-
     // get y labels for each coord
     let yLabelList = transpose(yLabelCoordList)[1];
-    console.log("getHorizontalBackground yLabelList", yLabelList);
     yLabelList = yLabelList.map((price) => price.toPrecision(5));
 
     // scale coords to fit svg
@@ -202,19 +214,18 @@ const ChartBackground = (props) => {
 
     // add label element
     yLabelCoordList.map((y, i) => {
-      console.log("getHorizontalBackground y", y);
       // text string
-      dataPointList.push(
-        <text
-          x={y[0] - 5}
-          y={y[1]}
-          fill="red"
-          textAnchor="end"
-          alignmentBaseline="middle"
-        >
-          {yLabelList[i]}
-        </text>
-      );
+      // dataPointList.push(
+      //   <text
+      //     x={y[0] - 5}
+      //     y={y[1]}
+      //     fill="red"
+      //     textAnchor="end"
+      //     alignmentBaseline="middle"
+      //   >
+      //     {yLabelList[i]}
+      //   </text>
+      // );
 
       // vertical lines on chart
       dataPointList.push(
@@ -223,7 +234,7 @@ const ChartBackground = (props) => {
           y1={y[1]}
           x2={props.chartConfig.containerWidth}
           y2={y[1]}
-          stroke="grey"
+          stroke="black"
           strokeDasharray="5"
         />
       );

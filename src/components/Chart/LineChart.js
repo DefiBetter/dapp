@@ -26,20 +26,12 @@ const LineChart = (props) => {
       - binBorder => scale to align with the bin border
     */
     let dataPointList = [];
-    console.log("getDataPointList data", data);
 
+    data = preProcessData(data).sort((a, b) => a[0] - b[0]);
     data = transpose(data);
-    console.log("getDataPointList transpose", data);
 
     const { oldRangeInfo, newRangeInfo, epochStartPoint } =
       props.rangeInfo(data);
-
-    console.log("getDataPointList epochStartPoint", Date(epochStartPoint[0]));
-    console.log(
-      "getDataPointList oldRangeInfo, newRangeInfo",
-      oldRangeInfo,
-      newRangeInfo
-    );
 
     data[0].push(epochStartPoint[0]);
     data[1].push(epochStartPoint[1]);
@@ -53,29 +45,28 @@ const LineChart = (props) => {
 
     data = transpose(data);
     let ePoint = data.pop();
-    console.log("getDataPointList transpose", data);
-    console.log("getDataPointList ePoint", ePoint);
 
     // plot circle points are coords
-    data.map((coord) => {
-      coord = [coord[0], Number(coord[1])];
-      dataPointList.push(
-        <circle
-          cx={coord[0]}
-          cy={Number(coord[1])}
-          r={2}
-          fill="red"
-          className="circle"
-        />
-      );
-    });
+    // data.map((coord) => {
+    //   coord = [coord[0], Number(coord[1])];
+    //   dataPointList.push(
+    //     <circle
+    //       cx={coord[0]}
+    //       cy={Number(coord[1])}
+    //       r={2}
+    //       fill="red"
+    //       className="circle"
+    //     />
+    //   );
+    // });
 
+    // epoch start point
     dataPointList.push(
       <circle
         cx={ePoint[0]}
         cy={ePoint[1]}
         r={2}
-        fill="blue"
+        fill="red"
         className="circle"
       />
     );
@@ -91,7 +82,7 @@ const LineChart = (props) => {
             y1={coord[1]}
             x2={coordNext[0]}
             y2={coordNext[1]}
-            stroke="grey"
+            stroke="black"
           />
         );
       }
@@ -109,12 +100,8 @@ const LineChart = (props) => {
     return dataPointList;
   };
 
-  console.log("LineChart epochData", props.epochData);
-
   return (
-    <>
-      {props.data && props.epochData ? getDataPointList(props.data, 200) : null}
-    </>
+    <>{props.data && props.epochData ? getDataPointList(props.data) : null}</>
   );
 };
 

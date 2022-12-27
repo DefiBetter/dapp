@@ -2,6 +2,8 @@ import { useAccount, useConnect, useDisconnect } from "wagmi";
 import styles from "./WalletConnect.module.css";
 import truncateEthAddress from "truncate-eth-address";
 import { useState } from "react";
+import Button from "../../common/Button";
+import { NormalText } from "../../common/Text";
 
 export function WalletConnect() {
   const { connect, connectors, error, isLoading, pendingConnector } =
@@ -16,17 +18,17 @@ export function WalletConnect() {
     return (
       <div className={styles.container}>
         {address && (
-          <button
+          <Button
             className={styles.address}
             onClick={() => {
               setShowDisconnect(!showDisconnect);
             }}
           >
-            {truncateEthAddress(address)}
-          </button>
+            <NormalText>{truncateEthAddress(address)}</NormalText>
+          </Button>
         )}
         {showDisconnect ? (
-          <button
+          <Button
             className={styles.option}
             onClick={() => {
               setShowDisconnect(!showDisconnect);
@@ -34,8 +36,8 @@ export function WalletConnect() {
               reset();
             }}
           >
-            Disconnect
-          </button>
+            <NormalText>Disconnect</NormalText>
+          </Button>
         ) : null}
       </div>
     );

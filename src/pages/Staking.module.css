@@ -8,11 +8,15 @@
     width: 600px;
 }
 
+.cardContainer {
+    max-width: 800px;
+}
+
 .innerContainer {
     display: flex;
     flex-direction: column;
-    gap: 5rem;
-    margin: auto;
+    gap: 1rem;
+    margin: 1rem auto;
 }
 
 .section2 {

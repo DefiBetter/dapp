@@ -8,7 +8,7 @@ import {
   useNetwork,
   useContractReads,
 } from "wagmi";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 import { contractAddresses } from "../static/contractAddresses";
 import { ethers } from "ethers";
@@ -71,7 +71,7 @@ function Better() {
   // misc
   const [nativeGas, setNativeGas] = useState();
 
-  /* contract read/write */
+  /* initial contract read/writes */
   // instrument list
   useContractRead({
     ...betterContractConfig,
@@ -95,30 +95,28 @@ function Better() {
     ...betterContractConfig,
     functionName: "getInstrumentBySelector",
     args: [instrumentSelector],
-    onError(data) {
-      console.log("getInstrumentBySelector error", data);
-    },
+    onError(data) {},
     onSuccess(data) {
-      // console.log("getInstrumentBySelector", data);
+      if (!instrument) {
+        setInstrument(data);
+      }
       if (data.selector == instrument.selector) {
-        console.log("getInstrumentBySelector same selector");
         if (data.epoch != instrument.epoch) {
-          console.log("getInstrumentBySelector diff epoch");
-          console.log("getInstrumentBySelector data.epoch", data.epoch);
-          console.log(
-            "getInstrumentBySelector instrument.epoch",
-            instrument.epoch
-          );
           setInstrument(data);
         } else {
-          console.log("getInstrumentBySelector same epoch");
         }
       } else {
-        console.log("getInstrumentBySelector diff selector");
       }
     },
-    watch: true,
   });
+
+  let interval = useRef(null);
+  useEffect(() => {
+    interval.current = setInterval(getInstrumentBySelectorRefetch, 1000);
+    return () => {
+      clearInterval(interval.current);
+    };
+  }, []);
 
   // epoch data for currently selected instrument
   useContractRead({
@@ -146,12 +144,9 @@ function Better() {
     functionName: "getUserPendingBetterBalance",
     args: [connectedAddress, customGainFee],
     onSuccess(data) {
-      Number(setPendingBetterBalance(ethers.utils.formatEther(data)));
-      // console.log("pendingBetterBalance", data);
+      setPendingBetterBalance(+ethers.utils.formatEther(data));
     },
-    onError(data) {
-      // console.log("pendingBetterBalance error", data);
-    },
+    onError(data) {},
     watch: true,
   });
 
@@ -167,22 +162,10 @@ function Better() {
       10000,
       binAmountList,
     ],
-    watch: true,
     onSuccess(data) {
       setUserPosition(data);
-      console.log("getUserPositionValueForInstrument", data);
     },
-    onError(data) {
-      console.log("getUserPositionValueForInstrument args", [
-        connectedAddress,
-        instrument?.selector,
-        instrument?.epoch,
-        10000,
-        10000,
-        binAmountList,
-      ]);
-      console.log("getUserPositionValueForInstrument error", data);
-    },
+    onError(data) {},
     watch: true,
   });
 
@@ -191,12 +174,9 @@ function Better() {
     ...betterContractConfig,
     functionName: "userGainsInfo",
     args: [connectedAddress],
-    onError(data) {
-      // console.log("userGainsInfo error", data);
-    },
+    onError(data) {},
     onSuccess(data) {
       setUserGainsInfo(data);
-      // console.log("userGainsInfo", data);
     },
     watch: true,
   });
@@ -207,61 +187,66 @@ function Better() {
     setNativeGas(contractAddresses[activeChain?.network]?.nativeGas);
 
     // set bin total
-    setBinTotal(binAmountList.reduce((a, b) => Number(a) + Number(b), 0));
-  }, [activeChain, binAmountList]);
+  }, [activeChain]);
 
   return (
     <Connect isConnected={isConnected} activeChain={activeChain}>
-      <AppContainer>
-        <Navbar></Navbar>
-        <Container>
-          <div className={styles.header}>
-            <Pair
-              instrumentList={instrumentList}
-              setInstrument={setInstrument}
-              instrument={instrument}
-            />
-            <Epoch
-              instrument={instrument}
-              setInstrument={setInstrument}
-              getInstrumentBySelectorRefetch={getInstrumentBySelectorRefetch}
-              getInstrumentBySelectorIsRefetching={
-                getInstrumentBySelectorIsRefetching
-              }
-            />
-            <Action
-              betterContractConfig={betterContractConfig}
-              instrument={instrument}
-              binAmountList={binAmountList}
-              customFlatFee={customFlatFee}
-              customGainFee={customGainFee}
-              pendingBetterBalance={pendingBetterBalance}
-              nativeGas={nativeGas}
-              setBinAmountList={setBinAmountList}
-              binTotal={binTotal}
-            />
-          </div>
-          <div className={styles.body}>
-            <Chart
-              instrument={instrument}
-              epochData={epochData}
-              betterContractConfig={betterContractConfig}
-            />
-            <Detail
-              binAmountList={binAmountList}
-              setBinAmountList={setBinAmountList}
-              pendingBetterBalance={pendingBetterBalance}
-              epochData={epochData}
-              normalisedBinValueList={normalisedBinValueList}
-              instrument={instrument}
-              nativeGas={nativeGas}
-              userPosition={userPosition}
-              userGainsInfo={userGainsInfo}
-              betterContractConfig={betterContractConfig}
-            />
-          </div>
-        </Container>
-      </AppContainer>
+      {epochData && betterContractConfig ? (
+        <AppContainer>
+          <Navbar></Navbar>
+          <Container>
+            <div className={styles.header}>
+              <Pair
+                instrumentList={instrumentList}
+                setInstrument={setInstrument}
+                instrument={instrument}
+              />
+              <Epoch
+                instrument={instrument}
+                setInstrument={setInstrument}
+                getInstrumentBySelectorRefetch={getInstrumentBySelectorRefetch}
+                getInstrumentBySelectorIsRefetching={
+                  getInstrumentBySelectorIsRefetching
+                }
+              />
+              <Action
+                betterContractConfig={betterContractConfig}
+                instrument={instrument}
+                binAmountList={binAmountList}
+                setBinTotal={setBinTotal}
+                customFlatFee={customFlatFee}
+                customGainFee={customGainFee}
+                pendingBetterBalance={pendingBetterBalance}
+                nativeGas={nativeGas}
+                setBinAmountList={setBinAmountList}
+                binTotal={binTotal}
+              />
+            </div>
+            <div className={styles.body}>
+              <Chart
+                instrument={instrument}
+                epochData={epochData}
+                betterContractConfig={betterContractConfig}
+              />
+              <Detail
+                binAmountList={binAmountList}
+                setBinAmountList={setBinAmountList}
+                setBinTotal={setBinTotal}
+                pendingBetterBalance={pendingBetterBalance}
+                epochData={epochData}
+                normalisedBinValueList={normalisedBinValueList}
+                instrument={instrument}
+                nativeGas={nativeGas}
+                userPosition={userPosition}
+                userGainsInfo={userGainsInfo}
+                betterContractConfig={betterContractConfig}
+              />
+            </div>
+          </Container>
+        </AppContainer>
+      ) : (
+        <div>loading app...</div>
+      )}
     </Connect>
   );
 }

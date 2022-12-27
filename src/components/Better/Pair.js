@@ -6,7 +6,6 @@ const Pair = (props) => {
   // const [currentPair, setCurrentPair] = useState("");
 
   const toggleOptions = () => {
-    console.log("toggled");
     setShowInstrumentList(!showInstrumentList);
   };
 

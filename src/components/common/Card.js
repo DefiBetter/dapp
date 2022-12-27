@@ -1,13 +1,16 @@
 import styled from "styled-components";
 
 const Card = styled.div`
-  border-radius: 20px;
-  border-width: 3px;
-  border-color: #2aaee6;
-  background-color: white;
-  border-style: solid;
-  padding: 10px;
-  box-shadow: 5px 5px 10px 0px grey;
+  border-radius: ${(props) => (props.borderRadius ? props.borderRadius : 1)}rem;
+  border-width: ${(props) => (props.borderWidth ? props.borderWidth : 0.2)}rem;
+  border-color: ${(props) =>
+    props.borderColor == "black" ? "black" : `#2aaee6`};
+  background-color: ${(props) =>
+    props.backgroundColor == "blue" ? `#cce5ff` : `white`};
+  ${(props) => (props.noBorder ? null : `border-style: solid;`)}
+  padding: ${(props) =>
+    props.padding == 0 || props.padding ? props.padding : 0.5}rem;
+  ${(props) => (props.shadow ? `box-shadow: 5px 5px 10px 0px grey;` : null)}
 `;
 
 const CardBlueBg = styled(Card)`
@@ -21,4 +24,13 @@ const CardBlueBgBlackBorder = styled(CardBlueBg)`
   border-width: 2px;
 `;
 
-export { Card, CardBlueBg, CardBlueBgBlackBorder };
+const CardBlueBgBlackBorderNoShadow = styled(CardBlueBgBlackBorder)`
+  box-shadow: 0px 0px 0px 0px white;
+`;
+
+export {
+  Card,
+  CardBlueBg,
+  CardBlueBgBlackBorder,
+  CardBlueBgBlackBorderNoShadow,
+};

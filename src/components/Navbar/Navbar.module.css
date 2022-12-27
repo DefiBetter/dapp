@@ -3,9 +3,13 @@
     src: url("../../static/font/marguerite.ttf");
 }
 
+.navbarContainer {
+    height: 70px;
+}
+
 .container {
     min-width: 1100px;
-    height: 100px;
+    height: 70px;
     display: flex;
     flex-direction: row;
     justify-content: space-between;
@@ -21,10 +25,9 @@
 }
 
 .logo {
-    height: 100%;
     margin: auto;
     margin-left: 0.5rem;
-    flex: 1;
+    max-height: 70px;
 }
 
 .pages {

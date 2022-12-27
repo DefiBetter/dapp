@@ -3,18 +3,16 @@ import { ethers } from "ethers";
 
 import { usePrepareContractWrite, useContractWrite } from "wagmi";
 import { useEffect } from "react";
-import Button from "../common/Button";
+import Button, { ButtonDisabled } from "../common/Button";
 import { MedText, NormalText, SmallText } from "../common/Text";
 
 const Action = (props) => {
-  console.log("ACTION", props.binAmountList);
-
   // open position
   const { config: openPositionConfig } = usePrepareContractWrite({
     ...props.betterContractConfig,
     functionName: "openPosition",
     args: [
-      props.instrument?.selector,
+      props.instrument.selector,
       props.binAmountList.map((bin) => {
         return ethers.utils.parseEther(bin.toString());
       }),
@@ -23,11 +21,14 @@ const Action = (props) => {
     ],
     overrides: {
       value: ethers.utils.parseEther(
-        (props.binTotal > props.pendingBetterBalance
+        (props.binTotal >= props.pendingBetterBalance
           ? props.binTotal - props.pendingBetterBalance
           : 0
         ).toString()
       ),
+    },
+    onError(data) {},
+    onSuccess(data) {
     },
   });
 
@@ -35,7 +36,7 @@ const Action = (props) => {
     ...openPositionConfig,
     onSuccess(data) {
       props.setBinAmountList([0, 0, 0, 0, 0, 0, 0]);
-      console.log("data action", data);
+      props.setBinTotal(0);
     },
   });
 
@@ -49,18 +50,14 @@ const Action = (props) => {
 
   return (
     <div className={styles.container}>
-      <Button
-        onClick={depositWrite}
-        disabled={
-          Date.now() / 1000 >
-          +props.instrument?.lastEpochClosingTime.toString() +
-            +props.instrument?.epochDurationInSeconds.toString()
-            ? true
-            : false
-        }
-      >
-        Deposit
-      </Button>
+      {Date.now() / 1000 >
+      +props.instrument.lastEpochClosingTime.toString() +
+        +props.instrument.epochDurationInSeconds.toString() ? (
+        <ButtonDisabled disabled>Deposit</ButtonDisabled>
+      ) : (
+        <Button onClick={depositWrite}>Deposit</Button>
+      )}
+
       <Button onClick={claimWrite}>
         <MedText>Claim</MedText>
         <SmallText>

@@ -15,7 +15,7 @@ import { InputNumber } from "../components/common/Input";
 import Navbar from "../components/Navbar/Navbar";
 import StakeDiagram from "../components/Staking/StakeDiagram";
 import { contractAddresses } from "../static/contractAddresses";
-import DeFiBetterV1ABI from "../static/ABI/DeFiBetterV1ABI.json";
+import BtStakingABI from "../static/ABI/BtStakingABI.json";
 import IERC20MetadataABI from "../static/ABI/IERC20MetadataABI.json";
 
 import styles from "./Staking.module.css";
@@ -39,12 +39,8 @@ function Staking() {
   const BN = ethers.BigNumber.from;
   const btStakingContractConfig = {
     address: contractAddresses[activeChain?.network]?.btStaking,
-    abi: DeFiBetterV1ABI,
+    abi: BtStakingABI,
   };
-  // // console.log("activeChain", activeChain);
-  // // console.log("connectedAddress", connectedAddress);
-  // // console.log("contractAddresses", contractAddresses);
-  // // console.log("btStakingContractConfig", btStakingContractConfig);
 
   // ------vars--------------------------
   const [bridgeAmount, setBridgeAmount] = useState(0);
@@ -60,15 +56,17 @@ function Staking() {
   const [btBalance, setBtBalance] = useState(0);
   const [lpBalance, setLpBalance] = useState(0);
 
+  const [totalBtStaked, setTotalBtStaked] = useState(0);
+
   useEffect(() => {
     setLpTokenSymbol(
       `BT-${contractAddresses[activeChain?.network]?.nativeGas} LP`
     );
   }, [activeChain]);
 
-  const betterContractConfig = {
-    address: contractAddresses[activeChain?.network]?.better,
-    abi: DeFiBetterV1ABI,
+  const stakingPoolContractConfig = {
+    address: contractAddresses[activeChain?.network]?.btStaking,
+    abi: BtStakingABI,
   };
 
   // btAllowance bt
@@ -76,17 +74,17 @@ function Staking() {
     address: contractAddresses[activeChain?.network]?.btToken,
     abi: IERC20MetadataABI,
     functionName: "allowance",
-    args: [connectedAddress, contractAddresses[activeChain?.network]?.better],
-    watch: true,
-    onError(data) {
-      console.log("allowance bt error", data);
-    },
+    args: [
+      connectedAddress,
+      contractAddresses[activeChain?.network]?.btStaking,
+    ],
+    onError(data) {},
     onSuccess(data) {
       setBtAllowance(data);
+      console.log("allowance", data.toString());
     },
+    watch: true,
   });
-
-  console.log("MAX UINT", ethers.constants.MaxUint256.sub("1").toString());
 
   // prepare approve bt
   const { config: approveBtConfig } = usePrepareContractWrite({
@@ -94,79 +92,58 @@ function Staking() {
     abi: IERC20MetadataABI,
     functionName: "approve",
     args: [
-      contractAddresses[activeChain?.network]?.better,
+      stakingPoolContractConfig.address,
       ethers.constants.MaxUint256.sub("1").toString(),
     ],
-    onSuccess(data) {
-      console.log("approve prepared", data);
-    },
+    onSuccess(data) {},
   });
 
   // infinite approve bt
   const { write: approveBtWrite } = useContractWrite({
     ...approveBtConfig,
-    onSuccess(data) {
-      console.log("infinite approved", data);
-    },
+    onSuccess(data) {},
   });
 
   // prepare stake bt
   const { config: stakeBtConfig } = usePrepareContractWrite({
-    ...betterContractConfig,
+    ...stakingPoolContractConfig,
     functionName: "stake",
     args: [ethers.utils.parseEther(btAmount.toString())],
-    onSuccess(data) {
-      console.log("prepared stake", data);
-    },
-    onError(data) {
-      console.log("connectedAddress", connectedAddress);
-      console.log("btAmount", btAmount);
-      console.log("prepare stake error", data);
-    },
+    onSuccess(data) {},
+    onError(data) {},
   });
 
   // stake bt
   const { write: stakeBtWrite } = useContractWrite({
     ...stakeBtConfig,
-    onError(e) {
-      console.log("error staking", e);
-    },
+    onError(e) {},
     onSuccess(data) {
-      console.log("staked", data);
       setBtAmount(0);
     },
   });
 
   // prepare unstake bt
   const { config: unstakeBtConfig } = usePrepareContractWrite({
-    ...betterContractConfig,
+    ...stakingPoolContractConfig,
     functionName: "unstake",
     args: [ethers.utils.parseEther(btAmount.toString())],
-    onSuccess(data) {
-      console.log("prepared unstake");
-    },
+    onSuccess(data) {},
   });
 
   // unstake bt
   const { write: unstakeBtWrite } = useContractWrite({
     ...unstakeBtConfig,
-    onSuccess(data) {
-      console.log("unstaked", data);
-    },
+    onSuccess(data) {},
   });
 
   // claim bt rewards
   const { write: claimBtWrite } = useContractWrite({
     mode: "recklesslyUnprepared",
-    ...betterContractConfig,
+    ...stakingPoolContractConfig,
     functionName: "claim",
     args: [],
-    onSuccess(data) {
-      console.log("claimed", data);
-    },
-    onError(data) {
-      console.log("claim error", data);
-    },
+    onSuccess(data) {},
+    onError(data) {},
   });
 
   // balance of bt
@@ -175,13 +152,10 @@ function Staking() {
     abi: IERC20MetadataABI,
     functionName: "balanceOf",
     args: [connectedAddress],
-    watch: true,
-    onError(data) {
-      console.log("balanceOf bt error", data);
-    },
+    // watch: true,
+    onError(data) {},
     onSuccess(data) {
       setBtBalance(ethers.utils.formatEther(data));
-      console.log("balanceOf bt", ethers.utils.formatEther(data));
     },
   });
 
@@ -191,17 +165,13 @@ function Staking() {
     address: contractAddresses[activeChain?.network]?.lpToken,
     abi: IERC20MetadataABI,
     functionName: "allowance",
-    args: [connectedAddress, contractAddresses[activeChain?.network]?.better],
-    watch: true,
-    onError(data) {
-      console.log("allowance lp error", data);
-    },
+    args: [connectedAddress, stakingPoolContractConfig.address],
+    // watch: true,
+    onError(data) {},
     onSuccess(data) {
       setLpAllowance(data);
     },
   });
-
-  console.log("MAX UINT", ethers.constants.MaxUint256.sub("1").toString());
 
   // prepare approve lp
   const { config: approveLpConfig } = usePrepareContractWrite({
@@ -209,79 +179,58 @@ function Staking() {
     abi: IERC20MetadataABI,
     functionName: "approve",
     args: [
-      contractAddresses[activeChain?.network]?.better,
+      stakingPoolContractConfig.address,
       ethers.constants.MaxUint256.sub("1").toString(),
     ],
-    onSuccess(data) {
-      console.log("approve prepared", data);
-    },
+    onSuccess(data) {},
   });
 
   // infinite approve lp
   const { write: approveLpWrite } = useContractWrite({
     ...approveLpConfig,
-    onSuccess(data) {
-      console.log("infinite approved", data);
-    },
+    onSuccess(data) {},
   });
 
   // prepare stake lp
   const { config: stakeLpConfig } = usePrepareContractWrite({
-    ...betterContractConfig,
+    ...stakingPoolContractConfig,
     functionName: "stake",
     args: [ethers.utils.parseEther(lpAmount.toString())],
-    onSuccess(data) {
-      console.log("prepared stake", data);
-    },
-    onError(data) {
-      console.log("connectedAddress", connectedAddress);
-      console.log("lpAmount", lpAmount);
-      console.log("prepare stake error", data);
-    },
+    onSuccess(data) {},
+    onError(data) {},
   });
 
   // stake lp
   const { write: stakeLpWrite } = useContractWrite({
     ...stakeLpConfig,
-    onError(e) {
-      console.log("error staking", e);
-    },
+    onError(e) {},
     onSuccess(data) {
-      console.log("staked", data);
       setBtAmount(0);
     },
   });
 
   // prepare unstake lp
   const { config: unstakeLpConfig } = usePrepareContractWrite({
-    ...betterContractConfig,
+    ...stakingPoolContractConfig,
     functionName: "unstake",
     args: [ethers.utils.parseEther(lpAmount.toString())],
-    onSuccess(data) {
-      console.log("prepared unstake");
-    },
+    onSuccess(data) {},
   });
 
   // unstake lp
   const { write: unstakeLpWrite } = useContractWrite({
     ...unstakeLpConfig,
-    onSuccess(data) {
-      console.log("unstaked", data);
-    },
+    onSuccess(data) {},
   });
 
   // claim lp rewards
   const { write: claimLpWrite } = useContractWrite({
     mode: "recklesslyUnprepared",
-    ...betterContractConfig,
+    ...stakingPoolContractConfig,
     functionName: "claim",
     args: [],
-    onSuccess(data) {
-      console.log("claimed", data);
-    },
-    onError(data) {
-      console.log("claim error", data);
-    },
+    onSuccess(data) {},
+    onError(data) {},
   });
 
   // balance of lp
@@ -290,24 +239,33 @@ function Staking() {
     abi: IERC20MetadataABI,
     functionName: "balanceOf",
     args: [connectedAddress],
-    watch: true,
-    onError(data) {
-      console.log("balanceOf lp error", data);
-    },
+    // watch: true,
+    onError(data) {},
     onSuccess(data) {
       setLpBalance(ethers.utils.formatEther(data));
-      console.log("balanceOf lp", ethers.utils.formatEther(data));
     },
+  });
+
+  // total bt staked
+  useContractRead({
+    address: contractAddresses[activeChain?.network]?.btToken,
+    abi: IERC20MetadataABI,
+    functionName: "balanceOf",
+    args: [btStakingContractConfig.address],
+    onError(data) {},
+    onSuccess(data) {
+      setTotalBtStaked(ethers.utils.formatEther(data));
+    },
+    watch: true,
   });
 
   /* handle input amount changes */
   const handleBtAmount = (e) => {
-    console.log("value", e.target.value);
+    console.log("e.target.value", e.target.value);
     setBtAmount(e.target.value ? e.target.value : 0);
   };
 
   const handleLpAmount = (e) => {
-    console.log("value", e.target.value);
     setLpAmount(e.target.value ? e.target.value : 0);
   };
 
@@ -317,174 +275,189 @@ function Staking() {
         <Navbar />
         <Container>
           <div className={styles.innerContainer}>
-            <div className={styles.section}>
-              <div className={styles.assetContainer}>
-                <Card>
-                  <Grid>
-                    <GridRow>
-                      <GridCell2>
-                        <InputNumber onChange={() => {}} />
-                      </GridCell2>
-                      <GridCell4>
-                        <Button>Avax</Button>
-                      </GridCell4>
-                    </GridRow>
-                    <GridRow>
-                      <GridCell colSpan={3}>
-                        <Button onClick={() => {}}>Bridge</Button>
-                      </GridCell>
-                    </GridRow>
-                  </Grid>
-                </Card>
-              </div>
-            </div>
-            <div className={styles.section}>
-              <div className={styles.section2}>
-                <div className={styles.assetContainer}>
-                  <StakeDiagram
-                    stakeSymbol={lpTokenSymbol}
-                    rewardSymbol={"BT"}
-                    stakeName={lpTokenSymbol}
-                    rewardName={"Better Token"}
-                  />
-                  <Card>
-                    <Grid>
-                      <GridRow>
-                        <GridCell3 colSpan={3}>
-                          <Grid>
-                            <GridCell4>
-                              <CardBlueBgBlackBorder>
-                                <b>Total staked:</b>
-                              </CardBlueBgBlackBorder>
-                            </GridCell4>
-                            <GridCell4>
-                              <b>
-                                {}{" "}
-                                {`BT-${
-                                  contractAddresses[activeChain?.network]
-                                    ?.nativeGas
-                                } LP`}
-                              </b>
-                            </GridCell4>
-                            <GridCell4>
-                              <CardBlueBgBlackBorder>
-                                <b>Current APR:</b>
-                              </CardBlueBgBlackBorder>
-                            </GridCell4>
-                            <GridCell4>
-                              <b>brrrrr%</b>
-                            </GridCell4>
-                          </Grid>
-                        </GridCell3>
-                      </GridRow>
-                      <GridRow>
-                        <GridCell3 colSpan={2}>
-                          <InputNumber
-                            onChange={handleLpAmount}
-                            min={0}
-                            max={() => {
-                              console.log("lpBalance", lpBalance);
-                              return lpBalance;
-                            }}
-                            placeholder={0}
-                            value={lpAmount > 0 ? lpAmount : ""}
-                            setValue={setLpAmount}
-                          />
-                        </GridCell3>
-                        <GridCell3>
-                          <InputNumber onChange={() => {}} />
-                        </GridCell3>
-                      </GridRow>
-                      <GridRow>
-                        <GridCell3>
-                          <Button onClick={stakeLpWrite}>Stake</Button>
-                        </GridCell3>
-                        <GridCell3>
-                          <Button onClick={unstakeLpWrite}>Unstake</Button>
-                        </GridCell3>
-                        <GridCell3>
-                          <Button onClick={() => {}}>Zap in</Button>
-                        </GridCell3>
-                      </GridRow>
-                      <GridRow>
-                        <GridCell colSpan={3}>
-                          <Button onClick={claimLpWrite}>Claim</Button>
-                        </GridCell>
-                      </GridRow>
-                    </Grid>
-                  </Card>
-                </div>
-                <div className={styles.assetContainer}>
-                  <StakeDiagram
-                    stakeSymbol={"BT"}
-                    rewardSymbol={
-                      contractAddresses[activeChain?.network]?.nativeGas
-                    }
-                    stakeName={"Better Token"}
-                    rewardName={
-                      contractAddresses[activeChain?.network]?.nativeGas
-                    }
-                  />
-                  <Card>
-                    <Grid>
-                      <GridRow>
-                        <GridCell3 colSpan={3}>
-                          <Grid>
-                            <GridCell4>
-                              <CardBlueBgBlackBorder>
-                                <b>Total staked:</b>
-                              </CardBlueBgBlackBorder>
-                            </GridCell4>
-                            <GridCell4>
-                              <b>{0} BT</b>
-                            </GridCell4>
-                            <GridCell4>
-                              <CardBlueBgBlackBorder>
-                                <b>Current APR:</b>
-                              </CardBlueBgBlackBorder>
-                            </GridCell4>
-                            <GridCell4>
-                              <b>brrrrr%</b>
-                            </GridCell4>
-                          </Grid>
-                        </GridCell3>
-                      </GridRow>
-                      <GridRow>
-                        <GridCell colSpan={2}>
-                          <InputNumber
-                            onChange={handleBtAmount}
-                            min={0}
-                            max={btBalance}
-                            placeholder={0}
-                            value={btAmount > 0 ? btAmount : ""}
-                            setValue={setBtAmount}
-                          />
-                        </GridCell>
-                      </GridRow>
-                      <GridRow>
-                        <GridCell2>
-                          {ethers.BigNumber.from(btAllowance.toString()).lte(
-                            ethers.BigNumber.from("0")
-                          ) ? (
-                            <Button onClick={approveBtWrite}>Approve</Button>
-                          ) : (
-                            <Button onClick={stakeBtWrite}>Stake</Button>
-                          )}
-                        </GridCell2>
-                        <GridCell2>
-                          <Button onClick={unstakeBtWrite}>Unstake</Button>
-                        </GridCell2>
-                      </GridRow>
-                      <GridRow>
-                        <GridCell colSpan={2}>
-                          <Button onClick={claimBtWrite}>Claim</Button>
-                        </GridCell>
-                      </GridRow>
-                    </Grid>
-                  </Card>
-                </div>
-              </div>
-            </div>
+            <Grid>
+              {/* <GridRow>
+                <GridCell colSpan={2}>
+                  <div className={styles.cardContainer}>
+                    <Card>
+                      <Grid>
+                        <GridRow>
+                          <GridCell2>
+                            <InputNumber onChange={() => {}} />
+                          </GridCell2>
+                          <GridCell4>
+                            <Button>Avax</Button>
+                          </GridCell4>
+                        </GridRow>
+                        <GridRow>
+                          <GridCell colSpan={3}>
+                            <Button onClick={() => {}}>Bridge</Button>
+                          </GridCell>
+                        </GridRow>
+                      </Grid>
+                    </Card>
+                  </div>
+                </GridCell>
+              </GridRow> */}
+              <GridRow>
+                <GridCell2>
+                  <div className={styles.assetContainer}>
+                    <StakeDiagram
+                      stakeSymbol={lpTokenSymbol}
+                      rewardSymbol={"BT"}
+                      stakeName={lpTokenSymbol}
+                      rewardName={"Better Token"}
+                    />
+                  </div>
+                </GridCell2>
+                <GridCell2>
+                  <div className={styles.assetContainer}>
+                    <StakeDiagram
+                      stakeSymbol={"BT"}
+                      rewardSymbol={
+                        contractAddresses[activeChain?.network]?.nativeGas
+                      }
+                      stakeName={"Better Token"}
+                      rewardName={
+                        contractAddresses[activeChain?.network]?.nativeGas
+                      }
+                    />
+                  </div>
+                </GridCell2>
+              </GridRow>
+              <GridRow>
+                <GridCell2>
+                  <div className={styles.assetContainer}>
+                    <Card>
+                      <Grid>
+                        <GridRow>
+                          <GridCell3 colSpan={3}>
+                            <Grid>
+                              <GridCell4>
+                                <CardBlueBgBlackBorder>
+                                  <b>Total staked:</b>
+                                </CardBlueBgBlackBorder>
+                              </GridCell4>
+                              <GridCell4>
+                                <b>
+                                  {}{" "}
+                                  {`BT-${
+                                    contractAddresses[activeChain?.network]
+                                      ?.nativeGas
+                                  } LP`}
+                                </b>
+                              </GridCell4>
+                              <GridCell4>
+                                <CardBlueBgBlackBorder>
+                                  <b>Current APR:</b>
+                                </CardBlueBgBlackBorder>
+                              </GridCell4>
+                              <GridCell4>
+                                <b>brrrrr%</b>
+                              </GridCell4>
+                            </Grid>
+                          </GridCell3>
+                        </GridRow>
+                        <GridRow>
+                          <GridCell3 colSpan={2}>
+                            <InputNumber
+                              onChange={handleLpAmount}
+                              min={0}
+                              max={() => {
+                                return lpBalance;
+                              }}
+                              placeholder={0}
+                              value={lpAmount > 0 ? lpAmount : ""}
+                              setValue={setLpAmount}
+                            />
+                          </GridCell3>
+                          <GridCell3>
+                            <InputNumber onChange={() => {}} />
+                          </GridCell3>
+                        </GridRow>
+                        <GridRow>
+                          <GridCell3>
+                            <Button onClick={stakeLpWrite}>Stake</Button>
+                          </GridCell3>
+                          <GridCell3>
+                            <Button onClick={unstakeLpWrite}>Unstake</Button>
+                          </GridCell3>
+                          <GridCell3>
+                            <Button onClick={() => {}}>Zap in</Button>
+                          </GridCell3>
+                        </GridRow>
+                        <GridRow>
+                          <GridCell colSpan={3}>
+                            <Button onClick={claimLpWrite}>Claim</Button>
+                          </GridCell>
+                        </GridRow>
+                      </Grid>
+                    </Card>
+                  </div>
+                </GridCell2>
+                <GridCell2>
+                  <div className={styles.assetContainer}>
+                    <Card>
+                      <Grid>
+                        <GridRow>
+                          <GridCell3 colSpan={3}>
+                            <Grid>
+                              <GridCell4>
+                                <CardBlueBgBlackBorder>
+                                  <b>Total staked:</b>
+                                </CardBlueBgBlackBorder>
+                              </GridCell4>
+                              <GridCell4>
+                                <b>{totalBtStaked} BT</b>
+                              </GridCell4>
+                              <GridCell4>
+                                <CardBlueBgBlackBorder>
+                                  <b>Current APR:</b>
+                                </CardBlueBgBlackBorder>
+                              </GridCell4>
+                              <GridCell4>
+                                <b>brrrrr%</b>
+                              </GridCell4>
+                            </Grid>
+                          </GridCell3>
+                        </GridRow>
+                        <GridRow>
+                          <GridCell colSpan={2}>
+                            <InputNumber
+                              onChange={handleBtAmount}
+                              min={0}
+                              max={btBalance}
+                              placeholder={0}
+                              value={btAmount > 0 ? btAmount : ""}
+                              setValue={setBtAmount}
+                            />
+                          </GridCell>
+                        </GridRow>
+                        <GridRow>
+                          <GridCell2>
+                            {ethers.BigNumber.from(btAllowance.toString()).lte(
+                              ethers.BigNumber.from("0")
+                            ) ? (
+                              <Button onClick={approveBtWrite}>Approve</Button>
+                            ) : (
+                              <Button onClick={stakeBtWrite}>Stake</Button>
+                            )}
+                          </GridCell2>
+                          <GridCell2>
+                            <Button onClick={unstakeBtWrite}>Unstake</Button>
+                          </GridCell2>
+                        </GridRow>
+                        <GridRow>
+                          <GridCell colSpan={2}>
+                            <Button onClick={claimBtWrite}>Claim</Button>
+                          </GridCell>
+                        </GridRow>
+                      </Grid>
+                    </Card>
+                  </div>
+                </GridCell2>
+              </GridRow>
+            </Grid>
           </div>
         </Container>
       </AppContainer>
