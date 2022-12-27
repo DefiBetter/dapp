@@ -39,6 +39,7 @@
 .yLabel {
     height: calc(100% / 27);
     display: flex;
+    justify-content: space-between;
     /* border-style: solid; */
 }
 

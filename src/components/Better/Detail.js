@@ -216,31 +216,23 @@ const Detail = (props) => {
             //   <input type="number" min={0} id={`${i}`} onInput={onInput} />
             // </div>
             <>
-              <div
-                className={styles.yLabel}
-                style={{
-                  display: "flex",
-                }}
-              >
-                <div
-                  style={{
-                    textAlign: "left",
-                  }}
-                >
-                  <SmallText>
-                    {props.epochData ? binBorderList[i + 1] : null}
-                  </SmallText>
-                  <div>
-                    {+ethers.utils.formatEther(binValue.toString()) > 0
-                      ? ethers.utils.formatEther(binValue.toString()) +
-                        " " +
-                        props.nativeGas
-                      : null}
-                  </div>
-                </div>
+              <div className={styles.yLabel}>
+                <SmallText>
+                  {props.epochData ? binBorderList[i + 1] : null}
+                </SmallText>
+                <SmallText>
+                  {+ethers.utils.formatEther(binValue.toString()) > 0
+                    ? ethers.utils.formatEther(binValue.toString()) +
+                      " " +
+                      props.nativeGas
+                    : null}
+                </SmallText>
               </div>
               <div className={styles.bin}>
                 <Card
+                  style={{
+                    position: "relative",
+                  }}
                   borderColor={"black"}
                   backgroundColor={"blue"}
                   // noBorder={true}
@@ -277,6 +269,7 @@ const Detail = (props) => {
                       float: "right",
                       margin: 0,
                       textAlign: "right",
+                      bottom: "0px",
                     }}
                   ></div>
                 </Card>
