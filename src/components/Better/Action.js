@@ -28,12 +28,33 @@ const Action = (props) => {
       ),
     },
     onError(data) {},
-    onSuccess(data) {
-    },
+    onSuccess(data) {},
   });
 
   let { write: depositWrite } = useContractWrite({
-    ...openPositionConfig,
+    ...{
+      ...props.betterContractConfig,
+      mode: "recklesslyUnprepared",
+      functionName: "openPosition",
+      args: [
+        props.instrument.selector,
+        props.binAmountList.map((bin) => {
+          return ethers.utils.parseEther(bin.toString());
+        }),
+        props.customFlatFee,
+        props.customGainFee,
+      ],
+      overrides: {
+        value: ethers.utils.parseEther(
+          (props.binTotal >= props.pendingBetterBalance
+            ? props.binTotal - props.pendingBetterBalance
+            : 0
+          ).toString()
+        ),
+      },
+      onError(data) {},
+      onSuccess(data) {},
+    },
     onSuccess(data) {
       props.setBinAmountList([0, 0, 0, 0, 0, 0, 0]);
       props.setBinTotal(0);
