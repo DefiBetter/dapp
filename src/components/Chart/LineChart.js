@@ -47,25 +47,26 @@ const LineChart = (props) => {
     let ePoint = data.pop();
 
     // plot circle points are coords
-    data.map((coord) => {
-      coord = [coord[0], Number(coord[1])];
-      dataPointList.push(
-        <circle
-          cx={coord[0]}
-          cy={Number(coord[1])}
-          r={2}
-          fill="red"
-          className="circle"
-        />
-      );
-    });
+    // data.map((coord) => {
+    //   coord = [coord[0], Number(coord[1])];
+    //   dataPointList.push(
+    //     <circle
+    //       cx={coord[0]}
+    //       cy={Number(coord[1])}
+    //       r={2}
+    //       fill="red"
+    //       className="circle"
+    //     />
+    //   );
+    // });
 
+    // epoch start point
     dataPointList.push(
       <circle
         cx={ePoint[0]}
         cy={ePoint[1]}
         r={2}
-        fill="blue"
+        fill="red"
         className="circle"
       />
     );
@@ -81,7 +82,7 @@ const LineChart = (props) => {
             y1={coord[1]}
             x2={coordNext[0]}
             y2={coordNext[1]}
-            stroke="grey"
+            stroke="black"
           />
         );
       }

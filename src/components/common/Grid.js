@@ -2,12 +2,15 @@ import styled from "styled-components";
 
 const Grid = styled.table`
   width: 100%;
-  padding: 5px;
+  padding: ${(props) =>
+    props.padding == 0 || props.padding ? props.padding : 0.5}rem;
+  max-height: 100%;
 `;
 
 const GridRow = styled.tr``;
 const GridCell = styled.td`
-  padding: 5px;
+  padding: ${(props) =>
+    props.padding == 0 || props.padding ? props.padding : 0.5}rem;
 `;
 const GridCell2 = styled(GridCell)`
   width: calc(100% / 2);

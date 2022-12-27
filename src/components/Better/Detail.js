@@ -1,9 +1,20 @@
 import { useEffect, useState } from "react";
-import { Card, CardBlueBg, CardBlueBgBlackBorder } from "../common/Card";
+import {
+  Card,
+  CardBlueBg,
+  CardBlueBgBlackBorder,
+  CardBlueBgBlackBorderNoShadow,
+} from "../common/Card";
 import styles from "./Detail.module.css";
 import { useContractRead, useNetwork } from "wagmi";
 import Button from "../common/Button";
-import { MedText, NormalText, SmallText } from "../common/Text";
+import {
+  CenterText,
+  ExSmallText,
+  MedText,
+  NormalText,
+  SmallText,
+} from "../common/Text";
 import { Grid, GridCell2, GridRow } from "../common/Grid";
 
 import { ethers } from "ethers";
@@ -167,17 +178,18 @@ const Detail = (props) => {
   return (
     <div className={styles.container}>
       <div className={styles.binContainer}>
+        <div className={styles.yPadding} />
         <div className={styles.bin}>
-          <CardBlueBgBlackBorder>
-            <MedText>
+          <CardBlueBgBlackBorder padding={0}>
+            <SmallText>
               <NormalText>
                 Total position size:{" "}
                 <b>
                   {total} {contractAddresses[activeChain?.network]?.nativeGas}
                 </b>
               </NormalText>
-            </MedText>
-            <SmallText>
+            </SmallText>
+            <ExSmallText>
               <NormalText>
                 (
                 <b>
@@ -191,7 +203,7 @@ const Detail = (props) => {
                   : total}{" "}
                 pending)
               </NormalText>
-            </SmallText>
+            </ExSmallText>
           </CardBlueBgBlackBorder>
         </div>
         {props.epochData?.binValues.map((binValue, i, binValues) => {
@@ -203,8 +215,9 @@ const Detail = (props) => {
             //   <div className={styles.binUpper}>{bin.upper}</div>
             //   <input type="number" min={0} id={`${i}`} onInput={onInput} />
             // </div>
-            <div className={styles.bin}>
+            <>
               <div
+                className={styles.yLabel}
                 style={{
                   display: "flex",
                 }}
@@ -214,101 +227,127 @@ const Detail = (props) => {
                     textAlign: "left",
                   }}
                 >
-                  {props.epochData ? binBorderList[i + 1] : null}
-                </div>
-                <div>
-                  {+ethers.utils.formatEther(binValue.toString()) > 0
-                    ? ethers.utils.formatEther(binValue.toString()) +
-                      " " +
-                      props.nativeGas
-                    : null}
+                  <SmallText>
+                    {props.epochData ? binBorderList[i + 1] : null}
+                  </SmallText>
+                  <div>
+                    {+ethers.utils.formatEther(binValue.toString()) > 0
+                      ? ethers.utils.formatEther(binValue.toString()) +
+                        " " +
+                        props.nativeGas
+                      : null}
+                  </div>
                 </div>
               </div>
-              <CardBlueBgBlackBorder>
-                <input
-                  type="number"
-                  min={0}
-                  id={`${i}`}
-                  onInput={onInput}
-                  value={
-                    props.binAmountList[i] > 0 ? props.binAmountList[i] : ""
-                  }
-                  placeholder={`Bin ${i + 1} (${
-                    i + 1 > 4
-                      ? `Bull ${i + 1 - 4}`
-                      : i + 1 < 4
-                      ? `Bear ${4 - (i + 1)}`
-                      : `Neutral`
-                  }) `}
-                />
+              <div className={styles.bin}>
+                <Card
+                  borderColor={"black"}
+                  backgroundColor={"blue"}
+                  // noBorder={true}
+                  borderWidth={0.1}
+                  padding={0.1}
+                  borderRadius={0.5}
+                >
+                  <input
+                    style={{
+                      fontSize: "1rem",
+                      width: "90%",
+                      height: "90%",
+                    }}
+                    type="number"
+                    min={0}
+                    id={`${i}`}
+                    onInput={onInput}
+                    value={
+                      props.binAmountList[i] > 0 ? props.binAmountList[i] : ""
+                    }
+                    placeholder={`Bin ${i + 1} (${
+                      i + 1 > 4
+                        ? `Bull ${i + 1 - 4}`
+                        : i + 1 < 4
+                        ? `Bear ${4 - (i + 1)}`
+                        : `Neutral`
+                    })`}
+                  />
+                  <div
+                    style={{
+                      backgroundColor: "#80A9E4",
+                      height: "40%",
+                      width: `${100 * props.normalisedBinValueList[i]}%`,
+                      float: "right",
+                      margin: 0,
+                      textAlign: "right",
+                    }}
+                  ></div>
+                </Card>
+              </div>
+              {i == 0 ? (
                 <div
+                  className={styles.yLabel}
                   style={{
-                    backgroundColor: "#80A9E4",
-                    height: "40%",
-                    width: `${100 * props.normalisedBinValueList[i]}%`,
-                    float: "right",
-                    margin: 0,
-                    textAlign: "right",
+                    textAlign: "left",
                   }}
-                ></div>
-              </CardBlueBgBlackBorder>
-            </div>
+                >
+                  <SmallText>{binBorderList[0]}</SmallText>
+                </div>
+              ) : null}
+            </>
           );
         })}
         <div className={styles.bin}>
-          <div
-            style={{
-              textAlign: "left",
-            }}
-          >
-            {binBorderList[0]}
-          </div>
           <div className={styles.binChoice}>
-            <Button>Normal</Button>
-            <Button>Implied</Button>
+            <Button>
+              <SmallText>Normal</SmallText>
+            </Button>
+            <Button>
+              <SmallText>Implied</SmallText>
+            </Button>
           </div>
         </div>
+        <div className={styles.yPadding} />
       </div>
       <div className={styles.statsContainer}>
         <Card>
-          Epoch Data
+          <CenterText>
+            <b>Epoch Data</b>
+          </CenterText>
           <CardBlueBg>
-            <Grid>
+            <Grid padding={0}>
               <GridRow>
-                <GridCell2>
-                  <SmallText>Epoch:</SmallText>
+                <GridCell2 padding={0}>
+                  <ExSmallText>Epoch:</ExSmallText>
                 </GridCell2>
-                <GridCell2>
-                  <SmallText>
+                <GridCell2 padding={0}>
+                  <ExSmallText>
                     {props.instrument
                       ? props.instrument.epoch.toString()
                       : null}
-                  </SmallText>
+                  </ExSmallText>
                 </GridCell2>
               </GridRow>
               <GridRow>
-                <GridCell2>
-                  <SmallText>Pot size:</SmallText>
+                <GridCell2 padding={0}>
+                  <ExSmallText>Pot size:</ExSmallText>
                 </GridCell2>
-                <GridCell2>
-                  <SmallText>
+                <GridCell2 padding={0}>
+                  <ExSmallText>
                     {props.epochData
                       ? ethers.utils.formatEther(props.epochData.pot)
                       : null}{" "}
                     {props.nativeGas ? props.nativeGas : null}
-                  </SmallText>
+                  </ExSmallText>
                 </GridCell2>
               </GridRow>
               <GridRow>
-                <GridCell2>
-                  <SmallText>Number of bets:</SmallText>
+                <GridCell2 padding={0}>
+                  <ExSmallText>Number of bets:</ExSmallText>
                 </GridCell2>
-                <GridCell2>
-                  <SmallText>
+                <GridCell2 padding={0}>
+                  <ExSmallText>
                     {props.epochData
                       ? props.epochData.numBets.toString()
                       : null}
-                  </SmallText>
+                  </ExSmallText>
                 </GridCell2>
               </GridRow>
             </Grid>
@@ -317,64 +356,64 @@ const Detail = (props) => {
         <Card>
           My Statistics
           <CardBlueBg>
-            <Grid>
+            <Grid padding={0}>
               <GridRow>
-                <GridCell2>
-                  <SmallText>Position value:</SmallText>
+                <GridCell2 padding={0}>
+                  <ExSmallText>Position value:</ExSmallText>
                 </GridCell2>
-                <GridCell2>
-                  <SmallText>
+                <GridCell2 padding={0}>
+                  <ExSmallText>
                     {ethers.utils.formatEther(props.userPosition || 0)}{" "}
                     {props.nativeGas}
-                  </SmallText>
+                  </ExSmallText>
                 </GridCell2>
               </GridRow>
               <GridRow>
-                <GridCell2>
-                  <SmallText>Pending rewards:</SmallText>
+                <GridCell2 padding={0}>
+                  <ExSmallText>Pending rewards:</ExSmallText>
                 </GridCell2>
-                <GridCell2>
-                  <SmallText>
+                <GridCell2 padding={0}>
+                  <ExSmallText>
                     {props.pendingBetterBalance} {props.nativeGas}
-                  </SmallText>
+                  </ExSmallText>
                 </GridCell2>
               </GridRow>
               <GridRow>
-                <GridCell2>
-                  <SmallText>Number of games:</SmallText>
+                <GridCell2 padding={0}>
+                  <ExSmallText>Number of games:</ExSmallText>
                 </GridCell2>
-                <GridCell2>
-                  <SmallText>
+                <GridCell2 padding={0}>
+                  <ExSmallText>
                     {props.userGainsInfo?.numberOfGames.toString()}
-                  </SmallText>
+                  </ExSmallText>
                 </GridCell2>
               </GridRow>
               <GridRow>
-                <GridCell2>
-                  <SmallText>Biggest gain:</SmallText>
+                <GridCell2 padding={0}>
+                  <ExSmallText>Biggest gain:</ExSmallText>
                 </GridCell2>
-                <GridCell2>
-                  <SmallText>
+                <GridCell2 padding={0}>
+                  <ExSmallText>
                     {Number(props.userGainsInfo?.biggestRelativeGainAmount) >= 0
                       ? "+"
                       : "-"}
                     {Number(props.userGainsInfo?.biggestRelativeGainAmount)}%
-                  </SmallText>
+                  </ExSmallText>
                 </GridCell2>
               </GridRow>
               <GridRow>
-                <GridCell2>
-                  <SmallText>Most recent gain:</SmallText>
+                <GridCell2 padding={0}>
+                  <ExSmallText>Most recent gain:</ExSmallText>
                 </GridCell2>
-                <GridCell2>
-                  <SmallText>
+                <GridCell2 padding={0}>
+                  <ExSmallText>
                     {Number(
                       props.userGainsInfo?.mostRecentRelativeGainAmount
                     ) >= 0
                       ? "+"
                       : "-"}
                     {Number(props.userGainsInfo?.mostRecentRelativeGainAmount)}%
-                  </SmallText>
+                  </ExSmallText>
                 </GridCell2>
               </GridRow>
             </Grid>
@@ -385,58 +424,58 @@ const Detail = (props) => {
           <CardBlueBg>
             <Grid>
               <GridRow>
-                <GridCell2>
-                  <SmallText>Time left for current week:</SmallText>
+                <GridCell2 padding={0}>
+                  <ExSmallText>Time left for current week:</ExSmallText>
                 </GridCell2>
-                <GridCell2>
-                  <SmallText>
+                <GridCell2 padding={0}>
+                  <ExSmallText>
                     {currentPeriodEndTime ? (
                       <Countdown
                         key={currentPeriodEndTime * 1000}
                         date={currentPeriodEndTime * 1000}
                       />
                     ) : null}
-                  </SmallText>
+                  </ExSmallText>
                 </GridCell2>
               </GridRow>
               <GridRow>
-                <GridCell2>
-                  <SmallText>Week's biggest gain so far:</SmallText>
+                <GridCell2 padding={0}>
+                  <ExSmallText>Week's biggest gain so far:</ExSmallText>
                 </GridCell2>
-                <GridCell2>
-                  <SmallText>
+                <GridCell2 padding={0}>
+                  <ExSmallText>
                     {Number(weekBiggestRelativeGainAmount) >= 0 ? "+" : "-"}
                     {Number(weekBiggestRelativeGainAmount)}%<br></br>
                     {truncateEthAddress(
                       globalBiggestRelativeGainCurrentPeriodAddress
                     )}
-                  </SmallText>
+                  </ExSmallText>
                 </GridCell2>
               </GridRow>
               <GridRow>
-                <GridCell2>
-                  <SmallText>Last week's biggest gain:</SmallText>
+                <GridCell2 padding={0}>
+                  <ExSmallText>Last week's biggest gain:</ExSmallText>
                 </GridCell2>
-                <GridCell2>
-                  <SmallText>
+                <GridCell2 padding={0}>
+                  <ExSmallText>
                     {Number(lastWeekBiggestRelativeGainAmount) >= 0 ? "+" : "-"}
                     {Number(lastWeekBiggestRelativeGainAmount)}%<br></br>
                     {truncateEthAddress(
                       globalBiggestRelativeGainPastPeriodAddress
                     )}
-                  </SmallText>
+                  </ExSmallText>
                 </GridCell2>
               </GridRow>
               <GridRow>
-                <GridCell2>
-                  <SmallText>Biggest gain of all time:</SmallText>
+                <GridCell2 padding={0}>
+                  <ExSmallText>Biggest gain of all time:</ExSmallText>
                 </GridCell2>
-                <GridCell2>
-                  <SmallText>
+                <GridCell2 padding={0}>
+                  <ExSmallText>
                     {Number(globalBiggestRelativeGain) >= 0 ? "+" : "-"}
                     {Number(globalBiggestRelativeGain)}%<br></br>
                     {truncateEthAddress(globalBiggestRelativeGainAddress)}
-                  </SmallText>
+                  </ExSmallText>
                 </GridCell2>
               </GridRow>
             </Grid>

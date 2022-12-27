@@ -9,7 +9,6 @@ const Button = styled.button`
   font-size: 1rem;
   font-family: marguerite;
   color: white;
-  height: 40px;
   cursor: pointer;
   &:enabled {
     &:active {

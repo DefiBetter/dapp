@@ -397,7 +397,11 @@ const Chart = (props) => {
           }?embed=1&trades=0&info=0`}
         />
       </div> */}
-      <svg width={"100%"} height={"100%"} style={{ backgroundColor: "white" }}>
+      <svg
+        width={"100%"}
+        height={"100%"}
+        style={{ backgroundColor: "#758A9E" }}
+      >
         {" "}
         {/* <line x1={0} y1={0} x2={window.innerWidth} y2={0} stroke="grey" /> */}
         <ChartBackground
@@ -438,11 +442,15 @@ const Chart = (props) => {
         <Grid>
           <GridRow>
             <GridCell3>
-              <GridCell2>Epoch open price:</GridCell2>
               <GridCell2>
-                {lastEpochData
-                  ? ethers.utils.formatEther(lastEpochData.closingPrice)
-                  : null}
+                <b>Epoch open price:</b>
+              </GridCell2>
+              <GridCell2>
+                <b>
+                  {lastEpochData
+                    ? ethers.utils.formatEther(lastEpochData.closingPrice)
+                    : null}
+                </b>
               </GridCell2>
             </GridCell3>
             <GridCell3>

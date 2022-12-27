@@ -7,6 +7,7 @@ import Staking from "./../pages/Staking";
 import PublicSale from "../pages/PublicSale";
 import Presale from "../pages/Presale";
 import Landing from "../pages/Landing";
+import StrategyVault from "../pages/StrategyVault";
 
 function Connector() {
   const network = useNetwork();
@@ -48,7 +49,7 @@ function Connector() {
           }
         />
 
-        <Route path="/vaults" element={<></>} />
+        <Route path="/vaults" element={<StrategyVault />} />
       </Routes>
     </>
   );

@@ -113,7 +113,7 @@ const ChartBackground = (props) => {
         y1={0}
         x2={bufferCoord[0]}
         y2={props.chartConfig.containerHeight}
-        stroke="grey"
+        stroke="black"
         strokeDasharray="5"
       />
     );
@@ -132,7 +132,7 @@ const ChartBackground = (props) => {
         y1={props.chartConfig.containerHeight}
         x2={ePoint[0]}
         y2={props.chartConfig.containerHeight / 2}
-        stroke="grey"
+        stroke="black"
         strokeDasharray="5"
       />
     );
@@ -142,7 +142,7 @@ const ChartBackground = (props) => {
       <text
         x={ePoint[0]}
         y={props.chartConfig.containerHeight}
-        fill="red"
+        fill="#C4DCF5"
         textAnchor="middle"
         alignmentBaseline="text-after-edge"
       >
@@ -234,7 +234,7 @@ const ChartBackground = (props) => {
           y1={y[1]}
           x2={props.chartConfig.containerWidth}
           y2={y[1]}
-          stroke="grey"
+          stroke="black"
           strokeDasharray="5"
         />
       );

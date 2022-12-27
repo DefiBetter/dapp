@@ -78,7 +78,7 @@ const SdCone = (props) => {
               y1={coord[1]}
               x2={coordNext[0]}
               y2={coordNext[1]}
-              stroke="grey"
+              stroke="#8FBDFF" 
             />
           );
         }
