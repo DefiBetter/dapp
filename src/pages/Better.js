@@ -26,6 +26,7 @@ import { AppContainer, Container } from "../components/common/Container";
 import DeFiBetterV1ABI from "../static/ABI/DeFiBetterV1ABI.json";
 import AggregatorV3InterfaceABI from "../static/ABI/AggregatorV3InterfaceABI.json";
 import Connect from "../components/common/Connect";
+import ContentLoader from "react-content-loader";
 
 function Better() {
   /* account, network, configs */
@@ -191,9 +192,9 @@ function Better() {
 
   return (
     <Connect isConnected={isConnected} activeChain={activeChain}>
-      {epochData && betterContractConfig ? (
-        <AppContainer>
-          <Navbar></Navbar>
+      <AppContainer>
+        <Navbar></Navbar>
+        {epochData && betterContractConfig ? (
           <Container>
             <div className={styles.header}>
               <Pair
@@ -243,12 +244,61 @@ function Better() {
               />
             </div>
           </Container>
-        </AppContainer>
-      ) : (
-        <div>loading app...</div>
-      )}
+        ) : (
+          <Container>
+            <BetterLoader />
+          </Container>
+        )}
+      </AppContainer>
     </Connect>
   );
 }
+
+const BetterLoader = () => (
+  <ContentLoader
+    speed={2}
+    width={"100%"}
+    height={"100%"}
+    viewBox="0 0 300 150"
+    backgroundColor="#f3f3f3"
+    foregroundColor="#ecebeb"
+  >
+    {/* header */}
+    <rect x="1" y="1" rx="3" ry="3" width="98" height="10" />
+    <rect x="101" y="1" rx="3" ry="3" width="98" height="10" />
+    <rect x="201" y="1" rx="3" ry="3" width="98" height="10" />
+    {/* chart */}
+    <rect
+      x="1"
+      y="13"
+      rx="3"
+      ry="3"
+      width={98 + 2 + 98}
+      height={150 - 13 - 1}
+    />
+    {/* bins */}
+    {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9].map((n, i, arr) => (
+      <rect
+        x={98 + 2 + 98 + 3}
+        y={13 + (15 + 2) * n}
+        rx="3"
+        ry="3"
+        width={48}
+        height={150 / arr.length}
+      />
+    ))}
+    {/* epoch data */}
+    {[0, 1, 2].map((n, i, arr) => (
+      <rect
+        x={98 + 2 + 98 + 3 + 48 + 2}
+        y={13 + (150 / arr.length + 2) * n}
+        rx="3"
+        ry="3"
+        width={48}
+        height={150 / arr.length}
+      />
+    ))}
+  </ContentLoader>
+);
 
 export default Better;
