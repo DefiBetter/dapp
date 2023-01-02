@@ -4,6 +4,7 @@ import {
   CardBlueBg,
   CardBlueBgBlackBorder,
   CardBlueBgBlackBorderNoShadow,
+  CardFill,
 } from "../common/Card";
 import styles from "./Detail.module.css";
 import { useContractRead, useNetwork } from "wagmi";
@@ -306,7 +307,7 @@ const Detail = (props) => {
             <CenterText>
               <b>Epoch Data</b>
             </CenterText>
-            <CardBlueBg>
+            <CardFill backgroundColor={"blue"} noBorder={true}>
               <Grid padding={0}>
                 <GridRow>
                   <GridCell2 padding={0}>
@@ -346,13 +347,13 @@ const Detail = (props) => {
                   </GridCell2>
                 </GridRow>
               </Grid>
-            </CardBlueBg>
+            </CardFill>
           </Card>
           <Card>
             <CenterText>
               <b>My Statistics</b>
             </CenterText>
-            <CardBlueBg>
+            <CardFill backgroundColor={"blue"} noBorder={true}>
               <Grid padding={0}>
                 <GridRow>
                   <GridCell2 padding={0}>
@@ -418,13 +419,13 @@ const Detail = (props) => {
                   </GridCell2>
                 </GridRow>
               </Grid>
-            </CardBlueBg>
+            </CardFill>
           </Card>
           <Card>
             <CenterText>
               <b>Better Gains</b>
             </CenterText>
-            <CardBlueBg>
+            <CardFill backgroundColor={"blue"} noBorder={true}>
               <Grid>
                 <GridRow>
                   <GridCell2 padding={0}>
@@ -484,7 +485,7 @@ const Detail = (props) => {
                   </GridCell2>
                 </GridRow>
               </Grid>
-            </CardBlueBg>
+            </CardFill>
           </Card>
         </Scrollbar>
       </div>

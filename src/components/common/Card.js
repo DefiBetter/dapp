@@ -11,11 +11,17 @@ const Card = styled.div`
   padding: ${(props) =>
     props.padding == 0 || props.padding ? props.padding : 0.5}rem;
   ${(props) => (props.shadow ? `box-shadow: 5px 5px 10px 0px grey;` : null)}
+  display: flex;
+  flex-direction: column;
 `;
 
 const CardBlueBg = styled(Card)`
   background-color: #cce5ff;
   border-style: none;
+`;
+
+const CardFill = styled(Card)`
+  flex: 1;
 `;
 
 const CardBlueBgBlackBorder = styled(CardBlueBg)`
@@ -31,6 +37,7 @@ const CardBlueBgBlackBorderNoShadow = styled(CardBlueBgBlackBorder)`
 export {
   Card,
   CardBlueBg,
+  CardFill,
   CardBlueBgBlackBorder,
   CardBlueBgBlackBorderNoShadow,
 };
