@@ -378,6 +378,16 @@ const Chart = (props) => {
   // chart config based on parent component
   const containerRef = useRef(null);
   useLayoutEffect(() => {
+    setChartConfig({
+      ...chartConfig,
+      containerWidth: containerRef.current.offsetWidth,
+      containerHeight: containerRef.current.offsetHeight,
+      chartWidth: containerRef.current.offsetWidth * 0.9,
+      chartHeight: (containerRef.current.offsetHeight * 7) / 9,
+    });
+  }, []);
+
+  useLayoutEffect(() => {
     const _setChartConfig = () => {
       setChartConfig({
         ...chartConfig,
@@ -395,7 +405,7 @@ const Chart = (props) => {
     return () => {
       window.removeEventListener("resize", _setChartConfig);
     };
-  }, [containerRef]);
+  }, []);
 
   return (
     <div className={styles.container} ref={containerRef}>
