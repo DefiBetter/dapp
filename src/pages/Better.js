@@ -262,6 +262,7 @@ const BetterLoader = () => (
     viewBox="0 0 300 150"
     backgroundColor="#f3f3f3"
     foregroundColor="#ecebeb"
+    preserveAspectRatio="none"
   >
     {/* header */}
     <rect x="1" y="1" rx="3" ry="3" width="98" height="10" />
