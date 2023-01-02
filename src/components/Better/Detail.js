@@ -231,7 +231,7 @@ const Detail = (props) => {
                 </SmallText>
               </div>
               <div className={styles.bin}>
-                <Card
+                <CardFill
                   style={{
                     position: "relative",
                   }}
@@ -247,6 +247,7 @@ const Detail = (props) => {
                       fontSize: "1rem",
                       width: "90%",
                       height: "90%",
+                      alignSelf: "center",
                     }}
                     type="number"
                     min={0}
@@ -266,15 +267,16 @@ const Detail = (props) => {
                   <div
                     style={{
                       backgroundColor: "#80A9E4",
-                      height: "40%",
-                      width: `${100 * props.normalisedBinValueList[i]}%`,
-                      float: "right",
-                      margin: 0,
-                      textAlign: "right",
-                      bottom: "0px",
+                      height: "20%",
+                      width: `calc(100% * ${props.normalisedBinValueList[i]})`,
+                      bottom: "0",
+                      right: "0",
+                      position: "absolute",
+                      borderRadius: "0.5rem 0 0.5rem 0.5rem",
+                      margin: "0rem",
                     }}
                   ></div>
-                </Card>
+                </CardFill>
               </div>
               {i == 0 ? (
                 <div

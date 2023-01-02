@@ -13,6 +13,7 @@ const Card = styled.div`
   ${(props) => (props.shadow ? `box-shadow: 5px 5px 10px 0px grey;` : null)}
   display: flex;
   flex-direction: column;
+  overflow: hidden;
 `;
 
 const CardBlueBg = styled(Card)`
