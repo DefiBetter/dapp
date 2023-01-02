@@ -12,6 +12,7 @@ const Container = styled.div`
   background-color: #cce5ff;
   box-shadow: 5px 5px 10px 0px grey;
   flex: 1;
+  overflow: hidden;
 `;
 
 const AppContainer = styled.div`

@@ -76,9 +76,13 @@ input {
 
 .statsContainer {
     width: 50%;
+    padding: 10px 10px;
+    overflow-y: auto;
+}
+
+.statsContainer > div > div > div > div {
     display: grid;
     grid-gap: 10px;
-    padding: 10px 10px;
 }
 
 /* Chrome, Safari, Edge, Opera */

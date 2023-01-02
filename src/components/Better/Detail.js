@@ -21,6 +21,7 @@ import { ethers } from "ethers";
 import truncateEthAddress from "truncate-eth-address";
 import { contractAddresses } from "../../static/contractAddresses";
 import Countdown from "react-countdown";
+import { Scrollbar } from "react-scrollbars-custom";
 
 const Detail = (props) => {
   /* account, network, configs */
@@ -300,180 +301,192 @@ const Detail = (props) => {
         <div className={styles.yPadding} />
       </div>
       <div className={styles.statsContainer}>
-        <Card>
-          <CenterText>
-            <b>Epoch Data</b>
-          </CenterText>
-          <CardBlueBg>
-            <Grid padding={0}>
-              <GridRow>
-                <GridCell2 padding={0}>
-                  <ExSmallText>Epoch:</ExSmallText>
-                </GridCell2>
-                <GridCell2 padding={0}>
-                  <ExSmallText>
-                    {props.instrument
-                      ? props.instrument.epoch.toString()
-                      : null}
-                  </ExSmallText>
-                </GridCell2>
-              </GridRow>
-              <GridRow>
-                <GridCell2 padding={0}>
-                  <ExSmallText>Pot size:</ExSmallText>
-                </GridCell2>
-                <GridCell2 padding={0}>
-                  <ExSmallText>
-                    {props.epochData
-                      ? ethers.utils.formatEther(props.epochData.pot)
-                      : null}{" "}
-                    {props.nativeGas ? props.nativeGas : null}
-                  </ExSmallText>
-                </GridCell2>
-              </GridRow>
-              <GridRow>
-                <GridCell2 padding={0}>
-                  <ExSmallText>Number of bets:</ExSmallText>
-                </GridCell2>
-                <GridCell2 padding={0}>
-                  <ExSmallText>
-                    {props.epochData
-                      ? props.epochData.numBets.toString()
-                      : null}
-                  </ExSmallText>
-                </GridCell2>
-              </GridRow>
-            </Grid>
-          </CardBlueBg>
-        </Card>
-        <Card>
-          My Statistics
-          <CardBlueBg>
-            <Grid padding={0}>
-              <GridRow>
-                <GridCell2 padding={0}>
-                  <ExSmallText>Position value:</ExSmallText>
-                </GridCell2>
-                <GridCell2 padding={0}>
-                  <ExSmallText>
-                    {ethers.utils.formatEther(props.userPosition || 0)}{" "}
-                    {props.nativeGas}
-                  </ExSmallText>
-                </GridCell2>
-              </GridRow>
-              <GridRow>
-                <GridCell2 padding={0}>
-                  <ExSmallText>Pending rewards:</ExSmallText>
-                </GridCell2>
-                <GridCell2 padding={0}>
-                  <ExSmallText>
-                    {props.pendingBetterBalance} {props.nativeGas}
-                  </ExSmallText>
-                </GridCell2>
-              </GridRow>
-              <GridRow>
-                <GridCell2 padding={0}>
-                  <ExSmallText>Number of games:</ExSmallText>
-                </GridCell2>
-                <GridCell2 padding={0}>
-                  <ExSmallText>
-                    {props.userGainsInfo?.numberOfGames.toString()}
-                  </ExSmallText>
-                </GridCell2>
-              </GridRow>
-              <GridRow>
-                <GridCell2 padding={0}>
-                  <ExSmallText>Biggest gain:</ExSmallText>
-                </GridCell2>
-                <GridCell2 padding={0}>
-                  <ExSmallText>
-                    {Number(props.userGainsInfo?.biggestRelativeGainAmount) >= 0
-                      ? "+"
-                      : "-"}
-                    {Number(props.userGainsInfo?.biggestRelativeGainAmount)}%
-                  </ExSmallText>
-                </GridCell2>
-              </GridRow>
-              <GridRow>
-                <GridCell2 padding={0}>
-                  <ExSmallText>Most recent gain:</ExSmallText>
-                </GridCell2>
-                <GridCell2 padding={0}>
-                  <ExSmallText>
-                    {Number(
-                      props.userGainsInfo?.mostRecentRelativeGainAmount
-                    ) >= 0
-                      ? "+"
-                      : "-"}
-                    {Number(props.userGainsInfo?.mostRecentRelativeGainAmount)}%
-                  </ExSmallText>
-                </GridCell2>
-              </GridRow>
-            </Grid>
-          </CardBlueBg>
-        </Card>
-        <Card>
-          Better Gains
-          <CardBlueBg>
-            <Grid>
-              <GridRow>
-                <GridCell2 padding={0}>
-                  <ExSmallText>Time left for current week:</ExSmallText>
-                </GridCell2>
-                <GridCell2 padding={0}>
-                  <ExSmallText>
-                    {currentPeriodEndTime ? (
-                      <Countdown
-                        key={currentPeriodEndTime * 1000}
-                        date={currentPeriodEndTime * 1000}
-                      />
-                    ) : null}
-                  </ExSmallText>
-                </GridCell2>
-              </GridRow>
-              <GridRow>
-                <GridCell2 padding={0}>
-                  <ExSmallText>Week's biggest gain so far:</ExSmallText>
-                </GridCell2>
-                <GridCell2 padding={0}>
-                  <ExSmallText>
-                    {Number(weekBiggestRelativeGainAmount) >= 0 ? "+" : "-"}
-                    {Number(weekBiggestRelativeGainAmount)}%<br></br>
-                    {truncateEthAddress(
-                      globalBiggestRelativeGainCurrentPeriodAddress
-                    )}
-                  </ExSmallText>
-                </GridCell2>
-              </GridRow>
-              <GridRow>
-                <GridCell2 padding={0}>
-                  <ExSmallText>Last week's biggest gain:</ExSmallText>
-                </GridCell2>
-                <GridCell2 padding={0}>
-                  <ExSmallText>
-                    {Number(lastWeekBiggestRelativeGainAmount) >= 0 ? "+" : "-"}
-                    {Number(lastWeekBiggestRelativeGainAmount)}%<br></br>
-                    {truncateEthAddress(
-                      globalBiggestRelativeGainPastPeriodAddress
-                    )}
-                  </ExSmallText>
-                </GridCell2>
-              </GridRow>
-              <GridRow>
-                <GridCell2 padding={0}>
-                  <ExSmallText>Biggest gain of all time:</ExSmallText>
-                </GridCell2>
-                <GridCell2 padding={0}>
-                  <ExSmallText>
-                    {Number(globalBiggestRelativeGain) >= 0 ? "+" : "-"}
-                    {Number(globalBiggestRelativeGain)}%<br></br>
-                    {truncateEthAddress(globalBiggestRelativeGainAddress)}
-                  </ExSmallText>
-                </GridCell2>
-              </GridRow>
-            </Grid>
-          </CardBlueBg>
-        </Card>
+        <Scrollbar>
+          <Card>
+            <CenterText>
+              <b>Epoch Data</b>
+            </CenterText>
+            <CardBlueBg>
+              <Grid padding={0}>
+                <GridRow>
+                  <GridCell2 padding={0}>
+                    <ExSmallText>Epoch:</ExSmallText>
+                  </GridCell2>
+                  <GridCell2 padding={0}>
+                    <ExSmallText>
+                      {props.instrument
+                        ? props.instrument.epoch.toString()
+                        : null}
+                    </ExSmallText>
+                  </GridCell2>
+                </GridRow>
+                <GridRow>
+                  <GridCell2 padding={0}>
+                    <ExSmallText>Pot size:</ExSmallText>
+                  </GridCell2>
+                  <GridCell2 padding={0}>
+                    <ExSmallText>
+                      {props.epochData
+                        ? ethers.utils.formatEther(props.epochData.pot)
+                        : null}{" "}
+                      {props.nativeGas ? props.nativeGas : null}
+                    </ExSmallText>
+                  </GridCell2>
+                </GridRow>
+                <GridRow>
+                  <GridCell2 padding={0}>
+                    <ExSmallText>Number of bets:</ExSmallText>
+                  </GridCell2>
+                  <GridCell2 padding={0}>
+                    <ExSmallText>
+                      {props.epochData
+                        ? props.epochData.numBets.toString()
+                        : null}
+                    </ExSmallText>
+                  </GridCell2>
+                </GridRow>
+              </Grid>
+            </CardBlueBg>
+          </Card>
+          <Card>
+            <CenterText>
+              <b>My Statistics</b>
+            </CenterText>
+            <CardBlueBg>
+              <Grid padding={0}>
+                <GridRow>
+                  <GridCell2 padding={0}>
+                    <ExSmallText>Position value:</ExSmallText>
+                  </GridCell2>
+                  <GridCell2 padding={0}>
+                    <ExSmallText>
+                      {ethers.utils.formatEther(props.userPosition || 0)}{" "}
+                      {props.nativeGas}
+                    </ExSmallText>
+                  </GridCell2>
+                </GridRow>
+                <GridRow>
+                  <GridCell2 padding={0}>
+                    <ExSmallText>Pending rewards:</ExSmallText>
+                  </GridCell2>
+                  <GridCell2 padding={0}>
+                    <ExSmallText>
+                      {props.pendingBetterBalance} {props.nativeGas}
+                    </ExSmallText>
+                  </GridCell2>
+                </GridRow>
+                <GridRow>
+                  <GridCell2 padding={0}>
+                    <ExSmallText>Number of games:</ExSmallText>
+                  </GridCell2>
+                  <GridCell2 padding={0}>
+                    <ExSmallText>
+                      {props.userGainsInfo?.numberOfGames.toString()}
+                    </ExSmallText>
+                  </GridCell2>
+                </GridRow>
+                <GridRow>
+                  <GridCell2 padding={0}>
+                    <ExSmallText>Biggest gain:</ExSmallText>
+                  </GridCell2>
+                  <GridCell2 padding={0}>
+                    <ExSmallText>
+                      {Number(props.userGainsInfo?.biggestRelativeGainAmount) >=
+                      0
+                        ? "+"
+                        : "-"}
+                      {Number(props.userGainsInfo?.biggestRelativeGainAmount)}%
+                    </ExSmallText>
+                  </GridCell2>
+                </GridRow>
+                <GridRow>
+                  <GridCell2 padding={0}>
+                    <ExSmallText>Most recent gain:</ExSmallText>
+                  </GridCell2>
+                  <GridCell2 padding={0}>
+                    <ExSmallText>
+                      {Number(
+                        props.userGainsInfo?.mostRecentRelativeGainAmount
+                      ) >= 0
+                        ? "+"
+                        : "-"}
+                      {Number(
+                        props.userGainsInfo?.mostRecentRelativeGainAmount
+                      )}
+                      %
+                    </ExSmallText>
+                  </GridCell2>
+                </GridRow>
+              </Grid>
+            </CardBlueBg>
+          </Card>
+          <Card>
+            <CenterText>
+              <b>Better Gains</b>
+            </CenterText>
+            <CardBlueBg>
+              <Grid>
+                <GridRow>
+                  <GridCell2 padding={0}>
+                    <ExSmallText>Time left for current week:</ExSmallText>
+                  </GridCell2>
+                  <GridCell2 padding={0}>
+                    <ExSmallText>
+                      {currentPeriodEndTime ? (
+                        <Countdown
+                          key={currentPeriodEndTime * 1000}
+                          date={currentPeriodEndTime * 1000}
+                        />
+                      ) : null}
+                    </ExSmallText>
+                  </GridCell2>
+                </GridRow>
+                <GridRow>
+                  <GridCell2 padding={0}>
+                    <ExSmallText>Week's biggest gain so far:</ExSmallText>
+                  </GridCell2>
+                  <GridCell2 padding={0}>
+                    <ExSmallText>
+                      {Number(weekBiggestRelativeGainAmount) >= 0 ? "+" : "-"}
+                      {Number(weekBiggestRelativeGainAmount)}%<br></br>
+                      {truncateEthAddress(
+                        globalBiggestRelativeGainCurrentPeriodAddress
+                      )}
+                    </ExSmallText>
+                  </GridCell2>
+                </GridRow>
+                <GridRow>
+                  <GridCell2 padding={0}>
+                    <ExSmallText>Last week's biggest gain:</ExSmallText>
+                  </GridCell2>
+                  <GridCell2 padding={0}>
+                    <ExSmallText>
+                      {Number(lastWeekBiggestRelativeGainAmount) >= 0
+                        ? "+"
+                        : "-"}
+                      {Number(lastWeekBiggestRelativeGainAmount)}%<br></br>
+                      {truncateEthAddress(
+                        globalBiggestRelativeGainPastPeriodAddress
+                      )}
+                    </ExSmallText>
+                  </GridCell2>
+                </GridRow>
+                <GridRow>
+                  <GridCell2 padding={0}>
+                    <ExSmallText>Biggest gain of all time:</ExSmallText>
+                  </GridCell2>
+                  <GridCell2 padding={0}>
+                    <ExSmallText>
+                      {Number(globalBiggestRelativeGain) >= 0 ? "+" : "-"}
+                      {Number(globalBiggestRelativeGain)}%<br></br>
+                      {truncateEthAddress(globalBiggestRelativeGainAddress)}
+                    </ExSmallText>
+                  </GridCell2>
+                </GridRow>
+              </Grid>
+            </CardBlueBg>
+          </Card>
+        </Scrollbar>
       </div>
     </div>
   );
