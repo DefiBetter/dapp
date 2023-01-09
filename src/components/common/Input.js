@@ -32,6 +32,7 @@ const InputNumber = (props) => {
     <div
       style={{
         display: "flex",
+        flex: 1,
       }}
     >
       <Input
