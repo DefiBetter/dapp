@@ -17,7 +17,7 @@ export function WalletConnect() {
   if (address) {
     return (
       <div className={styles.container}>
-        {address && (
+        {
           <Button
             className={styles.address}
             onClick={() => {
@@ -26,7 +26,7 @@ export function WalletConnect() {
           >
             <NormalText>{truncateEthAddress(address)}</NormalText>
           </Button>
-        )}
+        }
         {showDisconnect ? (
           <Button
             className={styles.option}
@@ -45,23 +45,23 @@ export function WalletConnect() {
 
   return (
     <div className={styles.container}>
-      <div
-        className={styles.connector}
+      <Button
+        className={styles.address}
         onClick={() => setShowNetworks(!showNetworks)}
       >
-        Connect
-      </div>
+        <NormalText>Connect</NormalText>
+      </Button>
       {showNetworks
         ? connectors.map((connector) => (
-            <div
+            <Button
               className={styles.option}
               onClick={() => {
                 setShowNetworks(!showNetworks);
                 connect({ connector });
               }}
             >
-              {connector.name}
-            </div>
+              <NormalText>{connector.name}</NormalText>
+            </Button>
           ))
         : null}
 
