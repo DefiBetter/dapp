@@ -35,9 +35,12 @@ const Dropdown = ({
     setShowItemList(!showItemList);
   };
 
-  console.log("dropdown", currentItem);
-  console.log("dropdown itemList", itemList);
-  console.log("dropdown itemLabelList", itemLabelList);
+//   console.log("dropdown currentItem", currentItem);
+//   console.log("dropdown currentItemLabel", currentItemLabel);
+//   console.log("dropdown itemList", itemList);
+//   console.log("dropdown itemLabelList", itemLabelList);
+
+
 
   return (
     <Container onClick={toggleOptions}>
