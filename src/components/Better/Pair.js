@@ -1,5 +1,6 @@
 import { useState } from "react";
 import Dropdown from "../common/Dropdown";
+import { instrumentLabel } from "../common/helper";
 import styles from "./Pair.module.css";
 
 const Pair = (props) => {
@@ -53,26 +54,11 @@ const Pair = (props) => {
       <div style={{ width: "80%", height: "60%", zIndex: 1 }}>
         <Dropdown
           currentItem={props.instrument.underlyingDescription}
-          currentItemLabel={`${props.instrument.underlyingDescription.replaceAll(
-            " ",
-            ""
-          )} ${
-            (+props.instrument.epochDurationInSeconds +
-              +props.instrument.bufferDurationInSeconds) /
-            60
-          }m (${(+props.instrument.volatilityMultiplier / 10000).toFixed(
-            1
-          )} SD, ${+props.instrument.baseError / 10000} E)`}
+          currentItemLabel={instrumentLabel(props.instrument)}
           setCurrentItem={props.setInstrument}
           itemList={props.instrumentList}
           itemLabelList={props.instrumentList.map((instrument) => {
-            return `${instrument.underlyingDescription.replaceAll(" ", "")} ${
-              (+instrument.epochDurationInSeconds +
-                +instrument.bufferDurationInSeconds) /
-              60
-            }m (${(+instrument.volatilityMultiplier / 10000).toFixed(1)} SD, ${
-              +instrument.baseError / 10000
-            } E)`;
+            return instrumentLabel(instrument);
           })}
         />
       </div>
