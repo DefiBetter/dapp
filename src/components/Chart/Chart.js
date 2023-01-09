@@ -459,30 +459,31 @@ const Chart = (props) => {
         {/* <BarChart chartConfig={chartConfig} data={data} /> */}{" "}
       </svg>
       <div className={styles.chartOverlay}>
+        <div>
+          <div></div>
+          <div></div>
+        </div>
         <Grid>
           <GridRow>
             <GridCell3>
               <GridCell2>
-                <b>Epoch open price:</b>
-              </GridCell2>
-              <GridCell2>
-                <b>
-                  {lastEpochData
-                    ? ethers.utils.formatEther(lastEpochData.closingPrice)
-                    : null}
-                </b>
+                <b>Current: {currentPrice}</b>
               </GridCell2>
             </GridCell3>
             <GridCell3>
-              <GridCell2> Current price:</GridCell2>
-              <GridCell2>{currentPrice}</GridCell2>
+              <GridCell2>
+                Epoch open:{" "}
+                {lastEpochData
+                  ? ethers.utils.formatEther(lastEpochData.closingPrice)
+                  : null}
+              </GridCell2>
             </GridCell3>
             <GridCell3>
-              <GridCell2> Last updated:</GridCell2>
               <GridCell2>
+                Last updated:{" "}
                 {(() => {
                   const dt = new Date(lastUpdated * 1000);
-                  return `${dt.getHours()}:${dt.getMinutes()}:${dt.getSeconds()}`;
+                  return `${dt.toLocaleTimeString()}`;
                 })()}
               </GridCell2>
             </GridCell3>

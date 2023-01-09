@@ -6,8 +6,11 @@
 
 .chartOverlay {
 position: absolute;
+width: 100%;
 top: 0;
 color: #C4DCF5;
+display: flex;
+flex-direction: row;
 }
 
 #dexscreenerEmbed {

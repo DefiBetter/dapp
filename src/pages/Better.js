@@ -65,6 +65,9 @@ function Better() {
   const [userPosition, setUserPosition] = useState();
   const [userGainsInfo, setUserGainsInfo] = useState();
 
+  // reward period info
+  const [rewardPeriodInfo, setRewardPeriodInfo] = useState();
+
   // better
   const [customFlatFee, setCustomFlatFee] = useState(10 * 1000);
   const [customGainFee, setCustomGainFee] = useState(10 * 1000);
@@ -173,11 +176,23 @@ function Better() {
   // user gains info
   useContractRead({
     ...betterContractConfig,
-    functionName: "userGainsInfo",
+    functionName: "getUserGainsInfo",
     args: [connectedAddress],
     onError(data) {},
     onSuccess(data) {
       setUserGainsInfo(data);
+    },
+    watch: true,
+  });
+
+  // reward period info
+  useContractRead({
+    ...betterContractConfig,
+    functionName: "rewardPeriodInfo",
+    args: [],
+    onError(data) {},
+    onSuccess(data) {
+      setRewardPeriodInfo(data);
     },
     watch: true,
   });
@@ -241,6 +256,7 @@ function Better() {
                 userPosition={userPosition}
                 userGainsInfo={userGainsInfo}
                 betterContractConfig={betterContractConfig}
+                rewardPeriodInfo={rewardPeriodInfo}
               />
             </div>
           </Container>

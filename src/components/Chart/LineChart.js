@@ -89,14 +89,14 @@ const LineChart = (props) => {
     });
 
     // plot bitch
-    data.map((coord, i) => {
-      let yPad = props.chartConfig.paddingY() + props.chartConfig.chartHeight;
-      dataPointList.push(
-        <text x={100} y={yPad} fill="red">
-          bitch
-        </text>
-      );
-    });
+    // data.map((coord, i) => {
+    //   let yPad = props.chartConfig.paddingY() + props.chartConfig.chartHeight;
+    //   dataPointList.push(
+    //     <text x={100} y={yPad} fill="red">
+    //       bitch
+    //     </text>
+    //   );
+    // });
     return dataPointList;
   };
 
