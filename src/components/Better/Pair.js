@@ -1,4 +1,5 @@
 import { useState } from "react";
+import Dropdown from "../common/Dropdown";
 import styles from "./Pair.module.css";
 
 const Pair = (props) => {
@@ -31,7 +32,7 @@ const Pair = (props) => {
   return (
     <div className={styles.container}>
       <div className={styles.image} />
-      <div className={styles.networkContainer} onClick={toggleOptions}>
+      {/* <div className={styles.networkContainer} onClick={toggleOptions}>
         <div
           className={styles.network}
         >{`${props.instrument?.underlyingDescription.replaceAll(" ", "")} ${
@@ -48,6 +49,32 @@ const Pair = (props) => {
               <Instrument instrument={instrument} />
             ))
           : null}
+      </div> */}
+      <div style={{ width: "80%", height: "60%", zIndex: 1 }}>
+        <Dropdown
+          currentItem={props.instrument.underlyingDescription}
+          currentItemLabel={`${props.instrument.underlyingDescription.replaceAll(
+            " ",
+            ""
+          )} ${
+            (+props.instrument.epochDurationInSeconds +
+              +props.instrument.bufferDurationInSeconds) /
+            60
+          }m (${(+props.instrument.volatilityMultiplier / 10000).toFixed(
+            1
+          )} SD, ${+props.instrument.baseError / 10000} E)`}
+          setCurrentItem={props.setInstrument}
+          itemList={props.instrumentList}
+          itemLabelList={props.instrumentList.map((instrument) => {
+            return `${instrument.underlyingDescription.replaceAll(" ", "")} ${
+              (+instrument.epochDurationInSeconds +
+                +instrument.bufferDurationInSeconds) /
+              60
+            }m (${(+instrument.volatilityMultiplier / 10000).toFixed(1)} SD, ${
+              +instrument.baseError / 10000
+            } E)`;
+          })}
+        />
       </div>
     </div>
   );
