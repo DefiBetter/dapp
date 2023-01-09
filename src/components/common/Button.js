@@ -12,7 +12,10 @@ const Button = styled.button`
   cursor: pointer;
   &:enabled {
     &:active {
-      background-color: rgba(42, 174, 230, 0.5);
+      background-color: ${(props) =>
+        props.activeColor == "white"
+          ? `rgba(255, 255, 255, 0.5)`
+          : `rgba(42, 174, 230, 0.5)`};
     }
   }
   &:disabled {
