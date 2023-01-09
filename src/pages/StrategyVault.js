@@ -119,8 +119,7 @@ function StrategyVault() {
     setMintAmount(e.target.value ? e.target.value : 0);
   };
   const handleBurnAmount = (e) => {
-    console.log("eee", e.target);
-    setBurnAmount(e.tagret.value ? e.target.value : 0);
+    setBurnAmount(e.target.value ? e.target.value : 0);
   };
 
   const [nativeGas, setNativeGas] = useState();
