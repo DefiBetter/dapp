@@ -47,6 +47,7 @@ function StrategyVault() {
 
   // network
   const { chain: activeChain } = useNetwork();
+  const [nativeGas, setNativeGas] = useState();
 
   // instrument
   const [currentInstrument, setCurrentInstrument] = useState();
@@ -55,6 +56,18 @@ function StrategyVault() {
   // vault
   const [vaultList, setVaultList] = useState();
   const [currentVault, setCurrentVault] = useState();
+  const [vaultBalance, setVaultBalance] = useState(0);
+  const [previewMintAmount, setPreviewMintAmount] = useState(0);
+  const [previewBurnAmount, setPreviewBurnAmount] = useState(0);
+  const [currentVaultName, setCurrentVaultName] = useState("");
+
+  // user
+  const [userGasBalance, setUserGasBalance] = useState(0);
+  const [userVaultBalance, setUserVaultBalance] = useState(0);
+
+  // input amounts
+  const [mintAmount, setMintAmount] = useState(0);
+  const [burnAmount, setBurnAmount] = useState(0);
 
   // contract config
   const betterContractConfig = {
@@ -73,6 +86,7 @@ function StrategyVault() {
     "BULL 3",
   ];
 
+  // get instrument list
   useContractRead({
     ...betterContractConfig,
     functionName: "getInstruments",
@@ -84,6 +98,7 @@ function StrategyVault() {
     },
   });
 
+  // get list of strategy vaults from vault manager
   useContractRead({
     address: currentInstrument?.vaultManager,
     abi: StrategyVaultManagerABI,
@@ -97,66 +112,23 @@ function StrategyVault() {
     },
   });
 
-  // useContractReads({
-  //   contracts: vaultList?.map((vault) => {
-  //     return {
-  //       address: vault,
-  //       abi: IERC20MetadataABI,
-  //       functionName: "name",
-  //     };
-  //   }),
-  //   onSuccess(data) {
-  //     console.log("name list", data);
-  //     setVaultNameList(data);
-  //     setCurrentVault(data[3]); // should be neutral
-  //   },
-  // });
-
-  const [mintAmount, setMintAmount] = useState(0);
-  const [burnAmount, setBurnAmount] = useState(0);
-  // helper functions
-  const handleMintAmount = (e) => {
-    setMintAmount(e.target.value ? e.target.value : 0);
-  };
-  const handleBurnAmount = (e) => {
-    setBurnAmount(e.target.value ? e.target.value : 0);
-  };
-
-  const [nativeGas, setNativeGas] = useState();
-
-  /* useEffect */
-  useEffect(() => {
-    // set nativeGas for current network
-    setNativeGas(contractAddresses[activeChain?.network]?.nativeGas);
-
-    // set bin total
-  }, [activeChain]);
-
-  const [gasBalance, setGasBalance] = useState(0);
-  const [strategyVaultBalance, setStrategyVaultBalance] = useState(0);
-
-  // gas token balance user
-  const { data: userData } = useBalance({
+  // user gas balance
+  useBalance({
     address: connectedAddress,
     onSuccess(data) {
-      console.log("bal", data);
-      setGasBalance(+data.formatted);
+      setUserGasBalance(+data.formatted);
     },
     watch: true,
   });
 
-  // strategy vault token balance user
+  // user vault balance
   useContractRead({
     address: currentVault,
     abi: IERC20MetadataABI,
     functionName: "balanceOf",
     args: [connectedAddress],
     onSuccess(data) {
-      console.log(
-        "balance of " + currentVault,
-        +ethers.utils.formatEther(data)
-      );
-      setStrategyVaultBalance(+ethers.utils.formatEther(data));
+      setUserVaultBalance(+ethers.utils.formatEther(data));
     },
     watch: true,
   });
@@ -172,6 +144,7 @@ function StrategyVault() {
     },
   });
 
+  // burn strategy vault token
   const { write: withdrawWrite } = useContractWrite({
     mode: "recklesslyUnprepared",
     address: currentVault,
@@ -180,7 +153,68 @@ function StrategyVault() {
     args: [ethers.utils.parseEther(burnAmount.toString())],
   });
 
-  console.log("currentVault", currentVault);
+  // balance of gas in vault
+  useContractRead({
+    address: currentVault,
+    abi: StrategyVaultABI,
+    functionName: "balance",
+    args: [],
+    onSuccess(data) {
+      console.log("balance " + currentVault, +ethers.utils.formatEther(data));
+      setVaultBalance(+ethers.utils.formatEther(data));
+    },
+    watch: true,
+  });
+
+  // preview gas deposit when mint vault token
+  useContractRead({
+    address: currentVault,
+    abi: StrategyVaultABI,
+    functionName: "previewDeposit",
+    args: [ethers.utils.parseEther(mintAmount.toString())],
+    onSuccess(data) {
+      console.log("preview", +ethers.utils.formatEther(data));
+      setPreviewMintAmount(+ethers.utils.formatEther(data));
+    },
+  });
+
+  // preview gas withdraw when burn vault token
+  useContractRead({
+    address: currentVault,
+    abi: StrategyVaultABI,
+    functionName: "previewWithdraw",
+    args: [ethers.utils.parseEther(burnAmount.toString())],
+    onSuccess(data) {
+      setPreviewBurnAmount(+ethers.utils.formatEther(data));
+    },
+  });
+
+  // vault token name
+  useContractRead({
+    address: currentVault,
+    abi: IERC20MetadataABI,
+    functionName: "name",
+    args: [],
+    onSuccess(data) {
+      setCurrentVaultName(data);
+    },
+  });
+
+  // helper functions
+  const handleMintAmount = (e) => {
+    setMintAmount(e.target.value ? e.target.value : 0);
+  };
+  const handleBurnAmount = (e) => {
+    setBurnAmount(e.target.value ? e.target.value : 0);
+  };
+
+  /* useEffect */
+  useEffect(() => {
+    // set nativeGas for current network
+    setNativeGas(contractAddresses[activeChain?.network]?.nativeGas);
+
+    // set bin total
+  }, [activeChain]);
 
   return (
     <Connect isConnected={isConnected} activeChain={activeChain}>
@@ -230,7 +264,9 @@ function StrategyVault() {
                             </GridCell2>
                             <GridCell2>
                               <CenterText>
-                                <b>123 BNB</b>
+                                <b>
+                                  {vaultBalance} {nativeGas}
+                                </b>
                               </CenterText>
                             </GridCell2>
                           </GridRow>
@@ -247,13 +283,7 @@ function StrategyVault() {
                                   style={{ flex: 1 }}
                                   onChange={handleMintAmount}
                                   min={0}
-                                  max={(() => {
-                                    console.log(
-                                      "bal input",
-                                      +userData?.formatted
-                                    );
-                                    return +userData?.formatted;
-                                  })()}
+                                  max={userGasBalance}
                                   placeholder="Mint amount..."
                                   value={mintAmount > 0 ? mintAmount : ""}
                                   setValue={setMintAmount}
@@ -270,11 +300,9 @@ function StrategyVault() {
                                 <CenterText>and receive</CenterText>
                               </FancyText>
                               <CardBlueBgBlackBorder>
-                                <CenterText>123</CenterText>
+                                <CenterText>{previewMintAmount}</CenterText>
                               </CardBlueBgBlackBorder>
-                              <CenterText>
-                                BTC/USD 10m 1.0 SD 1.1428 E <b>Bull 3</b>
-                              </CenterText>
+                              <CenterText>{currentVaultName}</CenterText>
                             </GridCell>
                           </GridRow>
                         </Grid>
@@ -305,13 +333,13 @@ function StrategyVault() {
                             <GridCell2>
                               <CardBlueBgBlackBorder>
                                 <CenterText>
-                                  <b>Vault Balance:</b>
+                                  <b>Vault Performance:</b>
                                 </CenterText>
                               </CardBlueBgBlackBorder>
                             </GridCell2>
                             <GridCell2>
                               <CenterText>
-                                <b>123 BNB</b>
+                                <b>xxx% APR</b>
                               </CenterText>
                             </GridCell2>
                           </GridRow>
@@ -328,14 +356,14 @@ function StrategyVault() {
                                   style={{ flex: 1 }}
                                   onChange={handleBurnAmount}
                                   min={0}
-                                  max={strategyVaultBalance}
+                                  max={userVaultBalance}
                                   placeholder="Burn amount..."
                                   value={burnAmount > 0 ? burnAmount : ""}
                                   setValue={setBurnAmount}
                                 />
                               </div>
                               <CenterText>
-                                <b>123 BNB</b>
+                                <b>{currentVaultName}</b>
                               </CenterText>
                             </GridCell>
                           </GridRow>
@@ -345,11 +373,9 @@ function StrategyVault() {
                                 <CenterText>and receive</CenterText>
                               </FancyText>
                               <CardBlueBgBlackBorder>
-                                <CenterText>123</CenterText>
+                                <CenterText>{previewBurnAmount}</CenterText>
                               </CardBlueBgBlackBorder>
-                              <CenterText>
-                                BTC/USD 10m 1.0 SD 1.1428 E <b>Bull 3</b>
-                              </CenterText>
+                              <CenterText>{nativeGas}</CenterText>
                             </GridCell>
                           </GridRow>
                         </Grid>
