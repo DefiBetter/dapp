@@ -5,6 +5,11 @@
         "internalType": "address",
         "name": "stakingPoolAddress",
         "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "gelatoAutomationAddress",
+        "type": "address"
       }
     ],
     "stateMutability": "nonpayable",
@@ -77,6 +82,17 @@
     "type": "error"
   },
   {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "name": "OnlyDedicatedCaller",
+    "type": "error"
+  },
+  {
     "inputs": [],
     "name": "OracleNotUpdated",
     "type": "error"
@@ -85,6 +101,156 @@
     "inputs": [],
     "name": "ProtocolAlreadyStarted",
     "type": "error"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "user",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "amount",
+        "type": "uint256"
+      }
+    ],
+    "name": "BiggestGainOverall",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "user",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "amount",
+        "type": "uint256"
+      }
+    ],
+    "name": "BiggestRewardPeriodGain",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "user",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "amount",
+        "type": "uint256"
+      }
+    ],
+    "name": "BiggestUserGain",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "bytes32",
+        "name": "selector",
+        "type": "bytes32"
+      },
+      {
+        "indexed": true,
+        "internalType": "string",
+        "name": "underlyingDescription",
+        "type": "string"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "epoch",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "closedAt",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "closingPrice",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "numberOfBets",
+        "type": "uint256"
+      }
+    ],
+    "name": "EpochClosed",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "bytes32",
+        "name": "selector",
+        "type": "bytes32"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "underlying",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "underlyingDescription",
+        "type": "string"
+      }
+    ],
+    "name": "InstrumentAdded",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "bytes32",
+        "name": "selector",
+        "type": "bytes32"
+      },
+      {
+        "indexed": true,
+        "internalType": "string",
+        "name": "underlyingDescription",
+        "type": "string"
+      },
+      {
+        "indexed": false,
+        "internalType": "bool",
+        "name": "newStatus",
+        "type": "bool"
+      }
+    ],
+    "name": "InstrumentEnabledStatusChanged",
+    "type": "event"
   },
   {
     "anonymous": false,
@@ -106,17 +272,79 @@
     "type": "event"
   },
   {
-    "inputs": [],
-    "name": "BINS",
-    "outputs": [
+    "anonymous": false,
+    "inputs": [
       {
+        "indexed": true,
+        "internalType": "bytes32",
+        "name": "selector",
+        "type": "bytes32"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256[7]",
+        "name": "amounts",
+        "type": "uint256[7]"
+      },
+      {
+        "indexed": false,
         "internalType": "uint256",
-        "name": "",
+        "name": "depositedAmount",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "customFlatFeeMultiplier",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "customGainFeeMultiplier",
         "type": "uint256"
       }
     ],
-    "stateMutability": "view",
-    "type": "function"
+    "name": "PositionOpened",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "user",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "amount",
+        "type": "uint256"
+      }
+    ],
+    "name": "RewardsClaimed",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "underlying",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "string",
+        "name": "underlyingDescription",
+        "type": "string"
+      }
+    ],
+    "name": "UnderlyingAdded",
+    "type": "event"
   },
   {
     "inputs": [],
@@ -180,6 +408,11 @@
         "internalType": "uint256",
         "name": "volatilityMultiplier",
         "type": "uint256"
+      },
+      {
+        "internalType": "uint256[7][4]",
+        "name": "relativeBinWeights",
+        "type": "uint256[7][4]"
       }
     ],
     "name": "addInstrument",
@@ -230,6 +463,24 @@
     "type": "function"
   },
   {
+    "inputs": [],
+    "name": "canCloseAnyEpoch",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "canExec",
+        "type": "bool"
+      },
+      {
+        "internalType": "bytes",
+        "name": "execPayload",
+        "type": "bytes"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
     "inputs": [
       {
         "internalType": "uint256",
@@ -240,19 +491,6 @@
     "name": "claimBetterRewards",
     "outputs": [],
     "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "epochCollectedFees",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
     "type": "function"
   },
   {
@@ -425,6 +663,11 @@
             "type": "string"
           },
           {
+            "internalType": "address",
+            "name": "vaultManager",
+            "type": "address"
+          },
+          {
             "internalType": "bool",
             "name": "enabled",
             "type": "bool"
@@ -433,6 +676,11 @@
             "internalType": "bool",
             "name": "isVolatilitySource",
             "type": "bool"
+          },
+          {
+            "internalType": "uint256[7][4]",
+            "name": "relativeBinWeights",
+            "type": "uint256[7][4]"
           },
           {
             "internalType": "uint256",
@@ -510,6 +758,11 @@
             "type": "string"
           },
           {
+            "internalType": "address",
+            "name": "vaultManager",
+            "type": "address"
+          },
+          {
             "internalType": "bool",
             "name": "enabled",
             "type": "bool"
@@ -518,6 +771,11 @@
             "internalType": "bool",
             "name": "isVolatilitySource",
             "type": "bool"
+          },
+          {
+            "internalType": "uint256[7][4]",
+            "name": "relativeBinWeights",
+            "type": "uint256[7][4]"
           },
           {
             "internalType": "uint256",
@@ -805,84 +1063,6 @@
     "type": "function"
   },
   {
-    "inputs": [],
-    "name": "globalBiggestRelativeGain",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "globalBiggestRelativeGainAddress",
-    "outputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "globalBiggestRelativeGainCurrentPeriod",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "globalBiggestRelativeGainCurrentPeriodAddress",
-    "outputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "globalBiggestRelativeGainPastPeriod",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "globalBiggestRelativeGainPastPeriodAddress",
-    "outputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
     "inputs": [
       {
         "internalType": "uint256",
@@ -904,30 +1084,6 @@
   {
     "inputs": [
       {
-        "internalType": "bytes32",
-        "name": "instrumentSelector",
-        "type": "bytes32"
-      }
-    ],
-    "name": "isEpochCloseable",
-    "outputs": [
-      {
-        "internalType": "bool",
-        "name": "canExec",
-        "type": "bool"
-      },
-      {
-        "internalType": "bytes",
-        "name": "execPayload",
-        "type": "bytes"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
         "internalType": "address",
         "name": "addr",
         "type": "address"
@@ -939,19 +1095,6 @@
         "internalType": "bool",
         "name": "",
         "type": "bool"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "lastEpochCollectedFees",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
       }
     ],
     "stateMutability": "view",
@@ -1070,12 +1213,42 @@
   },
   {
     "inputs": [],
-    "name": "rewardPeriodLength",
+    "name": "rewardPeriodInfo",
     "outputs": [
       {
         "internalType": "uint256",
-        "name": "",
+        "name": "rewardPeriodStart",
         "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "globalBiggestRelativeGain",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "globalBiggestRelativeGainPastPeriod",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "globalBiggestRelativeGainCurrentPeriod",
+        "type": "uint256"
+      },
+      {
+        "internalType": "address",
+        "name": "globalBiggestRelativeGainAddress",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "globalBiggestRelativeGainPastPeriodAddress",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "globalBiggestRelativeGainCurrentPeriodAddress",
+        "type": "address"
       }
     ],
     "stateMutability": "view",
@@ -1083,7 +1256,7 @@
   },
   {
     "inputs": [],
-    "name": "rewardPeriodStart",
+    "name": "rewardPeriodLength",
     "outputs": [
       {
         "internalType": "uint256",
@@ -1102,7 +1275,7 @@
         "type": "bool"
       }
     ],
-    "name": "setAllInstrumentsEnabled",
+    "name": "setAllInstrumentsEnabledState",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -1110,47 +1283,25 @@
   {
     "inputs": [
       {
-        "internalType": "bool",
-        "name": "targetState",
-        "type": "bool"
-      },
-      {
         "internalType": "address",
-        "name": "underlying",
+        "name": "newCaller",
         "type": "address"
-      },
-      {
-        "internalType": "uint256",
-        "name": "epochDuration",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "bufferDuration",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "flatFee",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "gainFee",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "baseError",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "volatilityMultiplier",
-        "type": "uint256"
       }
     ],
-    "name": "setInstrumentEnabled",
+    "name": "setGelatoCaller",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "newOwner",
+        "type": "address"
+      }
+    ],
+    "name": "setGelatoTaskOwner",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -1168,7 +1319,25 @@
         "type": "bytes32"
       }
     ],
-    "name": "setInstrumentEnabledBySelector",
+    "name": "setInstrumentEnabledStateBySelector",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bytes32",
+        "name": "selector",
+        "type": "bytes32"
+      },
+      {
+        "internalType": "address",
+        "name": "vaultManagerAddress",
+        "type": "address"
+      }
+    ],
+    "name": "setInstrumentVaultManager",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -1233,7 +1402,18 @@
       }
     ],
     "name": "transitionEpoch",
-    "outputs": [],
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "oldEpochPot",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "newCurrentEpoch",
+        "type": "uint256"
+      }
+    ],
     "stateMutability": "nonpayable",
     "type": "function"
   },
@@ -1245,43 +1425,9 @@
         "type": "bytes"
       }
     ],
-    "name": "transitionEpochGelato",
+    "name": "transitionEpochAndExecuteTasks",
     "outputs": [],
     "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "name": "userGainsInfo",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "biggestRelativeGainAmount",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "mostRecentRelativeGainTimestamp",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "mostRecentRelativeGainAmount",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "numberOfGames",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
     "type": "function"
   }
 ]
