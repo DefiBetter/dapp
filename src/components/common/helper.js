@@ -33,7 +33,7 @@ const instrumentLabel = (instrument) => {
       ""
     )} ${timeFormat(+instrument.epochDurationInSeconds)}+${timeFormat(
       +instrument.bufferDurationInSeconds
-    )} (${(+instrument.volatilityMultiplier / 10000).toFixed(1)} SD, ${
+    )} (${(+instrument.volatilityMultiplier / 10000).toFixed(2)} SD, ${
       +instrument.baseError / 10000
     } E)`;
   }
