@@ -8,7 +8,7 @@ const contractAddresses = {
     btStaking: "0x367761085BF3C12e5DA2Df99AC6E1a824612b8fb",
     lpToken: "",
     lpStaking: "",
-    nativeGas: "ETH",
+    nativeGas: "BETTER",
   },
   defibetter: {
     better: "0xdb01265Db404b2474C8Fa2406987D9eB6bCa5db3",
