@@ -8,7 +8,7 @@ const Container = styled.div`
   height: 100%;
   border-radius: 10px;
   min-width: 200px;
-  width: inherit;
+  // width: inherit;
 `;
 
 const Option = styled(Button)`

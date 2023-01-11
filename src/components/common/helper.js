@@ -9,24 +9,24 @@ const trimNumber = (number = 0, count = 0, type = "dp") => {
   }
 };
 
-const instrumentLabel = (instrument) => {
-  const timeFormat = (seconds) => {
-    const timeFormattedList = [];
-    const timeList = [
-      ["d", 60 * 60 * 24],
-      ["h", 60 * 60],
-      ["m", 60],
-      ["s", 1],
-    ];
-    timeList.map((e) => {
-      if (seconds >= e[1]) {
-        timeFormattedList.push(Math.floor(seconds / e[1]).toString() + e[0]);
-        seconds %= e[1];
-      }
-    });
-    return timeFormattedList.join("");
-  };
+const timeFormat = (seconds) => {
+  const timeFormattedList = [];
+  const timeList = [
+    ["d", 60 * 60 * 24],
+    ["h", 60 * 60],
+    ["m", 60],
+    ["s", 1],
+  ];
+  timeList.map((e) => {
+    if (seconds >= e[1]) {
+      timeFormattedList.push(Math.floor(seconds / e[1]).toString() + e[0]);
+      seconds %= e[1];
+    }
+  });
+  return timeFormattedList.join("");
+};
 
+const instrumentLabel = (instrument) => {
   if (instrument) {
     return `${instrument.underlyingDescription.replaceAll(
       " ",
@@ -40,4 +40,4 @@ const instrumentLabel = (instrument) => {
   return ``;
 };
 
-export { trimNumber, instrumentLabel };
+export { trimNumber, instrumentLabel, timeFormat };

@@ -6,6 +6,10 @@ const FancyText = styled.div`
   color: #2aaee6;
 `;
 
+const BlueText = styled.div`
+  color: #2aaee6;
+`;
+
 const UnderlineText = styled.div`
   text-decoration: underline;
 `;
@@ -50,4 +54,5 @@ export {
   MedText,
   NormalText,
   UnderlineText,
+  BlueText,
 };
