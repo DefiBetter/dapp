@@ -16,6 +16,11 @@ const Navbar = () => {
       <div className={styles.pages}>
         <FancyText>
           <UnderlineText>
+            <Link to="/">Better</Link>
+          </UnderlineText>
+        </FancyText>
+        <FancyText>
+          <UnderlineText>
             <Link to="/staking">Staking</Link>
           </UnderlineText>
         </FancyText>
