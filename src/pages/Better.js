@@ -69,8 +69,8 @@ function Better() {
   const [rewardPeriodInfo, setRewardPeriodInfo] = useState();
 
   // better
-  const [customFlatFee, setCustomFlatFee] = useState(10 * 1000);
-  const [customGainFee, setCustomGainFee] = useState(10 * 1000);
+  const [customFlatFee, setCustomFlatFee] = useState(10_000 ** 2);
+  const [customGainFee, setCustomGainFee] = useState(10_000 ** 2);
 
   // misc
   const [nativeGas, setNativeGas] = useState();
