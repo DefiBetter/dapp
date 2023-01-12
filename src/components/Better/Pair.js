@@ -49,7 +49,10 @@ const Pair = (props) => {
               }
               onComplete={() => {
                 props.getInstrumentBySelectorRefetch().then((result) => {
-                  props.setInstrument({ ...props.instrument, ...result.data });
+                  props.setInstrument({
+                    ...props.instrument,
+                    ...result.data,
+                  });
                 });
               }}
             />

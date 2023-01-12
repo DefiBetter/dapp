@@ -91,7 +91,8 @@ const Detail = (props) => {
 
   const onInput = (e) => {
     let temp = [...props.binAmountList];
-    temp[e.target.id] = e.target.value ? e.target.value : 0;
+    console.log("e.target.value", typeof +e.target.value);
+    temp[e.target.id] = e.target.value ? +e.target.value : 0;
     props.setBinAmountList(temp);
     props.setBinTotal(temp.reduce((a, b) => +a + +b, 0));
     props.openPositionConfigRefetch();
@@ -177,6 +178,104 @@ const Detail = (props) => {
       setGlobalBiggestRelativeGainAddress(data);
     },
   });
+
+  /* handle normal/implied button */
+  const handleOnClickNormal = () => {
+    const range = (x) => [...Array(x).keys()];
+
+    function getBinWeights(i) {
+      // probabilty density function of normal distribution
+      const pdf = (x, mu, sigma) =>
+        Math.exp(-0.5 * ((x - mu) / sigma) ** 2) /
+        (sigma * (2 * Math.PI) ** 0.5);
+
+      /**
+       * - normal dist centred around bin with index c determines relative allocations for capital
+       * - this function returns the sum of the PDF of the normal distribution centred around the bin with
+       *   index c with a standard deviation of i (since the calculation is invariant towards the actual
+       *   volatility of the underlying)
+       */
+      const binCentreSampleSum = (binCentreIndex) =>
+        range(7).reduce(
+          (prev, curr, binIndex) =>
+            prev +
+            pdf(
+              -i + i / 7 + (2 * binIndex * i) / 7,
+              (2 * binCentreIndex * i) / 7,
+              1
+            ),
+          0
+        );
+
+      /**
+       * returns matrix [centreBin][distanceToCentreBin] containing weights for bins in basis points
+       * starting with centre bin -3 (left most) to centre bin 0 = centre bin -3, -2, -1, 0
+       */
+      return range(4).map((centreBin) =>
+        range(7).map((binDistFromCentre) => {
+          console.log(binCentreSampleSum(binDistFromCentre));
+          return Math.round(
+            (pdf(
+              -i + i / 7 + (2 * binDistFromCentre * i) / 7,
+              (2 * (centreBin - 3) * i) / 7,
+              1
+            ) /
+              binCentreSampleSum(centreBin - 3)) *
+              10_000
+          );
+        })
+      );
+    }
+
+    // this generates ALL the possible samples, so just need to pick the one where the user has entered the biggest amount in as the centre point. index = distance, so if index = 0, distance from centre = 0
+    const sampleList = getBinWeights(
+      props.instrument.volatilityMultiplier / 10_000
+    ).reverse();
+
+    // find biggest bin
+    let idx = props.binAmountList.indexOf(Math.max(...props.binAmountList));
+
+    // if no biggest, then use centre bin
+    if (idx < 0) {
+      idx = 3;
+    }
+
+    let distanceFromCentre = 3 - idx;
+    console.log("sampleList distanceFromCentre", distanceFromCentre);
+
+    let result;
+    if (distanceFromCentre < 0) {
+      distanceFromCentre = Math.abs(distanceFromCentre);
+      result = [...sampleList[distanceFromCentre]].reverse();
+    } else if (distanceFromCentre >= 0) {
+      result = sampleList[distanceFromCentre];
+    }
+
+    console.log("sampleList props.binAmountList", props.binAmountList);
+    console.log(
+      "sampleList Math.max(...props.binAmountList)",
+      Math.max(...props.binAmountList)
+    );
+
+    console.log("sampleList idx", idx);
+    console.log("sampleList distanceFromCentre", distanceFromCentre);
+    console.log("sampleList", sampleList);
+
+    console.log("sampleList result", result);
+    console.log("sampleList props.binTotal", props.binTotal);
+
+    let newArr = [];
+    result.map((r) => {
+      newArr.push(+((r / 10_000) * props.binTotal).toFixed(9));
+      console.log("sampleList newArr", newArr);
+      console.log(
+        "sampleList total newArr",
+        newArr.reduce((a, b) => a + b)
+      );
+      props.setBinAmountList(newArr);
+      props.setBinTotal(newArr.reduce((a, b) => a + b));
+    });
+  };
 
   return (
     <div className={styles.container}>
@@ -298,7 +397,7 @@ const Detail = (props) => {
         })}
         <div className={styles.bin}>
           <div className={styles.binChoice}>
-            <Button>
+            <Button onClick={handleOnClickNormal}>
               <SmallText>Normal</SmallText>
             </Button>
             <Button>
