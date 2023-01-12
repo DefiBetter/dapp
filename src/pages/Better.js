@@ -216,6 +216,7 @@ function Better() {
                 instrumentList={instrumentList}
                 setInstrument={setInstrument}
                 instrument={instrument}
+                getInstrumentBySelectorRefetch={getInstrumentBySelectorRefetch}
               />
               <Epoch
                 instrument={instrument}
@@ -246,6 +247,7 @@ function Better() {
               />
               <Detail
                 binAmountList={binAmountList}
+                binTotal={binTotal}
                 setBinAmountList={setBinAmountList}
                 setBinTotal={setBinTotal}
                 pendingBetterBalance={pendingBetterBalance}
