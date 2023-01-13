@@ -132,10 +132,9 @@ function Better() {
       setNormalisedBinValueList(
         data.binValues.map((v, i, binValues) => {
           const b = binValues.map((vv) => Number(ethers.utils.formatEther(vv)));
-          return Math.max(...b) - Math.min(...b) == 0
+          return Math.max(...b) - 0 == 0
             ? 0
-            : (Number(ethers.utils.formatEther(v)) - Math.min(...b)) /
-                (Math.max(...b) - Math.min(...b));
+            : (Number(ethers.utils.formatEther(v)) - 0) / (Math.max(...b) - 0);
         })
       );
     },
@@ -148,7 +147,7 @@ function Better() {
     functionName: "getUserPendingBetterBalance",
     args: [connectedAddress, customGainFee],
     onSuccess(data) {
-      setPendingBetterBalance(+ethers.utils.formatEther(data));
+      setPendingBetterBalance(+ethers.utils.formatEther(data).toFixed(9));
     },
     onError(data) {},
     watch: true,
