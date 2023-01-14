@@ -16,7 +16,7 @@ const Option = styled(Button)`
   margin-top: 0.1rem;
   //   font-size: 1.5rem;
   height: 100%;
-  background-color: white;
+  background-color: ${(props) => (props.active ? `#cce5ff` : `white`)};
   color: black;
 `;
 
@@ -49,6 +49,7 @@ const Dropdown = ({
       {showItemList
         ? itemList.map((item, i) => (
             <Option
+              active={currentItemLabel == itemLabelList[i] ? true : false}
               activeColor={`white`}
               onClick={() => {
                 setCurrentItem(item);
