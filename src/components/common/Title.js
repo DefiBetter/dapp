@@ -2,16 +2,16 @@ import styled from "styled-components";
 
 const TitleImage = styled.div`
   width: 200px;
-  height: 100px;
+  height: 80px;
   margin: 0 auto;
 `;
 
 const Word1 = styled.text`
-  font-size: 3rem;
+  font-size: 2.5rem;
 `;
 
 const Word2 = styled.text`
-  font-size: 3rem;
+  font-size: 2.5rem;
   font-family: marguerite;
   fill: #2aaee6;
 `;

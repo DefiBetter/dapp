@@ -23,9 +23,9 @@ const AppContainer = styled.div`
 `;
 
 const InnerContainer = styled.div`
-  max-width: 1000px;
+  max-width: 55rem;
   width: 100vw;
-  min-width: 1000px;
+  min-width: 55rem;
   margin: auto;
   display: flex;
   flex-direction: column;

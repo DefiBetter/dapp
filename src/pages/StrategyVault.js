@@ -39,6 +39,7 @@ import { useEffect, useState } from "react";
 import Dropdown from "../components/common/Dropdown";
 import { instrumentLabel } from "../components/common/helper";
 import { ethers } from "ethers";
+import FancyTitle from "../components/common/Title";
 
 function StrategyVault() {
   /* account, network, configs */
@@ -140,7 +141,10 @@ function StrategyVault() {
     abi: StrategyVaultABI,
     functionName: "deposit",
     overrides: {
-      value: ethers.utils.parseEther(mintAmount.toString()),
+      value: ethers.utils.parseEther(mintAmount?.toString()),
+    },
+    onSuccess(data) {
+      setMintAmount(0);
     },
   });
 
@@ -151,6 +155,9 @@ function StrategyVault() {
     abi: StrategyVaultABI,
     functionName: "withdraw",
     args: [ethers.utils.parseEther(burnAmount.toString())],
+    onSuccess(data) {
+      setBurnAmount(0);
+    },
   });
 
   // balance of gas in vault
@@ -222,11 +229,13 @@ function StrategyVault() {
         <AppContainer>
           <Navbar></Navbar>
           <Container>
-            <InnerContainer>
+            <InnerContainer style={{ maxWidth: "55vw" }}>
               <Card>
                 <Grid>
                   <GridRow>
-                    <GridCell colSpan={2}>Strategy Vaults</GridCell>
+                    <GridCell colSpan={2}>
+                      <FancyTitle word1={"Strategy"} word2={"Vaults"} />
+                    </GridCell>
                   </GridRow>
                   <GridRow>
                     <GridCell2>
@@ -278,7 +287,9 @@ function StrategyVault() {
                           <GridRow>
                             <GridCell colSpan={2}>
                               <div style={{ display: "flex" }}>
-                                <FancyText>for</FancyText>
+                                <FancyText style={{ marginRight: "1rem" }}>
+                                  for
+                                </FancyText>
                                 <InputNumber
                                   style={{ flex: 1 }}
                                   onChange={handleMintAmount}
@@ -351,7 +362,9 @@ function StrategyVault() {
                           <GridRow>
                             <GridCell colSpan={2}>
                               <div style={{ display: "flex" }}>
-                                <FancyText>for</FancyText>
+                                <FancyText style={{ marginRight: "1rem" }}>
+                                  for
+                                </FancyText>
                                 <InputNumber
                                   style={{ flex: 1 }}
                                   onChange={handleBurnAmount}

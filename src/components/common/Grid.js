@@ -11,6 +11,8 @@ const GridRow = styled.tr``;
 const GridCell = styled.td`
   padding: ${(props) =>
     props.padding == 0 || props.padding ? props.padding : 0.5}rem;
+  // border-color: black;
+  // border-style: solid;
 `;
 const GridCell2 = styled(GridCell)`
   width: calc(100% / 2);
