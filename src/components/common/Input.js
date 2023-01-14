@@ -6,6 +6,7 @@ const Input = styled.input`
   background-color: white;
   height: 90%;
   width: 90%;
+  border-radius: inherit;
 `;
 
 const Container = styled.div`
@@ -21,7 +22,8 @@ const MaxButton = (props) => {
     <div
       style={{
         height: "100%",
-        margin: "1%",
+        display: "flex",
+        alignItems: "center",
       }}
     >
       <Button {...props} style={{ height: "80%" }} />
@@ -39,7 +41,8 @@ const InputNumber = (props) => {
       style={{
         display: "flex",
         flex: 1,
-        padding: "1%",
+        padding: "0.2rem",
+        alignItems: "center",
       }}
     >
       <Input
