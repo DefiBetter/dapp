@@ -69,6 +69,15 @@ const Action = (props) => {
   });
   let { write: claimWrite } = useContractWrite(claimBetterRewardsConfig);
 
+  /* handle onclick */
+  const handleOnDeposit = () => {
+    if (props.binTotal > 0) {
+      depositWrite();
+    } else {
+      console.log("cannot place empty bets");
+    }
+  };
+
   return (
     <div className={styles.container}>
       {Date.now() / 1000 >
@@ -76,7 +85,7 @@ const Action = (props) => {
         +props.instrument.epochDurationInSeconds.toString() ? (
         <Button disabled>Deposit</Button>
       ) : (
-        <Button onClick={depositWrite}>Deposit</Button>
+        <Button onClick={handleOnDeposit}>Deposit</Button>
       )}
 
       <Button onClick={claimWrite}>
