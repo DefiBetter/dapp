@@ -74,7 +74,7 @@ const Action = (props) => {
       {Date.now() / 1000 >
       +props.instrument.lastEpochClosingTime.toString() +
         +props.instrument.epochDurationInSeconds.toString() ? (
-        <ButtonDisabled disabled>Deposit</ButtonDisabled>
+        <Button disabled>Deposit</Button>
       ) : (
         <Button onClick={depositWrite}>Deposit</Button>
       )}
