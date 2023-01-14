@@ -21,6 +21,7 @@ import IERC20MetadataABI from "../static/ABI/IERC20MetadataABI.json";
 import styles from "./Staking.module.css";
 import {
   useAccount,
+  useBalance,
   useContractRead,
   useContractWrite,
   useNetwork,
@@ -33,14 +34,6 @@ function Staking() {
   // fetch account and current network
   const { address: connectedAddress, isConnected } = useAccount();
   const { chain: activeChain } = useNetwork();
-
-  // ---constants-----------------------
-
-  const BN = ethers.BigNumber.from;
-  const btStakingContractConfig = {
-    address: contractAddresses[activeChain?.network]?.btStaking,
-    abi: BtStakingABI,
-  };
 
   // ------vars--------------------------
   const [bridgeAmount, setBridgeAmount] = useState(0);
@@ -55,8 +48,10 @@ function Staking() {
 
   const [btBalance, setBtBalance] = useState(0);
   const [lpBalance, setLpBalance] = useState(0);
+  const [zapBalance, setZapBalance] = useState(0);
 
   const [totalBtStaked, setTotalBtStaked] = useState(0);
+  const [totalLpStaked, setTotalLpStaked] = useState(0);
 
   useEffect(() => {
     setLpTokenSymbol(
@@ -64,8 +59,15 @@ function Staking() {
     );
   }, [activeChain]);
 
-  const stakingPoolContractConfig = {
+  // ---constants-----------------------
+
+  const btStakingPoolContractConfig = {
     address: contractAddresses[activeChain?.network]?.btStaking,
+    abi: BtStakingABI,
+  };
+
+  const lpStakingPoolContractConfig = {
+    address: contractAddresses[activeChain?.network]?.lpStaking,
     abi: BtStakingABI,
   };
 
@@ -81,7 +83,6 @@ function Staking() {
     onError(data) {},
     onSuccess(data) {
       setBtAllowance(data);
-      console.log("allowance", data.toString());
     },
     watch: true,
   });
@@ -92,7 +93,7 @@ function Staking() {
     abi: IERC20MetadataABI,
     functionName: "approve",
     args: [
-      stakingPoolContractConfig.address,
+      btStakingPoolContractConfig.address,
       ethers.constants.MaxUint256.sub("1").toString(),
     ],
     onSuccess(data) {},
@@ -106,7 +107,7 @@ function Staking() {
 
   // prepare stake bt
   const { config: stakeBtConfig } = usePrepareContractWrite({
-    ...stakingPoolContractConfig,
+    ...btStakingPoolContractConfig,
     functionName: "stake",
     args: [ethers.utils.parseEther(btAmount.toString())],
     onSuccess(data) {},
@@ -116,7 +117,9 @@ function Staking() {
   // stake bt
   const { write: stakeBtWrite } = useContractWrite({
     ...stakeBtConfig,
-    onError(e) {},
+    onError(data) {
+      console.log("stakeBtWrite error", data);
+    },
     onSuccess(data) {
       setBtAmount(0);
     },
@@ -124,7 +127,7 @@ function Staking() {
 
   // prepare unstake bt
   const { config: unstakeBtConfig } = usePrepareContractWrite({
-    ...stakingPoolContractConfig,
+    ...btStakingPoolContractConfig,
     functionName: "unstake",
     args: [ethers.utils.parseEther(btAmount.toString())],
     onSuccess(data) {},
@@ -139,7 +142,7 @@ function Staking() {
   // claim bt rewards
   const { write: claimBtWrite } = useContractWrite({
     mode: "recklesslyUnprepared",
-    ...stakingPoolContractConfig,
+    ...btStakingPoolContractConfig,
     functionName: "claim",
     args: [],
     onSuccess(data) {},
@@ -152,11 +155,24 @@ function Staking() {
     abi: IERC20MetadataABI,
     functionName: "balanceOf",
     args: [connectedAddress],
-    // watch: true,
     onError(data) {},
     onSuccess(data) {
       setBtBalance(ethers.utils.formatEther(data));
     },
+    watch: true,
+  });
+
+  // total bt staked
+  useContractRead({
+    address: contractAddresses[activeChain?.network]?.btToken,
+    abi: IERC20MetadataABI,
+    functionName: "balanceOf",
+    args: [btStakingPoolContractConfig.address],
+    onError(data) {},
+    onSuccess(data) {
+      setTotalBtStaked(ethers.utils.formatEther(data));
+    },
+    watch: true,
   });
 
   /* LP */
@@ -165,7 +181,7 @@ function Staking() {
     address: contractAddresses[activeChain?.network]?.lpToken,
     abi: IERC20MetadataABI,
     functionName: "allowance",
-    args: [connectedAddress, stakingPoolContractConfig.address],
+    args: [connectedAddress, lpStakingPoolContractConfig.address],
     // watch: true,
     onError(data) {},
     onSuccess(data) {
@@ -179,7 +195,7 @@ function Staking() {
     abi: IERC20MetadataABI,
     functionName: "approve",
     args: [
-      stakingPoolContractConfig.address,
+      lpStakingPoolContractConfig.address,
       ethers.constants.MaxUint256.sub("1").toString(),
     ],
     onSuccess(data) {},
@@ -193,7 +209,7 @@ function Staking() {
 
   // prepare stake lp
   const { config: stakeLpConfig } = usePrepareContractWrite({
-    ...stakingPoolContractConfig,
+    ...lpStakingPoolContractConfig,
     functionName: "stake",
     args: [ethers.utils.parseEther(lpAmount.toString())],
     onSuccess(data) {},
@@ -211,7 +227,7 @@ function Staking() {
 
   // prepare unstake lp
   const { config: unstakeLpConfig } = usePrepareContractWrite({
-    ...stakingPoolContractConfig,
+    ...lpStakingPoolContractConfig,
     functionName: "unstake",
     args: [ethers.utils.parseEther(lpAmount.toString())],
     onSuccess(data) {},
@@ -226,7 +242,7 @@ function Staking() {
   // claim lp rewards
   const { write: claimLpWrite } = useContractWrite({
     mode: "recklesslyUnprepared",
-    ...stakingPoolContractConfig,
+    ...lpStakingPoolContractConfig,
     functionName: "claim",
     args: [],
     onSuccess(data) {},
@@ -239,34 +255,49 @@ function Staking() {
     abi: IERC20MetadataABI,
     functionName: "balanceOf",
     args: [connectedAddress],
-    // watch: true,
     onError(data) {},
     onSuccess(data) {
       setLpBalance(ethers.utils.formatEther(data));
     },
+    watch: true,
   });
 
-  // total bt staked
+  // total lp staked
   useContractRead({
-    address: contractAddresses[activeChain?.network]?.btToken,
+    address: contractAddresses[activeChain?.network]?.lpToken,
     abi: IERC20MetadataABI,
     functionName: "balanceOf",
-    args: [btStakingContractConfig.address],
+    args: [lpStakingPoolContractConfig.address],
     onError(data) {},
     onSuccess(data) {
-      setTotalBtStaked(ethers.utils.formatEther(data));
+      setTotalLpStaked(ethers.utils.formatEther(data));
     },
     watch: true,
   });
 
+  /* ZAP */
+  useBalance({
+    address: connectedAddress,
+    onError(data) {},
+    onSuccess(data) {
+      setZapBalance(+data.formatted);
+    },
+  });
+
   /* handle input amount changes */
+  // bt staking
   const handleBtAmount = (e) => {
-    console.log("e.target.value", e.target.value);
     setBtAmount(e.target.value ? e.target.value : 0);
   };
 
+  // lp staking
   const handleLpAmount = (e) => {
     setLpAmount(e.target.value ? e.target.value : 0);
+  };
+
+  // zap in - amount in gas token
+  const handleZapAmount = (e) => {
+    setZapAmount(e.target.value ? e.target.value : 0);
   };
 
   return (
@@ -340,7 +371,7 @@ function Staking() {
                               </GridCell4>
                               <GridCell4>
                                 <b>
-                                  {}{" "}
+                                  {totalLpStaked}{" "}
                                   {`BT-${
                                     contractAddresses[activeChain?.network]
                                       ?.nativeGas
@@ -363,27 +394,40 @@ function Staking() {
                             <InputNumber
                               onChange={handleLpAmount}
                               min={0}
-                              max={() => {
-                                return lpBalance;
-                              }}
+                              max={lpBalance}
                               placeholder={0}
                               value={lpAmount > 0 ? lpAmount : ""}
                               setValue={setLpAmount}
                             />
                           </GridCell3>
                           <GridCell3>
-                            <InputNumber onChange={() => {}} />
+                            <InputNumber
+                              onChange={handleZapAmount}
+                              min={0}
+                              max={zapBalance}
+                              placeholder={0}
+                              value={zapAmount > 0 ? zapAmount : ""}
+                              setValue={setZapAmount}
+                            />
                           </GridCell3>
                         </GridRow>
                         <GridRow>
                           <GridCell3>
-                            <Button onClick={stakeLpWrite}>Stake</Button>
+                            {ethers.BigNumber.from(lpAllowance.toString()).lte(
+                              ethers.BigNumber.from("0")
+                            ) ? (
+                              <Button onClick={approveLpWrite}>Approve</Button>
+                            ) : (
+                              <Button onClick={stakeLpWrite}>Stake</Button>
+                            )}
                           </GridCell3>
                           <GridCell3>
                             <Button onClick={unstakeLpWrite}>Unstake</Button>
                           </GridCell3>
                           <GridCell3>
-                            <Button onClick={() => {}}>Zap in</Button>
+                            <Button onClick={() => {}} disabled>
+                              Zap in
+                            </Button>
                           </GridCell3>
                         </GridRow>
                         <GridRow>
