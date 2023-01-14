@@ -83,6 +83,9 @@ function Better() {
     onSuccess(data) {
       if (data.length > 0) {
         // set instrument list
+        data.sort((a, b) =>
+          a.underlyingDescription.localeCompare(b.underlyingDescription)
+        );
         setInstrumentList(data);
 
         // set default instrument
