@@ -1132,11 +1132,6 @@
         "type": "bytes32"
       },
       {
-        "internalType": "uint256[7]",
-        "name": "amounts",
-        "type": "uint256[7]"
-      },
-      {
         "internalType": "uint256",
         "name": "customFlatFeeMultiplier",
         "type": "uint256"
@@ -1145,6 +1140,11 @@
         "internalType": "uint256",
         "name": "customGainFeeMultiplier",
         "type": "uint256"
+      },
+      {
+        "internalType": "uint256[7]",
+        "name": "amounts",
+        "type": "uint256[7]"
       }
     ],
     "name": "openPosition",

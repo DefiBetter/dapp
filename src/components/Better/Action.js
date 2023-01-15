@@ -13,11 +13,11 @@ const Action = (props) => {
     functionName: "openPosition",
     args: [
       props.instrument.selector,
+      props.customFlatFee,
+      props.customGainFee,
       props.binAmountList.map((bin) => {
         return ethers.utils.parseEther(bin.toString());
       }),
-      props.customFlatFee,
-      props.customGainFee,
     ],
     overrides: {
       value: ethers.utils.parseEther(
@@ -38,11 +38,11 @@ const Action = (props) => {
       functionName: "openPosition",
       args: [
         props.instrument.selector,
+        props.customFlatFee,
+        props.customGainFee,
         props.binAmountList.map((bin) => {
           return ethers.utils.parseEther(bin.toString());
         }),
-        props.customFlatFee,
-        props.customGainFee,
       ],
       overrides: {
         value: ethers.utils.parseEther(
