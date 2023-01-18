@@ -18,7 +18,7 @@
       },
       {
         "internalType": "uint256",
-        "name": "newCustomGainFeeMutli",
+        "name": "newcustomGainFeeMulti",
         "type": "uint256"
       },
       {
@@ -61,8 +61,24 @@
     "type": "error"
   },
   {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "required",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "actual",
+        "type": "uint256"
+      }
+    ],
+    "name": "InsufficientContractBalance",
+    "type": "error"
+  },
+  {
     "inputs": [],
-    "name": "VaultEmpty",
+    "name": "NoFundsToDeposit",
     "type": "error"
   },
   {
@@ -298,7 +314,30 @@
   },
   {
     "inputs": [],
-    "name": "getVaultInfo",
+    "name": "getVaultBalanceInfo",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "totalBalance",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "remoteBalance",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "currentPositionValue",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getVaultParameters",
     "outputs": [
       {
         "internalType": "bytes32",
@@ -324,10 +363,18 @@
         "internalType": "uint256",
         "name": "retBurnFee",
         "type": "uint256"
-      },
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getVaultPerformance",
+    "outputs": [
       {
         "internalType": "uint256",
-        "name": "vaultBalance",
+        "name": "performance",
         "type": "uint256"
       }
     ],

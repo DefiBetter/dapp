@@ -48,11 +48,27 @@
   },
   {
     "inputs": [],
-    "name": "InstrumentNotEnabled",
+    "name": "FailedToSendEther",
     "type": "error"
   },
   {
     "inputs": [],
+    "name": "GelatoDataNotSet",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "InstrumentNotEnabled",
+    "type": "error"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bytes32",
+        "name": "",
+        "type": "bytes32"
+      }
+    ],
     "name": "InstrumentNotExistent",
     "type": "error"
   },
@@ -410,20 +426,20 @@
         "type": "uint256"
       },
       {
-        "internalType": "uint256[7][4]",
+        "internalType": "uint256[28]",
         "name": "relativeBinWeights",
-        "type": "uint256[7][4]"
+        "type": "uint256[28]"
       }
     ],
     "name": "addInstrument",
     "outputs": [
       {
         "internalType": "bytes32",
-        "name": "selector",
+        "name": "instrumentSelector",
         "type": "bytes32"
       }
     ],
-    "stateMutability": "nonpayable",
+    "stateMutability": "payable",
     "type": "function"
   },
   {
@@ -459,7 +475,7 @@
     ],
     "name": "addUnderlying",
     "outputs": [],
-    "stateMutability": "nonpayable",
+    "stateMutability": "payable",
     "type": "function"
   },
   {
@@ -678,9 +694,9 @@
             "type": "bool"
           },
           {
-            "internalType": "uint256[7][4]",
+            "internalType": "uint256[28]",
             "name": "relativeBinWeights",
-            "type": "uint256[7][4]"
+            "type": "uint256[28]"
           },
           {
             "internalType": "uint256",
@@ -773,9 +789,9 @@
             "type": "bool"
           },
           {
-            "internalType": "uint256[7][4]",
+            "internalType": "uint256[28]",
             "name": "relativeBinWeights",
-            "type": "uint256[7][4]"
+            "type": "uint256[28]"
           },
           {
             "internalType": "uint256",
@@ -960,12 +976,12 @@
     "outputs": [
       {
         "internalType": "uint256[7]",
-        "name": "",
+        "name": "userPositions",
         "type": "uint256[7]"
       },
       {
         "internalType": "uint256",
-        "name": "",
+        "name": "entryTimeFactor",
         "type": "uint256"
       }
     ],
@@ -1277,20 +1293,7 @@
     ],
     "name": "setAllInstrumentsEnabledState",
     "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "newCaller",
-        "type": "address"
-      }
-    ],
-    "name": "setGelatoCaller",
-    "outputs": [],
-    "stateMutability": "nonpayable",
+    "stateMutability": "payable",
     "type": "function"
   },
   {
@@ -1299,11 +1302,16 @@
         "internalType": "address",
         "name": "newOwner",
         "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "newCaller",
+        "type": "address"
       }
     ],
-    "name": "setGelatoTaskOwner",
+    "name": "setGelatoData",
     "outputs": [],
-    "stateMutability": "nonpayable",
+    "stateMutability": "payable",
     "type": "function"
   },
   {
@@ -1321,7 +1329,7 @@
     ],
     "name": "setInstrumentEnabledStateBySelector",
     "outputs": [],
-    "stateMutability": "nonpayable",
+    "stateMutability": "payable",
     "type": "function"
   },
   {
@@ -1339,7 +1347,7 @@
     ],
     "name": "setInstrumentVaultManager",
     "outputs": [],
-    "stateMutability": "nonpayable",
+    "stateMutability": "payable",
     "type": "function"
   },
   {
@@ -1352,7 +1360,7 @@
     ],
     "name": "setRewardPeriodLength",
     "outputs": [],
-    "stateMutability": "nonpayable",
+    "stateMutability": "payable",
     "type": "function"
   },
   {
@@ -1370,14 +1378,14 @@
     ],
     "name": "setUnderlyingHeartbeat",
     "outputs": [],
-    "stateMutability": "nonpayable",
+    "stateMutability": "payable",
     "type": "function"
   },
   {
     "inputs": [],
     "name": "startProtocol",
     "outputs": [],
-    "stateMutability": "nonpayable",
+    "stateMutability": "payable",
     "type": "function"
   },
   {
@@ -1402,18 +1410,7 @@
       }
     ],
     "name": "transitionEpoch",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "oldEpochPot",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "newCurrentEpoch",
-        "type": "uint256"
-      }
-    ],
+    "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
   },
@@ -1425,9 +1422,9 @@
         "type": "bytes"
       }
     ],
-    "name": "transitionEpochAndExecuteTasks",
+    "name": "transitionEpochAndExecuteVaults",
     "outputs": [],
-    "stateMutability": "nonpayable",
+    "stateMutability": "payable",
     "type": "function"
   }
 ]
