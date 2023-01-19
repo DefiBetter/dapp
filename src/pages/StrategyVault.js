@@ -37,7 +37,7 @@ import StrategyVaultManagerABI from "../static/ABI/StrategyVaultManagerABI.json"
 import IERC20MetadataABI from "../static/ABI/IERC20MetadataABI.json";
 import { useEffect, useState } from "react";
 import Dropdown from "../components/common/Dropdown";
-import { instrumentLabel } from "../components/common/helper";
+import { instrumentLabel, trimNumber } from "../components/common/helper";
 import { ethers } from "ethers";
 import FancyTitle from "../components/common/Title";
 
@@ -57,7 +57,7 @@ function StrategyVault() {
   // vault
   const [vaultList, setVaultList] = useState();
   const [currentVault, setCurrentVault] = useState();
-  const [vaultBalance, setVaultBalance] = useState(0);
+  const [vaultBalanceInfo, setVaultBalanceInfo] = useState();
   const [previewMintAmount, setPreviewMintAmount] = useState(0);
   const [previewBurnAmount, setPreviewBurnAmount] = useState(0);
   const [currentVaultName, setCurrentVaultName] = useState("");
@@ -160,15 +160,15 @@ function StrategyVault() {
     },
   });
 
-  // balance of gas in vault
+  // vault balance info
   useContractRead({
     address: currentVault,
     abi: StrategyVaultABI,
-    functionName: "balance",
+    functionName: "getVaultBalanceInfo",
     args: [],
     onSuccess(data) {
-      console.log("balance " + currentVault, +ethers.utils.formatEther(data));
-      setVaultBalance(+ethers.utils.formatEther(data));
+      console.log("getVaultBalanceInfo", currentVault, data);
+      setVaultBalanceInfo(data);
     },
     watch: true,
   });
@@ -274,7 +274,15 @@ function StrategyVault() {
                             <GridCell2>
                               <CenterText>
                                 <b>
-                                  {vaultBalance} {nativeGas}
+                                  {vaultBalanceInfo
+                                    ? trimNumber(
+                                        ethers.utils.formatEther(
+                                          vaultBalanceInfo.totalBalance
+                                        ),
+                                        6
+                                      )
+                                    : null}{" "}
+                                  {nativeGas}
                                 </b>
                               </CenterText>
                             </GridCell2>
