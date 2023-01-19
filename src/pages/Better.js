@@ -81,15 +81,20 @@ function Better() {
     ...betterContractConfig,
     functionName: "getInstruments",
     onSuccess(data) {
+      // create mutable copy
+      let _data = [...data];
       if (data.length > 0) {
+        // sort via underlyingDescription
+        _data = _data.sort((a, b) => {
+          const _a = a.underlyingDescription;
+          const _b = b.underlyingDescription;
+          return _a < _b ? -1 : _a > _b ? 1 : 0;
+          // possibly add time sort as well later
+        });
         // set instrument list
-        data.sort((a, b) =>
-          a.underlyingDescription.localeCompare(b.underlyingDescription)
-        );
-        setInstrumentList(data);
-
+        setInstrumentList(_data);
         // set default instrument
-        setInstrumentSelector(data[0].selector);
+        setInstrumentSelector(_data[0].selector);
       }
     },
   });
@@ -104,6 +109,7 @@ function Better() {
     args: [instrumentSelector],
     onError(data) {},
     onSuccess(data) {
+      console.log("getInstrumentBySelector", data);
       if (!instrument) {
         setInstrument(data);
       }
@@ -132,6 +138,7 @@ function Better() {
     args: [instrument?.epoch, instrument?.selector],
     onSuccess(data) {
       setEpochData(data);
+      console.log("getEpochData", data);
       setNormalisedBinValueList(
         data.binValues.map((v, i, binValues) => {
           const b = binValues.map((vv) => Number(ethers.utils.formatEther(vv)));
@@ -150,7 +157,7 @@ function Better() {
     functionName: "getUserPendingBetterBalance",
     args: [connectedAddress, customGainFee],
     onSuccess(data) {
-      setPendingBetterBalance(+ethers.utils.formatEther(data).toFixed(9));
+      setPendingBetterBalance((+ethers.utils.formatEther(data))?.toFixed(9));
     },
     onError(data) {},
     watch: true,
@@ -175,18 +182,6 @@ function Better() {
     watch: true,
   });
 
-  // user gains info
-  useContractRead({
-    ...betterContractConfig,
-    functionName: "getUserGainsInfo",
-    args: [connectedAddress],
-    onError(data) {},
-    onSuccess(data) {
-      setUserGainsInfo(data);
-    },
-    watch: true,
-  });
-
   // reward period info
   useContractRead({
     ...betterContractConfig,
@@ -194,9 +189,24 @@ function Better() {
     args: [],
     onError(data) {},
     onSuccess(data) {
+      console.log("rewardPeriodInfo", data);
       setRewardPeriodInfo(data);
     },
     watch: true,
+  });
+
+  // user gains info
+  useContractRead({
+    ...betterContractConfig,
+    functionName: "getUserGainsInfo",
+    args: [connectedAddress],
+    onError(data) {
+      console.log("getUserGainsInfo error", data);
+    },
+    onSuccess(data) {
+      console.log("getUserGainsInfo", data);
+      setUserGainsInfo(data);
+    },
   });
 
   /* useEffect */
@@ -258,7 +268,6 @@ function Better() {
                 instrument={instrument}
                 nativeGas={nativeGas}
                 userPosition={userPosition}
-                userGainsInfo={userGainsInfo}
                 betterContractConfig={betterContractConfig}
                 rewardPeriodInfo={rewardPeriodInfo}
               />
