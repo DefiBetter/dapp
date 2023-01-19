@@ -1,8 +1,8 @@
+import { Button } from "../../common/Button";
 import { useAccount, useConnect, useDisconnect } from "wagmi";
 import styles from "./WalletConnect.module.css";
 import truncateEthAddress from "truncate-eth-address";
 import { useState } from "react";
-import Button from "../../common/Button";
 import { NormalText } from "../../common/Text";
 
 export function WalletConnect() {

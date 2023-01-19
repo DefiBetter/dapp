@@ -1,3 +1,4 @@
+import { Button } from "../components/common/Button";
 import {
   useNetwork,
   useContractRead,
@@ -19,7 +20,6 @@ import styles from "./PublicSale.module.css";
 import { AppContainer, Container } from "../components/common/Container";
 import { Card } from "../components/common/Card";
 import { Grid, GridCell, GridCell4, GridRow } from "../components/common/Grid";
-import Button from "../components/common/Button";
 
 function PublicSale() {
   const etherAddress = "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE";

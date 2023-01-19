@@ -1,9 +1,9 @@
+import { Button } from "../common/Button";
 import styles from "./Action.module.css";
 import { ethers } from "ethers";
 
 import { usePrepareContractWrite, useContractWrite } from "wagmi";
 import { useEffect } from "react";
-import Button, { ButtonDisabled } from "../common/Button";
 import { MedText, NormalText, SmallText } from "../common/Text";
 
 const Action = (props) => {

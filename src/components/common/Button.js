@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { NormalText, SmallText } from "./Text";
 
 const Button = styled.button`
   border-radius: 10px;
@@ -24,4 +25,15 @@ const Button = styled.button`
   }
 `;
 
-export default Button;
+const ButtonWithInfo = ({ children, info }) => {
+  return (
+    <Button>
+      {children}
+      <SmallText>
+        <NormalText>{info}</NormalText>
+      </SmallText>
+    </Button>
+  );
+};
+
+export { Button, ButtonWithInfo };

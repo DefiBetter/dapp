@@ -1,5 +1,5 @@
+import { Button } from "./Button";
 import { useEffect, useState } from "react";
-import Button from "./Button";
 import { NormalText } from "./Text";
 import styled from "styled-components";
 

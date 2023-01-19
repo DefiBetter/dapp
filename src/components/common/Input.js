@@ -1,5 +1,5 @@
+import { Button } from "./Button";
 import styled from "styled-components";
-import Button from "./Button";
 import { NormalText } from "./Text";
 
 const Input = styled.input`

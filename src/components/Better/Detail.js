@@ -1,3 +1,4 @@
+import { Button } from "../common/Button";
 import { useEffect, useState } from "react";
 import {
   Card,
@@ -8,7 +9,6 @@ import {
 } from "../common/Card";
 import styles from "./Detail.module.css";
 import { useContractRead, useNetwork } from "wagmi";
-import Button from "../common/Button";
 import {
   CenterText,
   ExSmallText,
