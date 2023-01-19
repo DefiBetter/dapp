@@ -1,4 +1,4 @@
-import { Button } from "../common/Button";
+import { Button, ButtonWithInfo } from "../common/Button";
 import styles from "./Action.module.css";
 import { ethers } from "ethers";
 
@@ -64,15 +64,18 @@ const Action = (props) => {
       ) : (
         <Button onClick={handleOnDeposit}>Deposit</Button>
       )}
-
-      <Button onClick={claimWrite}>
+      <ButtonWithInfo
+        onClick={claimWrite}
+        info={
+          <SmallText>
+            <NormalText>
+              {props.pendingBetterBalance} {props.nativeGas}
+            </NormalText>
+          </SmallText>
+        }
+      >
         <MedText>Claim</MedText>
-        <SmallText>
-          <NormalText>
-            {props.pendingBetterBalance} {props.nativeGas}
-          </NormalText>
-        </SmallText>
-      </Button>
+      </ButtonWithInfo>
     </div>
   );
 };

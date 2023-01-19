@@ -1,3 +1,4 @@
+import { Button, ButtonWithInfo } from "../components/common/Button.js";
 import {
   useAccount,
   useBalance,
@@ -6,7 +7,6 @@ import {
   useContractWrite,
   useNetwork,
 } from "wagmi";
-import Button from "../components/common/Button";
 import {
   Card,
   CardBlueBg,
@@ -377,17 +377,11 @@ function StrategyVault() {
                           </GridRow>
                           <GridRow>
                             <GridCell colSpan={2}>
-                              <Button onClick={withdrawWrite}>
-                                <MedText>
-                                  {queuedAmount > 0 && burnAmount > 0
-                                    ? `Claim queued\xa0 & \xa0burn`
-                                    : queuedAmount > 0
-                                    ? `Claim queued`
-                                    : `Burn`}
-                                </MedText>
-                                <SmallText>
-                                  <NormalText>
-                                    {/* need to change this later when new view function for it is added */}
+                              {/* need to change this later when new view function for it is added */}
+                              <ButtonWithInfo
+                                onClick={withdrawWrite}
+                                info={
+                                  <>
                                     {queuedAmount} {nativeGas} (queued for{" "}
                                     <CountdownFormatted
                                       ms={
@@ -396,9 +390,17 @@ function StrategyVault() {
                                       }
                                     />
                                     )
-                                  </NormalText>
-                                </SmallText>
-                              </Button>
+                                  </>
+                                }
+                              >
+                                <MedText>
+                                  {queuedAmount > 0 && burnAmount > 0
+                                    ? `Claim queued\xa0 & \xa0burn`
+                                    : queuedAmount > 0
+                                    ? `Claim queued`
+                                    : `Burn`}
+                                </MedText>
+                              </ButtonWithInfo>
                             </GridCell>
                           </GridRow>
                           <GridRow>
