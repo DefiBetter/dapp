@@ -201,10 +201,10 @@ function Better() {
     functionName: "getUserGainsInfo",
     args: [connectedAddress],
     onError(data) {
-      console.log("getUserGainsInfo error", data);
+      // console.log("getUserGainsInfo error", data);
     },
     onSuccess(data) {
-      console.log("getUserGainsInfo", data);
+      console.log("getUserGainsInfo", connectedAddress, data);
       setUserGainsInfo(data);
     },
   });
@@ -270,6 +270,7 @@ function Better() {
                 userPosition={userPosition}
                 betterContractConfig={betterContractConfig}
                 rewardPeriodInfo={rewardPeriodInfo}
+                userGainsInfo={userGainsInfo}
               />
             </div>
           </Container>

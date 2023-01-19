@@ -8,29 +8,6 @@ import { MedText, NormalText, SmallText } from "../common/Text";
 
 const Action = (props) => {
   // open position
-  const { config: openPositionConfig } = usePrepareContractWrite({
-    ...props.betterContractConfig,
-    functionName: "openPosition",
-    args: [
-      props.instrument.selector,
-      props.customFlatFee,
-      props.customGainFee,
-      props.binAmountList.map((bin) => {
-        return ethers.utils.parseEther(bin.toString());
-      }),
-    ],
-    overrides: {
-      value: ethers.utils.parseEther(
-        (props.binTotal >= props.pendingBetterBalance
-          ? props.binTotal - props.pendingBetterBalance
-          : 0
-        ).toString()
-      ),
-    },
-    onError(data) {},
-    onSuccess(data) {},
-  });
-
   let { write: depositWrite } = useContractWrite({
     ...{
       ...props.betterContractConfig,

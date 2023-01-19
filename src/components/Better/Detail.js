@@ -46,57 +46,15 @@ const Detail = (props) => {
     "0",
   ]);
 
-  useEffect(() => {
-    setTotal(
-      props.binAmountList.reduce((a, b) => Number(a) + Number(b), 0).toString()
-    );
-
-    if (props.epochData) {
-      const t = props.epochData.binValues.map((bin, i) =>
-        (+ethers.utils.formatEther(
-          props.epochData.binSize.mul(i + 1).add(props.epochData.binStart)
-        )).toPrecision(5)
-      );
-      setBinBorderList([
-        (+ethers.utils.formatEther(props.epochData.binStart)).toPrecision(5),
-        ...t,
-      ]);
-    }
-  }, [props]);
-
   // current period
-  const [
-    globalBiggestRelativeGainCurrentPeriodAddress,
-    setGlobalBiggestRelativeGainCurrentPeriodAddress,
-  ] = useState("");
   const [weekBiggestRelativeGainAmount, setWeekBiggestRelativeGainAmount] =
     useState();
 
   // past period
   const [
-    globalBiggestRelativeGainPastPeriodAddress,
-    setGlobalBiggestRelativeGainPastPeriodAddress,
-  ] = useState("");
-  const [
     lastWeekBiggestRelativeGainAmount,
     setLastWeekBiggestRelativeGainAmount,
   ] = useState();
-
-  // all time
-  const [globalBiggestRelativeGain, setGlobalBiggestRelativeGain] = useState();
-  const [
-    globalBiggestRelativeGainAddress,
-    setGlobalBiggestRelativeGainAddress,
-  ] = useState("");
-
-  const onInput = (e) => {
-    let temp = [...props.binAmountList];
-    console.log("e.target.value", typeof +e.target.value);
-    temp[e.target.id] = e.target.value ? +e.target.value : 0;
-    props.setBinAmountList(temp);
-    props.setBinTotal(temp.reduce((a, b) => +a + +b, 0));
-    props.openPositionConfigRefetch();
-  };
 
   /* contract read/writes */
   useContractRead({
@@ -109,75 +67,39 @@ const Detail = (props) => {
     },
   });
 
+  // user gain info current period
   useContractRead({
     ...props.betterContractConfig,
-    functionName: "rewardPeriodStart",
-    args: [],
+    functionName: "getUserGainsInfo",
+    args: [
+      props.rewardPeriodInfo.globalBiggestRelativeGainCurrentPeriodAddress,
+    ],
     onError(data) {},
     onSuccess(data) {
-      setCurrentPeriodEndTime(+data.toString() + rewardPeriodLength);
-    },
-  });
-
-  useContractRead({
-    ...props.betterContractConfig,
-    functionName: "globalBiggestRelativeGainCurrentPeriodAddress",
-    args: [],
-    onError(data) {},
-    onSuccess(data) {
-      setGlobalBiggestRelativeGainCurrentPeriodAddress(data);
-    },
-  });
-
-  useContractRead({
-    ...props.betterContractConfig,
-    functionName: "globalBiggestRelativeGainPastPeriodAddress",
-    args: [],
-    onError(data) {},
-    onSuccess(data) {
-      setGlobalBiggestRelativeGainPastPeriodAddress(data);
-    },
-  });
-
-  useContractRead({
-    ...props.betterContractConfig,
-    functionName: "userGainsInfo",
-    args: [globalBiggestRelativeGainCurrentPeriodAddress],
-    onError(data) {},
-    onSuccess(data) {
+      // console.log("getUserGainsInfo", data);
       setWeekBiggestRelativeGainAmount(data.biggestRelativeGainAmount);
     },
   });
 
+  // user gain info past period
   useContractRead({
     ...props.betterContractConfig,
-    functionName: "userGainsInfo",
-    args: [globalBiggestRelativeGainPastPeriodAddress],
+    functionName: "getUserGainsInfo",
+    args: [props.rewardPeriodInfo.globalBiggestRelativeGainPastPeriodAddress],
     onError(data) {},
     onSuccess(data) {
       setLastWeekBiggestRelativeGainAmount(data.biggestRelativeGainAmount);
     },
   });
 
-  useContractRead({
-    ...props.betterContractConfig,
-    functionName: "globalBiggestRelativeGain",
-    args: [],
-    onError(data) {},
-    onSuccess(data) {
-      setGlobalBiggestRelativeGain(data);
-    },
-  });
-
-  useContractRead({
-    ...props.betterContractConfig,
-    functionName: "globalBiggestRelativeGainAddress",
-    args: [],
-    onError(data) {},
-    onSuccess(data) {
-      setGlobalBiggestRelativeGainAddress(data);
-    },
-  });
+  /* handle on input */
+  const onInput = (e) => {
+    let temp = [...props.binAmountList];
+    // console.log("e.target.value", typeof +e.target.value);
+    temp[e.target.id] = e.target.value ? +e.target.value : 0;
+    props.setBinAmountList(temp);
+    props.setBinTotal(temp.reduce((a, b) => +a + +b, 0));
+  };
 
   /* handle normal/implied button */
   const handleOnClickNormal = () => {
@@ -213,7 +135,7 @@ const Detail = (props) => {
        */
       return range(4).map((centreBin) =>
         range(7).map((binDistFromCentre) => {
-          console.log(binCentreSampleSum(binDistFromCentre));
+          // console.log(binCentreSampleSum(binDistFromCentre));
           return Math.round(
             (pdf(
               -i + i / 7 + (2 * binDistFromCentre * i) / 7,
@@ -241,7 +163,7 @@ const Detail = (props) => {
     }
 
     let distanceFromCentre = 3 - idx;
-    console.log("sampleList distanceFromCentre", distanceFromCentre);
+    // console.log("sampleList distanceFromCentre", distanceFromCentre);
 
     let result;
     if (distanceFromCentre < 0) {
@@ -251,31 +173,50 @@ const Detail = (props) => {
       result = sampleList[distanceFromCentre];
     }
 
-    console.log("sampleList props.binAmountList", props.binAmountList);
-    console.log(
-      "sampleList Math.max(...props.binAmountList)",
-      Math.max(...props.binAmountList)
-    );
+    // console.log("sampleList props.binAmountList", props.binAmountList);
+    // console.log(
+    //   "sampleList Math.max(...props.binAmountList)",
+    //   Math.max(...props.binAmountList)
+    // );
 
-    console.log("sampleList idx", idx);
-    console.log("sampleList distanceFromCentre", distanceFromCentre);
-    console.log("sampleList", sampleList);
+    // console.log("sampleList idx", idx);
+    // console.log("sampleList distanceFromCentre", distanceFromCentre);
+    // console.log("sampleList", sampleList);
 
-    console.log("sampleList result", result);
-    console.log("sampleList props.binTotal", props.binTotal);
+    // console.log("sampleList result", result);
+    // console.log("sampleList props.binTotal", props.binTotal);
 
     let newArr = [];
     result.map((r) => {
       newArr.push(+((r / 10_000) * props.binTotal).toFixed(9));
-      console.log("sampleList newArr", newArr);
-      console.log(
-        "sampleList total newArr",
-        newArr.reduce((a, b) => a + b)
-      );
+      // console.log("sampleList newArr", newArr);
+      // console.log(
+      //   "sampleList total newArr",
+      //   newArr.reduce((a, b) => a + b)
+      // );
       props.setBinAmountList(newArr);
       props.setBinTotal(newArr.reduce((a, b) => a + b));
     });
   };
+
+  /* useEffect */
+  useEffect(() => {
+    setTotal(
+      props.binAmountList.reduce((a, b) => Number(a) + Number(b), 0).toString()
+    );
+
+    if (props.epochData) {
+      const t = props.epochData.binValues.map((bin, i) =>
+        (+ethers.utils.formatEther(
+          props.epochData.binSize.mul(i + 1).add(props.epochData.binStart)
+        )).toPrecision(5)
+      );
+      setBinBorderList([
+        (+ethers.utils.formatEther(props.epochData.binStart)).toPrecision(5),
+        ...t,
+      ]);
+    }
+  }, [props]);
 
   return (
     <div className={styles.container}>
@@ -312,6 +253,10 @@ const Detail = (props) => {
           i = binValues.length - 1 - i;
           binValue = binValues[i];
 
+          // console.log(
+          //   "props.normalisedBinValueList",
+          //   props.normalisedBinValueList
+          // );
           return (
             // <div className={styles.bin}>
             //   <div className={styles.binUpper}>{bin.upper}</div>
@@ -497,7 +442,7 @@ const Detail = (props) => {
                   </GridCell2>
                   <GridCell2 padding={0.2}>
                     <ExSmallText>
-                      {props.userGainsInfo?.numberOfGames.toString()}
+                      {props.userGainsInfo.numberOfGames.toString()}
                     </ExSmallText>
                   </GridCell2>
                 </GridRow>
@@ -507,10 +452,10 @@ const Detail = (props) => {
                   </GridCell2>
                   <GridCell2 padding={0.2}>
                     <ExSmallText>
-                      {+props.userGainsInfo?.biggestRelativeGainAmount >= 0
+                      {+props.userGainsInfo.biggestRelativeGainAmount >= 0
                         ? "+"
                         : "-"}
-                      {+props.userGainsInfo?.biggestRelativeGainAmount}%
+                      {+props.userGainsInfo.biggestRelativeGainAmount}%{" "}
                     </ExSmallText>
                   </GridCell2>
                 </GridRow>
@@ -520,10 +465,10 @@ const Detail = (props) => {
                   </GridCell2>
                   <GridCell2 padding={0.2}>
                     <ExSmallText>
-                      {+props.userGainsInfo?.mostRecentRelativeGainAmount >= 0
+                      {+props.userGainsInfo.mostRecentRelativeGainAmount >= 0
                         ? "+"
                         : "-"}
-                      {+props.userGainsInfo?.mostRecentRelativeGainAmount}%
+                      {+props.userGainsInfo.mostRecentRelativeGainAmount}%
                     </ExSmallText>
                   </GridCell2>
                 </GridRow>
