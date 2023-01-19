@@ -1,3 +1,5 @@
+import Countdown from "react-countdown";
+
 const trimNumber = (number = 0, count = 0, type = "dp") => {
   number = +number;
   if (type == "dp") {
@@ -26,6 +28,23 @@ const timeFormat = (seconds) => {
   return timeFormattedList.join("");
 };
 
+const CountdownFormatted = ({ ms }) => {
+  console.log("ms", ms);
+  return (
+    <Countdown
+      key={ms}
+      date={ms}
+      renderer={({ days, hours, minutes, seconds }) => {
+        let s = seconds;
+        s += days * 60 * 60 * 24;
+        s += hours * 60 * 60;
+        s += minutes * 60;
+        return timeFormat(s);
+      }}
+    />
+  );
+};
+
 const instrumentLabel = (instrument) => {
   if (instrument) {
     return `${instrument.underlyingDescription.replaceAll(
@@ -40,4 +59,4 @@ const instrumentLabel = (instrument) => {
   return ``;
 };
 
-export { trimNumber, instrumentLabel, timeFormat };
+export { trimNumber, instrumentLabel, timeFormat, CountdownFormatted };

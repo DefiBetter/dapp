@@ -26,7 +26,13 @@ import {
   GridCell4,
 } from "../components/common/Grid";
 import { Input, InputNumber } from "../components/common/Input";
-import { CenterText, FancyText } from "../components/common/Text";
+import {
+  CenterText,
+  FancyText,
+  MedText,
+  NormalText,
+  SmallText,
+} from "../components/common/Text";
 import Navbar from "../components/Navbar/Navbar";
 import { contractAddresses } from "../static/contractAddresses";
 
@@ -37,9 +43,15 @@ import StrategyVaultManagerABI from "../static/ABI/StrategyVaultManagerABI.json"
 import IERC20MetadataABI from "../static/ABI/IERC20MetadataABI.json";
 import { useEffect, useState } from "react";
 import Dropdown from "../components/common/Dropdown";
-import { instrumentLabel, trimNumber } from "../components/common/helper";
+import {
+  CountdownFormatted,
+  instrumentLabel,
+  timeFormat,
+  trimNumber,
+} from "../components/common/helper";
 import { ethers } from "ethers";
 import FancyTitle from "../components/common/Title";
+import Countdown from "react-countdown";
 
 function StrategyVault() {
   /* account, network, configs */
@@ -61,6 +73,7 @@ function StrategyVault() {
   const [previewMintAmount, setPreviewMintAmount] = useState(0);
   const [previewBurnAmount, setPreviewBurnAmount] = useState(0);
   const [currentVaultName, setCurrentVaultName] = useState("");
+  const [queuedAmount, setQueuedAmount] = useState(0);
 
   // user
   const [userGasBalance, setUserGasBalance] = useState(0);
@@ -364,7 +377,28 @@ function StrategyVault() {
                           </GridRow>
                           <GridRow>
                             <GridCell colSpan={2}>
-                              <Button onClick={withdrawWrite}>Burn</Button>
+                              <Button onClick={withdrawWrite}>
+                                <MedText>
+                                  {queuedAmount > 0 && burnAmount > 0
+                                    ? `Claim queued\xa0 & \xa0burn`
+                                    : queuedAmount > 0
+                                    ? `Claim queued`
+                                    : `Burn`}
+                                </MedText>
+                                <SmallText>
+                                  <NormalText>
+                                    {/* need to change this later when new view function for it is added */}
+                                    {queuedAmount} {nativeGas} (queued for{" "}
+                                    <CountdownFormatted
+                                      ms={
+                                        1674163322 * 1000 +
+                                        10 * 1000 * 60 * 60 * 24 * 36.5
+                                      }
+                                    />
+                                    )
+                                  </NormalText>
+                                </SmallText>
+                              </Button>
                             </GridCell>
                           </GridRow>
                           <GridRow>
