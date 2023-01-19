@@ -40,10 +40,54 @@ const Dropdown = ({
   // console.log("dropdown itemList", itemList);
   // console.log("dropdown itemLabelList", itemLabelList);
 
+  const Arrow = styled.i`
+    border: solid black;
+    border-width: 0 3px 3px 0;
+    display: inline-block;
+    padding: 3px;
+    border-color: #2aaee6;
+    transition: transform 0.5s;
+    transform: rotate(${(props) => (props.active ? "45deg" : "-135deg")});
+    -webkit-transform: rotate(
+      ${(props) => (props.active ? "45deg" : "-135deg")}
+    );
+  `;
+  const ArrowUp = styled(Arrow)`
+    transform: rotate(-135deg);
+    -webkit-transform: rotate(-135deg);
+  `;
+  const ArrowDown = styled(Arrow)`
+    transform: rotate(45deg);
+    -webkit-transform: rotate(45deg);
+  `;
+
   return (
-    <Container onClick={toggleOptions}>
+    <Container onClick={toggleOptions} style={{ position: "relative" }}>
       <Option activeColor={`white`}>
-        <NormalText>{currentItemLabel}</NormalText>
+        <NormalText>
+          <div style={{}}>
+            <div
+              style={{
+                width: "calc(100% - 3rem)",
+                margin: "0 auto",
+                whiteSpace: "nowrap",
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+              }}
+            >
+              {currentItemLabel}
+            </div>
+          </div>
+          <div
+            style={{
+              position: "absolute",
+              right: "1rem",
+              top: `calc(50% - ${showItemList ? 9 : 6}px)`,
+            }}
+          >
+            <Arrow active={showItemList} />
+          </div>
+        </NormalText>
       </Option>
 
       {showItemList
