@@ -136,26 +136,6 @@ function Staking() {
   //   watch: true,
   // });
 
-  const onStakingBtCallback = (type) => {
-    if (type == "staking") {
-      setAlertMessageList((alertMessageList) => [
-        ...alertMessageList,
-        `Staking BT tokens...`,
-      ]);
-    } else if (type == "error") {
-      setAlertMessageList((alertMessageList) => [
-        ...alertMessageList,
-        `Failed to stake BT tokens`,
-      ]);
-    } else if (type == "success") {
-      setAlertMessageList((alertMessageList) => [
-        ...alertMessageList,
-        `Successfully staked BT tokens`,
-      ]);
-    } else {
-    }
-  };
-
   // stake bt
   const { write: stakeBtWrite } = useContractWrite({
     ...btStakingPoolContractConfig,
@@ -163,14 +143,23 @@ function Staking() {
     functionName: "stake",
     args: [ethers.utils.parseEther(btAmount.toString())],
     onMutate(data) {
-      onStakingBtCallback("staking");
+      setAlertMessageList((alertMessageList) => [
+        ...alertMessageList,
+        `Staking BT tokens...`,
+      ]);
     },
     onError(data) {
-      onStakingBtCallback("error");
+      setAlertMessageList((alertMessageList) => [
+        ...alertMessageList,
+        `Failed to stake BT tokens`,
+      ]);
     },
     onSuccess(data) {
       setBtAmount(0);
-      onStakingBtCallback("success");
+      setAlertMessageList((alertMessageList) => [
+        ...alertMessageList,
+        `Successfully staked BT tokens`,
+      ]);
     },
   });
 

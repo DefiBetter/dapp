@@ -42,7 +42,10 @@ const AlertMessage = ({
 }) => {
   const cardRef = useRef(null);
   return (
-    <Card style={{ position: "relative", marginTop: "1rem" }} ref={cardRef}>
+    <Card
+      style={{ position: "relative", marginTop: "1rem", pointerEvents: "auto" }}
+      ref={cardRef}
+    >
       <div
         style={{ textAlign: "right", fontSize: "1.5rem" }}
         onClick={() => {
