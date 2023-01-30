@@ -1,6 +1,6 @@
-import { ethers } from "ethers";
+import { Button } from "../components/common/Button";
+import { Contract, ethers } from "ethers";
 import { useCallback, useEffect, useState } from "react";
-import Button from "../components/common/Button";
 import { Card, CardBlueBgBlackBorder } from "../components/common/Card";
 import { AppContainer, Container } from "../components/common/Container";
 import {
@@ -16,6 +16,7 @@ import Navbar from "../components/Navbar/Navbar";
 import StakeDiagram from "../components/Staking/StakeDiagram";
 import { contractAddresses } from "../static/contractAddresses";
 import BtStakingABI from "../static/ABI/BtStakingABI.json";
+import BTABI from "../static/ABI/BTABI.json";
 import IERC20MetadataABI from "../static/ABI/IERC20MetadataABI.json";
 
 import styles from "./Staking.module.css";
@@ -26,9 +27,13 @@ import {
   useContractWrite,
   useNetwork,
   usePrepareContractWrite,
+  useProvider,
 } from "wagmi";
+import { watchContractEvent } from "@wagmi/core";
 import { bignumber } from "mathjs";
 import Connect from "../components/common/Connect";
+import { FancyText } from "../components/common/Text";
+import Dropdown from "../components/common/Dropdown";
 
 function Staking() {
   // fetch account and current network
@@ -71,10 +76,19 @@ function Staking() {
     abi: BtStakingABI,
   };
 
+  const btTokenContractConfig = {
+    address: contractAddresses[activeChain?.network]?.btToken,
+    abi: BTABI,
+  };
+
+  const lpTokenContractConfig = {
+    address: contractAddresses[activeChain?.network]?.lpToken,
+    abi: IERC20MetadataABI,
+  };
+
   // btAllowance bt
   useContractRead({
-    address: contractAddresses[activeChain?.network]?.btToken,
-    abi: IERC20MetadataABI,
+    ...btTokenContractConfig,
     functionName: "allowance",
     args: [
       connectedAddress,
@@ -89,8 +103,7 @@ function Staking() {
 
   // prepare approve bt
   const { config: approveBtConfig } = usePrepareContractWrite({
-    address: contractAddresses[activeChain?.network]?.btToken,
-    abi: IERC20MetadataABI,
+    ...btTokenContractConfig,
     functionName: "approve",
     args: [
       btStakingPoolContractConfig.address,
@@ -112,6 +125,7 @@ function Staking() {
     args: [ethers.utils.parseEther(btAmount.toString())],
     onSuccess(data) {},
     onError(data) {},
+    watch: true,
   });
 
   // stake bt
@@ -151,8 +165,7 @@ function Staking() {
 
   // balance of bt
   useContractRead({
-    address: contractAddresses[activeChain?.network]?.btToken,
-    abi: IERC20MetadataABI,
+    ...btTokenContractConfig,
     functionName: "balanceOf",
     args: [connectedAddress],
     onError(data) {},
@@ -164,8 +177,7 @@ function Staking() {
 
   // total bt staked
   useContractRead({
-    address: contractAddresses[activeChain?.network]?.btToken,
-    abi: IERC20MetadataABI,
+    ...btTokenContractConfig,
     functionName: "balanceOf",
     args: [btStakingPoolContractConfig.address],
     onError(data) {},
@@ -178,8 +190,7 @@ function Staking() {
   /* LP */
   // lpAllowance
   useContractRead({
-    address: contractAddresses[activeChain?.network]?.lpToken,
-    abi: IERC20MetadataABI,
+    ...lpTokenContractConfig,
     functionName: "allowance",
     args: [connectedAddress, lpStakingPoolContractConfig.address],
     // watch: true,
@@ -191,8 +202,7 @@ function Staking() {
 
   // prepare approve lp
   const { config: approveLpConfig } = usePrepareContractWrite({
-    address: contractAddresses[activeChain?.network]?.btToken,
-    abi: IERC20MetadataABI,
+    ...lpTokenContractConfig,
     functionName: "approve",
     args: [
       lpStakingPoolContractConfig.address,
@@ -214,6 +224,7 @@ function Staking() {
     args: [ethers.utils.parseEther(lpAmount.toString())],
     onSuccess(data) {},
     onError(data) {},
+    watch: true,
   });
 
   // stake lp
@@ -251,8 +262,7 @@ function Staking() {
 
   // balance of lp
   useContractRead({
-    address: contractAddresses[activeChain?.network]?.lpToken,
-    abi: IERC20MetadataABI,
+    ...lpTokenContractConfig,
     functionName: "balanceOf",
     args: [connectedAddress],
     onError(data) {},
@@ -264,8 +274,7 @@ function Staking() {
 
   // total lp staked
   useContractRead({
-    address: contractAddresses[activeChain?.network]?.lpToken,
-    abi: IERC20MetadataABI,
+    ...lpTokenContractConfig,
     functionName: "balanceOf",
     args: [lpStakingPoolContractConfig.address],
     onError(data) {},
@@ -274,6 +283,8 @@ function Staking() {
     },
     watch: true,
   });
+
+  // user
 
   /* ZAP */
   useBalance({
@@ -300,36 +311,106 @@ function Staking() {
     setZapAmount(e.target.value ? e.target.value : 0);
   };
 
+  // const unwatch = watchContractEvent(
+  //   {
+  //     address: "0x2B0d36FACD61B71CC05ab8F3D2355ec3631C0dd5",
+  //     abi: IERC20MetadataABI,
+  //     eventName: "Transfer",
+  //     onSuccess(data) {
+  //       console.log("event listener success", data);
+  //     },
+  //     onError(data) {
+  //       console.log("event listener error", data);
+  //     },
+  //   },
+  //   (from, to, value) => {
+  //     console.log("event listener", from, to, value);
+  //   }
+  // );
+
+  /* APR calculations */
+  // // fetch contract instance
+  // const contract = new ethers.Contract(
+  //   "0xd586E7F844cEa2F87f50152665BCbc2C279D8d70",
+  //   IERC20MetadataABI,
+  //   useProvider()
+  // );
+
+  // // fetch contract event logs
+  // (async () => {
+  //   const logs = await contract.filters.Transfer();
+  //   const _logs = await contract.queryFilter(logs, 24952070);
+  //   console.log(
+  //     "event listener logs",
+  //     _logs.map((log) => {
+  //       return [
+  //         log.args.from,
+  //         log.args.to,
+  //         ethers.utils.formatEther(log.args.value),
+  //       ];
+  //     })
+  //   );
+  // })();
+
   return (
     <Connect isConnected={isConnected} activeChain={activeChain}>
       <AppContainer>
         <Navbar />
-        <Container>
+        <Container overflow={true}>
           <div className={styles.innerContainer}>
             <Grid>
-              {/* <GridRow>
+              <GridRow>
                 <GridCell colSpan={2}>
                   <div className={styles.cardContainer}>
                     <Card>
                       <Grid>
                         <GridRow>
-                          <GridCell2>
-                            <InputNumber onChange={() => {}} />
-                          </GridCell2>
-                          <GridCell4>
-                            <Button>Avax</Button>
-                          </GridCell4>
+                          <GridCell colSpan={3}>
+                            <FancyText
+                              style={{
+                                textAlign: "center",
+                                fontSize: "2rem",
+                                textDecoration: "underline",
+                              }}
+                            >
+                              Staking
+                            </FancyText>
+                          </GridCell>
                         </GridRow>
                         <GridRow>
-                          <GridCell colSpan={3}>
-                            <Button onClick={() => {}}>Bridge</Button>
-                          </GridCell>
+                          <GridCell3>
+                            <InputNumber
+                              max={0}
+                              min={0}
+                              onChange={() => {}}
+                              placeholder={"hi"}
+                              value={0}
+                            />
+                          </GridCell3>
+                          <GridCell3>
+                            <Dropdown
+                              currentItem={"AVAX"}
+                              currentItemLabel={"AVAX"}
+                              setCurrentItem={() => {}}
+                              itemList={[]}
+                              itemLabelList={[
+                                "BSC",
+                                "AVAX",
+                                "MATIC",
+                                "FTM",
+                                "HARDHAT",
+                              ]}
+                            />
+                          </GridCell3>
+                          <GridCell3>
+                            <Button>Bridge</Button>
+                          </GridCell3>
                         </GridRow>
                       </Grid>
                     </Card>
                   </div>
                 </GridCell>
-              </GridRow> */}
+              </GridRow>
               <GridRow>
                 <GridCell2>
                   <div className={styles.assetContainer}>
@@ -394,7 +475,10 @@ function Staking() {
                             <InputNumber
                               onChange={handleLpAmount}
                               min={0}
-                              max={lpBalance}
+                              max={() => {
+                                console.log("lpBalance", lpBalance);
+                                return lpBalance;
+                              }}
                               placeholder={0}
                               value={lpAmount > 0 ? lpAmount : ""}
                               setValue={setLpAmount}

@@ -7,12 +7,15 @@ const Grid = styled.table`
   max-height: 100%;
 `;
 
-const GridRow = styled.tr``;
+const GridRow = styled.tr`
+  height: 0px;
+`;
 const GridCell = styled.td`
   padding: ${(props) =>
     props.padding == 0 || props.padding ? props.padding : 0.5}rem;
   // border-color: black;
   // border-style: solid;
+  height: inherit;
 `;
 const GridCell2 = styled(GridCell)`
   width: calc(100% / 2);

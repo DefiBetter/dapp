@@ -456,6 +456,14 @@ const Chart = (props) => {
           sdCount={1}
           chartConfig={chartConfig}
         />
+        <SdCone
+          epochData={props.epochData}
+          data={chartData}
+          instrument={props.instrument}
+          rangeInfo={rangeInfo}
+          sdCount={1}
+          chartConfig={chartConfig}
+        />
         {/* <BarChart chartConfig={chartConfig} data={data} /> */}{" "}
       </svg>
       <div className={styles.chartOverlay}>

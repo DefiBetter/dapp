@@ -5,11 +5,12 @@
 .assetContainer {
     display: flex;
     flex-direction: column;
-    width: 600px;
+    width: 500px;
 }
 
 .cardContainer {
     max-width: 800px;
+    margin: 0 auto;
 }
 
 .innerContainer {

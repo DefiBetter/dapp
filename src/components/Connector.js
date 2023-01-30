@@ -8,6 +8,8 @@ import PublicSale from "../pages/PublicSale";
 import Presale from "../pages/Presale";
 import Landing from "../pages/Landing";
 import StrategyVault from "../pages/StrategyVault";
+import { AlertOverlay } from "./common/AlertMessage";
+import { createContext } from "react";
 
 function Connector() {
   const network = useNetwork();
@@ -27,27 +29,22 @@ function Connector() {
           path="/"
           element={
             <>
-              {process.env.REACT_APP_LANDING_PHASE == "true" ? (
-                <Landing />
-              ) : process.env.REACT_APP_PRESALE_PHASE == "true" ? (
-                <Presale />
-              ) : process.env.REACT_APP_PUBLIC_SALE_PHASE == "true" ? (
-                <PublicSale />
-              ) : process.env.REACT_APP_LAUNCH_PHASE == "true" ? (
-                <Better />
-              ) : null}
+              <AlertOverlay>
+                {process.env.REACT_APP_LANDING_PHASE == "true" ? (
+                  <Landing />
+                ) : process.env.REACT_APP_PRESALE_PHASE == "true" ? (
+                  <Presale />
+                ) : process.env.REACT_APP_PUBLIC_SALE_PHASE == "true" ? (
+                  <PublicSale />
+                ) : process.env.REACT_APP_LAUNCH_PHASE == "true" ? (
+                  <Better />
+                ) : null}
+              </AlertOverlay>
             </>
           }
         />
 
-        <Route
-          path="/staking"
-          element={
-            <>
-              <Staking />
-            </>
-          }
-        />
+        <Route path="/staking" element={<Staking />} />
 
         <Route path="/vaults" element={<StrategyVault />} />
       </Routes>

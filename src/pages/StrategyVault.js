@@ -118,7 +118,10 @@ function StrategyVault() {
     abi: StrategyVaultManagerABI,
     functionName: "getVaults",
     args: [],
-    onError(data) {},
+    onError(data) {
+      console.log("getVaults currentInstrument", currentInstrument);
+      console.log("getVaults vaultManager", currentInstrument?.vaultManager);
+    },
     onSuccess(data) {
       console.log("getVaults", data);
       setVaultList(data);

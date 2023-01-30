@@ -11,6 +11,7 @@ const Button = styled.button`
   font-family: marguerite;
   color: white;
   cursor: pointer;
+  height: 100%;
   &:enabled {
     &:active {
       background-color: ${(props) =>

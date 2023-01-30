@@ -207,6 +207,7 @@ function Better() {
       console.log("getUserGainsInfo", connectedAddress, data);
       setUserGainsInfo(data);
     },
+    watch: true,
   });
 
   /* useEffect */

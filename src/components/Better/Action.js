@@ -3,10 +3,14 @@ import styles from "./Action.module.css";
 import { ethers } from "ethers";
 
 import { usePrepareContractWrite, useContractWrite } from "wagmi";
-import { useEffect } from "react";
+import { useContext, useEffect } from "react";
 import { MedText, NormalText, SmallText } from "../common/Text";
+import AlertContext from "../../context/AlertContext";
+import { timeFormat } from "../common/helper";
 
 const Action = (props) => {
+  const [alertMessageList, setAlertMessageList] = useContext(AlertContext);
+
   // open position
   let { write: depositWrite } = useContractWrite({
     ...{
@@ -29,12 +33,22 @@ const Action = (props) => {
           ).toString()
         ),
       },
-      onError(data) {},
-      onSuccess(data) {},
-    },
-    onSuccess(data) {
-      props.setBinAmountList([0, 0, 0, 0, 0, 0, 0]);
-      props.setBinTotal(0);
+      onError(data) {
+        setAlertMessageList([...alertMessageList]);
+      },
+      onSuccess(data) {
+        console.log("openPosition", data);
+        setAlertMessageList([
+          ...alertMessageList,
+          `Successfully deposited ${props.binAmountList.reduce(
+            (a, b) => a + b
+          )} in Epoch ${
+            props.instrument.epoch
+          } at ${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString()}`,
+        ]);
+        props.setBinAmountList([0, 0, 0, 0, 0, 0, 0]);
+        props.setBinTotal(0);
+      },
     },
   });
 

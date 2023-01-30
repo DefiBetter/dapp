@@ -1,5 +1,5 @@
 import { Button } from "../common/Button";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import {
   Card,
   CardBlueBg,
@@ -24,6 +24,7 @@ import { contractAddresses } from "../../static/contractAddresses";
 import Countdown from "react-countdown";
 import { Scrollbar } from "react-scrollbars-custom";
 import { trimNumber } from "../common/helper";
+import AlertContext from "../../context/AlertContext";
 
 const Detail = (props) => {
   /* account, network, configs */
@@ -34,7 +35,6 @@ const Detail = (props) => {
   //
   const [total, setTotal] = useState(0);
   const [rewardPeriodLength, setRewardPeriodLength] = useState(0); // seconds
-  const [currentPeriodEndTime, setCurrentPeriodEndTime] = useState(0); // seconds
   const [binBorderList, setBinBorderList] = useState([
     "0",
     "0",
@@ -67,30 +67,32 @@ const Detail = (props) => {
     },
   });
 
-  // user gain info current period
-  useContractRead({
-    ...props.betterContractConfig,
-    functionName: "getUserGainsInfo",
-    args: [
-      props.rewardPeriodInfo.globalBiggestRelativeGainCurrentPeriodAddress,
-    ],
-    onError(data) {},
-    onSuccess(data) {
-      // console.log("getUserGainsInfo", data);
-      setWeekBiggestRelativeGainAmount(data.biggestRelativeGainAmount);
-    },
-  });
+  // // user gain info current period
+  // useContractRead({
+  //   ...props.betterContractConfig,
+  //   functionName: "getUserGainsInfo",
+  //   args: [
+  //     props.rewardPeriodInfo.globalBiggestRelativeGainCurrentPeriodAddress,
+  //   ],
+  //   onError(data) {},
+  //   onSuccess(data) {
+  //     // console.log("getUserGainsInfo", data);
+  //     setWeekBiggestRelativeGainAmount(data.biggestRelativeGainAmount);
+  //   },
+  // });
 
-  // user gain info past period
-  useContractRead({
-    ...props.betterContractConfig,
-    functionName: "getUserGainsInfo",
-    args: [props.rewardPeriodInfo.globalBiggestRelativeGainPastPeriodAddress],
-    onError(data) {},
-    onSuccess(data) {
-      setLastWeekBiggestRelativeGainAmount(data.biggestRelativeGainAmount);
-    },
-  });
+  // // user gain info past period
+  // useContractRead({
+  //   ...props.betterContractConfig,
+  //   functionName: "getUserGainsInfo",
+  //   args: [props.rewardPeriodInfo.globalBiggestRelativeGainPastPeriodAddress],
+  //   onError(data) {},
+  //   onSuccess(data) {
+  //     setLastWeekBiggestRelativeGainAmount(data.biggestRelativeGainAmount);
+  //   },
+  // });
+
+  const [alertMessageList, setAlertMessageList] = useContext(AlertContext);
 
   /* handle on input */
   const onInput = (e) => {
@@ -103,6 +105,7 @@ const Detail = (props) => {
 
   /* handle normal/implied button */
   const handleOnClickNormal = () => {
+    setAlertMessageList([...alertMessageList, "'Normal' button clicked"]);
     const range = (x) => [...Array(x).keys()];
 
     function getBinWeights(i) {

@@ -13,7 +13,6 @@ const Container = styled.div`
 
 const Option = styled(Button)`
   text-align: center;
-  margin-top: 0.1rem;
   //   font-size: 1.5rem;
   height: 100%;
   background-color: ${(props) => (props.active ? `#cce5ff` : `white`)};
