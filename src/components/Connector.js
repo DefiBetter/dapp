@@ -44,9 +44,23 @@ function Connector() {
           }
         />
 
-        <Route path="/staking" element={<Staking />} />
+        <Route
+          path="/staking"
+          element={
+            <AlertOverlay>
+              <Staking />
+            </AlertOverlay>
+          }
+        />
 
-        <Route path="/vaults" element={<StrategyVault />} />
+        <Route
+          path="/vaults"
+          element={
+            <AlertOverlay>
+              <StrategyVault />
+            </AlertOverlay>
+          }
+        />
       </Routes>
     </>
   );

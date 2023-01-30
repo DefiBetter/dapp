@@ -81,7 +81,7 @@ const AlertOverlay = ({ children }) => {
             height: "100%",
             position: "absolute",
             zIndex: "100",
-            borderStyle: "solid",
+            // borderStyle: "solid",
             // backgroundColor: "black",
             bottom: "1rem",
             overflow: "hidden",

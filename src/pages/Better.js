@@ -8,7 +8,7 @@ import {
   useNetwork,
   useContractReads,
 } from "wagmi";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useContext, useEffect, useRef, useState } from "react";
 
 import { contractAddresses } from "../static/contractAddresses";
 import { ethers } from "ethers";
@@ -27,8 +27,11 @@ import DeFiBetterV1ABI from "../static/ABI/DeFiBetterV1ABI.json";
 import AggregatorV3InterfaceABI from "../static/ABI/AggregatorV3InterfaceABI.json";
 import Connect from "../components/common/Connect";
 import ContentLoader from "react-content-loader";
+import AlertContext from "../context/AlertContext";
 
 function Better() {
+  const [alertMessageList, setAlertMessageList] = useContext(AlertContext);
+
   /* account, network, configs */
   // account
   const { address: connectedAddress, isConnected } = useAccount();

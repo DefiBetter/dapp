@@ -1,6 +1,6 @@
 import { Button } from "../components/common/Button";
 import { Contract, ethers } from "ethers";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
 import { Card, CardBlueBgBlackBorder } from "../components/common/Card";
 import { AppContainer, Container } from "../components/common/Container";
 import {
@@ -35,8 +35,11 @@ import { bignumber } from "mathjs";
 import Connect from "../components/common/Connect";
 import { FancyText } from "../components/common/Text";
 import Dropdown from "../components/common/Dropdown";
+import AlertContext from "../context/AlertContext";
 
 function Staking() {
+  const [alertMessageList, setAlertMessageList] = useContext(AlertContext);
+
   // fetch account and current network
   const { address: connectedAddress, isConnected } = useAccount();
   const { chain: activeChain } = useNetwork();
@@ -110,12 +113,16 @@ function Staking() {
       btStakingPoolContractConfig.address,
       ethers.constants.MaxUint256.sub("1").toString(),
     ],
+
     onSuccess(data) {},
   });
 
   // infinite approve bt
   const { write: approveBtWrite } = useContractWrite({
     ...approveBtConfig,
+    onSettled(data) {
+      setAlertMessageList([...alertMessageList, `Approving BT token...`]);
+    },
     onSuccess(data) {},
   });
 
@@ -129,19 +136,41 @@ function Staking() {
   //   watch: true,
   // });
 
+  const onStakingBtCallback = (type) => {
+    if (type == "staking") {
+      setAlertMessageList((alertMessageList) => [
+        ...alertMessageList,
+        `Staking BT tokens...`,
+      ]);
+    } else if (type == "error") {
+      setAlertMessageList((alertMessageList) => [
+        ...alertMessageList,
+        `Failed to stake BT tokens`,
+      ]);
+    } else if (type == "success") {
+      setAlertMessageList((alertMessageList) => [
+        ...alertMessageList,
+        `Successfully staked BT tokens`,
+      ]);
+    } else {
+    }
+  };
+
   // stake bt
   const { write: stakeBtWrite } = useContractWrite({
     ...btStakingPoolContractConfig,
     mode: "recklesslyUnprepared",
     functionName: "stake",
     args: [ethers.utils.parseEther(btAmount.toString())],
+    onMutate(data) {
+      onStakingBtCallback("staking");
+    },
     onError(data) {
-      console.log("stakeBtWrite error", data);
+      onStakingBtCallback("error");
     },
     onSuccess(data) {
       setBtAmount(0);
-      console.log("stake", ethers.utils.parseEther(btAmount.toString()));
-      console.log("stake data", data);
+      onStakingBtCallback("success");
     },
   });
 
