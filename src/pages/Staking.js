@@ -16,6 +16,7 @@ import Navbar from "../components/Navbar/Navbar";
 import StakeDiagram from "../components/Staking/StakeDiagram";
 import { contractAddresses } from "../static/contractAddresses";
 import BtStakingABI from "../static/ABI/BtStakingABI.json";
+import LpStakingABI from "../static/ABI/LpStakingABI.json";
 import BTABI from "../static/ABI/BTABI.json";
 import IERC20MetadataABI from "../static/ABI/IERC20MetadataABI.json";
 
@@ -73,7 +74,7 @@ function Staking() {
 
   const lpStakingPoolContractConfig = {
     address: contractAddresses[activeChain?.network]?.lpStaking,
-    abi: BtStakingABI,
+    abi: LpStakingABI,
   };
 
   const btTokenContractConfig = {
@@ -119,23 +120,28 @@ function Staking() {
   });
 
   // prepare stake bt
-  const { config: stakeBtConfig } = usePrepareContractWrite({
-    ...btStakingPoolContractConfig,
-    functionName: "stake",
-    args: [ethers.utils.parseEther(btAmount.toString())],
-    onSuccess(data) {},
-    onError(data) {},
-    watch: true,
-  });
+  // const { config: stakeBtConfig } = usePrepareContractWrite({
+  //   ...btStakingPoolContractConfig,
+  //   functionName: "stake",
+  //   args: [ethers.utils.parseEther(btAmount.toString())],
+  //   onSuccess(data) {},
+  //   onError(data) {},
+  //   watch: true,
+  // });
 
   // stake bt
   const { write: stakeBtWrite } = useContractWrite({
-    ...stakeBtConfig,
+    ...btStakingPoolContractConfig,
+    mode: "recklesslyUnprepared",
+    functionName: "stake",
+    args: [ethers.utils.parseEther(btAmount.toString())],
     onError(data) {
       console.log("stakeBtWrite error", data);
     },
     onSuccess(data) {
       setBtAmount(0);
+      console.log("stake", ethers.utils.parseEther(btAmount.toString()));
+      console.log("stake data", data);
     },
   });
 
