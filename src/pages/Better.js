@@ -80,6 +80,7 @@ function Better() {
   useContractRead({
     ...betterContractConfig,
     functionName: "getInstruments",
+    onError(data) {},
     onSuccess(data) {
       // create mutable copy
       let _data = [...data];

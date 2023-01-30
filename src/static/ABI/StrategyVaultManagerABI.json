@@ -89,7 +89,7 @@
     "name": "getVaults",
     "outputs": [
       {
-        "internalType": "contract StrategyVault[7]",
+        "internalType": "contract IStrategyVault[7]",
         "name": "",
         "type": "address[7]"
       }
