@@ -16,8 +16,16 @@ const SdCone = (props) => {
     data = preProcessData(data).sort((a, b) => a[0] - b[0]);
     data = transpose(data);
 
-    const { oldRangeInfo, newRangeInfo, epochStartPoint } =
-      props.rangeInfo(data);
+    const {
+      oldRangeInfo,
+      newRangeInfo,
+      epochStartPoint: esp,
+    } = props.rangeInfo(data);
+
+    const epochStartPoint =
+      props.trailing == true
+        ? transpose(data)[transpose(data).length - 1]
+        : esp;
 
     const epochTimeRange =
       +props.instrument.epochDurationInSeconds.toString() +
@@ -78,7 +86,7 @@ const SdCone = (props) => {
               y1={coord[1]}
               x2={coordNext[0]}
               y2={coordNext[1]}
-              stroke="#8FBDFF" 
+              stroke={`${props.color ? props.color : "#8FBDFF"}`}
             />
           );
         }

@@ -463,6 +463,18 @@ const Chart = (props) => {
           rangeInfo={rangeInfo}
           sdCount={1}
           chartConfig={chartConfig}
+          trailing={true}
+          color={"#2AAEE6"}
+        />
+        <SdCone
+          epochData={props.epochData}
+          data={chartData}
+          instrument={props.instrument}
+          rangeInfo={rangeInfo}
+          sdCount={2}
+          chartConfig={chartConfig}
+          trailing={true}
+          color={"#2AAEE6"}
         />
         {/* <BarChart chartConfig={chartConfig} data={data} /> */}{" "}
       </svg>
