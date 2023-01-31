@@ -1,45 +1,28 @@
 import { useAccount, useNetwork } from "wagmi";
+import Social from "../components/common/Social";
 
 import Navbar from "../components/Navbar/Navbar";
+import NavbarSimple from "../components/Navbar/NavbarSimple";
 import styles from "./Landing.module.css";
 
 function Landing() {
-  // fetch account and current network
-  const { address: connectedAddress, isConnected } = useAccount();
-  const { chain: activeChain } = useNetwork();
-
-  // if wallet not connected
-  if (!isConnected) {
-    return (
-      <>
-        <Navbar />
-        <div>Please connect your wallet</div>
-      </>
-    );
-  }
-
-  if (activeChain?.unsupported) {
-    return (
-      <>
-        <Navbar />
-        <div>Unsupported chain</div>
-      </>
-    );
-  }
-
   return (
     <>
-      <Navbar></Navbar>
+      <NavbarSimple />
       <div className={styles.container}>
-        <div className={styles.fancyText}>Coming soon...</div>
-        <svg>
-          <text x={20} y={50} className={styles.normalText}>
-            DeFi
-          </text>
-          <text x={100} y={80} className={styles.fancyText}>
-            Better
-          </text>
-        </svg>
+        <div className={styles.fancyText}>Coming soon... 💦</div>
+        <img
+          className={styles.logo}
+          src={require("../static/image/better-logo.png")}
+        />
+        <br></br>
+        <br></br>
+        <br></br>
+        <div style={{ width: "100%" }}>
+          <Social />
+        </div>
+        <br></br>
+        <br></br>
       </div>
     </>
   );

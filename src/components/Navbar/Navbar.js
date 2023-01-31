@@ -31,7 +31,9 @@ const Navbar = () => {
         </FancyText>
         <FancyText>
           <UnderlineText>
-            <Link to="/documentation">Documentation</Link>
+            <a href="https://app.gitbook.com/o/NBcMmIGNsNgrhjS2tczv/s/qLpJBZkEb6TQw9OfyioS/">
+              Documentation
+            </a>
           </UnderlineText>
         </FancyText>
       </div>
