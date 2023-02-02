@@ -36,6 +36,8 @@
     margin-top: 1rem;
     margin-right: 2rem;
     margin-left: 2rem;
+    padding-right: 3rem;
+    padding-left: 3rem;
     display: flex;
     flex-direction: row;
     justify-content: space-evenly;
@@ -73,7 +75,6 @@ a:hover {
     justify-content: space-between;
     align-items: center;
     height: 90%;
-    margin-right: 10px;
     cursor: pointer;
     width: 25%;
 }
