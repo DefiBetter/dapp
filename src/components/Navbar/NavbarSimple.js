@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import styled, { keyframes } from "styled-components";
 import { FancyText, UnderlineText } from "../common/Text";
@@ -62,6 +62,18 @@ const NavBar = styled.div`
 const Hamburger = () => {
   const [showNav, setShowNav] = useState(false);
 
+  useEffect(() => {
+    updateDims();
+    window.addEventListener("resize", updateDims);
+    return () => window.removeEventListener("resize", updateDims);
+  }, []);
+
+  const updateDims = () => {
+    if (window.innerWidth >= 1400) {
+      setShowNav(false);
+    }
+  };
+
   return (
     <div>
       <div
@@ -93,6 +105,14 @@ const Hamburger = () => {
             <span className={styles.burger}></span>
           </div>
           <div>
+            <div style={{ alignItems: "end" }}>
+              <SwitchNetwork />
+            </div>
+            <br></br>
+            <div style={{ height: "3rem" }}>
+              <WalletConnect />
+            </div>
+            <br></br>
             <FancyText>
               <UnderlineText>
                 <a href="/">Better</a>
@@ -113,10 +133,6 @@ const Hamburger = () => {
                 <a href="/">Documentation</a>
               </UnderlineText>
             </FancyText>
-          </div>
-          <div className={styles.connect}>
-            <SwitchNetwork />
-            <WalletConnect />
           </div>
         </NavBar>
       ) : null}
