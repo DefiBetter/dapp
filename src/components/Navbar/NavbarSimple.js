@@ -9,7 +9,7 @@ import { WalletConnect } from "./web3/WalletConnect";
 const NavbarSimple = () => {
   return (
     <div className={styles.container}>
-      <Link to="/" className={styles.logo}>
+      <Link to="/" style={{ width: "25%" }}>
         <img
           className={styles.logo}
           src={require("../../static/image/better-logo.png")}
