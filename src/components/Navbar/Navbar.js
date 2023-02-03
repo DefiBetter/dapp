@@ -169,6 +169,7 @@ const sideNavbarItemTransitionStyles = {
 };
 
 const SideNavbar = ({ children, ...props }) => {
+  const windowDimension = useContext(WindowContext);
   const nodeRef = useRef(null);
 
   return (
@@ -190,28 +191,46 @@ const SideNavbar = ({ children, ...props }) => {
                   ...sideNavbarItemTransitionStyles[state],
                 }}
               >
-                <FancyText>
-                  <UnderlineText>
-                    <Link to="/">Better</Link>
-                  </UnderlineText>
-                </FancyText>
-                <FancyText>
-                  <UnderlineText>
-                    <Link to="/staking">Staking</Link>
-                  </UnderlineText>
-                </FancyText>
-                <FancyText>
-                  <UnderlineText>
-                    <Link to="/vaults">Strategy vaults</Link>
-                  </UnderlineText>
-                </FancyText>
-                <FancyText>
-                  <UnderlineText>
-                    <a href="https://app.gitbook.com/o/NBcMmIGNsNgrhjS2tczv/s/qLpJBZkEb6TQw9OfyioS/">
-                      Documentation
-                    </a>
-                  </UnderlineText>
-                </FancyText>
+                {["xs", "sm"].filter((bp) => bp == windowDimension.screen)
+                  .length > 0 ? (
+                  <div style={{ height: "70px" }}>
+                    <SwitchNetwork />
+                  </div>
+                ) : null}
+                {["xs"].filter((bp) => bp == windowDimension.screen).length >
+                0 ? (
+                  <div style={{ height: "70px" }}>
+                    <WalletConnect />
+                  </div>
+                ) : null}
+                {["xs", "sm", "md"].filter(
+                  (breakpoint) => breakpoint == windowDimension.screen
+                ).length > 0 ? (
+                  <>
+                    <FancyText>
+                      <UnderlineText>
+                        <Link to="/">Better</Link>
+                      </UnderlineText>
+                    </FancyText>
+                    <FancyText>
+                      <UnderlineText>
+                        <Link to="/staking">Staking</Link>
+                      </UnderlineText>
+                    </FancyText>
+                    <FancyText>
+                      <UnderlineText>
+                        <Link to="/vaults">Strategy vaults</Link>
+                      </UnderlineText>
+                    </FancyText>
+                    <FancyText>
+                      <UnderlineText>
+                        <a href="https://app.gitbook.com/o/NBcMmIGNsNgrhjS2tczv/s/qLpJBZkEb6TQw9OfyioS/">
+                          Documentation
+                        </a>
+                      </UnderlineText>
+                    </FancyText>
+                  </>
+                ) : null}
               </div>
             )}
           </Transition>

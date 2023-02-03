@@ -32,7 +32,7 @@
     justify-content: space-evenly;
     /* align-items: center; */
     /* min-width: 730px; */
-    width: 50%;
+    width: calc(100% - 2rem - 2rem);
     margin: auto;
     text-align: center;
 }
