@@ -15,18 +15,6 @@
     text-align: center;
 }
 
-.connector {
-    background-color: #2AAEE6;
-    display: block;
-    font-size: 2rem;
-    text-align: center;
-    border-radius: inherit;
-    padding: 1rem 0;
-    border-width: 1px;
-    border-style: solid;
-    cursor: pointer;
-}
-
 .option {
     /* position: absolute; */
     background-color: #2AAEE6;
@@ -34,10 +22,24 @@
     width: inherit;
     padding: 10px 0;
     text-align: center;
-    margin-top: 10px;
+    margin-top: 1rem;
     border-radius: inherit;
     border-width: 1px;
     border-style: solid;
     font-size: 1.5rem;
     height: 100%;
+}
+
+/* sm breakpoint */
+@media only screen and (max-width: 768px) {
+    .container {
+        /* height: unset; */
+        margin: 1rem 0;
+    }
+    .address {
+        height: 60px !important;
+    }
+    .option {
+        height: 60px !important;
+    }
 }

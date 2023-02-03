@@ -199,9 +199,7 @@ const SideNavbar = ({ children, ...props }) => {
                 ) : null}
                 {["xs"].filter((bp) => bp == windowDimension.screen).length >
                 0 ? (
-                  <div style={{ height: "70px" }}>
-                    <WalletConnect />
-                  </div>
+                  <WalletConnect />
                 ) : null}
                 {["xs", "sm", "md"].filter(
                   (breakpoint) => breakpoint == windowDimension.screen
