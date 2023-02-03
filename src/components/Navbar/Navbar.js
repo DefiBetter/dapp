@@ -117,7 +117,9 @@ const Navbar = () => {
           </GridCol>
         </GridRow>
       </Grid>
-      <SideNavbar showSideNavbar={showSideNavbar} />
+      {windowDimension.screen != "lg" ? (
+        <SideNavbar showSideNavbar={showSideNavbar} />
+      ) : null}
     </NavContainer>
   );
 };
@@ -133,6 +135,7 @@ const sideNavbarStyles = {
   width: "0",
   transition: "width 1000ms",
   zIndex: "99",
+  overflow: "hidden",
 };
 
 const sideNavbarTransitionStyles = {
