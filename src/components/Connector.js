@@ -1,6 +1,6 @@
 import { useNetwork, useSwitchNetwork, useAccount } from "wagmi";
 
-import { Route, Routes } from "react-router-dom";
+import { Link, Route, Routes } from "react-router-dom";
 
 import Better from "./../pages/Better";
 import Staking from "./../pages/Staking";
@@ -10,6 +10,8 @@ import Landing from "../pages/Landing";
 import StrategyVault from "../pages/StrategyVault";
 import { AlertOverlay } from "./common/AlertMessage";
 import { createContext } from "react";
+import AppContainer from "./common/container/AppContainer";
+import { Grid, GridCol, GridRow } from "./common/Grid";
 
 function Connector() {
   const network = useNetwork();
@@ -29,36 +31,42 @@ function Connector() {
           path="/"
           element={
             <>
-              <AlertOverlay>
-                {process.env.REACT_APP_LANDING_PHASE == "true" ? (
-                  <Landing />
-                ) : process.env.REACT_APP_PRESALE_PHASE == "true" ? (
-                  <Presale />
-                ) : process.env.REACT_APP_PUBLIC_SALE_PHASE == "true" ? (
-                  <PublicSale />
-                ) : process.env.REACT_APP_LAUNCH_PHASE == "true" ? (
-                  <Better />
-                ) : null}
-              </AlertOverlay>
+              {process.env.REACT_APP_PHASE == "LANDING" ? (
+                <Landing />
+              ) : process.env.REACT_APP_PHASE == "PRESALE" ? (
+                <Presale />
+              ) : process.env.REACT_APP_PHASE == "PUBLIC_SALE" ? (
+                <PublicSale />
+              ) : process.env.REACT_APP_PHASE == "PRODUCTION" ? (
+                <Better />
+              ) : (
+                <Landing />
+              )}
             </>
           }
         />
 
-        <Route
-          path="/staking"
-          element={
-            <AlertOverlay>
-              <Staking />
-            </AlertOverlay>
-          }
-        />
+        <Route path="/staking" element={<Staking />} />
 
+        <Route path="/vaults" element={<StrategyVault />} />
         <Route
-          path="/vaults"
+          path="/template"
           element={
-            <AlertOverlay>
-              <StrategyVault />
-            </AlertOverlay>
+            <AppContainer>
+              {/* <Grid>
+                <GridRow>
+                  <GridCol xs={8} sm={6}>
+                    <Link to="/" style={{ height: "inherit" }}>
+                      <img
+                        style={{ height: "100%" }}
+                        src={require("../static/image/better-logo.png")}
+                      />
+                    </Link>
+                  </GridCol>
+                  <GridCol xs={6}>col 2</GridCol>
+                </GridRow>
+              </Grid> */}
+            </AppContainer>
           }
         />
       </Routes>

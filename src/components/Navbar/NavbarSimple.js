@@ -139,4 +139,4 @@ const Hamburger = () => {
     </div>
   );
 };
-export default NavbarSimple;
+export { NavbarSimple, Hamburger };

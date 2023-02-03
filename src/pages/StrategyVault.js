@@ -14,17 +14,11 @@ import {
 } from "../components/common/Card";
 import Connect from "../components/common/Connect";
 import {
-  AppContainer,
   Container,
   InnerContainer,
-} from "../components/common/Container";
-import {
-  Grid,
-  GridCell,
-  GridRow,
-  GridCell2,
-  GridCell4,
-} from "../components/common/Grid";
+} from "../components/common/container/Container";
+import AppContainer from "../components/common/container/AppContainer.js";
+import { Grid, GridCol, GridRow } from "../components/common/Grid";
 import { Input, InputNumber } from "../components/common/Input";
 import {
   CenterText,
@@ -249,16 +243,16 @@ function StrategyVault() {
               <Card>
                 <Grid>
                   <GridRow>
-                    <GridCell colSpan={2}>
+                    <GridCol colSpan={2}>
                       <FancyTitle word1={"Strategy"} word2={"Vaults"} />
-                    </GridCell>
+                    </GridCol>
                   </GridRow>
                   <GridRow>
-                    <GridCell2>
+                    <GridCol>
                       <div style={{ display: "flex" }}>
                         <Grid>
                           <GridRow>
-                            <GridCell colSpan={2}>
+                            <GridCol colSpan={2}>
                               <div
                                 style={{
                                   height: "2.5rem",
@@ -277,17 +271,17 @@ function StrategyVault() {
                                   )}
                                 />
                               </div>
-                            </GridCell>
+                            </GridCol>
                           </GridRow>
                           <GridRow>
-                            <GridCell2>
+                            <GridCol>
                               <CardBlueBgBlackBorder>
                                 <CenterText>
                                   <b>Vault Balance:</b>
                                 </CenterText>
                               </CardBlueBgBlackBorder>
-                            </GridCell2>
-                            <GridCell2>
+                            </GridCol>
+                            <GridCol>
                               <CenterText>
                                 <b>
                                   {vaultBalanceInfo
@@ -301,15 +295,15 @@ function StrategyVault() {
                                   {nativeGas}
                                 </b>
                               </CenterText>
-                            </GridCell2>
+                            </GridCol>
                           </GridRow>
                           <GridRow>
-                            <GridCell colSpan={2}>
+                            <GridCol colSpan={2}>
                               <Button onClick={depositWrite}>Mint</Button>
-                            </GridCell>
+                            </GridCol>
                           </GridRow>
                           <GridRow>
-                            <GridCell colSpan={2}>
+                            <GridCol colSpan={2}>
                               <div style={{ display: "flex" }}>
                                 <FancyText style={{ marginRight: "1rem" }}>
                                   for
@@ -327,10 +321,10 @@ function StrategyVault() {
                               <CenterText>
                                 <b>{nativeGas}</b>
                               </CenterText>
-                            </GridCell>
+                            </GridCol>
                           </GridRow>
                           <GridRow>
-                            <GridCell colSpan={2}>
+                            <GridCol colSpan={2}>
                               <FancyText>
                                 <CenterText>and receive</CenterText>
                               </FancyText>
@@ -338,12 +332,12 @@ function StrategyVault() {
                                 <CenterText>{previewMintAmount}</CenterText>
                               </CardBlueBgBlackBorder>
                               <CenterText>{currentVaultName}</CenterText>
-                            </GridCell>
+                            </GridCol>
                           </GridRow>
                         </Grid>
                         <Grid>
                           <GridRow>
-                            <GridCell colSpan={2}>
+                            <GridCol colSpan={2}>
                               <div
                                 style={{
                                   height: "2.5rem",
@@ -362,24 +356,24 @@ function StrategyVault() {
                                   itemLabelList={strategyRef}
                                 />
                               </div>
-                            </GridCell>
+                            </GridCol>
                           </GridRow>
                           <GridRow>
-                            <GridCell2>
+                            <GridCol>
                               <CardBlueBgBlackBorder>
                                 <CenterText>
                                   <b>Vault Performance:</b>
                                 </CenterText>
                               </CardBlueBgBlackBorder>
-                            </GridCell2>
-                            <GridCell2>
+                            </GridCol>
+                            <GridCol>
                               <CenterText>
                                 <b>xxx% APR</b>
                               </CenterText>
-                            </GridCell2>
+                            </GridCol>
                           </GridRow>
                           <GridRow>
-                            <GridCell colSpan={2}>
+                            <GridCol colSpan={2}>
                               {/* need to change this later when new view function for it is added */}
                               <ButtonWithInfo
                                 onClick={withdrawWrite}
@@ -404,10 +398,10 @@ function StrategyVault() {
                                     : `Burn`}
                                 </MedText>
                               </ButtonWithInfo>
-                            </GridCell>
+                            </GridCol>
                           </GridRow>
                           <GridRow>
-                            <GridCell colSpan={2}>
+                            <GridCol colSpan={2}>
                               <div style={{ display: "flex" }}>
                                 <FancyText style={{ marginRight: "1rem" }}>
                                   for
@@ -425,10 +419,10 @@ function StrategyVault() {
                               <CenterText>
                                 <b>{currentVaultName}</b>
                               </CenterText>
-                            </GridCell>
+                            </GridCol>
                           </GridRow>
                           <GridRow>
-                            <GridCell colSpan={2}>
+                            <GridCol colSpan={2}>
                               <FancyText>
                                 <CenterText>and receive</CenterText>
                               </FancyText>
@@ -436,11 +430,11 @@ function StrategyVault() {
                                 <CenterText>{previewBurnAmount}</CenterText>
                               </CardBlueBgBlackBorder>
                               <CenterText>{nativeGas}</CenterText>
-                            </GridCell>
+                            </GridCol>
                           </GridRow>
                         </Grid>
                       </div>
-                    </GridCell2>
+                    </GridCol>
                   </GridRow>
                 </Grid>
               </Card>

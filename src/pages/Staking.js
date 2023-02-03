@@ -2,15 +2,9 @@ import { Button } from "../components/common/Button";
 import { Contract, ethers } from "ethers";
 import { useCallback, useContext, useEffect, useState } from "react";
 import { Card, CardBlueBgBlackBorder } from "../components/common/Card";
-import { AppContainer, Container } from "../components/common/Container";
-import {
-  Grid,
-  GridCell,
-  GridCell2,
-  GridCell3,
-  GridCell4,
-  GridRow,
-} from "../components/common/Grid";
+import { Container } from "../components/common/container/Container";
+import AppContainer from "../components/common/container/AppContainer";
+import { Grid, GridCol, GridRow } from "../components/common/Grid";
 import { InputNumber } from "../components/common/Input";
 import Navbar from "../components/Navbar/Navbar";
 import StakeDiagram from "../components/Staking/StakeDiagram";
@@ -384,12 +378,12 @@ function Staking() {
           <div className={styles.innerContainer}>
             <Grid>
               <GridRow>
-                <GridCell colSpan={2}>
+                <GridCol colSpan={2}>
                   <div className={styles.cardContainer}>
                     <Card>
                       <Grid>
                         <GridRow>
-                          <GridCell colSpan={3}>
+                          <GridCol colSpan={3}>
                             <FancyText
                               style={{
                                 textAlign: "center",
@@ -399,10 +393,10 @@ function Staking() {
                             >
                               Staking
                             </FancyText>
-                          </GridCell>
+                          </GridCol>
                         </GridRow>
                         <GridRow>
-                          <GridCell3>
+                          <GridCol>
                             <InputNumber
                               max={0}
                               min={0}
@@ -410,8 +404,8 @@ function Staking() {
                               placeholder={"hi"}
                               value={0}
                             />
-                          </GridCell3>
-                          <GridCell3>
+                          </GridCol>
+                          <GridCol>
                             <Dropdown
                               currentItem={"AVAX"}
                               currentItemLabel={"AVAX"}
@@ -425,18 +419,18 @@ function Staking() {
                                 "HARDHAT",
                               ]}
                             />
-                          </GridCell3>
-                          <GridCell3>
+                          </GridCol>
+                          <GridCol>
                             <Button>Bridge</Button>
-                          </GridCell3>
+                          </GridCol>
                         </GridRow>
                       </Grid>
                     </Card>
                   </div>
-                </GridCell>
+                </GridCol>
               </GridRow>
               <GridRow>
-                <GridCell2>
+                <GridCol>
                   <div className={styles.assetContainer}>
                     <StakeDiagram
                       stakeSymbol={lpTokenSymbol}
@@ -445,8 +439,8 @@ function Staking() {
                       rewardName={"Better Token"}
                     />
                   </div>
-                </GridCell2>
-                <GridCell2>
+                </GridCol>
+                <GridCol>
                   <div className={styles.assetContainer}>
                     <StakeDiagram
                       stakeSymbol={"BT"}
@@ -459,22 +453,22 @@ function Staking() {
                       }
                     />
                   </div>
-                </GridCell2>
+                </GridCol>
               </GridRow>
               <GridRow>
-                <GridCell2>
+                <GridCol>
                   <div className={styles.assetContainer}>
                     <Card>
                       <Grid>
                         <GridRow>
-                          <GridCell3 colSpan={3}>
+                          <GridCol colSpan={3}>
                             <Grid>
-                              <GridCell4>
+                              <GridCol>
                                 <CardBlueBgBlackBorder>
                                   <b>Total staked:</b>
                                 </CardBlueBgBlackBorder>
-                              </GridCell4>
-                              <GridCell4>
+                              </GridCol>
+                              <GridCol>
                                 <b>
                                   {totalLpStaked}{" "}
                                   {`BT-${
@@ -482,20 +476,20 @@ function Staking() {
                                       ?.nativeGas
                                   } LP`}
                                 </b>
-                              </GridCell4>
-                              <GridCell4>
+                              </GridCol>
+                              <GridCol>
                                 <CardBlueBgBlackBorder>
                                   <b>Current APR:</b>
                                 </CardBlueBgBlackBorder>
-                              </GridCell4>
-                              <GridCell4>
+                              </GridCol>
+                              <GridCol>
                                 <b>brrrrr%</b>
-                              </GridCell4>
+                              </GridCol>
                             </Grid>
-                          </GridCell3>
+                          </GridCol>
                         </GridRow>
                         <GridRow>
-                          <GridCell3 colSpan={2}>
+                          <GridCol colSpan={2}>
                             <InputNumber
                               onChange={handleLpAmount}
                               min={0}
@@ -507,8 +501,8 @@ function Staking() {
                               value={lpAmount > 0 ? lpAmount : ""}
                               setValue={setLpAmount}
                             />
-                          </GridCell3>
-                          <GridCell3>
+                          </GridCol>
+                          <GridCol>
                             <InputNumber
                               onChange={handleZapAmount}
                               min={0}
@@ -517,10 +511,10 @@ function Staking() {
                               value={zapAmount > 0 ? zapAmount : ""}
                               setValue={setZapAmount}
                             />
-                          </GridCell3>
+                          </GridCol>
                         </GridRow>
                         <GridRow>
-                          <GridCell3>
+                          <GridCol>
                             {ethers.BigNumber.from(lpAllowance.toString()).lte(
                               ethers.BigNumber.from("0")
                             ) ? (
@@ -528,53 +522,53 @@ function Staking() {
                             ) : (
                               <Button onClick={stakeLpWrite}>Stake</Button>
                             )}
-                          </GridCell3>
-                          <GridCell3>
+                          </GridCol>
+                          <GridCol>
                             <Button onClick={unstakeLpWrite}>Unstake</Button>
-                          </GridCell3>
-                          <GridCell3>
+                          </GridCol>
+                          <GridCol>
                             <Button onClick={() => {}} disabled>
                               Zap in
                             </Button>
-                          </GridCell3>
+                          </GridCol>
                         </GridRow>
                         <GridRow>
-                          <GridCell colSpan={3}>
+                          <GridCol colSpan={3}>
                             <Button onClick={claimLpWrite}>Claim</Button>
-                          </GridCell>
+                          </GridCol>
                         </GridRow>
                       </Grid>
                     </Card>
                   </div>
-                </GridCell2>
-                <GridCell2>
+                </GridCol>
+                <GridCol>
                   <div className={styles.assetContainer}>
                     <Card>
                       <Grid>
                         <GridRow>
-                          <GridCell3 colSpan={3}>
+                          <GridCol colSpan={3}>
                             <Grid>
-                              <GridCell4>
+                              <GridCol>
                                 <CardBlueBgBlackBorder>
                                   <b>Total staked:</b>
                                 </CardBlueBgBlackBorder>
-                              </GridCell4>
-                              <GridCell4>
+                              </GridCol>
+                              <GridCol>
                                 <b>{totalBtStaked} BT</b>
-                              </GridCell4>
-                              <GridCell4>
+                              </GridCol>
+                              <GridCol>
                                 <CardBlueBgBlackBorder>
                                   <b>Current APR:</b>
                                 </CardBlueBgBlackBorder>
-                              </GridCell4>
-                              <GridCell4>
+                              </GridCol>
+                              <GridCol>
                                 <b>brrrrr%</b>
-                              </GridCell4>
+                              </GridCol>
                             </Grid>
-                          </GridCell3>
+                          </GridCol>
                         </GridRow>
                         <GridRow>
-                          <GridCell colSpan={2}>
+                          <GridCol colSpan={2}>
                             <InputNumber
                               onChange={handleBtAmount}
                               min={0}
@@ -583,10 +577,10 @@ function Staking() {
                               value={btAmount > 0 ? btAmount : ""}
                               setValue={setBtAmount}
                             />
-                          </GridCell>
+                          </GridCol>
                         </GridRow>
                         <GridRow>
-                          <GridCell2>
+                          <GridCol>
                             {ethers.BigNumber.from(btAllowance.toString()).lte(
                               ethers.BigNumber.from("0")
                             ) ? (
@@ -594,20 +588,20 @@ function Staking() {
                             ) : (
                               <Button onClick={stakeBtWrite}>Stake</Button>
                             )}
-                          </GridCell2>
-                          <GridCell2>
+                          </GridCol>
+                          <GridCol>
                             <Button onClick={unstakeBtWrite}>Unstake</Button>
-                          </GridCell2>
+                          </GridCol>
                         </GridRow>
                         <GridRow>
-                          <GridCell colSpan={2}>
+                          <GridCol colSpan={2}>
                             <Button onClick={claimBtWrite}>Claim</Button>
-                          </GridCell>
+                          </GridCol>
                         </GridRow>
                       </Grid>
                     </Card>
                   </div>
-                </GridCell2>
+                </GridCol>
               </GridRow>
             </Grid>
           </div>

@@ -92,7 +92,7 @@ import { underlyingPairAddress } from "../../static/contractAddresses";
 import { useState, useRef, useLayoutEffect, useEffect } from "react";
 import { useContractRead, useContractReads } from "wagmi";
 import { BigNumber, ethers } from "ethers";
-import { Grid, GridCell2, GridCell3, GridRow } from "../common/Grid";
+import { Grid, GridCol, GridRow } from "../common/Grid";
 
 import AggregatorV3InterfaceABI from "../../static/ABI/AggregatorV3InterfaceABI.json";
 /* global BigInt */
@@ -485,28 +485,28 @@ const Chart = (props) => {
         </div>
         <Grid>
           <GridRow>
-            <GridCell3>
-              <GridCell2>
+            <GridCol>
+              <GridCol>
                 <b>Current: {currentPrice}</b>
-              </GridCell2>
-            </GridCell3>
-            <GridCell3>
-              <GridCell2>
+              </GridCol>
+            </GridCol>
+            <GridCol>
+              <GridCol>
                 Epoch open:{" "}
                 {lastEpochData
                   ? ethers.utils.formatEther(lastEpochData.closingPrice)
                   : null}
-              </GridCell2>
-            </GridCell3>
-            <GridCell3>
-              <GridCell2>
+              </GridCol>
+            </GridCol>
+            <GridCol>
+              <GridCol>
                 Last updated:{" "}
                 {(() => {
                   const dt = new Date(lastUpdated * 1000);
                   return `${dt.toLocaleTimeString()}`;
                 })()}
-              </GridCell2>
-            </GridCell3>
+              </GridCol>
+            </GridCol>
           </GridRow>
         </Grid>
       </div>

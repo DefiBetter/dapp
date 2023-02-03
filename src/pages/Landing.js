@@ -1,8 +1,7 @@
 import { useAccount, useNetwork } from "wagmi";
 import Social from "../components/common/Social";
 
-import Navbar from "../components/Navbar/Navbar";
-import NavbarSimple from "../components/Navbar/NavbarSimple";
+import { NavbarSimple } from "../components/Navbar/NavbarSimple";
 import styles from "./Landing.module.css";
 
 function Landing() {

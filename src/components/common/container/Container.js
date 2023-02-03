@@ -1,4 +1,6 @@
+import { useContext, useEffect, useState } from "react";
 import styled from "styled-components";
+import WindowContext from "../../../context/WindowContext";
 
 const Container = styled.div`
   margin: 1rem;
@@ -15,7 +17,7 @@ const Container = styled.div`
   ${(props) => (props.overflow ? null : "overflow: hidden;")}
 `;
 
-const AppContainer = styled.div`
+styled.div`
   display: flex;
   flex-direction: column;
   height: 100vh;
@@ -32,4 +34,4 @@ const InnerContainer = styled.div`
   gap: 20px;
 `;
 
-export { Container, AppContainer, InnerContainer };
+export { Container, InnerContainer };

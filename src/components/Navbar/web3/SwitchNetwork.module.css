@@ -2,18 +2,24 @@
     display: flex;
     flex-direction: row;
     align-items: center;
-    justify-content: space-evenly;
+    /* justify-content: space-evenly; */
+    width: 100%;
+    /* float: right; */
 }
 
 .network {
     border-radius: 100px;
-    height: 60px;
-    width: 100%;
+    height: 100%;
     /* background-color: darkcyan; */
     border-width: 0;
     cursor: pointer;
-    float: right;
-    padding-right: 1rem;
+    /* float: right; */
+    margin-right: 1rem;
+}
+
+.network:first-child {
+    margin-left: auto;
+
 }
 
 .network>img {

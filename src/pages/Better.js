@@ -20,7 +20,8 @@ import Pair from "../components/Better/Pair";
 import Chart from "../components/Chart/Chart";
 import Navbar from "../components/Navbar/Navbar";
 import styles from "./Better.module.css";
-import { AppContainer, Container } from "../components/common/Container";
+import { Container } from "../components/common/container/Container";
+import AppContainer from "../components/common/container/AppContainer";
 
 // ABIs
 import DeFiBetterV1ABI from "../static/ABI/DeFiBetterV1ABI.json";

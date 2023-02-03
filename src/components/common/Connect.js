@@ -1,26 +1,13 @@
-import Navbar from "../Navbar/Navbar";
-import { AppContainer } from "./Container";
-
 const Connect = ({ isConnected, activeChain, children }) => {
   if (!isConnected) {
-    return (
-      <AppContainer>
-        <Navbar />
-        <div>Please connect your wallet</div>
-      </AppContainer>
-    );
+    return <div>Please connect your wallet</div>;
   }
 
   if (activeChain?.unsupported) {
-    return (
-      <AppContainer>
-        <Navbar />
-        <div>Unsupported chain</div>
-      </AppContainer>
-    );
+    return <div>Unsupported chain</div>;
   }
 
-  return children;
+  return { children };
 };
 
 export default Connect;

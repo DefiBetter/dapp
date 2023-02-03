@@ -17,9 +17,10 @@ import { ethers } from "ethers";
 import Navbar from "../components/Navbar/Navbar";
 
 import styles from "./PublicSale.module.css";
-import { AppContainer, Container } from "../components/common/Container";
+import AppContainer from "../components/common/container/AppContainer";
+import { Container } from "../components/common/container/Container";
 import { Card } from "../components/common/Card";
-import { Grid, GridCell, GridCell4, GridRow } from "../components/common/Grid";
+import { Grid, GridCol, GridRow } from "../components/common/Grid";
 
 function PublicSale() {
   const etherAddress = "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE";
@@ -298,64 +299,64 @@ function PublicSale() {
           <Card>
             <Grid>
               <GridRow>
-                <GridCell colSpan={4}>
+                <GridCol colSpan={4}>
                   <div className={styles.currentPrice}>
                     <p>
                       <b>Current price:</b> {input / output} WETH ($
                       {(input / output) * 1500})
                     </p>
                   </div>
-                </GridCell>
+                </GridCol>
               </GridRow>
               <GridRow>
-                <GridCell4>
+                <GridCol>
                   <div className={styles.header}>
                     <b>Time left</b>
                   </div>
-                </GridCell4>
-                <GridCell4>
+                </GridCol>
+                <GridCol>
                   <div className={styles.statBody}>{}</div>
-                </GridCell4>
-                <GridCell4>
+                </GridCol>
+                <GridCol>
                   <div className={styles.header}>
                     <b>Supply left</b>
                   </div>
-                </GridCell4>
-                <GridCell4>
+                </GridCol>
+                <GridCol>
                   <div className={styles.statBody}>
                     {ethers.utils.formatEther(supplyLeft || 0)}
                   </div>
-                </GridCell4>
+                </GridCol>
               </GridRow>
               <GridRow>
-                <GridCell>
+                <GridCol>
                   <div className={styles.action}>BUY</div>
-                </GridCell>
-                <GridCell colSpan={3}>
+                </GridCol>
+                <GridCol colSpan={3}>
                   <input
                     className={styles.amount}
                     type="number"
                     placeholder="0"
                     onChange={buyingTargetChanged}
                   />
-                </GridCell>
+                </GridCol>
               </GridRow>
               <GridRow>
-                <GridCell>
+                <GridCol>
                   <div className={styles.action}>FOR</div>
-                </GridCell>
-                <GridCell colSpan={3}>
+                </GridCol>
+                <GridCol colSpan={3}>
                   <input
                     className={styles.amount}
                     type="number"
                     value={output}
                   />
-                </GridCell>
+                </GridCol>
               </GridRow>
               <GridRow>
-                <GridCell colSpan={4}>
+                <GridCol colSpan={4}>
                   <Button onClick={allowFunction}>Buy</Button>
-                </GridCell>
+                </GridCol>
               </GridRow>
             </Grid>
           </Card>

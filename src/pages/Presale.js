@@ -14,14 +14,14 @@ import IERC20MetadataABI from "../static/ABI/IERC20MetadataABI.json";
 import { contractAddresses } from "../static/contractAddresses";
 import { ethers } from "ethers";
 import {
-  AppContainer,
   Container,
   InnerContainer,
-} from "../components/common/Container";
+} from "../components/common/container/Container";
+import AppContainer from "../components/common/container/AppContainer";
 import Navbar from "../components/Navbar/Navbar";
 import { Card } from "../components/common/Card";
 import FancyTitle from "../components/common/Title";
-import { Grid, GridCell, GridRow } from "../components/common/Grid";
+import { Grid, GridCol, GridRow } from "../components/common/Grid";
 import { BlueBorder } from "../components/common/Border";
 
 function PublicSale() {
@@ -270,17 +270,17 @@ function PublicSale() {
           <Card>
             <Grid>
               <GridRow>
-                <GridCell>Presale Price</GridCell>
-                <GridCell>100$</GridCell>
+                <GridCol>Presale Price</GridCol>
+                <GridCol>100$</GridCol>
               </GridRow>
               <GridRow>
-                <GridCell>Amount</GridCell>
-                <GridCell>
+                <GridCol>Amount</GridCol>
+                <GridCol>
                   <BlueBorder></BlueBorder>100
-                </GridCell>
+                </GridCol>
               </GridRow>
               <GridRow>
-                <GridCell>Buy</GridCell>
+                <GridCol>Buy</GridCol>
               </GridRow>
             </Grid>
           </Card>

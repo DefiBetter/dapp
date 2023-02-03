@@ -17,8 +17,8 @@ const { chains, provider, webSocketProvider } = configureChains(
     customChains.binanceSmartChain,
     // customChains.fantomChain,
     // customChains.defiBetterChain,
-    // { ...chain.hardhat, logo: "hardhat-logo.png" },
-    // chain.hardhat
+    { ...chain.hardhat, logo: "hardhat-logo.png" },
+    chain.hardhat,
   ],
   [
     publicProvider(),

@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import styles from "./Epoch.module.css";
 import Countdown from "react-countdown";
 import { Card } from "../common/Card";
-import { Grid, GridCell2, GridCell4, GridRow } from "../common/Grid";
+import { Grid, GridCol, GridRow } from "../common/Grid";
 import { timeFormat } from "../common/helper";
 import { BlueText, FancyText } from "../common/Text";
 
@@ -72,58 +72,58 @@ const Epoch = (props) => {
       >
         <Grid padding={0} style={{ borderSpacing: "0rem" }}>
           <GridRow>
-            <GridCell4 padding={0}>
+            <GridCol padding={0}>
               <BlueText>
                 <b>Gain fee:</b>
               </BlueText>
-            </GridCell4>
-            <GridCell4 padding={0} style={{ textAlign: "center" }}>
+            </GridCol>
+            <GridCol padding={0} style={{ textAlign: "center" }}>
               {(+props.instrument.gainFee / 10_000 ** 2) * 100}%
-            </GridCell4>
-            <GridCell4 padding={0}>
+            </GridCol>
+            <GridCol padding={0}>
               <BlueText>
                 <b>Fees:</b>
               </BlueText>
-            </GridCell4>
-            <GridCell4 padding={0} style={{ textAlign: "center" }}>
+            </GridCol>
+            <GridCol padding={0} style={{ textAlign: "center" }}>
               {(+props.instrument.flatFee / 10_000 ** 2) * 100}%
-            </GridCell4>
+            </GridCol>
           </GridRow>
           <GridRow>
-            <GridCell4 padding={0}>
+            <GridCol padding={0}>
               <BlueText>
                 <b>Buffer time:</b>
               </BlueText>
-            </GridCell4>
-            <GridCell4 padding={0} style={{ textAlign: "center" }}>
+            </GridCol>
+            <GridCol padding={0} style={{ textAlign: "center" }}>
               {timeFormat(+props.instrument.bufferDurationInSeconds)}
-            </GridCell4>
-            <GridCell4 padding={0}>
+            </GridCol>
+            <GridCol padding={0}>
               <BlueText>
                 <b>Volatility factor:</b>
               </BlueText>
-            </GridCell4>
-            <GridCell4 padding={0} style={{ textAlign: "center" }}>
+            </GridCol>
+            <GridCol padding={0} style={{ textAlign: "center" }}>
               {+props.instrument.volatilityMultiplier / 10_000}
-            </GridCell4>
+            </GridCol>
           </GridRow>
           <GridRow>
-            <GridCell4 padding={0}>
+            <GridCol padding={0}>
               <BlueText>
                 <b>Epoch close:</b>
               </BlueText>
-            </GridCell4>
-            <GridCell4 padding={0} style={{ textAlign: "center" }}>
+            </GridCol>
+            <GridCol padding={0} style={{ textAlign: "center" }}>
               {endTimeFormatted()}
-            </GridCell4>
-            <GridCell4 padding={0}>
+            </GridCol>
+            <GridCol padding={0}>
               <BlueText>
                 <b>Base error:</b>
               </BlueText>
-            </GridCell4>
-            <GridCell4 padding={0} style={{ textAlign: "center" }}>
+            </GridCol>
+            <GridCol padding={0} style={{ textAlign: "center" }}>
               {+props.instrument.baseError / 10_000}
-            </GridCell4>
+            </GridCol>
           </GridRow>
         </Grid>
       </Card>

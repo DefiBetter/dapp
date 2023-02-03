@@ -16,7 +16,7 @@ import {
   NormalText,
   SmallText,
 } from "../common/Text";
-import { Grid, GridCell2, GridRow } from "../common/Grid";
+import { Grid, GridCol, GridRow } from "../common/Grid";
 
 import { ethers } from "ethers";
 import truncateEthAddress from "truncate-eth-address";
@@ -364,22 +364,22 @@ const Detail = (props) => {
             <CardFill backgroundColor={"blue"} noBorder={true}>
               <Grid>
                 <GridRow>
-                  <GridCell2 padding={0.2}>
+                  <GridCol padding={0.2}>
                     <ExSmallText>Epoch:</ExSmallText>
-                  </GridCell2>
-                  <GridCell2 padding={0.2}>
+                  </GridCol>
+                  <GridCol padding={0.2}>
                     <ExSmallText>
                       {props.instrument
                         ? props.instrument.epoch.toString()
                         : null}
                     </ExSmallText>
-                  </GridCell2>
+                  </GridCol>
                 </GridRow>
                 <GridRow>
-                  <GridCell2 padding={0.2}>
+                  <GridCol padding={0.2}>
                     <ExSmallText>Pot size:</ExSmallText>
-                  </GridCell2>
-                  <GridCell2 padding={0.2}>
+                  </GridCol>
+                  <GridCol padding={0.2}>
                     <ExSmallText>
                       {props.epochData
                         ? trimNumber(
@@ -390,19 +390,19 @@ const Detail = (props) => {
                         : null}{" "}
                       {props.nativeGas ? props.nativeGas : null}
                     </ExSmallText>
-                  </GridCell2>
+                  </GridCol>
                 </GridRow>
                 <GridRow>
-                  <GridCell2 padding={0.2}>
+                  <GridCol padding={0.2}>
                     <ExSmallText>Number of bets:</ExSmallText>
-                  </GridCell2>
-                  <GridCell2 padding={0.2}>
+                  </GridCol>
+                  <GridCol padding={0.2}>
                     <ExSmallText>
                       {props.epochData
                         ? props.epochData.numBets.toString()
                         : null}
                     </ExSmallText>
-                  </GridCell2>
+                  </GridCol>
                 </GridRow>
               </Grid>
             </CardFill>
@@ -414,10 +414,10 @@ const Detail = (props) => {
             <CardFill backgroundColor={"blue"} noBorder={true}>
               <Grid>
                 <GridRow>
-                  <GridCell2 padding={0.2}>
+                  <GridCol padding={0.2}>
                     <ExSmallText>Position value:</ExSmallText>
-                  </GridCell2>
-                  <GridCell2 padding={0.2}>
+                  </GridCol>
+                  <GridCol padding={0.2}>
                     <ExSmallText>
                       {trimNumber(
                         ethers.utils.formatEther(props.userPosition || 0),
@@ -426,54 +426,54 @@ const Detail = (props) => {
                       )}{" "}
                       {props.nativeGas}
                     </ExSmallText>
-                  </GridCell2>
+                  </GridCol>
                 </GridRow>
                 <GridRow>
-                  <GridCell2 padding={0.2}>
+                  <GridCol padding={0.2}>
                     <ExSmallText>Pending rewards:</ExSmallText>
-                  </GridCell2>
-                  <GridCell2 padding={0.2}>
+                  </GridCol>
+                  <GridCol padding={0.2}>
                     <ExSmallText>
                       {trimNumber(props.pendingBetterBalance, 6, "dp")}{" "}
                       {props.nativeGas}
                     </ExSmallText>
-                  </GridCell2>
+                  </GridCol>
                 </GridRow>
                 <GridRow>
-                  <GridCell2 padding={0.2}>
+                  <GridCol padding={0.2}>
                     <ExSmallText>Number of games:</ExSmallText>
-                  </GridCell2>
-                  <GridCell2 padding={0.2}>
+                  </GridCol>
+                  <GridCol padding={0.2}>
                     <ExSmallText>
                       {props.userGainsInfo.numberOfGames.toString()}
                     </ExSmallText>
-                  </GridCell2>
+                  </GridCol>
                 </GridRow>
                 <GridRow>
-                  <GridCell2 padding={0.2}>
+                  <GridCol padding={0.2}>
                     <ExSmallText>Biggest gain:</ExSmallText>
-                  </GridCell2>
-                  <GridCell2 padding={0.2}>
+                  </GridCol>
+                  <GridCol padding={0.2}>
                     <ExSmallText>
                       {+props.userGainsInfo.biggestRelativeGainAmount >= 0
                         ? "+"
                         : "-"}
                       {+props.userGainsInfo.biggestRelativeGainAmount}%{" "}
                     </ExSmallText>
-                  </GridCell2>
+                  </GridCol>
                 </GridRow>
                 <GridRow>
-                  <GridCell2 padding={0.2}>
+                  <GridCol padding={0.2}>
                     <ExSmallText>Most recent gain:</ExSmallText>
-                  </GridCell2>
-                  <GridCell2 padding={0.2}>
+                  </GridCol>
+                  <GridCol padding={0.2}>
                     <ExSmallText>
                       {+props.userGainsInfo.mostRecentRelativeGainAmount >= 0
                         ? "+"
                         : "-"}
                       {+props.userGainsInfo.mostRecentRelativeGainAmount}%
                     </ExSmallText>
-                  </GridCell2>
+                  </GridCol>
                 </GridRow>
               </Grid>
             </CardFill>
@@ -485,10 +485,10 @@ const Detail = (props) => {
             <CardFill backgroundColor={"blue"} noBorder={true}>
               <Grid>
                 <GridRow>
-                  <GridCell2 padding={0.2}>
+                  <GridCol padding={0.2}>
                     <ExSmallText>Time left for current week:</ExSmallText>
-                  </GridCell2>
-                  <GridCell2 padding={0.2}>
+                  </GridCol>
+                  <GridCol padding={0.2}>
                     <ExSmallText>
                       {props.rewardPeriodInfo ? (
                         <Countdown
@@ -505,13 +505,13 @@ const Detail = (props) => {
                         />
                       ) : null}
                     </ExSmallText>
-                  </GridCell2>
+                  </GridCol>
                 </GridRow>
                 <GridRow>
-                  <GridCell2 padding={0.2}>
+                  <GridCol padding={0.2}>
                     <ExSmallText>Biggest gain (current):</ExSmallText>
-                  </GridCell2>
-                  <GridCell2 padding={0.2}>
+                  </GridCol>
+                  <GridCol padding={0.2}>
                     <ExSmallText>
                       {+props.rewardPeriodInfo
                         .globalBiggestRelativeGainCurrentPeriod >= 0
@@ -527,13 +527,13 @@ const Detail = (props) => {
                           .globalBiggestRelativeGainCurrentPeriodAddress
                       )}
                     </ExSmallText>
-                  </GridCell2>
+                  </GridCol>
                 </GridRow>
                 <GridRow>
-                  <GridCell2 padding={0.2}>
+                  <GridCol padding={0.2}>
                     <ExSmallText>Biggest gain (last):</ExSmallText>
-                  </GridCell2>
-                  <GridCell2 padding={0.2}>
+                  </GridCol>
+                  <GridCol padding={0.2}>
                     <ExSmallText>
                       {+props.rewardPeriodInfo
                         .globalBiggestRelativeGainPastPeriod >= 0
@@ -549,13 +549,13 @@ const Detail = (props) => {
                           .globalBiggestRelativeGainPastPeriodAddress
                       )}
                     </ExSmallText>
-                  </GridCell2>
+                  </GridCol>
                 </GridRow>
                 <GridRow>
-                  <GridCell2 padding={0.2}>
+                  <GridCol padding={0.2}>
                     <ExSmallText>Biggest gain of all time:</ExSmallText>
-                  </GridCell2>
-                  <GridCell2 padding={0.2}>
+                  </GridCol>
+                  <GridCol padding={0.2}>
                     <ExSmallText>
                       {+props.rewardPeriodInfo.globalBiggestRelativeGain >= 0
                         ? "+"
@@ -566,7 +566,7 @@ const Detail = (props) => {
                         props.rewardPeriodInfo.globalBiggestRelativeGainAddress
                       )}
                     </ExSmallText>
-                  </GridCell2>
+                  </GridCol>
                 </GridRow>
               </Grid>
             </CardFill>
