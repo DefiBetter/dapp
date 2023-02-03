@@ -12,11 +12,12 @@ import { AlertOverlay } from "./common/AlertMessage";
 import { createContext } from "react";
 import AppContainer from "./common/container/AppContainer";
 import { Grid, GridCol, GridRow } from "./common/Grid";
+import Connect from "./common/Connect";
 
 function Connector() {
-  const network = useNetwork();
+  const { chain: activeChain } = useNetwork();
   const networkSwitcher = useSwitchNetwork();
-  const account = useAccount();
+  const { address: connectedAddress, isConnected } = useAccount();
 
   const liStyle = {
     display: "inline",
@@ -31,16 +32,20 @@ function Connector() {
           path="/"
           element={
             <>
-              {process.env.REACT_APP_PHASE == "LANDING" ? (
-                <Landing />
-              ) : process.env.REACT_APP_PHASE == "PRESALE" ? (
-                <Presale />
+              {process.env.REACT_APP_PHASE == "PRODUCTION" ? (
+                <Better />
               ) : process.env.REACT_APP_PHASE == "PUBLIC_SALE" ? (
                 <PublicSale />
-              ) : process.env.REACT_APP_PHASE == "PRODUCTION" ? (
-                <Better />
+              ) : process.env.REACT_APP_PHASE == "PRESALE" ? (
+                <Presale />
+              ) : process.env.REACT_APP_PHASE == "LANDING" ? (
+                <AppContainer>
+                  <Landing />
+                </AppContainer>
               ) : (
-                <Landing />
+                <AppContainer>
+                  <Landing />
+                </AppContainer>
               )}
             </>
           }
@@ -48,24 +53,23 @@ function Connector() {
 
         <Route path="/staking" element={<Staking />} />
 
-        <Route path="/vaults" element={<StrategyVault />} />
+        <Route
+          path="/vaults"
+          element={
+            <AppContainer>
+              <Connect isConnected={isConnected} activeChain={activeChain}>
+                <StrategyVault />
+              </Connect>
+            </AppContainer>
+          }
+        />
         <Route
           path="/template"
           element={
             <AppContainer>
-              {/* <Grid>
-                <GridRow>
-                  <GridCol xs={8} sm={6}>
-                    <Link to="/" style={{ height: "inherit" }}>
-                      <img
-                        style={{ height: "100%" }}
-                        src={require("../static/image/better-logo.png")}
-                      />
-                    </Link>
-                  </GridCol>
-                  <GridCol xs={6}>col 2</GridCol>
-                </GridRow>
-              </Grid> */}
+              <Connect isConnected={isConnected} activeChain={activeChain}>
+                hi
+              </Connect>
             </AppContainer>
           }
         />

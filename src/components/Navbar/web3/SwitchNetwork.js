@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { useNetwork, useSwitchNetwork } from "wagmi";
 import styles from "./SwitchNetwork.module.css";
 
