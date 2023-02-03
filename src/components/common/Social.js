@@ -1,17 +1,16 @@
 import styled from "styled-components";
 
 const Logo = styled.img`
-  height: 5rem;
-  width: 5rem;
+  height: 7vw;
+  width: 7vw;
+  max-height: 40px;
+  max-width: 40px;
 `;
 
 const Container = styled.div`
-  width: 50%;
+  width: 70%;
   justify-content: space-evenly;
   display: flex;
-  @media (max-width: 1000px) {
-    width: 100%;
-  }
 `;
 
 const Social = () => {

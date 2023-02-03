@@ -70,7 +70,10 @@ const Navbar = () => {
       <Grid>
         <GridRow>
           <GridCol xs="8" sm="8" md="6" lg="2">
-            <Link to="/" className={styles.logo}>
+            <Link
+              to={process.env.REACT_APP_PHASE == "PRODUCTION" ? "/" : "/"}
+              className={styles.logo}
+            >
               <img
                 height="100%"
                 src={require("../../static/image/better-logo.png")}
@@ -81,17 +84,37 @@ const Navbar = () => {
             <div className={styles.pages}>
               <FancyText>
                 <UnderlineText>
-                  <Link to="/">Better</Link>
+                  <Link
+                    to={process.env.REACT_APP_PHASE == "PRODUCTION" ? "/" : "/"}
+                  >
+                    Better
+                  </Link>
                 </UnderlineText>
               </FancyText>
               <FancyText>
                 <UnderlineText>
-                  <Link to="/staking">Staking</Link>
+                  <Link
+                    to={
+                      process.env.REACT_APP_PHASE == "PRODUCTION"
+                        ? "/staking"
+                        : "/"
+                    }
+                  >
+                    Staking
+                  </Link>
                 </UnderlineText>
               </FancyText>
               <FancyText>
                 <UnderlineText>
-                  <Link to="/vaults">Strategy vaults</Link>
+                  <Link
+                    to={
+                      process.env.REACT_APP_PHASE == "PRODUCTION"
+                        ? "/vaults"
+                        : "/"
+                    }
+                  >
+                    Strategy vaults
+                  </Link>
                 </UnderlineText>
               </FancyText>
               <FancyText>
@@ -207,22 +230,52 @@ const SideNavbar = ({ children, ...props }) => {
                   <>
                     <FancyText>
                       <UnderlineText>
-                        <Link to="/">Better</Link>
+                        <Link
+                          to={
+                            process.env.REACT_APP_PHASE == "PRODUCTION"
+                              ? "/"
+                              : "/"
+                          }
+                        >
+                          Better
+                        </Link>
                       </UnderlineText>
                     </FancyText>
                     <FancyText>
                       <UnderlineText>
-                        <Link to="/staking">Staking</Link>
+                        <Link
+                          to={
+                            process.env.REACT_APP_PHASE == "PRODUCTION"
+                              ? "/staking"
+                              : "/"
+                          }
+                        >
+                          Staking
+                        </Link>
                       </UnderlineText>
                     </FancyText>
                     <FancyText>
                       <UnderlineText>
-                        <Link to="/vaults">Strategy vaults</Link>
+                        <Link
+                          to={
+                            process.env.REACT_APP_PHASE == "PRODUCTION"
+                              ? "/vaults"
+                              : "/"
+                          }
+                        >
+                          Strategy vaults
+                        </Link>
                       </UnderlineText>
                     </FancyText>
                     <FancyText>
                       <UnderlineText>
-                        <a href="https://app.gitbook.com/o/NBcMmIGNsNgrhjS2tczv/s/qLpJBZkEb6TQw9OfyioS/">
+                        <a
+                          href={
+                            process.env.REACT_APP_PHASE == "PRODUCTION"
+                              ? "https://app.gitbook.com/o/NBcMmIGNsNgrhjS2tczv/s/qLpJBZkEb6TQw9OfyioS/"
+                              : "/"
+                          }
+                        >
                           Documentation
                         </a>
                       </UnderlineText>
