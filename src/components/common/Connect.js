@@ -7,7 +7,7 @@ const Connect = ({ isConnected, activeChain, children }) => {
     return <div>Unsupported chain</div>;
   }
 
-  return { children };
+  return children;
 };
 
 export default Connect;
