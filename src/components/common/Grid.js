@@ -22,7 +22,7 @@ const GridRow = styled.div`
   display: flex;
 `;
 
-const borderWidth = "1px";
+const borderWidth = "0px";
 
 const getWidthString = (span) => {
   if (!span) return;

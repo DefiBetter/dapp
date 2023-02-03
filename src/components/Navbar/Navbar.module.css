@@ -41,7 +41,7 @@
     .pages {
         flex-direction: column;
         margin-top: calc(70px + 2rem + 0.3rem * 2);
-        border-style: solid;
+        /* border-style: solid; */
         opacity: 0;
     }
 }
