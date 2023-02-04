@@ -261,146 +261,83 @@ function PublicSale() {
 
   // ------------------------------------------------------------------------------------------
 
-  if (!isConnected) {
-    return (
-      <AppContainer>
-        <Navbar />
-        <div>Please connect your wallet</div>
-      </AppContainer>
-    );
-  }
-
-  if (chain?.unsupported) {
-    return (
-      <AppContainer>
-        <Navbar />
-        <div>Unsupported chain</div>
-      </AppContainer>
-    );
-  }
-
   return (
-    <AppContainer>
-      <Navbar />
-      <Container>
-        <div className={styles.innerContainer}>
-          <Card>
-            <div className={styles.titleImage}>
-              <svg>
-                <text x="20" y="50" className={styles.pre}>
-                  Public
-                </text>
-                <text x="80" y="80" className={styles.sale}>
-                  Sale
-                </text>
-              </svg>
-            </div>
-          </Card>
-          <Card>
-            <Grid>
-              <GridRow>
-                <GridCol colSpan={4}>
-                  <div className={styles.currentPrice}>
-                    <p>
-                      <b>Current price:</b> {input / output} WETH ($
-                      {(input / output) * 1500})
-                    </p>
-                  </div>
-                </GridCol>
-              </GridRow>
-              <GridRow>
-                <GridCol>
-                  <div className={styles.header}>
-                    <b>Time left</b>
-                  </div>
-                </GridCol>
-                <GridCol>
-                  <div className={styles.statBody}>{}</div>
-                </GridCol>
-                <GridCol>
-                  <div className={styles.header}>
-                    <b>Supply left</b>
-                  </div>
-                </GridCol>
-                <GridCol>
-                  <div className={styles.statBody}>
-                    {ethers.utils.formatEther(supplyLeft || 0)}
-                  </div>
-                </GridCol>
-              </GridRow>
-              <GridRow>
-                <GridCol>
-                  <div className={styles.action}>BUY</div>
-                </GridCol>
-                <GridCol colSpan={3}>
-                  <input
-                    className={styles.amount}
-                    type="number"
-                    placeholder="0"
-                    onChange={buyingTargetChanged}
-                  />
-                </GridCol>
-              </GridRow>
-              <GridRow>
-                <GridCol>
-                  <div className={styles.action}>FOR</div>
-                </GridCol>
-                <GridCol colSpan={3}>
-                  <input
-                    className={styles.amount}
-                    type="number"
-                    value={output}
-                  />
-                </GridCol>
-              </GridRow>
-              <GridRow>
-                <GridCol colSpan={4}>
-                  <Button onClick={allowFunction}>Buy</Button>
-                </GridCol>
-              </GridRow>
-            </Grid>
-          </Card>
-        </div>
-      </Container>
-      {/* <p readOnly={true}>
-        Payment token allowance: {getPaymentTokenAllowance()}
-      </p>
-      <p readOnly={true}> Reward token balance: {getRewardTokenBalance()}</p>
-
-      <form>
-        <div onChange={buyingTargetChanged}>
-          <label htmlFor="inputField">Input amount:</label>
-          <input
-            name="inputField"
-            type="text"
-            className="input"
-            placeholder="Buy for..."
-            autoComplete="off"
-            value={input.toString()}
-          />
-        </div>
-
-        <div readOnly={true}>
-          <label htmlFor="outputField">Output estimate:</label>
-          <input
-            name="outputField"
-            type="text"
-            className="input"
-            value={output}
-          />
-        </div>
-
-        <button onClick={buyFunction} disabled={buyingDisabled()}>
-          Buy
-        </button>
-
-        <button onClick={allowFunction} disabled={allowingDisabled()}>
-          Allow
-        </button>
-
-        {isErrorOutputEstimate && <div>Error occured while fetching data!</div>}
-      </form> */}
-    </AppContainer>
+    <Container>
+      <div className={styles.innerContainer}>
+        <Card>
+          <div className={styles.titleImage}>
+            <svg>
+              <text x="20" y="50" className={styles.pre}>
+                Public
+              </text>
+              <text x="80" y="80" className={styles.sale}>
+                Sale
+              </text>
+            </svg>
+          </div>
+        </Card>
+        <Card>
+          <Grid>
+            <GridRow>
+              <GridCol colSpan={4}>
+                <div className={styles.currentPrice}>
+                  <p>
+                    <b>Current price:</b> {input / output} WETH ($
+                    {(input / output) * 1500})
+                  </p>
+                </div>
+              </GridCol>
+            </GridRow>
+            <GridRow>
+              <GridCol>
+                <div className={styles.header}>
+                  <b>Time left</b>
+                </div>
+              </GridCol>
+              <GridCol>
+                <div className={styles.statBody}>{}</div>
+              </GridCol>
+              <GridCol>
+                <div className={styles.header}>
+                  <b>Supply left</b>
+                </div>
+              </GridCol>
+              <GridCol>
+                <div className={styles.statBody}>
+                  {ethers.utils.formatEther(supplyLeft || 0)}
+                </div>
+              </GridCol>
+            </GridRow>
+            <GridRow>
+              <GridCol>
+                <div className={styles.action}>BUY</div>
+              </GridCol>
+              <GridCol colSpan={3}>
+                <input
+                  className={styles.amount}
+                  type="number"
+                  placeholder="0"
+                  onChange={buyingTargetChanged}
+                />
+              </GridCol>
+            </GridRow>
+            <GridRow>
+              <GridCol>
+                <div className={styles.action}>FOR</div>
+              </GridCol>
+              <GridCol colSpan={3}>
+                <input className={styles.amount} type="number" value={output} />
+              </GridCol>
+            </GridRow>
+            <GridRow>
+              <GridCol colSpan={4}>
+                <Button onClick={allowFunction}>Buy</Button>
+              </GridCol>
+            </GridRow>
+          </Grid>
+        </Card>
+      </div>
+    </Container>
   );
 }
 

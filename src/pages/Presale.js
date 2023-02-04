@@ -251,42 +251,31 @@ function PublicSale() {
 
   // ------------------------------------------------------------------------------------------
 
-  if (!isConnected) {
-    return <div>Please connect your wallt</div>;
-  }
-
-  if (activeChain?.unsupported) {
-    return <div>Unsupported activeChain</div>;
-  }
-
   return (
-    <AppContainer>
-      <Navbar />
-      <Container>
-        <InnerContainer>
-          <Card>
-            <FancyTitle word1={"Pre"} word2={"Sale"} />
-          </Card>
-          <Card>
-            <Grid>
-              <GridRow>
-                <GridCol>Presale Price</GridCol>
-                <GridCol>100$</GridCol>
-              </GridRow>
-              <GridRow>
-                <GridCol>Amount</GridCol>
-                <GridCol>
-                  <BlueBorder></BlueBorder>100
-                </GridCol>
-              </GridRow>
-              <GridRow>
-                <GridCol>Buy</GridCol>
-              </GridRow>
-            </Grid>
-          </Card>
-        </InnerContainer>
-      </Container>
-    </AppContainer>
+    <Container>
+      <InnerContainer>
+        <Card>
+          <FancyTitle word1={"Pre"} word2={"Sale"} />
+        </Card>
+        <Card>
+          <Grid>
+            <GridRow>
+              <GridCol>Presale Price</GridCol>
+              <GridCol>100$</GridCol>
+            </GridRow>
+            <GridRow>
+              <GridCol>Amount</GridCol>
+              <GridCol>
+                <BlueBorder></BlueBorder>100
+              </GridCol>
+            </GridRow>
+            <GridRow>
+              <GridCol>Buy</GridCol>
+            </GridRow>
+          </Grid>
+        </Card>
+      </InnerContainer>
+    </Container>
   );
 }
 

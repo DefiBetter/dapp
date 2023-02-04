@@ -34,7 +34,10 @@ const Action = (props) => {
         ),
       },
       onError(data) {
-        setAlertMessageList([...alertMessageList]);
+        setAlertMessageList([...alertMessageList, JSON.stringify(data)]);
+        console.log("openPosition error", data);
+        console.log("openPosition pending", props.pendingBetterBalance);
+        console.log("openPosition binTotal", props.binTotal);
       },
       onSuccess(data) {
         console.log("openPosition", data);

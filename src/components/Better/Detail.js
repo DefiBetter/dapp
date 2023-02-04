@@ -139,14 +139,17 @@ const Detail = (props) => {
       return range(4).map((centreBin) =>
         range(7).map((binDistFromCentre) => {
           // console.log(binCentreSampleSum(binDistFromCentre));
-          return Math.round(
-            (pdf(
-              -i + i / 7 + (2 * binDistFromCentre * i) / 7,
-              (2 * (centreBin - 3) * i) / 7,
-              1
-            ) /
-              binCentreSampleSum(centreBin - 3)) *
-              10_000
+          return (
+            Math.floor(
+              (pdf(
+                -i + i / 7 + (2 * binDistFromCentre * i) / 7,
+                (2 * (centreBin - 3) * i) / 7,
+                1
+              ) /
+                binCentreSampleSum(centreBin - 3)) *
+                10_000 *
+                1_000_000_000
+            ) / 1_000_000_000
           );
         })
       );
@@ -348,7 +351,7 @@ const Detail = (props) => {
             <Button onClick={handleOnClickNormal}>
               <SmallText>Normal</SmallText>
             </Button>
-            <Button>
+            <Button onClick={handleOnClickNormal} disabled>
               <SmallText>Implied</SmallText>
             </Button>
           </div>

@@ -162,7 +162,7 @@ function Better() {
     functionName: "getUserPendingBetterBalance",
     args: [connectedAddress, customGainFee],
     onSuccess(data) {
-      setPendingBetterBalance((+ethers.utils.formatEther(data))?.toFixed(9));
+      setPendingBetterBalance((+ethers.utils.formatEther(data))?.toFixed(18));
     },
     onError(data) {},
     watch: true,
@@ -223,70 +223,72 @@ function Better() {
     // set bin total
   }, [activeChain]);
 
+  /* some extra details for dynamic calc
+  max-width: 1219.2
+  max-height: 812.16
+  */
+
   return (
-    <Connect isConnected={isConnected} activeChain={activeChain}>
-      <AppContainer>
-        <Navbar></Navbar>
-        {epochData && betterContractConfig ? (
-          <Container>
-            <div className={styles.header}>
-              <Pair
-                instrumentList={instrumentList}
-                setInstrument={setInstrument}
-                instrument={instrument}
-                getInstrumentBySelectorRefetch={getInstrumentBySelectorRefetch}
-              />
-              <Epoch
-                instrument={instrument}
-                setInstrument={setInstrument}
-                getInstrumentBySelectorRefetch={getInstrumentBySelectorRefetch}
-                getInstrumentBySelectorIsRefetching={
-                  getInstrumentBySelectorIsRefetching
-                }
-              />
-              <Action
-                betterContractConfig={betterContractConfig}
-                instrument={instrument}
-                binAmountList={binAmountList}
-                setBinTotal={setBinTotal}
-                customFlatFee={customFlatFee}
-                customGainFee={customGainFee}
-                pendingBetterBalance={pendingBetterBalance}
-                nativeGas={nativeGas}
-                setBinAmountList={setBinAmountList}
-                binTotal={binTotal}
-              />
-            </div>
-            <div className={styles.body}>
-              <Chart
-                instrument={instrument}
-                epochData={epochData}
-                betterContractConfig={betterContractConfig}
-              />
-              <Detail
-                binAmountList={binAmountList}
-                binTotal={binTotal}
-                setBinAmountList={setBinAmountList}
-                setBinTotal={setBinTotal}
-                pendingBetterBalance={pendingBetterBalance}
-                epochData={epochData}
-                normalisedBinValueList={normalisedBinValueList}
-                instrument={instrument}
-                nativeGas={nativeGas}
-                userPosition={userPosition}
-                betterContractConfig={betterContractConfig}
-                rewardPeriodInfo={rewardPeriodInfo}
-                userGainsInfo={userGainsInfo}
-              />
-            </div>
-          </Container>
-        ) : (
-          <Container>
-            <BetterLoader />
-          </Container>
-        )}
-      </AppContainer>
-    </Connect>
+    <>
+      {epochData && betterContractConfig ? (
+        <Container>
+          <div className={styles.header}>
+            <Pair
+              instrumentList={instrumentList}
+              setInstrument={setInstrument}
+              instrument={instrument}
+              getInstrumentBySelectorRefetch={getInstrumentBySelectorRefetch}
+            />
+            <Epoch
+              instrument={instrument}
+              setInstrument={setInstrument}
+              getInstrumentBySelectorRefetch={getInstrumentBySelectorRefetch}
+              getInstrumentBySelectorIsRefetching={
+                getInstrumentBySelectorIsRefetching
+              }
+            />
+            <Action
+              betterContractConfig={betterContractConfig}
+              instrument={instrument}
+              binAmountList={binAmountList}
+              setBinTotal={setBinTotal}
+              customFlatFee={customFlatFee}
+              customGainFee={customGainFee}
+              pendingBetterBalance={pendingBetterBalance}
+              nativeGas={nativeGas}
+              setBinAmountList={setBinAmountList}
+              binTotal={binTotal}
+            />
+          </div>
+          <div className={styles.body}>
+            <Chart
+              instrument={instrument}
+              epochData={epochData}
+              betterContractConfig={betterContractConfig}
+            />
+            <Detail
+              binAmountList={binAmountList}
+              binTotal={binTotal}
+              setBinAmountList={setBinAmountList}
+              setBinTotal={setBinTotal}
+              pendingBetterBalance={pendingBetterBalance}
+              epochData={epochData}
+              normalisedBinValueList={normalisedBinValueList}
+              instrument={instrument}
+              nativeGas={nativeGas}
+              userPosition={userPosition}
+              betterContractConfig={betterContractConfig}
+              rewardPeriodInfo={rewardPeriodInfo}
+              userGainsInfo={userGainsInfo}
+            />
+          </div>
+        </Container>
+      ) : (
+        <Container>
+          <BetterLoader />
+        </Container>
+      )}
+    </>
   );
 }
 

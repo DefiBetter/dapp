@@ -33,11 +33,23 @@ function Connector() {
           element={
             <>
               {process.env.REACT_APP_PHASE == "PRODUCTION" ? (
-                <Better />
+                <AppContainer>
+                  <Connect isConnected={isConnected} activeChain={activeChain}>
+                    <Better />
+                  </Connect>
+                </AppContainer>
               ) : process.env.REACT_APP_PHASE == "PUBLIC_SALE" ? (
-                <PublicSale />
+                <AppContainer>
+                  <Connect isConnected={isConnected} activeChain={activeChain}>
+                    <PublicSale />
+                  </Connect>
+                </AppContainer>
               ) : process.env.REACT_APP_PHASE == "PRESALE" ? (
-                <Presale />
+                <AppContainer>
+                  <Connect isConnected={isConnected} activeChain={activeChain}>
+                    <Presale />
+                  </Connect>
+                </AppContainer>
               ) : process.env.REACT_APP_PHASE == "LANDING" ? (
                 <AppContainer>
                   <Landing />
@@ -51,7 +63,16 @@ function Connector() {
           }
         />
 
-        <Route path="/staking" element={<Staking />} />
+        <Route
+          path="/staking"
+          element={
+            <AppContainer>
+              <Connect isConnected={isConnected} activeChain={activeChain}>
+                <Staking />
+              </Connect>
+            </AppContainer>
+          }
+        />
 
         <Route
           path="/vaults"
@@ -68,7 +89,7 @@ function Connector() {
           element={
             <AppContainer>
               <Connect isConnected={isConnected} activeChain={activeChain}>
-                hi
+                <PublicSale />
               </Connect>
             </AppContainer>
           }
