@@ -1,13 +1,13 @@
 // TODO
 const contractAddresses = {
   hardhat: {
-    btToken: "0x2B0d36FACD61B71CC05ab8F3D2355ec3631C0dd5",
-    presale: "0xfbC22278A96299D91d41C453234d97b4F5Eb9B2d",
-    publicSale: "0xC9a43158891282A2B1475592D5719c001986Aaec",
-    btStaking: "0x367761085BF3C12e5DA2Df99AC6E1a824612b8fb",
-    better: "0x4C2F7092C2aE51D986bEFEe378e50BD4dB99C901",
-    lpToken: "0x45AAcfFFd0A96734F79f3C8a391A4CE31236417b",
-    lpStaking: "0xc0F115A19107322cFBf1cDBC7ea011C19EbDB4F8",
+    btToken: process.env.REACT_APP_btToken,
+    presale: process.env.REACT_APP_presale,
+    publicSale: process.env.REACT_APP_publicSale,
+    btStaking: process.env.REACT_APP_btStaking,
+    better: process.env.REACT_APP_better,
+    lpToken: process.env.REACT_APP_lpToken,
+    lpStaking: process.env.REACT_APP_lpStaking,
     nativeGas: "BETTER",
   },
   defibetter: {
