@@ -58,7 +58,7 @@ const NavContainer = ({ children }) => {
 
 const Navbar = () => {
   const windowDimension = useContext(WindowContext);
-  console.log("windowDImension", windowDimension);
+  console.log("windowDimension", windowDimension);
 
   const [showSideNavbar, setShowSideNavbar] = useState(false);
   useEffect(() => {

@@ -30,12 +30,13 @@ const getWidthString = (span) => {
 };
 
 const GridCol = styled.div`
-  height: 100%;
-  display: flex;
+  // height: 100%;
+  // display: flex;
   border-style: solid;
   border-color: grey;
   border-width: ${borderWidth};
   float: left;
+  width: 100%;
 
   ${({ xs }) => (xs ? getWidthString(xs) : `width: 300px;`)}
   ${({ xs }) => (xs == "0" ? "display: none;" : "display: flex;")}

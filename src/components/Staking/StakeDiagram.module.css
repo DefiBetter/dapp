@@ -1,19 +1,19 @@
 .container {
     position: relative;
     width: 100%;
-    margin-bottom: 20px;
+    height: 140px;
+    border-style: hidden;
+    margin: 1rem 0;
 }
 
 .back {
     display: flex;
     flex-direction: row;
-    width: 100%;
-    margin: 20px 0;
+    padding: 1rem;
 }
 
 .front {
     position: absolute;
-    top: 0;
     left: 150px;
     width: calc(100% - 300px);
     align-items: center;

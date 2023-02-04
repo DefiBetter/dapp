@@ -40,8 +40,10 @@ const AppContainer = ({ children }) => {
           return "md";
         } else if (width >= 768) {
           return "sm";
-        } else {
+        } else if (width >= 600) {
           return "xs";
+        } else {
+          return "xxs";
         }
       })()
     );
