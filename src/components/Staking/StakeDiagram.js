@@ -6,7 +6,14 @@ import styles from "./StakeDiagram.module.css";
 const StakeDiagram = (props) => {
   const windowDimension = useContext(WindowContext);
   return (
-    <div className={styles.container}>
+    <div
+      className={styles.container}
+      style={
+        ["xxs"].filter((b) => b == windowDimension.screen).length > 0
+          ? { height: "unset" }
+          : {}
+      }
+    >
       <div
         style={
           ["xxs"].filter((b) => b == windowDimension.screen).length > 0
@@ -21,13 +28,25 @@ const StakeDiagram = (props) => {
         <Card>
           <p className={styles.text}>
             <span className={styles.textFancy}>Stake</span>
-            <span>
+            {["xxs"].filter((b) => b == windowDimension.screen).length > 0 ? (
+              "\xa0\xa0"
+            ) : (
               <br></br>
+            )}
+            <span>
               <b>{props.stakeName}</b>
             </span>
-            <br></br>
+            {["xxs"].filter((b) => b == windowDimension.screen).length > 0 ? (
+              "\xa0\xa0"
+            ) : (
+              <br></br>
+            )}
             <span className={styles.textFancy}>to receive</span>
-            <br></br>
+            {["xxs"].filter((b) => b == windowDimension.screen).length > 0 ? (
+              "\xa0\xa0"
+            ) : (
+              <br></br>
+            )}
             <span>
               <b>{props.rewardName}</b>
             </span>
