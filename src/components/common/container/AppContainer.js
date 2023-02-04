@@ -6,10 +6,14 @@ import styled from "styled-components";
 
 const Container = styled.div`
   padding: 1rem;
+  height: calc(100vh - 2rem);
+  display: flex;
+  flex-direction: column;
 `;
 
 const Body = styled.div`
   padding-top: 1rem;
+  flex: 1;
 `;
 
 const AppContainer = ({ children }) => {

@@ -168,6 +168,9 @@ function StrategyVault() {
     onSuccess(data) {
       setBurnAmount(0);
     },
+    onError(data) {
+      console.log("withdraw error", data);
+    },
   });
 
   // vault balance info
@@ -234,217 +237,214 @@ function StrategyVault() {
   }, [activeChain]);
 
   return (
-    <Connect isConnected={isConnected} activeChain={activeChain}>
+    <>
       {true ? (
-        <AppContainer>
-          <Navbar></Navbar>
-          <Container>
-            <InnerContainer style={{ maxWidth: "55vw" }}>
-              <Card>
-                <Grid>
-                  <GridRow>
-                    <GridCol colSpan={2}>
-                      <FancyTitle word1={"Strategy"} word2={"Vaults"} />
-                    </GridCol>
-                  </GridRow>
-                  <GridRow>
-                    <GridCol>
-                      <div style={{ display: "flex" }}>
-                        <Grid>
-                          <GridRow>
-                            <GridCol colSpan={2}>
-                              <div
-                                style={{
-                                  height: "2.5rem",
-                                  position: "relative",
-                                }}
-                              >
-                                <Dropdown
-                                  currentItemLabel={instrumentLabel(
-                                    currentInstrument
-                                  )}
-                                  currentItem={currentInstrument}
-                                  setCurrentItem={setCurrentInstrument}
-                                  itemList={instrumentList}
-                                  itemLabelList={instrumentList?.map(
-                                    (instrument) => instrumentLabel(instrument)
-                                  )}
-                                />
-                              </div>
-                            </GridCol>
-                          </GridRow>
-                          <GridRow>
-                            <GridCol>
-                              <CardBlueBgBlackBorder>
-                                <CenterText>
-                                  <b>Vault Balance:</b>
-                                </CenterText>
-                              </CardBlueBgBlackBorder>
-                            </GridCol>
-                            <GridCol>
+        <Container>
+          <InnerContainer style={{ maxWidth: "55vw" }}>
+            <Card>
+              <Grid>
+                <GridRow>
+                  <GridCol colSpan={2}>
+                    <FancyTitle word1={"Strategy"} word2={"Vaults"} />
+                  </GridCol>
+                </GridRow>
+                <GridRow>
+                  <GridCol>
+                    <div style={{ display: "flex" }}>
+                      <Grid>
+                        <GridRow>
+                          <GridCol colSpan={2}>
+                            <div
+                              style={{
+                                height: "2.5rem",
+                                position: "relative",
+                              }}
+                            >
+                              <Dropdown
+                                currentItemLabel={instrumentLabel(
+                                  currentInstrument
+                                )}
+                                currentItem={currentInstrument}
+                                setCurrentItem={setCurrentInstrument}
+                                itemList={instrumentList}
+                                itemLabelList={instrumentList?.map(
+                                  (instrument) => instrumentLabel(instrument)
+                                )}
+                              />
+                            </div>
+                          </GridCol>
+                        </GridRow>
+                        <GridRow>
+                          <GridCol>
+                            <CardBlueBgBlackBorder>
                               <CenterText>
-                                <b>
-                                  {vaultBalanceInfo
-                                    ? trimNumber(
-                                        ethers.utils.formatEther(
-                                          vaultBalanceInfo.totalBalance
-                                        ),
-                                        6
-                                      )
-                                    : null}{" "}
-                                  {nativeGas}
-                                </b>
+                                <b>Vault Balance:</b>
                               </CenterText>
-                            </GridCol>
-                          </GridRow>
-                          <GridRow>
-                            <GridCol colSpan={2}>
-                              <Button onClick={depositWrite}>Mint</Button>
-                            </GridCol>
-                          </GridRow>
-                          <GridRow>
-                            <GridCol colSpan={2}>
-                              <div style={{ display: "flex" }}>
-                                <FancyText style={{ marginRight: "1rem" }}>
-                                  for
-                                </FancyText>
-                                <InputNumber
-                                  style={{ flex: 1 }}
-                                  onChange={handleMintAmount}
-                                  min={0}
-                                  max={userGasBalance}
-                                  placeholder="Mint amount..."
-                                  value={mintAmount > 0 ? mintAmount : ""}
-                                  setValue={setMintAmount}
-                                />
-                              </div>
-                              <CenterText>
-                                <b>{nativeGas}</b>
-                              </CenterText>
-                            </GridCol>
-                          </GridRow>
-                          <GridRow>
-                            <GridCol colSpan={2}>
-                              <FancyText>
-                                <CenterText>and receive</CenterText>
-                              </FancyText>
-                              <CardBlueBgBlackBorder>
-                                <CenterText>{previewMintAmount}</CenterText>
-                              </CardBlueBgBlackBorder>
-                              <CenterText>{currentVaultName}</CenterText>
-                            </GridCol>
-                          </GridRow>
-                        </Grid>
-                        <Grid>
-                          <GridRow>
-                            <GridCol colSpan={2}>
-                              <div
-                                style={{
-                                  height: "2.5rem",
-                                  position: "relative",
-                                }}
-                              >
-                                <Dropdown
-                                  currentItem={currentVault}
-                                  currentItemLabel={
-                                    strategyRef[
-                                      vaultList?.indexOf(currentVault)
-                                    ]
-                                  }
-                                  setCurrentItem={setCurrentVault}
-                                  itemList={vaultList}
-                                  itemLabelList={strategyRef}
-                                />
-                              </div>
-                            </GridCol>
-                          </GridRow>
-                          <GridRow>
-                            <GridCol>
-                              <CardBlueBgBlackBorder>
-                                <CenterText>
-                                  <b>Vault Performance:</b>
-                                </CenterText>
-                              </CardBlueBgBlackBorder>
-                            </GridCol>
-                            <GridCol>
-                              <CenterText>
-                                <b>xxx% APR</b>
-                              </CenterText>
-                            </GridCol>
-                          </GridRow>
-                          <GridRow>
-                            <GridCol colSpan={2}>
-                              {/* need to change this later when new view function for it is added */}
-                              <ButtonWithInfo
-                                onClick={withdrawWrite}
-                                info={
-                                  <>
-                                    {queuedAmount} {nativeGas} (queued for{" "}
-                                    <CountdownFormatted
-                                      ms={
-                                        1674163322 * 1000 +
-                                        10 * 1000 * 60 * 60 * 24 * 36.5
-                                      }
-                                    />
+                            </CardBlueBgBlackBorder>
+                          </GridCol>
+                          <GridCol>
+                            <CenterText>
+                              <b>
+                                {vaultBalanceInfo
+                                  ? trimNumber(
+                                      ethers.utils.formatEther(
+                                        vaultBalanceInfo.totalBalance
+                                      ),
+                                      6
                                     )
-                                  </>
-                                }
-                              >
-                                <MedText>
-                                  {queuedAmount > 0 && burnAmount > 0
-                                    ? `Claim queued\xa0 & \xa0burn`
-                                    : queuedAmount > 0
-                                    ? `Claim queued`
-                                    : `Burn`}
-                                </MedText>
-                              </ButtonWithInfo>
-                            </GridCol>
-                          </GridRow>
-                          <GridRow>
-                            <GridCol colSpan={2}>
-                              <div style={{ display: "flex" }}>
-                                <FancyText style={{ marginRight: "1rem" }}>
-                                  for
-                                </FancyText>
-                                <InputNumber
-                                  style={{ flex: 1 }}
-                                  onChange={handleBurnAmount}
-                                  min={0}
-                                  max={userVaultBalance}
-                                  placeholder="Burn amount..."
-                                  value={burnAmount > 0 ? burnAmount : ""}
-                                  setValue={setBurnAmount}
-                                />
-                              </div>
-                              <CenterText>
-                                <b>{currentVaultName}</b>
-                              </CenterText>
-                            </GridCol>
-                          </GridRow>
-                          <GridRow>
-                            <GridCol colSpan={2}>
-                              <FancyText>
-                                <CenterText>and receive</CenterText>
+                                  : null}{" "}
+                                {nativeGas}
+                              </b>
+                            </CenterText>
+                          </GridCol>
+                        </GridRow>
+                        <GridRow>
+                          <GridCol colSpan={2}>
+                            <Button onClick={depositWrite}>Mint</Button>
+                          </GridCol>
+                        </GridRow>
+                        <GridRow>
+                          <GridCol colSpan={2}>
+                            <div style={{ display: "flex" }}>
+                              <FancyText style={{ marginRight: "1rem" }}>
+                                for
                               </FancyText>
-                              <CardBlueBgBlackBorder>
-                                <CenterText>{previewBurnAmount}</CenterText>
-                              </CardBlueBgBlackBorder>
-                              <CenterText>{nativeGas}</CenterText>
-                            </GridCol>
-                          </GridRow>
-                        </Grid>
-                      </div>
-                    </GridCol>
-                  </GridRow>
-                </Grid>
-              </Card>
-            </InnerContainer>
-          </Container>
-        </AppContainer>
+                              <InputNumber
+                                style={{ flex: 1 }}
+                                onChange={handleMintAmount}
+                                min={0}
+                                max={userGasBalance}
+                                placeholder="Mint amount..."
+                                value={mintAmount > 0 ? mintAmount : ""}
+                                setValue={setMintAmount}
+                              />
+                            </div>
+                            <CenterText>
+                              <b>{nativeGas}</b>
+                            </CenterText>
+                          </GridCol>
+                        </GridRow>
+                        <GridRow>
+                          <GridCol colSpan={2}>
+                            <FancyText>
+                              <CenterText>and receive</CenterText>
+                            </FancyText>
+                            <CardBlueBgBlackBorder>
+                              <CenterText>{previewMintAmount}</CenterText>
+                            </CardBlueBgBlackBorder>
+                            <CenterText>{currentVaultName}</CenterText>
+                          </GridCol>
+                        </GridRow>
+                      </Grid>
+                      <Grid>
+                        <GridRow>
+                          <GridCol colSpan={2}>
+                            <div
+                              style={{
+                                height: "2.5rem",
+                                position: "relative",
+                              }}
+                            >
+                              <Dropdown
+                                currentItem={currentVault}
+                                currentItemLabel={
+                                  strategyRef[vaultList?.indexOf(currentVault)]
+                                }
+                                setCurrentItem={setCurrentVault}
+                                itemList={vaultList}
+                                itemLabelList={strategyRef}
+                              />
+                            </div>
+                          </GridCol>
+                        </GridRow>
+                        <GridRow>
+                          <GridCol>
+                            <CardBlueBgBlackBorder>
+                              <CenterText>
+                                <b>Vault Performance:</b>
+                              </CenterText>
+                            </CardBlueBgBlackBorder>
+                          </GridCol>
+                          <GridCol>
+                            <CenterText>
+                              <b>xxx% APR</b>
+                            </CenterText>
+                          </GridCol>
+                        </GridRow>
+                        <GridRow>
+                          <GridCol colSpan={2}>
+                            {/* need to change this later when new view function for it is added */}
+                            <ButtonWithInfo
+                              onClick={withdrawWrite}
+                              info={
+                                <>
+                                  {queuedAmount} {nativeGas} (queued for{" "}
+                                  <CountdownFormatted
+                                    ms={
+                                      1674163322 * 1000 +
+                                      10 * 1000 * 60 * 60 * 24 * 36.5
+                                    }
+                                  />
+                                  )
+                                </>
+                              }
+                            >
+                              <MedText>
+                                {queuedAmount > 0 && burnAmount > 0
+                                  ? `Claim queued\xa0 & \xa0burn`
+                                  : queuedAmount > 0
+                                  ? `Claim queued`
+                                  : `Burn`}
+                              </MedText>
+                            </ButtonWithInfo>
+                          </GridCol>
+                        </GridRow>
+                        <GridRow>
+                          <GridCol colSpan={2}>
+                            <div style={{ display: "flex" }}>
+                              <FancyText style={{ marginRight: "1rem" }}>
+                                for
+                              </FancyText>
+                              <InputNumber
+                                style={{ flex: 1 }}
+                                onChange={handleBurnAmount}
+                                min={0}
+                                max={userVaultBalance}
+                                placeholder="Burn amount..."
+                                value={burnAmount > 0 ? burnAmount : ""}
+                                setValue={setBurnAmount}
+                              />
+                            </div>
+                            <CenterText>
+                              <b>{currentVaultName}</b>
+                            </CenterText>
+                          </GridCol>
+                        </GridRow>
+                        <GridRow>
+                          <GridCol colSpan={2}>
+                            <FancyText>
+                              <CenterText>and receive</CenterText>
+                            </FancyText>
+                            <CardBlueBgBlackBorder>
+                              <CenterText>{previewBurnAmount}</CenterText>
+                            </CardBlueBgBlackBorder>
+                            <CenterText>{nativeGas}</CenterText>
+                          </GridCol>
+                        </GridRow>
+                      </Grid>
+                    </div>
+                  </GridCol>
+                </GridRow>
+              </Grid>
+            </Card>
+          </InnerContainer>
+        </Container>
       ) : (
-        <div>loading app...</div>
+        <Container>
+          <div>Loading app...</div>
+        </Container>
       )}
-    </Connect>
+    </>
   );
 }
 

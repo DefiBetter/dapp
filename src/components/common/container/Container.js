@@ -1,9 +1,6 @@
-import { useContext, useEffect, useState } from "react";
 import styled from "styled-components";
-import WindowContext from "../../../context/WindowContext";
 
 const Container = styled.div`
-  margin: 1rem;
   display: flex;
   flex-direction: column;
   border-width: 2px;
@@ -11,9 +8,11 @@ const Container = styled.div`
   border-color: #2aaee6;
   border-radius: 20px;
   border-width: 5px;
+  box-sizing: border-box;
   background-color: #cce5ff;
   box-shadow: 5px 5px 10px 0px grey;
   flex: 1;
+  height: 100%;
   ${(props) => (props.overflow ? null : "overflow: hidden;")}
 `;
 
