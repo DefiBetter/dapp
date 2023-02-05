@@ -22,6 +22,8 @@ const CenterText = styled.p`
   text-align: center;
   font-size: 1rem;
   margin: 0px;
+  width: 100%;
+  align-self: center;
 `;
 
 const SmallText = styled.div`

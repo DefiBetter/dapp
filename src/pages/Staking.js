@@ -27,10 +27,12 @@ import {
 import { watchContractEvent } from "@wagmi/core";
 import { bignumber } from "mathjs";
 import Connect from "../components/common/Connect";
-import { FancyText } from "../components/common/Text";
+import { CenterText, FancyText } from "../components/common/Text";
 import Dropdown from "../components/common/Dropdown";
 import AlertContext from "../context/AlertContext";
 import WindowContext from "../context/WindowContext";
+import LpStakingCard from "../components/Staking/LpStakingCard";
+import BtStakingCard from "../components/Staking/BtStakingCard";
 
 function Staking() {
   const windowDimension = useContext(WindowContext);
@@ -43,296 +45,14 @@ function Staking() {
 
   // ------vars--------------------------
   const [bridgeAmount, setBridgeAmount] = useState(0);
-  const [lpAmount, setLpAmount] = useState(0);
-  const [btAmount, setBtAmount] = useState(0);
-  const [zapAmount, setZapAmount] = useState(0);
 
+  /* set lp token symbol */
   const [lpTokenSymbol, setLpTokenSymbol] = useState();
-
-  const [btAllowance, setBtAllowance] = useState(bignumber("0"));
-  const [lpAllowance, setLpAllowance] = useState(bignumber("0"));
-
-  const [btBalance, setBtBalance] = useState(0);
-  const [lpBalance, setLpBalance] = useState(0);
-  const [zapBalance, setZapBalance] = useState(0);
-
-  const [totalBtStaked, setTotalBtStaked] = useState(0);
-  const [totalLpStaked, setTotalLpStaked] = useState(0);
-
   useEffect(() => {
     setLpTokenSymbol(
       `BT-${contractAddresses[activeChain?.network]?.nativeGas} LP`
     );
   }, [activeChain]);
-
-  // ---constants-----------------------
-
-  const btStakingPoolContractConfig = {
-    address: contractAddresses[activeChain?.network]?.btStaking,
-    abi: BtStakingABI,
-  };
-
-  const lpStakingPoolContractConfig = {
-    address: contractAddresses[activeChain?.network]?.lpStaking,
-    abi: LpStakingABI,
-  };
-
-  const btTokenContractConfig = {
-    address: contractAddresses[activeChain?.network]?.btToken,
-    abi: BTABI,
-  };
-
-  const lpTokenContractConfig = {
-    address: contractAddresses[activeChain?.network]?.lpToken,
-    abi: IERC20MetadataABI,
-  };
-
-  // btAllowance bt
-  useContractRead({
-    ...btTokenContractConfig,
-    functionName: "allowance",
-    args: [
-      connectedAddress,
-      contractAddresses[activeChain?.network]?.btStaking,
-    ],
-    onError(data) {},
-    onSuccess(data) {
-      setBtAllowance(data);
-    },
-    watch: true,
-  });
-
-  // prepare approve bt
-  const { config: approveBtConfig } = usePrepareContractWrite({
-    ...btTokenContractConfig,
-    functionName: "approve",
-    args: [
-      btStakingPoolContractConfig.address,
-      ethers.constants.MaxUint256.sub("1").toString(),
-    ],
-
-    onSuccess(data) {},
-  });
-
-  // infinite approve bt
-  const { write: approveBtWrite } = useContractWrite({
-    ...approveBtConfig,
-    onSettled(data) {
-      setAlertMessageList([...alertMessageList, `Approving BT token...`]);
-    },
-    onSuccess(data) {},
-  });
-
-  // prepare stake bt
-  // const { config: stakeBtConfig } = usePrepareContractWrite({
-  //   ...btStakingPoolContractConfig,
-  //   functionName: "stake",
-  //   args: [ethers.utils.parseEther(btAmount.toString())],
-  //   onSuccess(data) {},
-  //   onError(data) {},
-  //   watch: true,
-  // });
-
-  // stake bt
-  const { write: stakeBtWrite } = useContractWrite({
-    ...btStakingPoolContractConfig,
-    mode: "recklesslyUnprepared",
-    functionName: "stake",
-    args: [ethers.utils.parseEther(btAmount.toString())],
-    onMutate(data) {
-      setAlertMessageList((alertMessageList) => [
-        ...alertMessageList,
-        `Staking BT tokens...`,
-      ]);
-    },
-    onError(data) {
-      setAlertMessageList((alertMessageList) => [
-        ...alertMessageList,
-        `Failed to stake BT tokens`,
-      ]);
-    },
-    onSuccess(data) {
-      setBtAmount(0);
-      setAlertMessageList((alertMessageList) => [
-        ...alertMessageList,
-        `Successfully staked BT tokens`,
-      ]);
-    },
-  });
-
-  // prepare unstake bt
-  const { config: unstakeBtConfig } = usePrepareContractWrite({
-    ...btStakingPoolContractConfig,
-    functionName: "unstake",
-    args: [ethers.utils.parseEther(btAmount.toString())],
-    onSuccess(data) {},
-  });
-
-  // unstake bt
-  const { write: unstakeBtWrite } = useContractWrite({
-    ...unstakeBtConfig,
-    onSuccess(data) {},
-  });
-
-  // claim bt rewards
-  const { write: claimBtWrite } = useContractWrite({
-    mode: "recklesslyUnprepared",
-    ...btStakingPoolContractConfig,
-    functionName: "claim",
-    args: [],
-    onSuccess(data) {},
-    onError(data) {},
-  });
-
-  // balance of bt
-  useContractRead({
-    ...btTokenContractConfig,
-    functionName: "balanceOf",
-    args: [connectedAddress],
-    onError(data) {},
-    onSuccess(data) {
-      setBtBalance(ethers.utils.formatEther(data));
-    },
-    watch: true,
-  });
-
-  // total bt staked
-  useContractRead({
-    ...btTokenContractConfig,
-    functionName: "balanceOf",
-    args: [btStakingPoolContractConfig.address],
-    onError(data) {},
-    onSuccess(data) {
-      setTotalBtStaked(ethers.utils.formatEther(data));
-    },
-    watch: true,
-  });
-
-  /* LP */
-  // lpAllowance
-  useContractRead({
-    ...lpTokenContractConfig,
-    functionName: "allowance",
-    args: [connectedAddress, lpStakingPoolContractConfig.address],
-    // watch: true,
-    onError(data) {},
-    onSuccess(data) {
-      setLpAllowance(data);
-    },
-  });
-
-  // prepare approve lp
-  const { config: approveLpConfig } = usePrepareContractWrite({
-    ...lpTokenContractConfig,
-    functionName: "approve",
-    args: [
-      lpStakingPoolContractConfig.address,
-      ethers.constants.MaxUint256.sub("1").toString(),
-    ],
-    onSuccess(data) {},
-  });
-
-  // infinite approve lp
-  const { write: approveLpWrite } = useContractWrite({
-    ...approveLpConfig,
-    onSuccess(data) {},
-  });
-
-  // prepare stake lp
-  const { config: stakeLpConfig } = usePrepareContractWrite({
-    ...lpStakingPoolContractConfig,
-    functionName: "stake",
-    args: [0, ethers.utils.parseEther(lpAmount.toString()), connectedAddress],
-    onSuccess(data) {},
-    onError(data) {
-      console.log("lp stake error", data);
-    },
-    watch: true,
-  });
-
-  // stake lp
-  const { write: stakeLpWrite } = useContractWrite({
-    ...stakeLpConfig,
-    onError(e) {},
-    onSuccess(data) {
-      setBtAmount(0);
-    },
-  });
-
-  // prepare unstake lp
-  const { config: unstakeLpConfig } = usePrepareContractWrite({
-    ...lpStakingPoolContractConfig,
-    functionName: "unstake",
-    args: [ethers.utils.parseEther(lpAmount.toString())],
-    onSuccess(data) {},
-  });
-
-  // unstake lp
-  const { write: unstakeLpWrite } = useContractWrite({
-    ...unstakeLpConfig,
-    onSuccess(data) {},
-  });
-
-  // claim lp rewards
-  const { write: claimLpWrite } = useContractWrite({
-    mode: "recklesslyUnprepared",
-    ...lpStakingPoolContractConfig,
-    functionName: "claim",
-    args: [],
-    onSuccess(data) {},
-    onError(data) {},
-  });
-
-  // balance of lp
-  useContractRead({
-    ...lpTokenContractConfig,
-    functionName: "balanceOf",
-    args: [connectedAddress],
-    onError(data) {},
-    onSuccess(data) {
-      setLpBalance(ethers.utils.formatEther(data));
-    },
-    watch: true,
-  });
-
-  // total lp staked
-  useContractRead({
-    ...lpTokenContractConfig,
-    functionName: "balanceOf",
-    args: [lpStakingPoolContractConfig.address],
-    onError(data) {},
-    onSuccess(data) {
-      setTotalLpStaked(ethers.utils.formatEther(data));
-    },
-    watch: true,
-  });
-
-  // user
-
-  /* ZAP */
-  useBalance({
-    address: connectedAddress,
-    onError(data) {},
-    onSuccess(data) {
-      setZapBalance(+data.formatted);
-    },
-  });
-
-  /* handle input amount changes */
-  // bt staking
-  const handleBtAmount = (e) => {
-    setBtAmount(e.target.value ? e.target.value : 0);
-  };
-
-  // lp staking
-  const handleLpAmount = (e) => {
-    setLpAmount(e.target.value ? e.target.value : 0);
-  };
-
-  // zap in - amount in gas token
-  const handleZapAmount = (e) => {
-    setZapAmount(e.target.value ? e.target.value : 0);
-  };
 
   // const unwatch = watchContractEvent(
   //   {
@@ -379,8 +99,8 @@ function Staking() {
     <Container overflow={true}>
       <div className={styles.innerContainer}>
         <Grid>
-          <GridRow>
-            {/* <GridCol xs={12}>
+          {/* <GridRow style={{ marginBottom: "1rem" }}>
+            <GridCol xs={12}>
               <div className={styles.cardContainer}>
                 <Card>
                   <Grid>
@@ -429,8 +149,8 @@ function Staking() {
                   </Grid>
                 </Card>
               </div>
-            </GridCol> */}
-          </GridRow>
+            </GridCol>
+          </GridRow> */}
           <GridRow style={{ flexWrap: "wrap" }}>
             <GridCol xs={12} sm={12} md={6} lg={6}>
               <div
@@ -442,95 +162,13 @@ function Staking() {
                 // }
                 className={styles.assetContainer}
               >
-                <div>
-                  <StakeDiagram
-                    stakeSymbol={lpTokenSymbol}
-                    rewardSymbol={"BT"}
-                    stakeName={lpTokenSymbol}
-                    rewardName={"Better Token"}
-                  />
-                  <Card>
-                    <Grid>
-                      <GridRow>
-                        <GridCol colSpan={3}>
-                          <Grid>
-                            <GridCol>
-                              <CardBlueBgBlackBorder>
-                                <b>Total staked:</b>
-                              </CardBlueBgBlackBorder>
-                            </GridCol>
-                            <GridCol>
-                              <b>
-                                {totalLpStaked}{" "}
-                                {`BT-${
-                                  contractAddresses[activeChain?.network]
-                                    ?.nativeGas
-                                } LP`}
-                              </b>
-                            </GridCol>
-                            <GridCol>
-                              <CardBlueBgBlackBorder>
-                                <b>Current APR:</b>
-                              </CardBlueBgBlackBorder>
-                            </GridCol>
-                            <GridCol>
-                              <b>brrrrr%</b>
-                            </GridCol>
-                          </Grid>
-                        </GridCol>
-                      </GridRow>
-                      <GridRow>
-                        <GridCol colSpan={2}>
-                          <InputNumber
-                            onChange={handleLpAmount}
-                            min={0}
-                            max={() => {
-                              console.log("lpBalance", lpBalance);
-                              return lpBalance;
-                            }}
-                            placeholder={0}
-                            value={lpAmount > 0 ? lpAmount : ""}
-                            setValue={setLpAmount}
-                          />
-                        </GridCol>
-                        <GridCol>
-                          <InputNumber
-                            onChange={handleZapAmount}
-                            min={0}
-                            max={zapBalance}
-                            placeholder={0}
-                            value={zapAmount > 0 ? zapAmount : ""}
-                            setValue={setZapAmount}
-                          />
-                        </GridCol>
-                      </GridRow>
-                      <GridRow>
-                        <GridCol>
-                          {ethers.BigNumber.from(lpAllowance.toString()).lte(
-                            ethers.BigNumber.from("0")
-                          ) ? (
-                            <Button onClick={approveLpWrite}>Approve</Button>
-                          ) : (
-                            <Button onClick={stakeLpWrite}>Stake</Button>
-                          )}
-                        </GridCol>
-                        <GridCol>
-                          <Button onClick={unstakeLpWrite}>Unstake</Button>
-                        </GridCol>
-                        <GridCol>
-                          <Button onClick={() => {}} disabled>
-                            Zap in
-                          </Button>
-                        </GridCol>
-                      </GridRow>
-                      <GridRow>
-                        <GridCol colSpan={3}>
-                          <Button onClick={claimLpWrite}>Claim</Button>
-                        </GridCol>
-                      </GridRow>
-                    </Grid>
-                  </Card>
-                </div>
+                <StakeDiagram
+                  stakeSymbol={lpTokenSymbol}
+                  rewardSymbol={"BT"}
+                  stakeName={lpTokenSymbol}
+                  rewardName={"Better Token"}
+                />
+                <LpStakingCard />
               </div>
             </GridCol>
             <GridCol xs={12} sm={12} md={6} lg={6}>
@@ -554,63 +192,7 @@ function Staking() {
                       contractAddresses[activeChain?.network]?.nativeGas
                     }
                   />
-                  <Card>
-                    <Grid>
-                      <GridRow>
-                        <GridCol colSpan={3}>
-                          <Grid>
-                            <GridCol>
-                              <CardBlueBgBlackBorder>
-                                <b>Total staked:</b>
-                              </CardBlueBgBlackBorder>
-                            </GridCol>
-                            <GridCol>
-                              <b>{totalBtStaked} BT</b>
-                            </GridCol>
-                            <GridCol>
-                              <CardBlueBgBlackBorder>
-                                <b>Current APR:</b>
-                              </CardBlueBgBlackBorder>
-                            </GridCol>
-                            <GridCol>
-                              <b>brrrrr%</b>
-                            </GridCol>
-                          </Grid>
-                        </GridCol>
-                      </GridRow>
-                      <GridRow>
-                        <GridCol colSpan={2}>
-                          <InputNumber
-                            onChange={handleBtAmount}
-                            min={0}
-                            max={btBalance}
-                            placeholder={0}
-                            value={btAmount > 0 ? btAmount : ""}
-                            setValue={setBtAmount}
-                          />
-                        </GridCol>
-                      </GridRow>
-                      <GridRow>
-                        <GridCol>
-                          {ethers.BigNumber.from(btAllowance.toString()).lte(
-                            ethers.BigNumber.from("0")
-                          ) ? (
-                            <Button onClick={approveBtWrite}>Approve</Button>
-                          ) : (
-                            <Button onClick={stakeBtWrite}>Stake</Button>
-                          )}
-                        </GridCol>
-                        <GridCol>
-                          <Button onClick={unstakeBtWrite}>Unstake</Button>
-                        </GridCol>
-                      </GridRow>
-                      <GridRow>
-                        <GridCol colSpan={2}>
-                          <Button onClick={claimBtWrite}>Claim</Button>
-                        </GridCol>
-                      </GridRow>
-                    </Grid>
-                  </Card>
+                  <BtStakingCard />
                 </div>
               </div>
             </GridCol>

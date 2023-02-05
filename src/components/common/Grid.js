@@ -22,7 +22,7 @@ const GridRow = styled.div`
   display: flex;
 `;
 
-const borderWidth = "0px";
+const borderWidth = "1px";
 
 const getWidthString = (span) => {
   if (!span) return;
@@ -37,6 +37,8 @@ const GridCol = styled.div`
   border-width: ${borderWidth};
   float: left;
   width: 100%;
+
+  ${({ padding }) => (padding ? `padding: ${padding};` : null)}
 
   ${({ xs }) => (xs ? getWidthString(xs) : `width: 300px;`)}
   ${({ xs }) => (xs == "0" ? "display: none;" : "display: flex;")}

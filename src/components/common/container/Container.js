@@ -26,7 +26,7 @@ styled.div`
 const InnerContainer = styled.div`
   max-width: 55rem;
   width: 100vw;
-  min-width: 55rem;
+  // min-width: 55rem;
   margin: auto;
   display: flex;
   flex-direction: column;
