@@ -61,13 +61,16 @@ const Dropdown = ({
   `;
 
   return (
-    <Container onClick={toggleOptions} style={{ position: "relative" }}>
+    <Container
+      onClick={toggleOptions}
+      style={{ position: "relative", width: "100%", height: "2.5rem" }}
+    >
       <Option activeColor={`white`}>
         <NormalText>
           <div style={{}}>
             <div
               style={{
-                width: "calc(100% - 3rem)",
+                maxWidth: "calc(100% - 3rem)",
                 margin: "0 auto",
                 whiteSpace: "nowrap",
                 overflow: "hidden",
@@ -92,6 +95,7 @@ const Dropdown = ({
       {showItemList
         ? itemList.map((item, i) => (
             <Option
+              style={{ width: "100%" }}
               active={currentItemLabel == itemLabelList[i] ? true : false}
               activeColor={`white`}
               onClick={() => {

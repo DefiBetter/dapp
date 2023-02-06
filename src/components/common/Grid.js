@@ -7,6 +7,7 @@ const Grid = styled.div`
   height: 100%;
   display: flex;
   flex-direction: column;
+  width: 100%;
 `;
 
 const GridRow = styled.div`
@@ -24,9 +25,11 @@ const GridRow = styled.div`
 
 const borderWidth = "1px";
 
-const getWidthString = (span) => {
+const getWidthString = (span, padding) => {
   if (!span) return;
-  return `width: calc(${(span / 12) * 100}% - ${borderWidth} * 2);`;
+  return `width: calc(${(span / 12) * 100}% - ${borderWidth} * 2 - ${
+    padding ? padding : "0px"
+  } * 2);`;
 };
 
 const GridCol = styled.div`
@@ -41,6 +44,8 @@ const GridCol = styled.div`
   ${({ padding }) => (padding ? `padding: ${padding};` : null)}
 
   ${({ xs }) => (xs ? getWidthString(xs) : `width: 300px;`)}
+  // ${({ xs, padding }) =>
+    xs ? getWidthString(xs, padding) : `width: 200px;`}
   ${({ xs }) => (xs == "0" ? "display: none;" : "display: flex;")}
 
   @media only screen and (min-width: 768px) and (max-width: 991px) {

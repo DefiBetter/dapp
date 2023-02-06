@@ -63,6 +63,7 @@ const VaultCard = () => {
   const [previewBurnAmount, setPreviewBurnAmount] = useState(0);
   const [currentVaultName, setCurrentVaultName] = useState("");
   const [queuedAmount, setQueuedAmount] = useState(0);
+  const [currentVaultPerformance, setCurrentVaultPerformance] = useState("0");
 
   // user
   const [userGasBalance, setUserGasBalance] = useState(0);
@@ -202,6 +203,22 @@ const VaultCard = () => {
     },
   });
 
+  // vault performance
+  useContractRead({
+    address: currentVault,
+    abi: StrategyVaultABI,
+    functionName: "getVaultPerformance",
+    args: [],
+    onError(data) {
+      console.log("getVaultPerformance", data);
+    },
+    onSuccess(data) {
+      console.log("getVaultPerformance", data);
+      setCurrentVaultPerformance(data);
+    },
+    watch: true,
+  });
+
   /* handle callback */
   // helper functions
   const handleMintAmount = (e) => {
@@ -230,40 +247,24 @@ const VaultCard = () => {
           </GridRow>
           <GridRow>
             <GridCol padding={"0.5rem"} xs={6}>
-              <div
-                style={{
-                  height: "2.5rem",
-                  position: "relative",
-                }}
-              >
-                <Dropdown
-                  currentItemLabel={instrumentLabel(currentInstrument)}
-                  currentItem={currentInstrument}
-                  setCurrentItem={setCurrentInstrument}
-                  itemList={instrumentList}
-                  itemLabelList={instrumentList?.map((instrument) =>
-                    instrumentLabel(instrument)
-                  )}
-                />
-              </div>
+              <Dropdown
+                currentItemLabel={instrumentLabel(currentInstrument)}
+                currentItem={currentInstrument}
+                setCurrentItem={setCurrentInstrument}
+                itemList={instrumentList}
+                itemLabelList={instrumentList?.map((instrument) =>
+                  instrumentLabel(instrument)
+                )}
+              />
             </GridCol>
             <GridCol padding={"0.5rem"} xs={6}>
-              <div
-                style={{
-                  height: "2.5rem",
-                  position: "relative",
-                }}
-              >
-                <Dropdown
-                  currentItem={currentVault}
-                  currentItemLabel={
-                    strategyRef[vaultList?.indexOf(currentVault)]
-                  }
-                  setCurrentItem={setCurrentVault}
-                  itemList={vaultList}
-                  itemLabelList={strategyRef}
-                />
-              </div>
+              <Dropdown
+                currentItem={currentVault}
+                currentItemLabel={strategyRef[vaultList?.indexOf(currentVault)]}
+                setCurrentItem={setCurrentVault}
+                itemList={vaultList}
+                itemLabelList={strategyRef}
+              />
             </GridCol>
           </GridRow>
           <GridRow>
@@ -296,7 +297,15 @@ const VaultCard = () => {
             </GridCol>
             <GridCol padding={"0.5rem"} xs={3}>
               <CenterText>
-                <b>xxx% APR</b>
+                <b>
+                  {currentVaultPerformance
+                    ? trimNumber(
+                        ethers.utils.formatEther(currentVaultPerformance) * 100,
+                        6
+                      )
+                    : "0"}
+                  %
+                </b>
               </CenterText>
             </GridCol>
           </GridRow>
@@ -353,7 +362,7 @@ const VaultCard = () => {
             <GridCol padding={"0.5rem"} xs={6}>
               <Grid>
                 <GridRow>
-                  <GridCol xs={12}>
+                  <GridCol padding={"0.5rem"} xs={12}>
                     <ButtonWithInfo
                       onClick={withdrawWrite}
                       info={
@@ -380,10 +389,10 @@ const VaultCard = () => {
                   </GridCol>
                 </GridRow>
                 <GridRow>
-                  <GridCol xs={2}>
+                  <GridCol padding={"0.5rem"} xs={2}>
                     <FancyText style={{ marginRight: "1rem" }}>for</FancyText>
                   </GridCol>
-                  <GridCol xs={10}>
+                  <GridCol padding={"0.5rem"} xs={10}>
                     <InputNumber
                       style={{ flex: 1 }}
                       onChange={handleBurnAmount}
@@ -395,27 +404,27 @@ const VaultCard = () => {
                     />
                   </GridCol>
                 </GridRow>
-                <GridRow>
-                  <GridCol xs={6}>
+                <GridRow style={{ flexWrap: "wrap" }}>
+                  <GridCol padding={"0.5rem"} xs={12}>
                     <CenterText>
                       <b>{currentVaultName}</b>
                     </CenterText>
                   </GridCol>
-                  <GridCol xs={6}>
-                    <FancyText>
+                  <GridCol padding={"0.5rem"} xs={12}>
+                    <FancyText style={{ width: "100%" }}>
                       <CenterText>and receive</CenterText>
                     </FancyText>
                   </GridCol>
                 </GridRow>
                 <GridRow>
-                  <GridCol xs={12}>
-                    <CardBlueBgBlackBorder>
+                  <GridCol padding={"0.5rem"} xs={12}>
+                    <CardBlueBgBlackBorder style={{ width: "100%" }}>
                       <CenterText>{previewBurnAmount}</CenterText>
                     </CardBlueBgBlackBorder>
                   </GridCol>
                 </GridRow>
                 <GridRow>
-                  <GridCol xs={12}>
+                  <GridCol padding={"0.5rem"} xs={12}>
                     <CenterText>{nativeGas}</CenterText>
                   </GridCol>
                 </GridRow>
