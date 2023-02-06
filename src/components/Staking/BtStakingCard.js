@@ -1,4 +1,4 @@
-import { Button } from "../common/Button";
+import { Button, ButtonWithInfo } from "../common/Button";
 import { Card, CardBlueBgBlackBorder } from "../common/Card";
 import { Grid, GridRow } from "../common/Grid";
 import { InputNumber } from "../common/Input";
@@ -17,9 +17,9 @@ import BtStakingABI from "../../static/ABI/BtStakingABI.json";
 import BTABI from "../../static/ABI/BTABI.json";
 import AlertContext from "../../context/AlertContext";
 import { bignumber } from "mathjs";
-import { CenterText } from "../common/Text";
+import { CenterText, MedText, SmallText, NormalText } from "../common/Text";
 
-const BtStakingCard = () => {
+const BtStakingCard = (props) => {
   /* global hooks */
   const windowDimension = useContext(WindowContext);
   const { address: connectedAddress, isConnected } = useAccount();
@@ -42,6 +42,7 @@ const BtStakingCard = () => {
   const [btAllowance, setBtAllowance] = useState(bignumber("0"));
   const [btBalance, setBtBalance] = useState(0);
   const [totalBtStaked, setTotalBtStaked] = useState(0);
+  const [pendingRewards, setPedingRewards] = useState(0);
 
   /* web3 read/write */
   // btAllowance bt
@@ -162,6 +163,18 @@ const BtStakingCard = () => {
     watch: true,
   });
 
+  // pending staking rewards
+  useContractRead({
+    ...btStakingPoolContractConfig,
+    functionName: "getPendingRewards",
+    args: [connectedAddress],
+    onError(data) {},
+    onSuccess(data) {
+      setPedingRewards(ethers.utils.formatEther(data));
+    },
+    watch: true,
+  });
+
   /* handle callback */
   // bt staking
   const handleBtAmount = (e) => {
@@ -232,7 +245,18 @@ const BtStakingCard = () => {
         </GridRow>
         <GridRow>
           <Col xs={12}>
-            <Button onClick={claimBtWrite}>Claim</Button>
+            <ButtonWithInfo 
+              onClick={claimBtWrite}
+              info={
+                <SmallText>
+                  <NormalText>
+                    {pendingRewards} {props.nativeGas}
+                  </NormalText>
+                </SmallText>
+              }
+            >
+              <MedText>Claim</MedText>
+            </ButtonWithInfo>
           </Col>
         </GridRow>
       </Grid>
