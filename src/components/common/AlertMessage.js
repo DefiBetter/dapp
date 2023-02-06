@@ -88,6 +88,7 @@ const AlertOverlay = ({ children }) => {
             // backgroundColor: "black",
             bottom: "1rem",
             overflow: "hidden",
+            pointerEvents: "none",
           }}
         >
           <div
