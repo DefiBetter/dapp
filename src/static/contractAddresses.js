@@ -8,7 +8,7 @@ const contractAddresses = {
     better: process.env.REACT_APP_better,
     lpToken: process.env.REACT_APP_lpToken,
     lpStaking: process.env.REACT_APP_lpStaking,
-    nativeGas: "BETTER",
+    nativeGas: "bBNB",
   },
   defibetter: {
     better: "0xdb01265Db404b2474C8Fa2406987D9eB6bCa5db3",
@@ -18,7 +18,7 @@ const contractAddresses = {
     btStaking: "0xa2153a46df5b35f12f2bdd959fa22d675546f11f",
     lpToken: "0x2B0d36FACD61B71CC05ab8F3D2355ec3631C0dd5",
     lpStaking: "0x367761085BF3C12e5DA2Df99AC6E1a824612b8fb",
-    nativeGas: "ETH",
+    nativeGas: "bBNB",
   },
   bsc: {
     better: "0xdb01265Db404b2474C8Fa2406987D9eB6bCa5db3",

@@ -250,7 +250,7 @@ const BtStakingCard = (props) => {
               info={
                 <SmallText>
                   <NormalText>
-                    {pendingRewards} {props.nativeGas}
+                    {Math.round(+pendingRewards * 10_000) / 10_000} {props.nativeGas}
                   </NormalText>
                 </SmallText>
               }

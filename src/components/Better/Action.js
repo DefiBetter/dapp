@@ -86,7 +86,7 @@ const Action = (props) => {
         info={
           <SmallText>
             <NormalText>
-              {props.pendingBetterBalance} {props.nativeGas}
+              {Math.round(+props.pendingBetterBalance * 10_000) / 10_000} {props.nativeGas}
             </NormalText>
           </SmallText>
         }

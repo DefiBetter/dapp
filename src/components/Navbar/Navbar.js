@@ -96,11 +96,11 @@ const Navbar = () => {
                   <Link
                     to={
                       process.env.REACT_APP_PHASE == "PRODUCTION"
-                        ? "/staking"
+                        ? "/vaults"
                         : "/"
                     }
                   >
-                    Staking
+                    Strategy vaults
                   </Link>
                 </UnderlineText>
               </FancyText>
@@ -109,11 +109,11 @@ const Navbar = () => {
                   <Link
                     to={
                       process.env.REACT_APP_PHASE == "PRODUCTION"
-                        ? "/vaults"
+                        ? "/staking"
                         : "/"
                     }
                   >
-                    Strategy vaults
+                    Staking
                   </Link>
                 </UnderlineText>
               </FancyText>
