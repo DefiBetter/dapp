@@ -93,7 +93,7 @@ const Dropdown = ({
       </Option>
 
       {showItemList
-        ? itemList.map((item, i) => (
+        ? itemList?.map((item, i) => (
             <Option
               style={{ width: "100%" }}
               active={currentItemLabel == itemLabelList[i] ? true : false}
