@@ -45,16 +45,19 @@ const CountdownFormatted = ({ ms }) => {
   );
 };
 
-const instrumentLabel = (instrument) => {
+const instrumentLabel = (instrument, br = false) => {
   if (instrument) {
-    return `${instrument.underlyingDescription.replaceAll(
-      " ",
-      ""
-    )} ${timeFormat(+instrument.epochDurationInSeconds)}+${timeFormat(
-      +instrument.bufferDurationInSeconds
-    )} (${(+instrument.volatilityMultiplier / 10000).toFixed(2)} SD, ${
-      +instrument.baseError / 10000
-    } E)`;
+    return (
+      <div>
+        {`${instrument.underlyingDescription.replaceAll(" ", "")} ${timeFormat(
+          +instrument.epochDurationInSeconds
+        )}+${timeFormat(+instrument.bufferDurationInSeconds)}`}
+        {br == true ? <br></br> : ` `}
+        {`(${(+instrument.volatilityMultiplier / 10000).toFixed(2)} SD, ${
+          +instrument.baseError / 10000
+        } E)`}
+      </div>
+    );
   }
   return ``;
 };

@@ -291,7 +291,7 @@ const VaultCard = () => {
             <GridCol padding={"0.5rem"} xs={3}>
               <CardBlueBgBlackBorder>
                 <CenterText>
-                  <b>Vault Performance:</b>
+                  <b>Share price:</b>
                 </CenterText>
               </CardBlueBgBlackBorder>
             </GridCol>
@@ -336,7 +336,12 @@ const VaultCard = () => {
                 <GridRow style={{ flexWrap: "wrap" }}>
                   <GridCol padding={"0.5rem"} xs={12}>
                     <CenterText>
-                      <b>{nativeGas}</b>
+                      <b>
+                        {nativeGas}
+                        <br></br>
+                        <br></br>
+                        {"\xa0"}
+                      </b>
                     </CenterText>
                   </GridCol>
                   <GridCol padding={"0.5rem"} xs={12}>
@@ -354,7 +359,10 @@ const VaultCard = () => {
                 </GridRow>
                 <GridRow>
                   <GridCol padding={"0.5rem"} xs={12}>
-                    <CenterText>{currentVaultName}</CenterText>
+                    <CenterText>
+                      {instrumentLabel(currentInstrument, true)}
+                      {currentVaultName}
+                    </CenterText>
                   </GridCol>
                 </GridRow>
               </Grid>
@@ -407,7 +415,10 @@ const VaultCard = () => {
                 <GridRow style={{ flexWrap: "wrap" }}>
                   <GridCol padding={"0.5rem"} xs={12}>
                     <CenterText>
-                      <b>{currentVaultName}</b>
+                      <b>
+                        {instrumentLabel(currentInstrument, true)}
+                        {currentVaultName}
+                      </b>
                     </CenterText>
                   </GridCol>
                   <GridCol padding={"0.5rem"} xs={12}>
@@ -425,7 +436,12 @@ const VaultCard = () => {
                 </GridRow>
                 <GridRow>
                   <GridCol padding={"0.5rem"} xs={12}>
-                    <CenterText>{nativeGas}</CenterText>
+                    <CenterText>
+                      {nativeGas}
+                      <br></br>
+                      <br></br>
+                      {"\xa0"}
+                    </CenterText>
                   </GridCol>
                 </GridRow>
               </Grid>
