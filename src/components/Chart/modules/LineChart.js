@@ -8,7 +8,7 @@ import {
   scale,
   data2SvgView,
   rangeInfo,
-} from "./Transformations";
+} from "../Transformations";
 
 const LineChart = (props) => {
   const getDataPointList = (data) => {

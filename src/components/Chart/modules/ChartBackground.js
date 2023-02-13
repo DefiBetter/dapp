@@ -1,6 +1,6 @@
 import { ethers } from "ethers";
 import { useEffect, useState } from "react";
-import { data2SvgView, preProcessData, transpose } from "./Transformations";
+import { data2SvgView, preProcessData, transpose } from "../Transformations";
 
 const ChartBackground = (props) => {
   const timeRange2TimeInterval = (range) => {

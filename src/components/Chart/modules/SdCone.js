@@ -1,6 +1,6 @@
 import { ethers } from "ethers";
 import { transpose } from "mathjs";
-import { data2SvgView, preProcessData } from "./Transformations";
+import { data2SvgView, preProcessData } from "../Transformations";
 
 const SdCone = (props) => {
   const getDataPointList = (data) => {

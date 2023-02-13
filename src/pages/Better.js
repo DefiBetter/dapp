@@ -130,7 +130,7 @@ function Better() {
 
   let interval = useRef(null);
   useEffect(() => {
-    interval.current = setInterval(getInstrumentBySelectorRefetch, 1000);
+    interval.current = setInterval(getInstrumentBySelectorRefetch, 10000);
     return () => {
       clearInterval(interval.current);
     };

@@ -96,12 +96,35 @@ import { Grid, GridCol, GridRow } from "../common/Grid";
 
 import AggregatorV3InterfaceABI from "../../static/ABI/AggregatorV3InterfaceABI.json";
 /* global BigInt */
-import LineChart from "./LineChart";
-import Axes from "./ChartBackground";
-import ChartBackground from "./ChartBackground";
-import SdCone from "./SdCone";
+import LineChart from "./modules/LineChart";
+import Axes from "./modules/ChartBackground";
+import ChartBackground from "./modules/ChartBackground";
+import SdCone from "./modules/SdCone";
+import { transpose } from "./Transformations";
 
 const pairAddress = "0xcA75C4aA579c25D6ab3c8Ef9A70859ABF566fA1d"; // need to make this change with selected asset
+
+/* chart rework:
+- global chart data state
+- hook fetch chart data from global storage
+- hook fetch historical data from current time (backwards)
+- hook to fetch live data
+- add live data to chart state
+- add data to local storage
+- preprocess data for only price (y) and time (x)
+- enable modular addons to the chart like line, bar, sd cone, other svg-compatiable elements
+- x-axis scaling
+- y-axis scaling
+- anchor x-axis
+- anchor y-axis
+- svg renders all the above
+- append event listener to track live data (instead of pinging it ever 1 second as of now)
+
+data flow:
+- raw data (chainlink)
+- preprocessed data => saved to local storage
+- transformed data (for svg)
+*/
 
 const Chart = (props) => {
   /* states */
@@ -122,9 +145,14 @@ const Chart = (props) => {
     chartWidth: 0,
     chartHeight: 0,
     epochCount: 1,
-    scaleType: { x: "nEpoch", y: "binBorder" },
+    scaleType: {
+      x: "epochStart", // epochStart, trailing
+      y: "binBorder", // binBorder, minMax
+      xAnchor: true,
+      yAnchor: true,
+    },
     xLabelStart: function (xData) {
-      if (this.scaleType.x == "nEpoch") {
+      if (this.scaleType.x == "epochStart") {
         return this.middleCoord;
       }
     },
@@ -285,49 +313,92 @@ const Chart = (props) => {
     },
   });
 
-  /* chart helper functions */
-  const xRangeInfo = (xData) => {
+  const rangeInfo = (data) => {
+    /* data structure
+      data = [
+        [x1, x2, ..., xn],
+        [y1, y2, ..., yn]
+      ]
+    */
+    let xData = data[0];
+    let yData = data[1];
+
+    // default range info
+    let oldRangeInfo = [
+        [0, 0, 0], // x value
+        [0, 0, 0], // y value
+      ],
+      newRangeInfo = [
+        [0, 0, 0], // x value
+        [0, 0, 0], // y value
+      ];
+    let yLabelSize;
+
+    /* epoch start point */
+    let epochStartPoint = [
+      +props.instrument.lastEpochClosingTime,
+      yData[
+        xData.indexOf(
+          xData.find((val) => val >= +props.instrument.lastEpochClosingTime)
+        )
+      ],
+    ];
+    console.log("epochStartPoint", epochStartPoint);
+
+    /* both x and y range info vars */
+    let n = chartConfig.epochCount;
+    let totalEpochTime =
+      +props.instrument.bufferDurationInSeconds.toString() +
+      +props.instrument.epochDurationInSeconds.toString();
+    let epochStartTime = +lastEpochData.closeTime.toString();
+
+    // scaling type
+    let xType = chartConfig.scaleType.x;
+    let yType = chartConfig.scaleType.y;
+
+    /* xRangeInfo */
     let xMin, xMax, xRange;
     let xNewMin, xNewMax, xNewRange;
 
-    let xType = chartConfig.scaleType.x;
-    if (xType == "nEpoch") {
-      let n = chartConfig.epochCount;
-      let totalEpochTime =
-        +props.instrument.bufferDurationInSeconds.toString() +
-        +props.instrument.epochDurationInSeconds.toString();
-      let epochStartTime = +lastEpochData.closeTime.toString();
-
+    if (xType == "epochStart") {
       // old range
       xMin = epochStartTime - totalEpochTime * n;
       xMax = epochStartTime;
       xRange = xMax - xMin;
 
       // new range
-      xNewMin = 0;
-      xNewMax = (chartConfig.containerWidth * n) / (n + 1);
+      xNewMin = chartConfig.paddingX();
+      if (chartConfig.scaleType.xAnchor) {
+        // anchor x point to the x axis n shifts
+        xNewMax = (chartConfig.containerWidth * n) / (n + 1);
+      } else {
+        xNewMax = chartConfig.containerWidth;
+      }
       xNewRange = xNewMax - xNewMin;
     } else if (xType == "trailing") {
-      xMin = Math.min(...xData);
+      xMin = Math.max(...xData) - totalEpochTime;
+      console.log("xMin", xMin);
       xMax = Math.max(...xData);
       xRange = xMax - xMin;
 
       xNewMin = chartConfig.paddingX();
-      xNewMax = chartConfig.middleCoord()[0];
+
+      // anchor x point to the x axis n shifts
+      if (chartConfig.scaleType.xAnchor) {
+        xNewMax = (chartConfig.containerWidth * n) / (n + 1);
+      } else {
+        xNewMax = chartConfig.containerWidth;
+      }
       xNewRange = xNewMax - xNewMin;
     }
 
-    let rangeInfo = [xMin, xMax, xRange];
-    let newRangeInfo = [xNewMin, xNewMax, xNewRange];
-    return { rangeInfo, newRangeInfo };
-  };
+    oldRangeInfo[0] = [xMin, xMax, xRange];
+    newRangeInfo[0] = [xNewMin, xNewMax, xNewRange];
 
-  const yRangeInfo = (yData) => {
+    /* yRangeInfo */
     let yMin, yMax, yRange;
     let yNewMin, yNewMax, yNewRange;
-    let yLabelSize;
 
-    let yType = chartConfig.scaleType.y;
     if (yType == "binBorder") {
       yLabelSize = +ethers.utils.formatEther(props.epochData.binSize);
 
@@ -338,38 +409,60 @@ const Chart = (props) => {
       yNewMin = chartConfig.paddingY();
       yNewMax = chartConfig.paddingY() + chartConfig.chartHeight;
       yNewRange = yNewMax - yNewMin;
+    } else if (yType == "minMax") {
+      let xType = chartConfig.scaleType.x;
+
+      let data_ = transpose(data);
+
+      data_ = data_.filter(
+        (coord) =>
+          coord[0] >=
+          epochStartPoint[0] - totalEpochTime * chartConfig.epochCount
+      );
+
+      if (!chartConfig.scaleType.xAnchor) {
+        data_ = data_.filter((coord) => coord[0] <= epochStartPoint[0]);
+      }
+
+      data_ = transpose(data_);
+
+      let yDataTrimmed = data_[1];
+      if (chartConfig.scaleType.yAnchor) {
+        if (xType == "epochStart") {
+          yMin = Math.min(...yDataTrimmed);
+          yMax = Math.max(...yDataTrimmed);
+
+          // logic to see which points to anchor in the y axis
+          let diffMin = epochStartPoint[1] - yMin;
+          let diffMax = yMax - epochStartPoint[1];
+
+          if (diffMin > diffMax) {
+            yMax = epochStartPoint[1];
+            yRange = epochStartPoint[1] - yMin;
+
+            yNewMin = chartConfig.paddingY();
+            yNewMax = chartConfig.middleCoord()[1];
+          } else {
+            yMin = epochStartPoint[1];
+            yRange = yMax - epochStartPoint[1];
+
+            yNewMin = chartConfig.middleCoord()[1];
+            yNewMax = chartConfig.paddingY() + chartConfig.chartHeight;
+          }
+        }
+      } else {
+        yMin = Math.min(...yDataTrimmed);
+        yMax = Math.max(...yDataTrimmed);
+
+        yNewMin = chartConfig.paddingY();
+        yNewMax = chartConfig.paddingY() + chartConfig.chartHeight;
+      }
+      yNewRange = yNewMax - yNewMin;
+      console.log("yNewRange", yNewRange);
     }
 
-    let rangeInfo = [yMin, yMax, yRange];
-    let newRangeInfo = [yNewMin, yNewMax, yNewRange];
-    return { rangeInfo, newRangeInfo, yLabelSize };
-  };
-
-  const rangeInfo = (data) => {
-    let xData = data[0];
-    let yData = data[1];
-    let oldRangeInfo = [
-        [0, 0, 0],
-        [0, 0, 0],
-      ],
-      newRangeInfo = [
-        [0, 0, 0],
-        [0, 0, 0],
-      ];
-    let yLabelSize;
-
-    ({ rangeInfo: oldRangeInfo[0], newRangeInfo: newRangeInfo[0] } =
-      xRangeInfo(xData));
-    ({
-      rangeInfo: oldRangeInfo[1],
-      newRangeInfo: newRangeInfo[1],
-      yLabelSize,
-    } = yRangeInfo(yData));
-
-    let epochStartPoint = [
-      oldRangeInfo[0][1],
-      oldRangeInfo[1][0] + oldRangeInfo[1][2] / 2,
-    ];
+    oldRangeInfo[1] = [yMin, yMax, yRange];
+    newRangeInfo[1] = [yNewMin, yNewMax, yNewRange];
 
     return { oldRangeInfo, newRangeInfo, epochStartPoint, yLabelSize };
   };
@@ -382,7 +475,7 @@ const Chart = (props) => {
       ...chartConfig,
       containerWidth: containerRef.current.offsetWidth,
       containerHeight: containerRef.current.offsetHeight,
-      chartWidth: containerRef.current.offsetWidth * 0.9,
+      chartWidth: containerRef.current.offsetWidth * 1,
       chartHeight: (containerRef.current.offsetHeight * 7) / 9,
     });
   }, []);
@@ -393,7 +486,7 @@ const Chart = (props) => {
         ...chartConfig,
         containerWidth: containerRef.current.offsetWidth,
         containerHeight: containerRef.current.offsetHeight,
-        chartWidth: containerRef.current.offsetWidth * 0.9,
+        chartWidth: containerRef.current.offsetWidth * 1,
         chartHeight: (containerRef.current.offsetHeight * 7) / 9,
       });
     };
@@ -422,7 +515,6 @@ const Chart = (props) => {
         height={"100%"}
         style={{ backgroundColor: "#758A9E" }}
       >
-        {" "}
         {/* <line x1={0} y1={0} x2={window.innerWidth} y2={0} stroke="grey" /> */}
         <ChartBackground
           chartConfig={chartConfig}
@@ -476,7 +568,7 @@ const Chart = (props) => {
           trailing={true}
           color={"#2AAEE6"}
         />
-        {/* <BarChart chartConfig={chartConfig} data={data} /> */}{" "}
+        {/* <BarChart chartConfig={chartConfig} data={data} /> */}
       </svg>
       <div className={styles.chartOverlay}>
         <div>
