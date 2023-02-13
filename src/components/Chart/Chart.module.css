@@ -13,6 +13,15 @@ display: flex;
 flex-direction: row;
 }
 
+.chartOverlayBottom {
+    position: absolute;
+    width: 50%;
+    bottom: 0;
+    color: #C4DCF5;
+    display: flex;
+    flex-direction: row;
+}
+
 #dexscreenerEmbed {
     position: relative;
     width: 100%;

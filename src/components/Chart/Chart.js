@@ -101,6 +101,9 @@ import Axes from "./modules/ChartBackground";
 import ChartBackground from "./modules/ChartBackground";
 import SdCone from "./modules/SdCone";
 import { transpose } from "./Transformations";
+import { Button } from "../common/Button";
+import { NormalText } from "../common/Text";
+import { Input, InputNumber } from "../common/Input";
 
 const pairAddress = "0xcA75C4aA579c25D6ab3c8Ef9A70859ABF566fA1d"; // need to make this change with selected asset
 
@@ -598,6 +601,109 @@ const Chart = (props) => {
                   return `${dt.toLocaleTimeString()}`;
                 })()}
               </GridCol>
+            </GridCol>
+          </GridRow>
+        </Grid>
+      </div>
+      <div className={styles.chartOverlayBottom}>
+        <Grid>
+          <GridRow>
+            <GridCol>
+              <b>x scaling:</b>
+            </GridCol>
+            <GridCol>
+              <Button
+                onClick={() => {
+                  setChartConfig({
+                    ...chartConfig,
+                    scaleType: { ...chartConfig.scaleType, x: "epochStart" },
+                  });
+                }}
+              >
+                <NormalText>epochStart</NormalText>
+              </Button>
+              <Button
+                onClick={() => {
+                  setChartConfig({
+                    ...chartConfig,
+                    scaleType: { ...chartConfig.scaleType, x: "trailing" },
+                  });
+                }}
+              >
+                <NormalText>trailing</NormalText>
+              </Button>
+            </GridCol>
+            <GridCol>
+              <Button
+                onClick={() => {
+                  setChartConfig({
+                    ...chartConfig,
+                    scaleType: {
+                      ...chartConfig.scaleType,
+                      xAnchor: !chartConfig.scaleType.xAnchor,
+                    },
+                  });
+                }}
+              >
+                <NormalText>Anchor</NormalText>
+              </Button>
+            </GridCol>
+          </GridRow>
+          <GridRow>
+            <GridCol>
+              <b>y scaling:</b>
+            </GridCol>
+            <GridCol>
+              <Button
+                onClick={() => {
+                  setChartConfig({
+                    ...chartConfig,
+                    scaleType: { ...chartConfig.scaleType, y: "binBorder" },
+                  });
+                }}
+              >
+                <NormalText>binBorder</NormalText>
+              </Button>
+              <Button
+                onClick={() => {
+                  setChartConfig({
+                    ...chartConfig,
+                    scaleType: { ...chartConfig.scaleType, y: "minMax" },
+                  });
+                }}
+              >
+                <NormalText>minMax</NormalText>
+              </Button>
+            </GridCol>
+            <GridCol>
+              <Button
+                onClick={() => {
+                  setChartConfig({
+                    ...chartConfig,
+                    scaleType: {
+                      ...chartConfig.scaleType,
+                      yAnchor: !chartConfig.scaleType.yAnchor,
+                    },
+                  });
+                }}
+              >
+                <NormalText>Anchor</NormalText>
+              </Button>
+            </GridCol>
+          </GridRow>
+          <GridRow>
+            <GridCol>n epochs</GridCol>
+            <GridCol>
+              <Input
+                min={1}
+                onChange={(e) => {
+                  setChartConfig({
+                    ...chartConfig,
+                    epochCount: +e.target.value,
+                  });
+                }}
+                placeholder={"cannot be 0"}
+              />
             </GridCol>
           </GridRow>
         </Grid>
