@@ -1,5 +1,5 @@
 import { ethers } from "ethers";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { contractAddresses } from "../../static/contractAddresses";
 import { Button, ButtonWithInfo } from "../common/Button";
 import { Card, CardBlueBgBlackBorder } from "../common/Card";
@@ -25,12 +25,14 @@ import {
   useNetwork,
 } from "wagmi";
 import { InnerContainer } from "../common/container/Container";
+import AlertContext from "../../context/AlertContext";
 
 const VaultCard = () => {
   /* global hooks */
   const { address: connectedAddress, isConnected } = useAccount();
   const { chain: activeChain } = useNetwork();
   const [nativeGas, setNativeGas] = useState();
+  const [alertMessageList, setAlertMessageList] = useContext(AlertContext);
 
   /* constants */
   // contract config
@@ -147,12 +149,18 @@ const VaultCard = () => {
     args: [ethers.utils.parseEther(burnAmount.toString())],
     onMutate(data) {
       console.log("withdraw mutate", data);
+      setAlertMessageList([...alertMessageList, "Burning..."]);
     },
     onSuccess(data) {
       setBurnAmount(0);
+      setAlertMessageList([
+        ...alertMessageList,
+        "Successfully burned vault tokens",
+      ]);
     },
     onError(data) {
       console.log("withdraw error", data);
+      setAlertMessageList([...alertMessageList, "Error burning vault tokens!"]);
     },
   });
 
@@ -372,7 +380,10 @@ const VaultCard = () => {
                 <GridRow>
                   <GridCol padding={"0.5rem"} xs={12}>
                     <ButtonWithInfo
-                      onClick={withdrawWrite}
+                      onClick={() => {
+                        console.log("burn: button clicked");
+                        withdrawWrite();
+                      }}
                       info={
                         <>
                           {queuedAmount} {nativeGas} (queued for{" "}

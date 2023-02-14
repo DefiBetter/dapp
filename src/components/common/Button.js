@@ -26,9 +26,9 @@ const Button = styled.button`
   }
 `;
 
-const ButtonWithInfo = ({ children, info }) => {
+const ButtonWithInfo = ({ children, info, ...props }) => {
   return (
-    <Button>
+    <Button {...props}>
       {children}
       <SmallText>
         <NormalText>{info}</NormalText>
