@@ -4,7 +4,8 @@ const Connect = ({ isConnected, activeChain, children }) => {
   }
 
   if (activeChain?.unsupported) {
-    return <div>Unsupported chain</div>;
+
+    return <div>Unsupported chain - </div>;
   }
 
   return children;

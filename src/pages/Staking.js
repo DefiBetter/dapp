@@ -192,9 +192,11 @@ function Staking() {
                       contractAddresses[activeChain?.network]?.nativeGas
                     }
                   />
-                  <BtStakingCard nativeGas={
-                    contractAddresses[activeChain?.network]?.nativeGas
-                  }/>
+                  <BtStakingCard
+                    nativeGas={
+                      contractAddresses[activeChain?.network]?.nativeGas
+                    }
+                  />
                 </div>
               </div>
             </GridCol>
