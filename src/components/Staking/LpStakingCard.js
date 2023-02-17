@@ -52,6 +52,7 @@ const LpStakingCard = () => {
     ...lpTokenContractConfig,
     functionName: "allowance",
     args: [connectedAddress, lpStakingPoolContractConfig.address],
+    watch: true,
     // watch: true,
     onError(data) {},
     onSuccess(data) {
