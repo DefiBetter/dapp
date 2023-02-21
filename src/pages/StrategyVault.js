@@ -1,60 +1,28 @@
-import { Button, ButtonWithInfo } from "../components/common/Button.js";
-import {
-  useAccount,
-  useBalance,
-  useContractRead,
-  useContractReads,
-  useContractWrite,
-  useNetwork,
-} from "wagmi";
-import {
-  Card,
-  CardBlueBg,
-  CardBlueBgBlackBorder,
-} from "../components/common/Card";
-import Connect from "../components/common/Connect";
-import {
-  Container,
-  InnerContainer,
-} from "../components/common/container/Container";
-import AppContainer from "../components/common/container/AppContainer.js";
-import { Grid, GridCol, GridRow } from "../components/common/Grid";
-import { Input, InputNumber } from "../components/common/Input";
-import {
-  CenterText,
-  FancyText,
-  MedText,
-  NormalText,
-  SmallText,
-} from "../components/common/Text";
-import Navbar from "../components/Navbar/Navbar";
-import { contractAddresses } from "../static/contractAddresses";
-
-// ABIs
-import DeFiBetterV1ABI from "../static/ABI/DeFiBetterV1ABI.json";
-import StrategyVaultABI from "../static/ABI/StrategyVaultABI.json";
-import StrategyVaultManagerABI from "../static/ABI/StrategyVaultManagerABI.json";
-import IERC20MetadataABI from "../static/ABI/IERC20MetadataABI.json";
-import { useEffect, useState } from "react";
-import Dropdown from "../components/common/Dropdown";
-import {
-  CountdownFormatted,
-  instrumentLabel,
-  timeFormat,
-  trimNumber,
-} from "../components/common/helper";
-import { ethers } from "ethers";
-import FancyTitle from "../components/common/Title";
-import Countdown from "react-countdown";
 import VaultCard from "../components/StrategyVault/VaultCard.js";
 
 function StrategyVault() {
   return (
-    <Container>
-      <InnerContainer style={{ width: "600px" }}>
-        <VaultCard />
-      </InnerContainer>
-    </Container>
+    <div className="relative bg-db-background border-[3px] border-db-cyan-process h-full">
+      <div className="p-4 flex justify-around items-center">
+        <div className="hidden lg:block lg:p-4 p-0 w-1/4">
+          <img
+            alt="vault"
+            className="w-full h-full"
+            src={require("../static/image/vault-clipart.svg").default}
+          ></img>
+        </div>
+        <div className='w-full lg:w-1/2'>
+          <VaultCard />
+        </div>
+        <div className="hidden lg:block lg:p-4 p-0 w-1/4">
+          <img
+            alt="vaultOpen"
+            className="w-full h-full"
+            src={require("../static/image/open-vault-clipart.svg").default}
+          ></img>
+        </div>
+      </div>
+    </div>
   );
 }
 

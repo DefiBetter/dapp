@@ -16,7 +16,6 @@ import { contractAddresses } from "../static/contractAddresses";
 import { ethers } from "ethers";
 import Navbar from "../components/Navbar/Navbar";
 
-import styles from "./PublicSale.module.css";
 import AppContainer from "../components/common/container/AppContainer";
 import { Container } from "../components/common/container/Container";
 import { Card } from "../components/common/Card";
@@ -262,82 +261,76 @@ function PublicSale() {
   // ------------------------------------------------------------------------------------------
 
   return (
-    <Container>
-      <div className={styles.innerContainer}>
-        <Card>
-          <div className={styles.titleImage}>
-            <svg>
-              <text x="20" y="50" className={styles.pre}>
-                Public
-              </text>
-              <text x="80" y="80" className={styles.sale}>
-                Sale
-              </text>
-            </svg>
-          </div>
-        </Card>
-        <Card>
-          <Grid>
-            <GridRow>
-              <GridCol colSpan={4}>
-                <div className={styles.currentPrice}>
-                  <p>
-                    <b>Current price:</b> {input / output} WETH ($
-                    {(input / output) * 1500})
-                  </p>
-                </div>
-              </GridCol>
-            </GridRow>
-            <GridRow>
-              <GridCol>
-                <div className={styles.header}>
-                  <b>Time left</b>
-                </div>
-              </GridCol>
-              <GridCol>
-                <div className={styles.statBody}>{}</div>
-              </GridCol>
-              <GridCol>
-                <div className={styles.header}>
-                  <b>Supply left</b>
-                </div>
-              </GridCol>
-              <GridCol>
-                <div className={styles.statBody}>
-                  {ethers.utils.formatEther(supplyLeft || 0)}
-                </div>
-              </GridCol>
-            </GridRow>
-            <GridRow>
-              <GridCol>
-                <div className={styles.action}>BUY</div>
-              </GridCol>
-              <GridCol colSpan={3}>
-                <input
-                  className={styles.amount}
-                  type="number"
-                  placeholder="0"
-                  onChange={buyingTargetChanged}
-                />
-              </GridCol>
-            </GridRow>
-            <GridRow>
-              <GridCol>
-                <div className={styles.action}>FOR</div>
-              </GridCol>
-              <GridCol colSpan={3}>
-                <input className={styles.amount} type="number" value={output} />
-              </GridCol>
-            </GridRow>
-            <GridRow>
-              <GridCol colSpan={4}>
-                <Button onClick={allowFunction}>Buy</Button>
-              </GridCol>
-            </GridRow>
-          </Grid>
-        </Card>
+    <div className="relative bg-db-background border-[3px] border-db-cyan-process h-full">
+      <div className="shadow-db m-auto w-full md:w-1/2 mt-5 bg-white border-2 border-db-cyan-process rounded-2xl p-4">
+        <div className="flex justify-center text-5xl">
+          Public
+          <span className="font-bold mt-7 font-fancy text-5xl text-db-cyan-process">
+            Sale
+          </span>
+        </div>
       </div>
-    </Container>
+
+      <div className="relative z-10 flex flex-col shadow-db m-auto w-full md:w-1/2 mt-5 bg-white border-2 border-db-cyan-process rounded-2xl p-4">
+        <div className="flex justify-center">
+          <div className="shadow-db px-10 text-center bg-db-french-sky p-3 border-[1px] border-black rounded-lg">
+            <span className="font-bold">Current Price:</span> {input / output}{" "}
+            WETH ($
+            {(input / output) * 1500})
+          </div>
+        </div>
+        <div className="mt-4 flex justify-between items-center">
+          <div className="flex-1 shadow-db text-center font-bold bg-db-french-sky p-3 border-[1px] border-black rounded-lg">
+            Time Left
+          </div>
+          <div className="flex-1 text-center">2:11:59:47</div>
+          <div className="flex-1 shadow-db text-center font-bold bg-db-french-sky p-3 border-[1px] border-black rounded-lg">
+            Supply Left
+          </div>
+          <div className="flex-1 text-center">
+            {ethers.utils.formatEther(supplyLeft || 0)}
+          </div>
+        </div>
+        <div className="mt-3 flex items-center w-full">
+          <div className="font-fancy text-db-cyan-process w-24 text-center text-xl pt-1">
+            buy
+          </div>
+          <div className="w-full flex items-center p-2 justify-center bg-db-background rounded-lg shadow-db">
+            <input
+              onChange={buyingTargetChanged}
+              type={"number"}
+              min={0}
+              placeholder="Amount"
+              className="text-black text-sm flex-1"
+            />
+
+            <div className="text-black font-bold">BT</div>
+          </div>
+        </div>
+        <div className="mt-3 flex items-center w-full">
+          <div className="font-fancy text-db-cyan-process w-24 text-center text-xl pt-1">
+            for
+          </div>
+          <div className="w-full flex items-center p-2 justify-center bg-db-background rounded-lg shadow-db">
+            <div className="text-black text-sm flex-1 text-center">{output}</div>
+            <div className="text-black font-bold">WETH</div>
+          </div>
+        </div>
+        <button
+          onClick={allowFunction}
+          className="mt-3 border-[1px] border-black shadow-db pt-1 font-fancy bg-db-cyan-process h-10 w-full rounded-lg text-lg text-white hover:bg-db-blue-200"
+        >
+          Buy
+        </button>
+      </div>
+      <div className="z-0 absolute h-60 bottom-5 left-[13%]">
+        <img
+          alt="faucet"
+          className="h-full z-0"
+          src={require("../static/image/open-vault-clipart.svg").default}
+        ></img>
+      </div>
+    </div>
   );
 }
 

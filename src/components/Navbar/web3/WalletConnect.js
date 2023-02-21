@@ -1,71 +1,85 @@
-import { Button } from "../../common/Button";
-import { useAccount, useConnect, useDisconnect } from "wagmi";
-import styles from "./WalletConnect.module.css";
+import {
+  useAccount,
+  useConnect,
+  useDisconnect,
+  useNetwork,
+  useSwitchNetwork,
+} from "wagmi";
 import truncateEthAddress from "truncate-eth-address";
 import { useState } from "react";
-import { NormalText } from "../../common/Text";
+import { DEFAULT_CHAIN_ID } from "../../../static/constant";
 
 export function WalletConnect() {
-  const { connect, connectors, error, isLoading, pendingConnector } =
-    useConnect();
+  const { connect, connectors } = useConnect();
   const { address } = useAccount();
   const { disconnect, reset } = useDisconnect({ address });
+  const { chain } = useNetwork();
+  const { switchNetwork } = useSwitchNetwork();
 
   const [showNetworks, setShowNetworks] = useState(false);
   const [showDisconnect, setShowDisconnect] = useState(false);
 
   if (address) {
     return (
-      <div className={styles.container}>
-        {
-          <Button
-            className={styles.address}
-            onClick={() => {
-              setShowDisconnect(!showDisconnect);
-            }}
+      <div>
+        {chain && chain.id !== DEFAULT_CHAIN_ID ? (
+          <button
+            className="border-[1px] border-black shadow-db bg-db-cyan-process h-10 w-36 rounded-lg text-lg text-white hover:bg-db-blue-200"
+            onClick={() => switchNetwork(DEFAULT_CHAIN_ID)}
           >
-            <NormalText>{truncateEthAddress(address)}</NormalText>
-          </Button>
-        }
+            Switch Network
+          </button>
+        ) : (
+          <button
+            className="border-[1px] border-black shadow-db bg-db-cyan-process h-10 w-36 rounded-lg text-lg text-white hover:bg-db-blue-200"
+            onClick={() => setShowDisconnect(!showDisconnect)}
+          >
+            {truncateEthAddress(address)}
+          </button>
+        )}
+
         {showDisconnect ? (
-          <Button
-            className={styles.option}
-            onClick={() => {
-              setShowDisconnect(!showDisconnect);
-              disconnect(address);
-              reset();
-            }}
-          >
-            <NormalText>Disconnect</NormalText>
-          </Button>
+          <div className="absolute top-16 right-0 z-50">
+            <button
+              className="border-[1px] border-black shadow-db flex justify-center items-center bg-db-cyan-process h-10 w-36 rounded-lg text-lg px-10 text-white hover:bg-db-blue-200"
+              onClick={() => {
+                setShowDisconnect(!showDisconnect);
+                disconnect(address);
+                reset();
+              }}
+            >
+              Disconnect
+            </button>
+          </div>
         ) : null}
       </div>
     );
   }
 
   return (
-    <div className={styles.container}>
-      <Button
-        className={styles.address}
+    <div>
+      <button
+        className="border-[1px] border-black bg-db-cyan-process h-10 rounded-lg w-36 text-lg text-white hover:bg-db-blue-200"
         onClick={() => setShowNetworks(!showNetworks)}
       >
-        <NormalText>Connect</NormalText>
-      </Button>
-      {showNetworks
-        ? connectors.map((connector) => (
-            <Button
-              className={styles.option}
+        Connect
+      </button>
+
+      {showNetworks ? (
+        <div className="absolute top-16 right-0">
+          {connectors.map((connector) => (
+            <button
+              className="border-[1px] border-black flex justify-center items-center bg-db-cyan-process h-10 rounded-lg text-lg w-36 text-white hover:bg-db-blue-200"
               onClick={() => {
                 setShowNetworks(!showNetworks);
                 connect({ connector });
               }}
             >
-              <NormalText>{connector.name}</NormalText>
-            </Button>
-          ))
-        : null}
-
-      {/* {error && <div>{error.message}</div>} */}
+              {connector.name}
+            </button>
+          ))}
+        </div>
+      ) : null}
     </div>
   );
 }

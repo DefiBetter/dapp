@@ -1,70 +1,43 @@
-import { useContext } from "react";
-import WindowContext from "../../context/WindowContext";
-import { Card } from "../common/Card";
-import styles from "./StakeDiagram.module.css";
-
 const StakeDiagram = (props) => {
-  const windowDimension = useContext(WindowContext);
   return (
-    <div
-      className={styles.container}
-      style={
-        ["xxs"].filter((b) => b == windowDimension.screen).length > 0
-          ? { height: "unset" }
-          : {}
-      }
-    >
-      <div
-        style={
-          ["xxs"].filter((b) => b == windowDimension.screen).length > 0
-            ? {
-                position: "unset",
-                width: "100%",
-              }
-            : {}
-        }
-        className={styles.front}
-      >
-        <Card>
-          <p className={styles.text}>
-            <span className={styles.textFancy}>Stake</span>
-            {["xxs"].filter((b) => b == windowDimension.screen).length > 0 ? (
-              "\xa0\xa0"
-            ) : (
-              <br></br>
-            )}
-            <span>
-              <b>{props.stakeName}</b>
-            </span>
-            {["xxs"].filter((b) => b == windowDimension.screen).length > 0 ? (
-              "\xa0\xa0"
-            ) : (
-              <br></br>
-            )}
-            <span className={styles.textFancy}>to receive</span>
-            {["xxs"].filter((b) => b == windowDimension.screen).length > 0 ? (
-              "\xa0\xa0"
-            ) : (
-              <br></br>
-            )}
-            <span>
-              <b>{props.rewardName}</b>
-            </span>
-          </p>
-        </Card>
-      </div>
-      <div className={styles.back}>
-        <button className={styles.asset}>
-          <b>{props.stakeSymbol}</b>
-        </button>
-        <div className={styles.arrow}>
-          <svg viewBox="0 0 170 15" xmlns="http://www.w3.org/2000/svg">
-            <polygon points={`0,5 0,10 160,10 160,15 170,7.5 160,0 160,5`} />
-          </svg>
+    <div>
+      <div>
+        <div className="flex items-center justify-center">
+          <div className="font-bold border-black flex justify-center items-center w-28 h-28 rounded-full bg-db-little-boy border-2 shadow-db">
+            {props.stakeSymbol}
+          </div>
+          <div className=" h-2 w-10 bg-db-cyan-process"></div>
+          <div className="bg-white border-[3px] border-db-cyan-process rounded-2xl min-w-[180px]">
+            <div className="p-2">
+              <div className="flex flex-col items-center gap-2">
+                <div className="font-fancy text-db-cyan-process underline">Stake</div>
+                <div className="font-bold">{props.stakeName}</div>
+                <div className="font-fancy text-db-cyan-process underline">
+                  to receive
+                </div>
+                <div className="font-bold">{props.rewardName}</div>
+              </div>
+            </div>
+          </div>
+          <div className='text-db-cyan-process'>
+            <svg
+              className="w-10 h-10 rotate-180"
+              stroke="currentColor"
+              viewBox="0 0 23 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="4"
+                d="M10 19l-7-7m0 0l7-7m-7 7h20"
+              ></path>
+            </svg>
+          </div>
+          <div className="font-bold border-black flex justify-center items-center w-28 h-28 rounded-full bg-db-little-boy border-2 shadow-db">
+            {props.rewardSymbol}
+          </div>
         </div>
-        <button className={styles.asset}>
-          <b>{props.rewardSymbol}</b>
-        </button>
       </div>
     </div>
   );

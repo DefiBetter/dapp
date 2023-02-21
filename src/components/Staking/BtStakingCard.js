@@ -182,85 +182,102 @@ const BtStakingCard = (props) => {
   };
 
   return (
-    <Card
-      padding={1}
-      style={
-        ["xxs"].filter((b) => b == windowDimension.screen).length > 0
-          ? { display: "none" }
-          : {}
-      }
-    >
-      <Grid>
-        <GridRow style={{ marginBottom: "1rem" }}>
-          <Col xs={3.5}>
-            <CardBlueBgBlackBorder style={{ width: "100%" }}>
-              <CenterText>
-                <b>Total staked:</b>
-              </CenterText>
-            </CardBlueBgBlackBorder>
-          </Col>
-          <Col xs={2.5}>
-            <CenterText>
-              <b>{totalBtStaked} BT</b>
-            </CenterText>
-          </Col>
-          <Col xs={3.5}>
-            <CardBlueBgBlackBorder style={{ width: "100%" }}>
-              <CenterText>
-                <b>Current APR:</b>
-              </CenterText>
-            </CardBlueBgBlackBorder>
-          </Col>
-          <Col xs={2.5}>
-            <CenterText>
-              <b>brrrrr%</b>
-            </CenterText>
-          </Col>
-        </GridRow>
-        <GridRow>
-          <Col xs={12}>
-            <InputNumber
-              onChange={handleBtAmount}
-              min={0}
-              max={btBalance}
-              placeholder={0}
-              value={btAmount > 0 ? btAmount : ""}
-              setValue={setBtAmount}
-            />
-          </Col>
-        </GridRow>
-        <GridRow>
-          <Col xs={6}>
-            {ethers.BigNumber.from(btAllowance.toString()).lte(
-              ethers.BigNumber.from("0")
-            ) ? (
-              <Button onClick={approveBtWrite}>Approve</Button>
-            ) : (
-              <Button onClick={stakeBtWrite}>Stake</Button>
-            )}
-          </Col>
-          <Col xs={6}>
-            <Button onClick={unstakeBtWrite}>Unstake</Button>
-          </Col>
-        </GridRow>
-        <GridRow>
-          <Col xs={12}>
-            <ButtonWithInfo 
-              onClick={claimBtWrite}
-              info={
-                <SmallText>
-                  <NormalText>
-                    {Math.round(+pendingRewards * 10_000) / 10_000} {props.nativeGas}
-                  </NormalText>
-                </SmallText>
-              }
+    <div className="w-full border-[3px] border-db-cyan-process bg-white rounded-2xl">
+      <div className="p-4 flex flex-col gap-3">
+        
+      <div className="flex gap-4">
+          {/* Left */}
+          <div className="w-1/2 flex flex-col gap-2">
+            <div className="flex justify-between items-center gap-2">
+              <div className="shadow-db w-36 text-center font-bold bg-db-french-sky p-3 border-[1px] border-black rounded-lg">
+                Total Staked
+              </div>
+              <div className="flex-1 text-sm text-center font-bold">
+                {totalBtStaked}{" "}BT
+              </div>
+            </div>
+            <div className="flex justify-between items-center gap-2">
+              <div className="shadow-db w-36 text-center font-bold bg-db-french-sky p-3 border-[1px] border-black rounded-lg">
+                Your Stake
+              </div>
+              <div className="flex-1 text-sm text-center  font-bold">
+                42{' '}BT
+              </div>
+            </div>
+          </div>
+
+          {/* Right */}
+          <div className="w-1/2 flex flex-col gap-2">
+            <div className="flex justify-between items-center gap-2">
+              <div className="shadow-db w-36 text-center font-bold bg-db-french-sky p-3 border-[1px] border-black rounded-lg">
+                Current APR
+              </div>
+              <div className="flex-1 text-sm text-center text-lime-300 font-bold">69%</div>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="shadow-db w-36 text-center font-bold bg-db-french-sky p-3 border-[1px] border-black rounded-lg">
+                Your Balance
+              </div>
+              <div className="flex-1 text-sm text-center font-bold">
+                42 BT
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="w-full">
+          <InputNumber
+            onChange={handleBtAmount}
+            min={0}
+            max={btBalance}
+            placeholder={0}
+            value={btAmount > 0 ? btAmount : ""}
+            setValue={setBtAmount}
+          />
+        </div>
+
+        <div className="flex gap-3">
+          {ethers.BigNumber.from(btAllowance.toString()).lte(
+            ethers.BigNumber.from("0")
+          ) ? (
+            <button
+              className="border-[1px] border-black shadow-db pt-1 font-fancy bg-db-cyan-process h-10 w-full rounded-lg text-lg text-white hover:bg-db-blue-200"
+              onClick={approveBtWrite}
             >
-              <MedText>Claim</MedText>
-            </ButtonWithInfo>
-          </Col>
-        </GridRow>
-      </Grid>
-    </Card>
+              Approve
+            </button>
+          ) : (
+            <button
+              className="border-[1px] border-black shadow-db pt-1 font-fancy bg-db-cyan-process h-10 w-full rounded-lg text-lg text-white hover:bg-db-blue-200"
+              onClick={stakeBtWrite}
+            >
+              Stake
+            </button>
+          )}
+          <button
+            className="border-[1px] border-black shadow-db pt-1 font-fancy bg-db-cyan-process h-10 w-full rounded-lg text-lg text-white hover:bg-db-blue-200"
+            onClick={unstakeBtWrite}
+          >
+            Unstake
+          </button>
+        </div>
+
+        <div>
+          <button
+            className="border-[1px] border-black shadow-db pt-1 font-fancy bg-db-cyan-process h-10 w-full rounded-lg text-lg text-white hover:bg-db-blue-200"
+            onClick={claimBtWrite}
+          >
+            <div className="flex justify-center items-center gap-2">
+              <div>Claim</div>
+              <div className="pb-1 font-sans text-sm leading-none">
+                {Math.round(+pendingRewards * 10_000) / 10_000}{" "}
+                {props.nativeGas}
+              </div>
+            </div>
+          </button>
+        </div>
+      </div>
+    </div>
   );
 };
 

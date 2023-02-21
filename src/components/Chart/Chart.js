@@ -103,7 +103,7 @@ import SdCone from "./modules/SdCone";
 import { transpose } from "./Transformations";
 import { Button } from "../common/Button";
 import { NormalText } from "../common/Text";
-import { Input, InputNumber } from "../common/Input";
+import { InputNumber } from "../common/Input";
 
 const pairAddress = "0xcA75C4aA579c25D6ab3c8Ef9A70859ABF566fA1d"; // need to make this change with selected asset
 
@@ -694,7 +694,7 @@ const Chart = (props) => {
           <GridRow>
             <GridCol>n epochs</GridCol>
             <GridCol>
-              <Input
+              <InputNumber
                 min={1}
                 onChange={(e) => {
                   setChartConfig({

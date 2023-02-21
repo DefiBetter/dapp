@@ -1,10 +1,6 @@
-import { useContext, useState } from "react";
-import WindowContext from "../../context/WindowContext";
-import { Button } from "../common/Button";
-import { Card, CardBlueBgBlackBorder } from "../common/Card";
-import { Grid, GridRow } from "../common/Grid";
+import { useState } from "react";
+
 import { InputNumber } from "../common/Input";
-import { CenterText } from "../common/Text";
 import { ethers } from "ethers";
 import { contractAddresses } from "../../static/contractAddresses";
 import LpStakingABI from "../../static/ABI/LpStakingABI.json";
@@ -18,11 +14,9 @@ import {
   usePrepareContractWrite,
 } from "wagmi";
 import { bignumber } from "mathjs";
-import Col from "./Col.js";
 
 const LpStakingCard = () => {
   /* global hooks */
-  const windowDimension = useContext(WindowContext);
   const { chain: activeChain } = useNetwork();
   const { address: connectedAddress, isConnected } = useAccount();
 
@@ -148,46 +142,53 @@ const LpStakingCard = () => {
   };
 
   return (
-    <Card
-      padding={1}
-      style={
-        ["xxs"].filter((b) => b == windowDimension.screen).length > 0
-          ? { display: "none" }
-          : {}
-      }
-    >
-      <Grid>
-        <GridRow style={{ marginBottom: "1rem" }}>
-          <Col xs={3.5}>
-            <CardBlueBgBlackBorder style={{ width: "100%" }}>
-              <CenterText>
-                <b>Total staked:</b>
-              </CenterText>
-            </CardBlueBgBlackBorder>
-          </Col>
-          <Col xs={2.5}>
-            <CenterText>
-              <b>
+    <div className="w-full border-[3px] border-db-cyan-process bg-white rounded-2xl">
+      <div className="p-4 flex flex-col gap-2">
+        <div className="flex gap-4">
+          {/* Left */}
+          <div className="w-1/2 flex flex-col gap-2">
+            <div className="flex justify-between items-center gap-2">
+              <div className="shadow-db w-36 text-center font-bold bg-db-french-sky p-3 border-[1px] border-black rounded-lg">
+                Total Staked
+              </div>
+              <div className="flex-1 text-sm text-center font-bold">
                 {totalLpStaked}{" "}
                 {`BT-${contractAddresses[activeChain?.network]?.nativeGas} LP`}
-              </b>
-            </CenterText>
-          </Col>
-          <Col xs={3.5}>
-            <CardBlueBgBlackBorder style={{ width: "100%" }}>
-              <CenterText>
-                <b>Current APR:</b>
-              </CenterText>
-            </CardBlueBgBlackBorder>
-          </Col>
-          <Col xs={2.5}>
-            <CenterText>
-              <b>brrrrr%</b>
-            </CenterText>
-          </Col>
-        </GridRow>
-        <GridRow>
-          <Col xs={6}>
+              </div>
+            </div>
+            <div className="flex justify-between items-center gap-2">
+              <div className="shadow-db w-36 text-center font-bold bg-db-french-sky p-3 border-[1px] border-black rounded-lg">
+                Your Stake
+              </div>
+              <div className="flex-1 text-sm text-center  font-bold">
+                42{' '}
+                {`BT-${contractAddresses[activeChain?.network]?.nativeGas} LP`}
+              </div>
+            </div>
+          </div>
+
+          {/* Right */}
+          <div className="w-1/2 flex flex-col gap-2">
+            <div className="flex justify-between items-center gap-2">
+              <div className="shadow-db w-36 text-center font-bold bg-db-french-sky p-3 border-[1px] border-black rounded-lg">
+                Current APR
+              </div>
+              <div className="flex-1 text-sm text-center text-lime-300 font-bold">69%</div>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="shadow-db w-36 text-center font-bold bg-db-french-sky p-3 border-[1px] border-black rounded-lg">
+                Your Balance
+              </div>
+              <div className="flex-1 text-sm text-center font-bold">
+                42{' '}
+                {`BT-${contractAddresses[activeChain?.network]?.nativeGas} LP`}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="flex gap-2">
+          <div className="w-2/3">
             <InputNumber
               onChange={handleLpAmount}
               min={0}
@@ -199,8 +200,8 @@ const LpStakingCard = () => {
               value={lpAmount > 0 ? lpAmount : ""}
               setValue={setLpAmount}
             />
-          </Col>
-          <Col xs={6}>
+          </div>
+          <div className="w-1/3">
             <InputNumber
               onChange={handleZapAmount}
               min={0}
@@ -209,34 +210,58 @@ const LpStakingCard = () => {
               value={zapAmount > 0 ? zapAmount : ""}
               setValue={setZapAmount}
             />
-          </Col>
-        </GridRow>
-        <GridRow>
-          <Col>
+          </div>
+        </div>
+
+        <div className="flex gap-2">
+          <div className="w-2/3 flex gap-2">
             {ethers.BigNumber.from(lpAllowance.toString()).lte(
               ethers.BigNumber.from("0")
             ) ? (
-              <Button onClick={approveLpWrite}>Approve</Button>
+              <button
+                className="border-[1px] border-black shadow-db pt-1 font-fancy bg-db-cyan-process h-10 w-full rounded-lg text-lg text-white hover:bg-db-blue-200"
+                onClick={approveLpWrite}
+              >
+                Approve
+              </button>
             ) : (
-              <Button onClick={stakeLpWrite}>Stake</Button>
+              <button
+                className="border-[1px] border-black shadow-db pt-1 font-fancy bg-db-cyan-process h-10 w-full rounded-lg text-lg text-white hover:bg-db-blue-200"
+                onClick={stakeLpWrite}
+              >
+                Stake
+              </button>
             )}
-          </Col>
-          <Col>
-            <Button onClick={unstakeLpWrite}>Unstake</Button>
-          </Col>
-          <Col>
-            <Button onClick={() => {}} disabled>
-              Zap in
-            </Button>
-          </Col>
-        </GridRow>
-        <GridRow>
-          <Col xs={12}>
-            <Button onClick={claimLpWrite}>Claim</Button>
-          </Col>
-        </GridRow>
-      </Grid>
-    </Card>
+            <button
+              className="border-[1px] border-black shadow-db pt-1 font-fancy bg-db-cyan-process h-10 w-full rounded-lg text-lg text-white hover:bg-db-blue-200"
+              onClick={unstakeLpWrite}
+            >
+              Unstake
+            </button>
+          </div>
+          <div className="w-1/3">
+            <button
+              className="border-[1px] border-black shadow-db pt-1 font-fancy bg-db-cyan-process h-10 w-full rounded-lg text-lg text-white hover:bg-db-blue-200"
+              onClick={unstakeLpWrite}
+            >
+              Zap In
+            </button>
+          </div>
+        </div>
+
+        <div>
+          <button
+            className="border-[1px] border-black shadow-db pt-1 font-fancy bg-db-cyan-process h-10 w-full rounded-lg text-lg text-white hover:bg-db-blue-200"
+            onClick={claimLpWrite}
+          >
+            <div className="flex justify-center items-center gap-2">
+              <div>Claim</div>
+              <div className="pb-1 font-sans text-sm leading-none">123 BTC</div>
+            </div>
+          </button>
+        </div>
+      </div>
+    </div>
   );
 };
 
