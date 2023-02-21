@@ -16,14 +16,7 @@ import Connect from "./common/Connect";
 
 function Connector() {
   const { chain: activeChain } = useNetwork();
-  const networkSwitcher = useSwitchNetwork();
   const { address: connectedAddress, isConnected } = useAccount();
-
-  const liStyle = {
-    display: "inline",
-    margin: "1rem",
-    padding: "1rem",
-  };
 
   return (
     <>
@@ -32,25 +25,25 @@ function Connector() {
           path="/"
           element={
             <>
-              {process.env.REACT_APP_PHASE == "PRODUCTION" ? (
+              {process.env.REACT_APP_PHASE === "PRODUCTION" ? (
                 <AppContainer>
                   <Connect isConnected={isConnected} activeChain={activeChain}>
                     <Better />
                   </Connect>
                 </AppContainer>
-              ) : process.env.REACT_APP_PHASE == "PUBLIC_SALE" ? (
+              ) : process.env.REACT_APP_PHASE === "PUBLIC_SALE" ? (
                 <AppContainer>
                   <Connect isConnected={isConnected} activeChain={activeChain}>
                     <PublicSale />
                   </Connect>
                 </AppContainer>
-              ) : process.env.REACT_APP_PHASE == "PRESALE" ? (
+              ) : process.env.REACT_APP_PHASE === "PRESALE" ? (
                 <AppContainer>
                   <Connect isConnected={isConnected} activeChain={activeChain}>
                     <Presale />
                   </Connect>
                 </AppContainer>
-              ) : process.env.REACT_APP_PHASE == "LANDING" ? (
+              ) : process.env.REACT_APP_PHASE === "LANDING" ? (
                 <AppContainer>
                   <Landing />
                 </AppContainer>

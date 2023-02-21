@@ -24,14 +24,14 @@ export function WalletConnect() {
       <div>
         {chain && chain.id !== DEFAULT_CHAIN_ID ? (
           <button
-            className="bg-db-cyan-process h-10 w-36 rounded-lg text-lg text-white hover:bg-db-blue-200"
+            className="border-[1px] border-black shadow-db bg-db-cyan-process h-10 w-36 rounded-lg text-lg text-white hover:bg-db-blue-200"
             onClick={() => switchNetwork(DEFAULT_CHAIN_ID)}
           >
             Switch Network
           </button>
         ) : (
           <button
-            className="bg-db-cyan-process h-10 w-36 rounded-lg text-lg text-white hover:bg-db-blue-200"
+            className="border-[1px] border-black shadow-db bg-db-cyan-process h-10 w-36 rounded-lg text-lg text-white hover:bg-db-blue-200"
             onClick={() => setShowDisconnect(!showDisconnect)}
           >
             {truncateEthAddress(address)}
@@ -39,9 +39,9 @@ export function WalletConnect() {
         )}
 
         {showDisconnect ? (
-          <div className="absolute top-16 right-0">
+          <div className="absolute top-16 right-0 z-50">
             <button
-              className="flex justify-center items-center bg-db-cyan-process h-10 w-36 rounded-lg text-lg px-10 text-white hover:bg-db-blue-200"
+              className="border-[1px] border-black shadow-db flex justify-center items-center bg-db-cyan-process h-10 w-36 rounded-lg text-lg px-10 text-white hover:bg-db-blue-200"
               onClick={() => {
                 setShowDisconnect(!showDisconnect);
                 disconnect(address);
@@ -59,7 +59,7 @@ export function WalletConnect() {
   return (
     <div>
       <button
-        className="bg-db-cyan-process h-10 rounded-lg w-36 text-lg text-white hover:bg-db-blue-200"
+        className="border-[1px] border-black bg-db-cyan-process h-10 rounded-lg w-36 text-lg text-white hover:bg-db-blue-200"
         onClick={() => setShowNetworks(!showNetworks)}
       >
         Connect
@@ -69,7 +69,7 @@ export function WalletConnect() {
         <div className="absolute top-16 right-0">
           {connectors.map((connector) => (
             <button
-              className="flex justify-center items-center bg-db-cyan-process h-10 rounded-lg text-lg w-36 text-white hover:bg-db-blue-200"
+              className="border-[1px] border-black flex justify-center items-center bg-db-cyan-process h-10 rounded-lg text-lg w-36 text-white hover:bg-db-blue-200"
               onClick={() => {
                 setShowNetworks(!showNetworks);
                 connect({ connector });

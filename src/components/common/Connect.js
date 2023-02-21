@@ -3,10 +3,10 @@ const Connect = ({ isConnected, activeChain, children }) => {
     return <div>Please connect your wallet</div>;
   }
 
-  if (activeChain?.unsupported) {
+  // if (activeChain?.unsupported) {
 
-    return <div>Unsupported chain - </div>;
-  }
+  //   return <div>Unsupported chain - </div>;
+  // }
 
   return children;
 };

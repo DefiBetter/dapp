@@ -1,63 +1,28 @@
-import { Button } from "./Button";
-import styled from "styled-components";
-import { NormalText } from "./Text";
-
-const Input = styled.input`
-  background-color: white;
-  height: 90%;
-  width: 90%;
-  border-radius: inherit;
-`;
-
-const Container = styled.div`
-  border-color: #2aaee6;
-  border-width: 2px;
-  border-radius: 10px;
-  border-style: solid;
-  height: 2.5rem;
-`;
-
-const MaxButton = (props) => {
-  return (
-    <div
-      style={{
-        height: "100%",
-        display: "flex",
-        alignItems: "center",
-      }}
-    >
-      <Button {...props} style={{ height: "80%" }} />
-    </div>
-  );
-};
-
 const InputNumber = (props) => {
   const setMax = () => {
     props.setValue(props.max);
   };
 
   return (
-    <Container
-      style={{
-        display: "flex",
-        flex: 1,
-        padding: "0.2rem",
-        alignItems: "center",
-      }}
-    >
-      <Input
+    <div className="w-full flex items-center p-2 justify-center bg-db-background rounded-lg shadow-db">
+      <input
         onChange={props.onChange}
         type={"number"}
         min={props.min}
         placeholder={props.placeholder}
         value={props.value}
         max={props.max}
+        className="text-black text-sm"
       />
-      <MaxButton onClick={setMax}>
-        <NormalText>MAX</NormalText>
-      </MaxButton>
-    </Container>
+
+      <button
+        onClick={setMax}
+        className="bg-db-cyan-process text-white border-[1px] border-black rounded-md w-12 shadow-db px-2 h-8 flex justify-center items-center"
+      >
+        MAX
+      </button>
+    </div>
   );
 };
 
-export { Input, InputNumber };
+export { InputNumber };

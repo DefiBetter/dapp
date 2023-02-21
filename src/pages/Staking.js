@@ -14,7 +14,7 @@ import LpStakingABI from "../static/ABI/LpStakingABI.json";
 import BTABI from "../static/ABI/BTABI.json";
 import IERC20MetadataABI from "../static/ABI/IERC20MetadataABI.json";
 
-import styles from "./Staking.module.css";
+// import styles from "./Staking.module.css";
 import {
   useAccount,
   useBalance,
@@ -96,114 +96,77 @@ function Staking() {
   // })();
 
   return (
-    <Container overflow={true}>
-      <div className={styles.innerContainer}>
-        <Grid>
-          {/* <GridRow style={{ marginBottom: "1rem" }}>
-            <GridCol xs={12}>
-              <div className={styles.cardContainer}>
-                <Card>
-                  <Grid>
-                    <GridRow>
-                      <GridCol colSpan={3}>
-                        <FancyText
-                          style={{
-                            textAlign: "center",
-                            fontSize: "2rem",
-                            textDecoration: "underline",
-                          }}
-                        >
-                          Staking
-                        </FancyText>
-                      </GridCol>
-                    </GridRow>
-                    <GridRow>
-                      <GridCol>
-                        <InputNumber
-                          max={0}
-                          min={0}
-                          onChange={() => {}}
-                          placeholder={"hi"}
-                          value={0}
-                        />
-                      </GridCol>
-                      <GridCol>
-                        <Dropdown
-                          currentItem={"AVAX"}
-                          currentItemLabel={"AVAX"}
-                          setCurrentItem={() => {}}
-                          itemList={[]}
-                          itemLabelList={[
-                            "BSC",
-                            "AVAX",
-                            "MATIC",
-                            "FTM",
-                            "HARDHAT",
-                          ]}
-                        />
-                      </GridCol>
-                      <GridCol>
-                        <Button>Bridge</Button>
-                      </GridCol>
-                    </GridRow>
-                  </Grid>
-                </Card>
-              </div>
-            </GridCol>
-          </GridRow> */}
-          <GridRow style={{ flexWrap: "wrap" }}>
-            <GridCol xs={12} sm={12} md={6} lg={6}>
-              <div
-                // style={
-                //   ["xs", "sm"].filter((b) => b == windowDimension.screen)
-                //     .length > 0
-                //     ? { width: "100%" }
-                //     : {}
-                // }
-                className={styles.assetContainer}
-              >
-                <StakeDiagram
-                  stakeSymbol={lpTokenSymbol}
-                  rewardSymbol={"BT"}
-                  stakeName={lpTokenSymbol}
-                  rewardName={"Better Token"}
+    <>
+      <div className="relative bg-db-background border-[3px] border-db-cyan-process rounded-2xl h-full">
+        {/* FUTURE BRIDGE FEATURE */}
+        <div className="m-auto w-[200px] mt-5 bg-white border-2 border-db-cyan-process rounded-2xl">
+          <div className="p-4 flex flex-col items-center">
+            <div className="underline font-fancy text-3xl text-db-cyan-process">
+              Staking
+            </div>
+            {/* <div className="flex gap-2 mt-5">
+              <div>
+                <InputNumber
+                  max={0}
+                  min={0}
+                  onChange={() => {}}
+                  placeholder={"hi"}
+                  value={0}
                 />
-                <LpStakingCard />
               </div>
-            </GridCol>
-            <GridCol xs={12} sm={12} md={6} lg={6}>
-              <div
-                // style={
-                //   ["xs", "sm"].filter((b) => b == windowDimension.screen)
-                //     .length > 0
-                //     ? { width: "100vw" }
-                //     : {}
-                // }
-                className={styles.assetContainer}
-              >
-                <div>
-                  <StakeDiagram
-                    stakeSymbol={"BT"}
-                    rewardSymbol={
-                      contractAddresses[activeChain?.network]?.nativeGas
-                    }
-                    stakeName={"Better Token"}
-                    rewardName={
-                      contractAddresses[activeChain?.network]?.nativeGas
-                    }
-                  />
-                  <BtStakingCard
-                    nativeGas={
-                      contractAddresses[activeChain?.network]?.nativeGas
-                    }
-                  />
-                </div>
+              <div>
+                <Dropdown
+                  currentItem={"AVAX"}
+                  currentItemLabel={"AVAX"}
+                  setCurrentItem={() => {}}
+                  itemList={[]}
+                  itemLabelList={["BSC", "AVAX", "MATIC", "FTM", "HARDHAT"]}
+                />
               </div>
-            </GridCol>
-          </GridRow>
-        </Grid>
+              <div>
+                <Button>Bridge</Button>
+              </div>
+            </div> */}
+          </div>
+        </div>
+        <div className="z-0 absolute h-60 bottom-5 flex justify-center left-0 right-0">
+          <img
+            alt="faucet"
+            className="h-full"
+            src={require("../static/image/faucet.png")}
+          ></img>
+        </div>
+
+        <div className="px-10 py-5 flex justify-between">
+          <div className="w-[40%] z-10 h-full flex flex-col justify-between">
+            <div>
+              <StakeDiagram
+                stakeSymbol={lpTokenSymbol}
+                rewardSymbol={"BT"}
+                stakeName={lpTokenSymbol}
+                rewardName={"Better Token"}
+              />
+            </div>
+            <div className="mt-5">
+              <LpStakingCard />
+            </div>
+          </div>
+          <div className="w-[40%] z-10 h-full flex flex-col justify-between">
+            <StakeDiagram
+              stakeSymbol={"BT"}
+              rewardSymbol={contractAddresses[activeChain?.network]?.nativeGas}
+              stakeName={"Better Token"}
+              rewardName={contractAddresses[activeChain?.network]?.nativeGas}
+            />
+            <div className="mt-5">
+              <BtStakingCard
+                nativeGas={contractAddresses[activeChain?.network]?.nativeGas}
+              />
+            </div>
+          </div>
+        </div>
       </div>
-    </Container>
+    </>
   );
 }
 

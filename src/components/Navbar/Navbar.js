@@ -8,7 +8,7 @@ const Navbar = () => {
 
   return (
     <div className="">
-      <div className="h-[70px] border-4 border-db-cyan-process rounded-2xl w-full shadow-lg">
+      <div className="h-[70px] border-4 border-db-cyan-process rounded-2xl w-full shadow-db">
         <div className="flex justify-between items-center h-full px-4">
           <div className="relative h-full">
             <Link
@@ -22,12 +22,10 @@ const Navbar = () => {
               ></img>
             </Link>
           </div>
-          <div className="pt-1.5 flex gap-10 items-center font-fancy text-db-blue text-2xl">
+          <div className="pt-1.5 flex gap-10 items-center font-fancy text-db-blue text-lg text-db-cyan-process">
             <div>
               <Link
-                to={
-                  process.env.REACT_APP_PHASE === "PRODUCTION" ? "/" : "/"
-                }
+                to={process.env.REACT_APP_PHASE === "PRODUCTION" ? "/" : "/"}
               >
                 Better
               </Link>
@@ -52,15 +50,18 @@ const Navbar = () => {
                 Strategy vaults
               </Link>
             </div>
+            <div>
+              <a
+                title="Documentation"
+                href="https://app.gitbook.com/o/NBcMmIGNsNgrhjS2tczv/s/qLpJBZkEb6TQw9OfyioS/"
+                target="_blank"
+                rel="noreferrer"
+              >
+                Documentation
+              </a>
+            </div>
           </div>
-          <div className="relative flex gap-4 items-center">
-            <a
-              href="https://app.gitbook.com/o/NBcMmIGNsNgrhjS2tczv/s/qLpJBZkEb6TQw9OfyioS/"
-              target="_blank"
-              rel="noreferrer"
-            >
-              <BiBookAlt size={20} className="text-db-cyan-process" />
-            </a>
+          <div className="relative">
             <WalletConnect />
           </div>
         </div>
