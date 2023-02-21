@@ -253,74 +253,72 @@ function PublicSale() {
   // ------------------------------------------------------------------------------------------
 
   return (
-    <>
-      <div className="relative bg-db-background border-[3px] border-db-cyan-process h-full">
-        <div className="shadow-db m-auto w-full md:w-1/2 mt-5 bg-white border-2 border-db-cyan-process rounded-2xl p-4">
-          <div className="flex justify-center text-5xl">
-            Pre
-            <span className="font-bold mt-7 font-fancy text-5xl text-db-cyan-process">
-              Sale
-            </span>
-          </div>
-        </div>
-
-        <div className="relative z-10 flex flex-col shadow-db m-auto w-full md:w-1/2 mt-5 bg-white border-2 border-db-cyan-process rounded-2xl p-4">
-          <div className="flex justify-center">
-            <div className="shadow-db px-10 text-center bg-db-french-sky p-3 border-[1px] border-black rounded-lg">
-              <span className='font-bold'>Current Price:</span> 100 WETH/BT
-            </div>
-          </div>
-          <div className="mt-4 flex justify-between items-center">
-            <div className="flex-1 shadow-db text-center font-bold bg-db-french-sky p-3 border-[1px] border-black rounded-lg">
-              Time Left
-            </div>
-            <div className="flex-1 text-center">2:11:59:47</div>
-            <div className="flex-1 shadow-db text-center font-bold bg-db-french-sky p-3 border-[1px] border-black rounded-lg">
-              Supply Left
-            </div>
-            <div className="flex-1 text-center">11.50</div>
-          </div>
-          <div className="mt-3 flex items-center w-full">
-            <div className="font-fancy text-db-cyan-process w-24 text-center text-xl pt-1">
-              buy
-            </div>
-            <div className="w-full flex items-center p-2 justify-center bg-db-background rounded-lg shadow-db">
-              <input
-                //onChange={props.onChange}
-                type={"number"}
-                min={0}
-                placeholder="Amount"
-                //value={props.value}
-                //max={props.max}
-                className="text-black text-sm flex-1"
-              />
-
-              <div className="text-black font-bold">BT</div>
-            </div>
-          </div>
-          <div className="mt-3 flex items-center w-full">
-            <div className="font-fancy text-db-cyan-process w-24 text-center text-xl pt-1">
-              for
-            </div>
-            <div className="w-full flex items-center p-2 justify-center bg-db-background rounded-lg shadow-db">
-              <div className="text-black text-sm flex-1" />
-
-              <div className="text-black font-bold">WETH</div>
-            </div>
-          </div>
-          <button className="mt-3 border-[1px] border-black shadow-db pt-1 font-fancy bg-db-cyan-process h-10 w-full rounded-lg text-lg text-white hover:bg-db-blue-200">
-            Buy
-          </button>
-        </div>
-        <div className="z-0 absolute h-60 bottom-5 left-[13%]">
-          <img
-            alt="faucet"
-            className="h-full z-0"
-            src={require("../static/image/open-vault-clipart.svg").default}
-          ></img>
+    <div className="relative bg-db-background border-[3px] border-db-cyan-process h-full">
+      <div className="shadow-db m-auto w-full md:w-1/2 mt-5 bg-white border-2 border-db-cyan-process rounded-2xl p-4">
+        <div className="flex justify-center text-5xl">
+          Pre
+          <span className="font-bold mt-7 font-fancy text-5xl text-db-cyan-process">
+            Sale
+          </span>
         </div>
       </div>
-    </>
+
+      <div className="relative z-10 flex flex-col shadow-db m-auto w-full md:w-1/2 mt-5 bg-white border-2 border-db-cyan-process rounded-2xl p-4">
+        <div className="flex justify-center">
+          <div className="shadow-db px-10 text-center bg-db-french-sky p-3 border-[1px] border-black rounded-lg">
+            <span className="font-bold">Current Price:</span> 100 WETH/BT
+          </div>
+        </div>
+        <div className="mt-4 flex justify-between items-center">
+          <div className="flex-1 shadow-db text-center font-bold bg-db-french-sky p-3 border-[1px] border-black rounded-lg">
+            Time Left
+          </div>
+          <div className="flex-1 text-center">2:11:59:47</div>
+          <div className="flex-1 shadow-db text-center font-bold bg-db-french-sky p-3 border-[1px] border-black rounded-lg">
+            Supply Left
+          </div>
+          <div className="flex-1 text-center">11.50</div>
+        </div>
+        <div className="mt-3 flex items-center w-full">
+          <div className="font-fancy text-db-cyan-process w-24 text-center text-xl pt-1">
+            buy
+          </div>
+          <div className="w-full flex items-center p-2 justify-center bg-db-background rounded-lg shadow-db">
+            <input
+              //onChange={props.onChange}
+              type={"number"}
+              min={0}
+              placeholder="Amount"
+              //value={props.value}
+              //max={props.max}
+              className="text-black text-sm flex-1"
+            />
+
+            <div className="text-black font-bold">BT</div>
+          </div>
+        </div>
+        <div className="mt-3 flex items-center w-full">
+          <div className="font-fancy text-db-cyan-process w-24 text-center text-xl pt-1">
+            for
+          </div>
+          <div className="w-full flex items-center p-2 justify-center bg-db-background rounded-lg shadow-db">
+            <div className="text-black text-sm flex-1" />
+
+            <div className="text-black font-bold">WETH</div>
+          </div>
+        </div>
+        <button className="mt-3 border-[1px] border-black shadow-db pt-1 font-fancy bg-db-cyan-process h-10 w-full rounded-lg text-lg text-white hover:bg-db-blue-200">
+          Buy
+        </button>
+      </div>
+      <div className="z-0 absolute h-60 bottom-5 left-[13%]">
+        <img
+          alt="faucet"
+          className="h-full z-0"
+          src={require("../static/image/open-vault-clipart.svg").default}
+        ></img>
+      </div>
+    </div>
   );
 }
 

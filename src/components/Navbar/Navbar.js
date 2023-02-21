@@ -23,33 +23,42 @@ const Navbar = () => {
             </Link>
           </div>
           <div className="pt-1.5 flex gap-10 items-center font-fancy text-db-blue text-lg text-db-cyan-process underline font-bold">
-            <div>
-              <Link
-                to={process.env.REACT_APP_PHASE === "PRODUCTION" ? "/" : "/"}
-              >
-                Better
-              </Link>
-            </div>
-            <div>
-              <Link
-                to={
-                  process.env.REACT_APP_PHASE === "PRODUCTION"
-                    ? "/staking"
-                    : "/"
-                }
-              >
-                Staking
-              </Link>
-            </div>
-            <div>
-              <Link
-                to={
-                  process.env.REACT_APP_PHASE === "PRODUCTION" ? "/vaults" : "/"
-                }
-              >
-                Strategy vaults
-              </Link>
-            </div>
+            {process.env.REACT_APP_PHASE === "PRODUCTION" && (
+              <>
+                <div>
+                  <Link
+                    to={
+                      process.env.REACT_APP_PHASE === "PRODUCTION" ? "/" : "/"
+                    }
+                  >
+                    Better
+                  </Link>
+                </div>
+                <div>
+                  <Link
+                    to={
+                      process.env.REACT_APP_PHASE === "PRODUCTION"
+                        ? "/staking"
+                        : "/"
+                    }
+                  >
+                    Staking
+                  </Link>
+                </div>
+                <div>
+                  <Link
+                    to={
+                      process.env.REACT_APP_PHASE === "PRODUCTION"
+                        ? "/vaults"
+                        : "/"
+                    }
+                  >
+                    Strategy vaults
+                  </Link>
+                </div>
+              </>
+            )}
+
             <div>
               <a
                 title="Documentation"

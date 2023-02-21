@@ -14,7 +14,6 @@ import LpStakingABI from "../static/ABI/LpStakingABI.json";
 import BTABI from "../static/ABI/BTABI.json";
 import IERC20MetadataABI from "../static/ABI/IERC20MetadataABI.json";
 
-// import styles from "./Staking.module.css";
 import {
   useAccount,
   useBalance,
