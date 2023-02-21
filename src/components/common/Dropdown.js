@@ -20,9 +20,9 @@ const Dropdown = ({
     <div className="relative w-full">
       <div
         onClick={toggleOptions}
-        className="shadow-db w-full h-10 flex flex-col justify-center bg-white border-[1px] border-black rounded-lg"
+        className="text-sm shadow-db w-full h-10 flex flex-col justify-center bg-white border-[1px] border-black rounded-lg"
       >
-        <div className="flex justify-between items-center px-3">
+        <div className="flex justify-between items-center px-1">
           <div className="flex-1">{currentItemLabel}</div>
           <div>
             <RiArrowDownSFill

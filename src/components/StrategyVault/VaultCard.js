@@ -242,11 +242,11 @@ const VaultCard = () => {
 
   return (
     <>
-      <div className="w-full border-[3px] border-db-cyan-process bg-white rounded-2xl p-4">
+      <div className="w-full border-[3px] border-db-cyan-process bg-white rounded-[3rem] p-4">
         <div className='flex items-baseline justify-center gap-5'>
-          <div className="font-bold flex justify-center text-3xl gap-2">
+          <div className="font-bold flex justify-center text-4xl gap-2">
             Strategy
-            <span className="mt-7 font-fancy text-3xl text-db-cyan-process">
+            <span className="mt-7 font-fancy text-4xl text-db-cyan-process">
               Vaults
             </span>
           </div>
@@ -279,10 +279,10 @@ const VaultCard = () => {
               </div>
             </div>
             <div className="flex justify-between w-full items-center">
-              <div className="flex-1 shadow-db w-36 text-center font-bold bg-db-french-sky p-3 border-[1px] border-black rounded-lg">
+              <div className="flex-1 shadow-db w-36 text-center font-bold bg-db-background p-3 border-[1px] border-black rounded-lg">
                 Vault Balance
               </div>
-              <div className="flex-1 text-center">
+              <div className="flex-1 text-center font-bold">
                 {vaultBalanceInfo
                   ? trimNumber(
                       ethers.utils.formatEther(vaultBalanceInfo.totalBalance),
@@ -346,7 +346,7 @@ const VaultCard = () => {
               </div>
             </div>
             <div className="flex justify-between w-full items-center">
-              <div className="flex-1 shadow-db w-36 text-center font-bold bg-db-french-sky p-3 border-[1px] border-black rounded-lg">
+              <div className="flex-1 shadow-db w-36 text-center font-bold bg-db-background p-3 border-[1px] border-black rounded-lg">
                 Vault Performance
               </div>
               <div className="flex-1 text-center text-lime-300 font-bold">

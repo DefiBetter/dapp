@@ -97,7 +97,7 @@ function Staking() {
 
   return (
     <>
-      <div className="relative bg-db-background border-[3px] border-db-cyan-process rounded-2xl h-full">
+      <div className="relative bg-db-background border-[3px] border-db-cyan-process h-full">
         {/* FUTURE BRIDGE FEATURE */}
         <div className="m-auto w-[200px] mt-5 bg-white border-2 border-db-cyan-process rounded-2xl">
           <div className="p-4 flex flex-col items-center">

@@ -22,7 +22,7 @@ const Navbar = () => {
               ></img>
             </Link>
           </div>
-          <div className="pt-1.5 flex gap-10 items-center font-fancy text-db-blue text-lg text-db-cyan-process">
+          <div className="pt-1.5 flex gap-10 items-center font-fancy text-db-blue text-lg text-db-cyan-process underline font-bold">
             <div>
               <Link
                 to={process.env.REACT_APP_PHASE === "PRODUCTION" ? "/" : "/"}
