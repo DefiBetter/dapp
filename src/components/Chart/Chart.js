@@ -243,12 +243,13 @@ const Chart = (props) => {
   }, [latestRoundData]);
 
   useEffect(() => {
-    if (!instrumentRef) {
-      setInstrumentRef(props.instrument);
-    } else if (instrumentRef != props.instrument) {
-      setChartData(undefined);
-    } else {
-    }
+    // if (!instrumentRef) {
+    //   setInstrumentRef(props.instrument);
+    // } else if (instrumentRef != props.instrument) {
+    //   console.log("chartData undefined");
+    //   setChartData(undefined);
+    // } else {
+    // }
   }, [props.instrument]);
 
   let roundIdList = [];
@@ -293,6 +294,7 @@ const Chart = (props) => {
         newChartData[roundIdList[i]] = round;
       });
       if (chartData) {
+        console.log("chartData adding");
         setChartData({ ...chartData, ...newChartData });
 
         // fetch historical data if not enough
@@ -311,6 +313,7 @@ const Chart = (props) => {
           getRoundDataMultiCallRefetch();
         }
       } else {
+        console.log("chartData newChartData");
         setChartData(newChartData);
       }
     },
