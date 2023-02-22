@@ -1,6 +1,7 @@
 import { useState } from "react";
 
 import { RiArrowDownSFill } from "react-icons/ri";
+import { instrumentLabel } from "./helper";
 
 const Dropdown = ({
   currentItem,
@@ -22,7 +23,7 @@ const Dropdown = ({
         onClick={toggleOptions}
         className="text-sm shadow-db w-full h-10 flex flex-col justify-center bg-white border-[1px] border-black rounded-lg"
       >
-        <div className="flex justify-between items-center px-1">
+        <div className="flex justify-between items-center px-2">
           <div className="flex-1">{currentItemLabel}</div>
           <div>
             <RiArrowDownSFill
@@ -35,19 +36,25 @@ const Dropdown = ({
         </div>
       </div>
       {showItemList ? (
-        <div className="absolute top-10 left-0 w-full">
+        <div className="absolute top-10 left-0 w-full z-50">
           {itemList?.map((item, i) => (
             <div
-              className="w-full h-10 cursor-pointer"
+              className="w-full cursor-pointer"
               onClick={() => {
                 setCurrentItem(item);
                 toggleOptions();
               }}
             >
-              <div
-                className='px-4 shadow-db w-full h-10 flex flex-col justify-center bg-white border-[1px] border-black rounded-lg'
-              >
-                {itemLabelList[i]}
+              <div className="z-50 h-10 text-sm px-2 shadow-db w-full flex flex-col justify-center bg-white border-[1px] border-black rounded-lg">
+                <div
+                  className={
+                    currentItemLabel === itemLabelList[i]
+                      ? "text-db-cyan-process font-bold"
+                      : "text-black"
+                  }
+                >
+                  {itemLabelList[i]}
+                </div>
               </div>
             </div>
           ))}

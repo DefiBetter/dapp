@@ -45,6 +45,14 @@ const CountdownFormatted = ({ ms }) => {
   );
 };
 
+const instrumentToLabel = (instrument) => {
+  return `${instrument.underlyingDescription.replaceAll(" ", "")} ${timeFormat(
+    +instrument.epochDurationInSeconds
+  )}+${timeFormat(+instrument.bufferDurationInSeconds)} (${(
+    +instrument.volatilityMultiplier / 10000
+  ).toFixed(2)} SD, ${+instrument.baseError / 10000} E)`;
+};
+
 const instrumentLabel = (instrument, br = false) => {
   if (instrument) {
     return (
@@ -62,4 +70,4 @@ const instrumentLabel = (instrument, br = false) => {
   return ``;
 };
 
-export { trimNumber, instrumentLabel, timeFormat, CountdownFormatted };
+export { trimNumber, instrumentLabel, instrumentToLabel, timeFormat, CountdownFormatted };
