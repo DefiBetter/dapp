@@ -1,111 +1,15 @@
-// // TODO change to api hook
 
-// import { useEffect, useState } from "react";
-// import Axes from "./Axes";
-// import BarChart from "./BarChart";
-// import LineChart from "./LineChart";
-
-// // https://io.dexscreener.com/u/chart/bars/{chain}/{tokenAddress}?from={unixStart}&to={unixEnd}&res={chartMinuteResolution}&cb={barCount}
-// let tries = 0;
-
-// const Chart = () => {
-//   let [data, setData] = useState({ bars: [] });
-//   let [chartConfig, setChartConfig] = useState({
-//     containerWidth: 600,
-//     containerHeight: 600,
-//     chartWidth: 600,
-//     chartHeight: 600,
-//     separatorCountX: 10,
-//     separatorCountY: 10,
-//     separatorWidth: 50,
-//     paddingX: function () {
-//       return (this.containerWidth - this.chartWidth) / 2;
-//     },
-//     paddingY: function () {
-//       return (this.containerHeight - this.chartHeight) / 2;
-//     },
-//     middleCoord: function () {
-//       return [
-//         this.chartWidth / 2 + this.paddingX(),
-//         this.chartHeight / 2 + this.paddingY(),
-//       ];
-//     },
-//   });
-
-//   const getData = (
-//     chain,
-//     contractAddress,
-//     unixStart,
-//     unixEnd,
-//     chartResolution,
-//     barCount
-//   ) => {
-//     fetch(
-//       `http://localhost:4000/u/chart/bars/${chain}/${contractAddress}?from=${unixStart}&to=${unixEnd}&res=${chartResolution}&cb=${barCount}`
-//     )
-//       .then((res) => res.json())
-//       .then((data) => {
-//         if (data.status === 500) {
-//           tries++;
-//           getData(
-//             chain,
-//             contractAddress,
-//             unixStart,
-//             unixEnd,
-//             chartResolution,
-//             barCount
-//           );
-//         } else {
-//           setData(data);
-//         }
-//       });
-//   };
-
-//   useEffect(() => {
-//     // fetch data
-//     getData(
-//       "avalanche",
-//       "0xbc61c7ecef56e40404fc359ef4dfd6e7528f2b09",
-//       1659826800000,
-//       1659829737815,
-//       60,
-//       320
-//     );
-//   }, []);
-
-//   return (
-//     <div>
-//       <svg width={window.innerWidth / 2} height={window.innerHeight / 2}>
-//         {/* <line x1={0} y1={0} x2={window.innerWidth} y2={0} stroke="grey" /> */}
-//         <Axes chartConfig={chartConfig} />
-//         <LineChart chartConfig={chartConfig} data={data} />
-//         {/* <BarChart chartConfig={chartConfig} data={data} /> */}
-//       </svg>
-//     </div>
-//   );
-// };
-
-// export default Chart;
-
-import styles from "./Chart.module.css";
-import { underlyingPairAddress } from "../../static/contractAddresses";
 import { useState, useRef, useLayoutEffect, useEffect } from "react";
-import { useContractRead, useContractReads } from "wagmi";
+import { useContractRead } from "wagmi";
 import { BigNumber, ethers } from "ethers";
-import { Grid, GridCol, GridRow } from "../common/Grid";
 
 import AggregatorV3InterfaceABI from "../../static/ABI/AggregatorV3InterfaceABI.json";
 /* global BigInt */
 import LineChart from "./modules/LineChart";
-import Axes from "./modules/ChartBackground";
 import ChartBackground from "./modules/ChartBackground";
 import SdCone from "./modules/SdCone";
 import { transpose } from "./Transformations";
-import { Button } from "../common/Button";
-import { NormalText } from "../common/Text";
 import { InputNumber } from "../common/Input";
-
-const pairAddress = "0xcA75C4aA579c25D6ab3c8Ef9A70859ABF566fA1d"; // need to make this change with selected asset
 
 /* chart rework:
 - global chart data state
@@ -504,21 +408,8 @@ const Chart = (props) => {
   }, []);
 
   return (
-    <div className={styles.container} ref={containerRef}>
-      {/* for the time being (before figuring out a place to get raw data) we will be using dex screener */}
-      {/* <div id={styles.dexscreenerEmbed}>
-        <iframe
-          src={`https://dexscreener.com/${props.underlying}/${
-            underlyingPairAddress[props.underlying]
-          }?embed=1&trades=0&info=0`}
-        />
-      </div> */}
-      <svg
-        width={"100%"}
-        height={"100%"}
-        style={{ backgroundColor: "#758A9E" }}
-      >
-        {/* <line x1={0} y1={0} x2={window.innerWidth} y2={0} stroke="grey" /> */}
+    <div className="w-full h-full bg-[#647687] relative" ref={containerRef}>
+      <svg className="w-full h-full bg-db-light-slate">
         <ChartBackground
           chartConfig={chartConfig}
           data={chartData}
@@ -571,142 +462,123 @@ const Chart = (props) => {
           trailing={true}
           color={"#2AAEE6"}
         />
-        {/* <BarChart chartConfig={chartConfig} data={data} /> */}
       </svg>
-      <div className={styles.chartOverlay}>
+      <div className="text-xs absolute w-full left-2 top-0 text-white flex font-bold gap-6">
+        <div>Current: {currentPrice}</div>
         <div>
-          <div></div>
-          <div></div>
+          Epoch open:{" "}
+          {lastEpochData
+            ? ethers.utils.formatEther(lastEpochData.closingPrice)
+            : null}
         </div>
-        <Grid>
-          <GridRow>
-            <GridCol>
-              <GridCol>
-                <b>Current: {currentPrice}</b>
-              </GridCol>
-            </GridCol>
-            <GridCol>
-              <GridCol>
-                Epoch open:{" "}
-                {lastEpochData
-                  ? ethers.utils.formatEther(lastEpochData.closingPrice)
-                  : null}
-              </GridCol>
-            </GridCol>
-            <GridCol>
-              <GridCol>
-                Last updated:{" "}
-                {(() => {
-                  const dt = new Date(lastUpdated * 1000);
-                  return `${dt.toLocaleTimeString()}`;
-                })()}
-              </GridCol>
-            </GridCol>
-          </GridRow>
-        </Grid>
+        <div>
+          Last updated:{" "}
+          {(() => {
+            const dt = new Date(lastUpdated * 1000);
+            return `${dt.toLocaleTimeString()}`;
+          })()}
+        </div>
       </div>
-      <div className={styles.chartOverlayBottom}>
-        <Grid>
-          <GridRow>
-            <GridCol>
-              <b>x scaling:</b>
-            </GridCol>
-            <GridCol>
-              <Button
-                onClick={() => {
-                  setChartConfig({
-                    ...chartConfig,
-                    scaleType: { ...chartConfig.scaleType, x: "epochStart" },
-                  });
-                }}
-              >
-                <NormalText>epochStart</NormalText>
-              </Button>
-              <Button
-                onClick={() => {
-                  setChartConfig({
-                    ...chartConfig,
-                    scaleType: { ...chartConfig.scaleType, x: "trailing" },
-                  });
-                }}
-              >
-                <NormalText>trailing</NormalText>
-              </Button>
-            </GridCol>
-            <GridCol>
-              <Button
-                onClick={() => {
-                  setChartConfig({
-                    ...chartConfig,
-                    scaleType: {
-                      ...chartConfig.scaleType,
-                      xAnchor: !chartConfig.scaleType.xAnchor,
-                    },
-                  });
-                }}
-              >
-                <NormalText>Anchor</NormalText>
-              </Button>
-            </GridCol>
-          </GridRow>
-          <GridRow>
-            <GridCol>
-              <b>y scaling:</b>
-            </GridCol>
-            <GridCol>
-              <Button
-                onClick={() => {
-                  setChartConfig({
-                    ...chartConfig,
-                    scaleType: { ...chartConfig.scaleType, y: "binBorder" },
-                  });
-                }}
-              >
-                <NormalText>binBorder</NormalText>
-              </Button>
-              <Button
-                onClick={() => {
-                  setChartConfig({
-                    ...chartConfig,
-                    scaleType: { ...chartConfig.scaleType, y: "minMax" },
-                  });
-                }}
-              >
-                <NormalText>minMax</NormalText>
-              </Button>
-            </GridCol>
-            <GridCol>
-              <Button
-                onClick={() => {
-                  setChartConfig({
-                    ...chartConfig,
-                    scaleType: {
-                      ...chartConfig.scaleType,
-                      yAnchor: !chartConfig.scaleType.yAnchor,
-                    },
-                  });
-                }}
-              >
-                <NormalText>Anchor</NormalText>
-              </Button>
-            </GridCol>
-          </GridRow>
-          <GridRow>
-            <GridCol>n epochs</GridCol>
-            <GridCol>
-              <InputNumber
-                min={1}
-                onChange={(e) => {
-                  setChartConfig({
-                    ...chartConfig,
-                    epochCount: +e.target.value,
-                  });
-                }}
-                placeholder={"cannot be 0"}
-              />
-            </GridCol>
-          </GridRow>
-        </Grid>
+      <div className="text-xs absolute w-1/3 left-2 bottom-6 text-white flex flex-col font-bold gap-2">
+        <div className="flex justify-between items-center">
+          <div>x scaling</div>
+          <div className="flex gap-2">
+            <button
+              className="border-[1px] border-black shadow-db bg-db-cyan-process p-1 pb-2 w-full rounded-lg text-white hover:bg-db-blue-200"
+              onClick={() => {
+                setChartConfig({
+                  ...chartConfig,
+                  scaleType: { ...chartConfig.scaleType, x: "epochStart" },
+                });
+              }}
+            >
+              epochStart
+            </button>
+
+            <button
+              className="border-[1px] border-black shadow-db bg-db-cyan-process p-1 pb-2 w-full rounded-lg text-white hover:bg-db-blue-200"
+              onClick={() => {
+                setChartConfig({
+                  ...chartConfig,
+                  scaleType: { ...chartConfig.scaleType, x: "trailing" },
+                });
+              }}
+            >
+              trailing
+            </button>
+
+            <button
+              className="border-[1px] border-black shadow-db bg-db-cyan-process p-1 pb-2 w-full rounded-lg text-white hover:bg-db-blue-200"
+              onClick={() => {
+                setChartConfig({
+                  ...chartConfig,
+                  scaleType: {
+                    ...chartConfig.scaleType,
+                    xAnchor: !chartConfig.scaleType.xAnchor,
+                  },
+                });
+              }}
+            >
+              anchor
+            </button>
+          </div>
+        </div>
+        <div className="flex justify-between items-center">
+          <div>y scaling</div>
+          <div className="flex gap-2">
+            <button
+              className="border-[1px] border-black shadow-db bg-db-cyan-process p-1 pb-2 w-full rounded-lg text-white hover:bg-db-blue-200"
+              onClick={() => {
+                setChartConfig({
+                  ...chartConfig,
+                  scaleType: { ...chartConfig.scaleType, y: "binBorder" },
+                });
+              }}
+            >
+              binBorder
+            </button>
+            <button
+              className="border-[1px] border-black shadow-db bg-db-cyan-process p-1 pb-2 w-full rounded-lg text-white hover:bg-db-blue-200"
+              onClick={() => {
+                setChartConfig({
+                  ...chartConfig,
+                  scaleType: { ...chartConfig.scaleType, y: "minMax" },
+                });
+              }}
+            >
+              minMax
+            </button>
+            <button
+              className="border-[1px] border-black shadow-db bg-db-cyan-process p-1 pb-2 w-full rounded-lg text-white hover:bg-db-blue-200"
+              onClick={() => {
+                setChartConfig({
+                  ...chartConfig,
+                  scaleType: {
+                    ...chartConfig.scaleType,
+                    yAnchor: !chartConfig.scaleType.yAnchor,
+                  },
+                });
+              }}
+            >
+              anchor
+            </button>
+          </div>
+        </div>
+        <div className="flex justify-between items-center">
+          <div>n epochs</div>
+          <div>
+            <InputNumber
+              min={1}
+              onChange={(e) => {
+                setChartConfig({
+                  ...chartConfig,
+                  epochCount: +e.target.value,
+                });
+              }}
+              placeholder={"cannot be 0"}
+            />
+          </div>
+        </div>
       </div>
     </div>
   );

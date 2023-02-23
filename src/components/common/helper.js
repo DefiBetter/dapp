@@ -46,11 +46,14 @@ const CountdownFormatted = ({ ms }) => {
 };
 
 const instrumentToLabel = (instrument) => {
-  return `${instrument.underlyingDescription.replaceAll(" ", "")} ${timeFormat(
+  if (instrument) {
+      return `${instrument.underlyingDescription.replaceAll(" ", "")} ${timeFormat(
     +instrument.epochDurationInSeconds
   )}+${timeFormat(+instrument.bufferDurationInSeconds)} (${(
     +instrument.volatilityMultiplier / 10000
   ).toFixed(2)} SD, ${+instrument.baseError / 10000} E)`;
+  }
+  return ''
 };
 
 const instrumentLabel = (instrument, br = false) => {

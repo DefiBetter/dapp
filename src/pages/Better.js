@@ -231,58 +231,78 @@ function Better() {
   return (
     <>
       {epochData && betterContractConfig ? (
-        <Container>
-          <div className={styles.header}>
-            <Pair
-              instrumentList={instrumentList}
-              setInstrument={setInstrument}
-              instrument={instrument}
-              getInstrumentBySelectorRefetch={getInstrumentBySelectorRefetch}
-            />
-            <Epoch
-              instrument={instrument}
-              setInstrument={setInstrument}
-              getInstrumentBySelectorRefetch={getInstrumentBySelectorRefetch}
-              getInstrumentBySelectorIsRefetching={
-                getInstrumentBySelectorIsRefetching
-              }
-            />
-            <Action
-              betterContractConfig={betterContractConfig}
-              instrument={instrument}
-              binAmountList={binAmountList}
-              setBinTotal={setBinTotal}
-              customFlatFee={customFlatFee}
-              customGainFee={customGainFee}
-              pendingBetterBalance={pendingBetterBalance}
-              nativeGas={nativeGas}
-              setBinAmountList={setBinAmountList}
-              binTotal={binTotal}
-            />
+        <div className="w-full relative bg-db-beau-blue border-[3px] border-db-cyan-process pt-2">
+          {/* Top Row */}
+          <div className="flex">
+            <div className="w-2/3 px-2">
+              <div className="w-full flex items-start">
+                <div>
+                  <Pair
+                    instrumentList={instrumentList}
+                    setInstrument={setInstrument}
+                    instrument={instrument}
+                    getInstrumentBySelectorRefetch={
+                      getInstrumentBySelectorRefetch
+                    }
+                  />
+                </div>
+                <div className='ml-auto mr-auto'>
+                  <Epoch
+                    instrument={instrument}
+                    setInstrument={setInstrument}
+                    getInstrumentBySelectorRefetch={
+                      getInstrumentBySelectorRefetch
+                    }
+                    getInstrumentBySelectorIsRefetching={
+                      getInstrumentBySelectorIsRefetching
+                    }
+                  />
+                </div>
+              </div>
+            </div>
+            <div className="w-1/3 px-2">
+              <Action
+                betterContractConfig={betterContractConfig}
+                instrument={instrument}
+                binAmountList={binAmountList}
+                setBinTotal={setBinTotal}
+                customFlatFee={customFlatFee}
+                customGainFee={customGainFee}
+                pendingBetterBalance={pendingBetterBalance}
+                nativeGas={nativeGas}
+                setBinAmountList={setBinAmountList}
+                binTotal={binTotal}
+              />
+            </div>
           </div>
-          <div className={styles.body}>
-            <Chart
-              instrument={instrument}
-              epochData={epochData}
-              betterContractConfig={betterContractConfig}
-            />
-            <Detail
-              binAmountList={binAmountList}
-              binTotal={binTotal}
-              setBinAmountList={setBinAmountList}
-              setBinTotal={setBinTotal}
-              pendingBetterBalance={pendingBetterBalance}
-              epochData={epochData}
-              normalisedBinValueList={normalisedBinValueList}
-              instrument={instrument}
-              nativeGas={nativeGas}
-              userPosition={userPosition}
-              betterContractConfig={betterContractConfig}
-              rewardPeriodInfo={rewardPeriodInfo}
-              userGainsInfo={userGainsInfo}
-            />
+          {/* Chart + Details */}
+          <div className="mt-2 flex w-full h-[480px]">
+            <div className="w-2/3 h-full">
+              <Chart
+                instrument={instrument}
+                epochData={epochData}
+                betterContractConfig={betterContractConfig}
+              />
+            </div>
+            <div className="w-1/3 h-full">
+              <Detail
+                binAmountList={binAmountList}
+                binTotal={binTotal}
+                setBinAmountList={setBinAmountList}
+                setBinTotal={setBinTotal}
+                pendingBetterBalance={pendingBetterBalance}
+                epochData={epochData}
+                normalisedBinValueList={normalisedBinValueList}
+                instrument={instrument}
+                nativeGas={nativeGas}
+                userPosition={userPosition}
+                betterContractConfig={betterContractConfig}
+                rewardPeriodInfo={rewardPeriodInfo}
+                userGainsInfo={userGainsInfo}
+              />
+            </div>
           </div>
-        </Container>
+        </div>
       ) : (
         <Container>
           <BetterLoader />

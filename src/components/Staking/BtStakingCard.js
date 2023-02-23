@@ -212,7 +212,7 @@ const BtStakingCard = (props) => {
               <div className="shadow-db w-36 text-center font-bold bg-db-french-sky p-3 border-[1px] border-black rounded-lg">
                 Current APR
               </div>
-              <div className="flex-1 text-sm text-center text-lime-300 font-bold">69%</div>
+              <div className="flex-1 text-sm text-center text-lime-500 font-bold">69%</div>
             </div>
             <div className="flex items-center gap-2">
               <div className="shadow-db w-36 text-center font-bold bg-db-french-sky p-3 border-[1px] border-black rounded-lg">

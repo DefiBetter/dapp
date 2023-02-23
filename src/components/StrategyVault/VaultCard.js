@@ -350,7 +350,7 @@ const VaultCard = () => {
               <div className="flex-1 shadow-db w-36 text-center font-bold bg-db-background p-3 border-[1px] border-black rounded-lg">
                 Vault Performance
               </div>
-              <div className="flex-1 text-center text-lime-300 font-bold">
+              <div className="flex-1 text-center text-lime-500 font-bold">
                 69% APR
               </div>
             </div>

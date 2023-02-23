@@ -1,8 +1,7 @@
 import { useState } from "react";
 import Countdown from "react-countdown";
 import Dropdown from "../common/Dropdown";
-import { instrumentLabel } from "../common/helper";
-import styles from "./Pair.module.css";
+import { instrumentToLabel } from "../common/helper";
 
 const Pair = (props) => {
   const [showInstrumentList, setShowInstrumentList] = useState(false);
@@ -13,27 +12,20 @@ const Pair = (props) => {
   };
 
   return (
-    <div className={styles.container}>
-      {/* <div className={styles.image} /> */}
-      <div
-        style={{ width: "80%", height: "80%", zIndex: 1, margin: "0rem 1rem" }}
-      >
+    <div className="w-80">
+      <div>
         <Dropdown
-          currentItem={props.instrument.underlyingDescription}
-          currentItemLabel={instrumentLabel(props.instrument)}
+          currentItem={props.instrument}
+          currentItemLabel={instrumentToLabel(props.instrument, false)}
           setCurrentItem={props.setInstrument}
           itemList={props.instrumentList}
           itemLabelList={props.instrumentList.map((instrument) => {
-            return instrumentLabel(instrument);
+            return instrumentToLabel(instrument);
           })}
         />
-      </div>
-      <div style={{ textAlign: "center" }}>
-        <div>
-          <b>Time left:</b>
-        </div>
-        <div style={{ color: "DarkCyan" }}>
-          <b>
+        <div className="flex justify-center gap-2">
+          <div className="font-bold">Time left</div>
+          <div className="font-bold text-lime-500">
             <Countdown
               key={
                 (+props.instrument.lastEpochClosingTime +
@@ -56,7 +48,7 @@ const Pair = (props) => {
                 });
               }}
             />
-          </b>
+          </div>
         </div>
       </div>
     </div>
