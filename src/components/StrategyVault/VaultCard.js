@@ -7,6 +7,7 @@ import Dropdown from "../common/Dropdown";
 import {
   CountdownFormatted,
   instrumentLabel,
+  instrumentToLabel,
   trimNumber,
 } from "../common/helper";
 import { InputNumber } from "../common/Input";
@@ -243,7 +244,7 @@ const VaultCard = () => {
   return (
     <>
       <div className="w-full border-[3px] border-db-cyan-process bg-white rounded-[3rem] p-4">
-        <div className='flex items-baseline justify-center gap-5'>
+        <div className="flex items-baseline justify-center gap-5">
           <div className="font-bold flex justify-center text-4xl gap-2">
             Strategy
             <span className="mt-7 font-fancy text-4xl text-db-cyan-process">
@@ -268,12 +269,12 @@ const VaultCard = () => {
               </div>
               <div className="flex-1">
                 <Dropdown
-                  currentItemLabel={instrumentLabel(currentInstrument)}
+                  currentItemLabel={instrumentToLabel(currentInstrument)}
                   currentItem={currentInstrument}
                   setCurrentItem={setCurrentInstrument}
                   itemList={instrumentList}
                   itemLabelList={instrumentList?.map((instrument) =>
-                    instrumentLabel(instrument)
+                    instrumentToLabel(instrument)
                   )}
                 />
               </div>
@@ -349,7 +350,7 @@ const VaultCard = () => {
               <div className="flex-1 shadow-db w-36 text-center font-bold bg-db-background p-3 border-[1px] border-black rounded-lg">
                 Vault Performance
               </div>
-              <div className="flex-1 text-center text-lime-300 font-bold">
+              <div className="flex-1 text-center text-lime-500 font-bold">
                 69% APR
               </div>
             </div>

@@ -1,12 +1,7 @@
-import { Button, ButtonWithInfo } from "../common/Button";
-import styles from "./Action.module.css";
 import { ethers } from "ethers";
-
 import { usePrepareContractWrite, useContractWrite } from "wagmi";
-import { useContext, useEffect } from "react";
-import { MedText, NormalText, SmallText } from "../common/Text";
+import { useContext } from "react";
 import AlertContext from "../../context/AlertContext";
-import { timeFormat } from "../common/helper";
 
 const Action = (props) => {
   const [alertMessageList, setAlertMessageList] = useContext(AlertContext);
@@ -73,26 +68,47 @@ const Action = (props) => {
   };
 
   return (
-    <div className={styles.container}>
-      {Date.now() / 1000 >
-      +props.instrument.lastEpochClosingTime.toString() +
-        +props.instrument.epochDurationInSeconds.toString() ? (
-        <Button disabled>Deposit</Button>
-      ) : (
-        <Button onClick={handleOnDeposit}>Deposit</Button>
-      )}
-      <ButtonWithInfo
-        onClick={claimWrite}
-        info={
-          <SmallText>
-            <NormalText>
-              {Math.round(+props.pendingBetterBalance * 10_000) / 10_000} {props.nativeGas}
-            </NormalText>
-          </SmallText>
-        }
-      >
-        <MedText>Claim</MedText>
-      </ButtonWithInfo>
+    <div className="flex justify-between gap-5 items-center">
+      <div className="flex-1">
+        {Date.now() / 1000 >
+        +props.instrument.lastEpochClosingTime.toString() +
+          +props.instrument.epochDurationInSeconds.toString() ? (
+          <button
+            disabled
+            className="disabled:bg-gray-400 flex justify-center text-lg items-center gap-2 border-[1px] border-black shadow-db bg-db-cyan-process h-10 w-full rounded-lg text-white hover:bg-db-blue-200"
+          >
+            <div className="font-fancy pt-1 ">Deposit</div>
+            <div className="text-sm pb-0.5 border-[1px] border-white rounded-full w-4 h-4 flex justify-center items-center">
+              i
+            </div>
+          </button>
+        ) : (
+          <button
+            className="flex justify-center text-lg items-center gap-2 border-[1px] border-black shadow-db bg-db-cyan-process h-10 w-full rounded-lg text-white hover:bg-db-blue-200"
+            onClick={handleOnDeposit}
+          >
+            <div className="font-fancy pt-1 ">Deposit</div>
+            <div className="text-sm pb-0.5 border-[1px] border-white rounded-full w-4 h-4 flex justify-center items-center">
+              i
+            </div>
+          </button>
+        )}
+      </div>
+
+      <div className="flex-1">
+        <button
+          className="border-[1px] border-black shadow-db pt-1 font-fancy bg-db-cyan-process h-10 w-full rounded-lg text-lg text-white hover:bg-db-blue-200"
+          onClick={claimWrite}
+        >
+          <div className="flex justify-center items-center gap-2">
+            <div>Claim</div>
+            <div className="pb-1 font-sans text-sm leading-none">
+              {Math.round(+props.pendingBetterBalance * 10_000) / 10_000}{" "}
+              {props.nativeGas}
+            </div>
+          </div>
+        </button>
+      </div>
     </div>
   );
 };

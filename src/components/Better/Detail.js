@@ -1,23 +1,6 @@
-import { Button } from "../common/Button";
 import { useContext, useEffect, useState } from "react";
-import {
-  Card,
-  CardBlueBg,
-  CardBlueBgBlackBorder,
-  CardBlueBgBlackBorderNoShadow,
-  CardFill,
-} from "../common/Card";
 import styles from "./Detail.module.css";
 import { useContractRead, useNetwork } from "wagmi";
-import {
-  CenterText,
-  ExSmallText,
-  MedText,
-  NormalText,
-  SmallText,
-} from "../common/Text";
-import { Grid, GridCol, GridRow } from "../common/Grid";
-
 import { ethers } from "ethers";
 import truncateEthAddress from "truncate-eth-address";
 import { contractAddresses } from "../../static/contractAddresses";
@@ -207,9 +190,7 @@ const Detail = (props) => {
 
   /* useEffect */
   useEffect(() => {
-    setTotal(
-      props.binAmountList.reduce((a, b) => Number(a) + Number(b), 0).toString()
-    );
+    setTotal(props.binAmountList.reduce((a, b) => Number(a) + Number(b), 0));
 
     if (props.epochData) {
       const t = props.epochData.binValues.map((bin, i) =>
@@ -225,55 +206,44 @@ const Detail = (props) => {
   }, [props]);
 
   return (
-    <div className={styles.container}>
-      <div className={styles.binContainer}>
-        <div className={styles.yPadding} />
-        <div className={styles.bin}>
-          <CardBlueBgBlackBorder padding={0}>
-            <SmallText>
-              <NormalText>
-                Total position size:{" "}
-                <b>
-                  {total} {contractAddresses[activeChain?.network]?.nativeGas}
-                </b>
-              </NormalText>
-            </SmallText>
-            <ExSmallText>
-              <NormalText>
-                (
-                <b>
-                  {total - props.pendingBetterBalance > 0
-                    ? total - props.pendingBetterBalance
-                    : 0}
-                </b>{" "}
-                +{" "}
-                {total > props.pendingBetterBalance
-                  ? props.pendingBetterBalance
-                  : total}{" "}
-                pending)
-              </NormalText>
-            </ExSmallText>
-          </CardBlueBgBlackBorder>
+    <div className="flex w-full h-full bg-db-beau-blue">
+      <div className="w-1/2 h-full px-2 flex flex-col">
+        <div className="mt-2.5 h-[calc(100%/27*2)] flex flex-col text-center">
+          <div className="text-xs border-[1px] border-black bg-db-background flex flex-col rounded-md">
+            <div className="">
+              Total position:{" "}
+              <span className="font-bold">
+                {" "}
+                {total} {contractAddresses[activeChain?.network]?.nativeGas}
+              </span>
+            </div>
+            <div className="text-xs text-center">
+              (
+              <span className="font-bold">
+                {total - props.pendingBetterBalance > 0
+                  ? total - props.pendingBetterBalance
+                  : 0}
+              </span>
+              {" + "}
+              {total > props.pendingBetterBalance
+                ? Number(props.pendingBetterBalance) > 0
+                  ? Number(props.pendingBetterBalance).toFixed(6)
+                  : 0
+                : total}{" "}
+              pending)
+            </div>
+          </div>
         </div>
         {props.epochData?.binValues.map((binValue, i, binValues) => {
           i = binValues.length - 1 - i;
           binValue = binValues[i];
-
-          // console.log(
-          //   "props.normalisedBinValueList",
-          //   props.normalisedBinValueList
-          // );
           return (
-            // <div className={styles.bin}>
-            //   <div className={styles.binUpper}>{bin.upper}</div>
-            //   <input type="number" min={0} id={`${i}`} onInput={onInput} />
-            // </div>
             <>
-              <div className={styles.yLabel}>
-                <SmallText>
+              <div className="text-xs h-[calc(100%/27)] flex justify-between">
+                <div className="">
                   {props.epochData ? binBorderList[i + 1] : null}
-                </SmallText>
-                <SmallText>
+                </div>
+                <div>
                   {+ethers.utils.formatEther(binValue.toString()) > 0
                     ? trimNumber(
                         ethers.utils.formatEther(binValue.toString()),
@@ -283,20 +253,10 @@ const Detail = (props) => {
                       " " +
                       props.nativeGas
                     : null}
-                </SmallText>
+                </div>
               </div>
-              <div className={styles.bin}>
-                <CardFill
-                  style={{
-                    position: "relative",
-                  }}
-                  borderColor={"black"}
-                  backgroundColor={"blue"}
-                  // noBorder={true}
-                  borderWidth={0.1}
-                  padding={0.1}
-                  borderRadius={0.5}
-                >
+              <div className="h-[calc(100%/27*2)] flex flex-col text-center">
+                <div className="relative flex-1 border-2 border-black bg-db-background rounded-md">
                   <input
                     style={{
                       fontSize: "1rem",
@@ -331,59 +291,61 @@ const Detail = (props) => {
                       margin: "0rem",
                     }}
                   />
-                </CardFill>
+                </div>
               </div>
-              {i == 0 ? (
-                <div
-                  className={styles.yLabel}
-                  style={{
-                    textAlign: "left",
-                  }}
-                >
-                  <SmallText>{binBorderList[0]}</SmallText>
+              {i === 0 ? (
+                <div className="h-[calc(100%/27)] text-xs">
+                  {binBorderList[0]}
                 </div>
               ) : null}
             </>
           );
         })}
-        <div className={styles.bin}>
-          <div className={styles.binChoice}>
-            <Button onClick={handleOnClickNormal}>
-              <SmallText>Normal</SmallText>
-            </Button>
-            <Button onClick={handleOnClickNormal} disabled>
-              <SmallText>Implied</SmallText>
-            </Button>
+        <div className='h-[calc(100%/27*2)] flex flex-col text-center'>
+          <div className='flex justify-between gap-2'>
+            <button
+              className="flex justify-center items-center gap-2 border-[1px] border-black shadow-db bg-db-cyan-process h-10 w-full rounded-lg text-white hover:bg-db-blue-200"
+              onClick={handleOnClickNormal}
+            >
+              <div className="font-fancy pt-1 ">Normal</div>
+              <div className="text-sm pb-0.5 border-[1px] border-white rounded-full w-4 h-4 flex justify-center items-center">
+                i
+              </div>
+            </button>
+
+            <button
+              className="disabled:bg-gray-400 flex justify-center items-center gap-2 border-[1px] border-black shadow-db bg-db-cyan-process h-10 w-full rounded-lg text-white hover:bg-db-blue-200"
+              onClick={handleOnClickNormal}
+              disabled
+            >
+              <div className="font-fancy pt-1 ">Implied</div>
+              <div className="text-sm pb-0.5 border-[1px] border-white rounded-full w-4 h-4 flex justify-center items-center">
+                i
+              </div>
+            </button>
           </div>
         </div>
-        <div className={styles.yPadding} />
       </div>
-      <div className={styles.statsContainer}>
+      <div className="w-1/2 overflow-y-auto">
         <Scrollbar>
-          <Card>
-            <CenterText>
-              <b>Epoch Data</b>
-            </CenterText>
-            <CardFill backgroundColor={"blue"} noBorder={true}>
-              <Grid>
-                <GridRow>
-                  <GridCol padding={0.2}>
-                    <ExSmallText>Epoch:</ExSmallText>
-                  </GridCol>
-                  <GridCol padding={0.2}>
-                    <ExSmallText>
+          <div className="flex flex-col gap-2 w-full p-2">
+            <div className="border-2 border-black shadow-db bg-white flex flex-col">
+              <div className="flex justify-center font-bold py-1">
+                Epoch Data
+              </div>
+              <div className="p-1 text-xs">
+                <div className="bg-db-background border-[1px] border-black flex flex-col p-1">
+                  <div className="flex justify-between">
+                    <div>Epoch</div>
+                    <div>
                       {props.instrument
                         ? props.instrument.epoch.toString()
                         : null}
-                    </ExSmallText>
-                  </GridCol>
-                </GridRow>
-                <GridRow>
-                  <GridCol padding={0.2}>
-                    <ExSmallText>Pot size:</ExSmallText>
-                  </GridCol>
-                  <GridCol padding={0.2}>
-                    <ExSmallText>
+                    </div>
+                  </div>
+                  <div className="flex justify-between">
+                    <div>Pot Size</div>
+                    <div>
                       {props.epochData
                         ? trimNumber(
                             ethers.utils.formatEther(props.epochData.pot),
@@ -392,107 +354,89 @@ const Detail = (props) => {
                           )
                         : null}{" "}
                       {props.nativeGas ? props.nativeGas : null}
-                    </ExSmallText>
-                  </GridCol>
-                </GridRow>
-                <GridRow>
-                  <GridCol padding={0.2}>
-                    <ExSmallText>Number of bets:</ExSmallText>
-                  </GridCol>
-                  <GridCol padding={0.2}>
-                    <ExSmallText>
+                    </div>
+                  </div>
+                  <div className="flex justify-between">
+                    <div>Number of bets</div>
+                    <div>
                       {props.epochData
                         ? props.epochData.numBets.toString()
                         : null}
-                    </ExSmallText>
-                  </GridCol>
-                </GridRow>
-              </Grid>
-            </CardFill>
-          </Card>
-          <Card>
-            <CenterText>
-              <b>My Statistics</b>
-            </CenterText>
-            <CardFill backgroundColor={"blue"} noBorder={true}>
-              <Grid>
-                <GridRow>
-                  <GridCol padding={0.2}>
-                    <ExSmallText>Position value:</ExSmallText>
-                  </GridCol>
-                  <GridCol padding={0.2}>
-                    <ExSmallText>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="flex flex-col gap-2 w-full p-2">
+            <div className="border-2 border-db-cyan-process shadow-db bg-white flex flex-col rounded-xl">
+              <div className="text-center font-bold flex justify-center py-1">
+                My
+                <span className="font-fancy mt-3 text-db-cyan-process">
+                  Statistics
+                </span>
+              </div>
+              <div className="p-1 pt-0 text-xs">
+                <div className="bg-db-background border-[1px] border-black flex flex-col p-1 rounded-xl">
+                  <div className="flex justify-between font-bold">
+                    <div>Position value</div>
+                    <div>
                       {trimNumber(
                         ethers.utils.formatEther(props.userPosition || 0),
                         6,
                         "dp"
                       )}{" "}
                       {props.nativeGas}
-                    </ExSmallText>
-                  </GridCol>
-                </GridRow>
-                <GridRow>
-                  <GridCol padding={0.2}>
-                    <ExSmallText>Pending rewards:</ExSmallText>
-                  </GridCol>
-                  <GridCol padding={0.2}>
-                    <ExSmallText>
+                    </div>
+                  </div>
+                  <div className="flex justify-between font-bold">
+                    <div>Pending Rewards</div>
+                    <div>
                       {trimNumber(props.pendingBetterBalance, 6, "dp")}{" "}
                       {props.nativeGas}
-                    </ExSmallText>
-                  </GridCol>
-                </GridRow>
-                <GridRow>
-                  <GridCol padding={0.2}>
-                    <ExSmallText>Number of games:</ExSmallText>
-                  </GridCol>
-                  <GridCol padding={0.2}>
-                    <ExSmallText>
-                      {props.userGainsInfo.numberOfGames.toString()}
-                    </ExSmallText>
-                  </GridCol>
-                </GridRow>
-                <GridRow>
-                  <GridCol padding={0.2}>
-                    <ExSmallText>Biggest gain:</ExSmallText>
-                  </GridCol>
-                  <GridCol padding={0.2}>
-                    <ExSmallText>
+                    </div>
+                  </div>
+                  <div className="flex justify-between">
+                    <div>Number of games</div>
+                    <div>{props.userGainsInfo.numberOfGames.toString()}</div>
+                  </div>
+                  <div className="flex justify-between">
+                    <div>Biggest gain</div>
+                    <div className="text-lime-500">
                       {+props.userGainsInfo.biggestRelativeGainAmount >= 0
                         ? "+"
                         : "-"}
                       {+props.userGainsInfo.biggestRelativeGainAmount}%{" "}
-                    </ExSmallText>
-                  </GridCol>
-                </GridRow>
-                <GridRow>
-                  <GridCol padding={0.2}>
-                    <ExSmallText>Most recent gain:</ExSmallText>
-                  </GridCol>
-                  <GridCol padding={0.2}>
-                    <ExSmallText>
+                    </div>
+                  </div>
+                  <div className="flex justify-between">
+                    <div>Most recent gain</div>
+                    <div className="text-lime-500">
                       {+props.userGainsInfo.mostRecentRelativeGainAmount >= 0
                         ? "+"
                         : "-"}
                       {+props.userGainsInfo.mostRecentRelativeGainAmount}%
-                    </ExSmallText>
-                  </GridCol>
-                </GridRow>
-              </Grid>
-            </CardFill>
-          </Card>
-          <Card>
-            <CenterText>
-              <b>Better Gains</b>
-            </CenterText>
-            <CardFill backgroundColor={"blue"} noBorder={true}>
-              <Grid>
-                <GridRow>
-                  <GridCol padding={0.2}>
-                    <ExSmallText>Time left for current week:</ExSmallText>
-                  </GridCol>
-                  <GridCol padding={0.2}>
-                    <ExSmallText>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="flex flex-col gap-2 w-full p-2">
+            <div className="border-2 border-db-cyan-process shadow-db bg-white flex flex-col rounded-xl">
+              <div className="text-center font-bold flex justify-center py-1">
+                Better
+                <span className="font-fancy mt-3 text-db-cyan-process">
+                  Gains
+                </span>
+              </div>
+              <div className="p-1 pt-0 text-xs">
+                <div className="bg-db-background border-[1px] border-black flex flex-col p-1 rounded-xl">
+                  <div className="flex justify-between">
+                    <div className="w-1/2">Time left for current week</div>
+                    <div className=" text-right">
                       {props.rewardPeriodInfo ? (
                         <Countdown
                           key={
@@ -507,73 +451,73 @@ const Detail = (props) => {
                           }
                         />
                       ) : null}
-                    </ExSmallText>
-                  </GridCol>
-                </GridRow>
-                <GridRow>
-                  <GridCol padding={0.2}>
-                    <ExSmallText>Biggest gain (current):</ExSmallText>
-                  </GridCol>
-                  <GridCol padding={0.2}>
-                    <ExSmallText>
-                      {+props.rewardPeriodInfo
-                        .globalBiggestRelativeGainCurrentPeriod >= 0
-                        ? "+"
-                        : "-"}
-                      {
-                        +props.rewardPeriodInfo
-                          .globalBiggestRelativeGainCurrentPeriod
-                      }
-                      %<br></br>
-                      {truncateEthAddress(
-                        props.rewardPeriodInfo
-                          .globalBiggestRelativeGainCurrentPeriodAddress
-                      )}
-                    </ExSmallText>
-                  </GridCol>
-                </GridRow>
-                <GridRow>
-                  <GridCol padding={0.2}>
-                    <ExSmallText>Biggest gain (last):</ExSmallText>
-                  </GridCol>
-                  <GridCol padding={0.2}>
-                    <ExSmallText>
-                      {+props.rewardPeriodInfo
-                        .globalBiggestRelativeGainPastPeriod >= 0
-                        ? "+"
-                        : "-"}
-                      {
-                        +props.rewardPeriodInfo
-                          .globalBiggestRelativeGainPastPeriod
-                      }
-                      %<br></br>
-                      {truncateEthAddress(
-                        props.rewardPeriodInfo
-                          .globalBiggestRelativeGainPastPeriodAddress
-                      )}
-                    </ExSmallText>
-                  </GridCol>
-                </GridRow>
-                <GridRow>
-                  <GridCol padding={0.2}>
-                    <ExSmallText>Biggest gain of all time:</ExSmallText>
-                  </GridCol>
-                  <GridCol padding={0.2}>
-                    <ExSmallText>
-                      {+props.rewardPeriodInfo.globalBiggestRelativeGain >= 0
-                        ? "+"
-                        : "-"}
-                      {+props.rewardPeriodInfo.globalBiggestRelativeGain}%
-                      <br></br>
-                      {truncateEthAddress(
-                        props.rewardPeriodInfo.globalBiggestRelativeGainAddress
-                      )}
-                    </ExSmallText>
-                  </GridCol>
-                </GridRow>
-              </Grid>
-            </CardFill>
-          </Card>
+                    </div>
+                  </div>
+                  <div className="flex justify-between">
+                    <div className="w-1/2">Week's biggest gain</div>
+                    <div className="text-lime-500 text-right flex flex-col">
+                      <div>
+                        {+props.rewardPeriodInfo
+                          .globalBiggestRelativeGainCurrentPeriod >= 0
+                          ? "+"
+                          : "-"}
+                        {
+                          +props.rewardPeriodInfo
+                            .globalBiggestRelativeGainCurrentPeriod
+                        }
+                        %
+                      </div>
+                      <div className="text-black">
+                        {truncateEthAddress(
+                          props.rewardPeriodInfo
+                            .globalBiggestRelativeGainCurrentPeriodAddress
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex justify-between">
+                    <div className="w-1/2">Last week's biggest gain</div>
+                    <div className="text-lime-500 text-right flex flex-col">
+                      <div>
+                        {+props.rewardPeriodInfo
+                          .globalBiggestRelativeGainPastPeriod >= 0
+                          ? "+"
+                          : "-"}
+                        {
+                          +props.rewardPeriodInfo
+                            .globalBiggestRelativeGainPastPeriod
+                        }
+                        %
+                      </div>
+                      <div className="text-black">
+                        {truncateEthAddress(
+                          props.rewardPeriodInfo
+                            .globalBiggestRelativeGainPastPeriodAddress
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex justify-between">
+                    <div className="w-1/2">Biggest gain of all time</div>
+                    <div className="text-lime-500 text-right flex flex-col">
+                      <div>
+                        {+props.rewardPeriodInfo.globalBiggestRelativeGain >= 0
+                          ? "+"
+                          : "-"}
+                        {+props.rewardPeriodInfo.globalBiggestRelativeGain}%
+                      </div>
+                      <div className="text-black">
+                        {truncateEthAddress(
+                          props.rewardPeriodInfo
+                            .globalBiggestRelativeGainAddress
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </Scrollbar>
       </div>
     </div>
