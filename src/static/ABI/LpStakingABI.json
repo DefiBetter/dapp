@@ -11,6 +11,11 @@
     "type": "constructor"
   },
   {
+    "inputs": [],
+    "name": "RewardRateTooLow",
+    "type": "error"
+  },
+  {
     "anonymous": false,
     "inputs": [
       {
@@ -53,6 +58,11 @@
         "internalType": "uint256",
         "name": "rewardRate",
         "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "minimumRewardRate",
+        "type": "uint256"
       }
     ],
     "name": "createPool",
@@ -74,12 +84,65 @@
     "type": "function"
   },
   {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "user",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "poolId",
+        "type": "uint256"
+      }
+    ],
+    "name": "getPendingRewards",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "rewards",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
     "inputs": [],
     "name": "getRunwayInSeconds",
     "outputs": [
       {
         "internalType": "uint256",
         "name": "runway",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "user",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "poolID",
+        "type": "uint256"
+      }
+    ],
+    "name": "getUserStake",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "staked",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "lastClaim",
         "type": "uint256"
       }
     ],
@@ -117,6 +180,11 @@
       {
         "internalType": "uint256",
         "name": "rewardRate",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "minimumRewardRate",
         "type": "uint256"
       },
       {

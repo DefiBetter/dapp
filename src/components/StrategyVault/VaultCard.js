@@ -52,7 +52,16 @@ const VaultCard = () => {
   /* states */
   // instrument
   const [currentInstrument, setCurrentInstrument] = useState();
+  const [epochEndTime, setEpochEndTime] = useState();
   const [instrumentList, setInstrumentList] = useState();
+
+  console.log(
+    "currentInstrument",
+    (+currentInstrument?.lastEpochClosingTime +
+      +currentInstrument?.bufferDurationInSeconds +
+      +currentInstrument?.epochDurationInSeconds) *
+      1000
+  );
 
   // vault
   const [vaultList, setVaultList] = useState();
@@ -82,6 +91,11 @@ const VaultCard = () => {
       console.log("getInstruments", data);
       setCurrentInstrument(data[0]);
       setInstrumentList(data);
+      setEpochEndTime(
+        +data[0].lastEpochClosingTime +
+          (+data[0].bufferDurationInSeconds + +data[0].epochDurationInSeconds) *
+            1000
+      );
     },
   });
 
@@ -368,11 +382,15 @@ const VaultCard = () => {
                       : `Burn`}
                   </div>
                   <div className="text-sm">
-                    {queuedAmount} {nativeGas} (queued for{" "}
-                    <CountdownFormatted
-                      ms={1674163322 * 1000 + 10 * 1000 * 60 * 60 * 24 * 36.5}
-                    />
-                    )
+                    {queuedAmount} {nativeGas}{" "}
+                    {console.log(
+                      "epochEndTime >= Date.now()",
+                      epochEndTime,
+                      Date.now(),
+                      epochEndTime >= Date.now()
+                    )}{" "}
+                    ({epochEndTime >= Date.now() ? "queued for " : "claim now"}
+                    <CountdownFormatted ms={epochEndTime} />)
                   </div>
                 </div>
               </button>
@@ -386,7 +404,7 @@ const VaultCard = () => {
                   style={{ flex: 1 }}
                   onChange={handleBurnAmount}
                   min={0}
-                  max={userGasBalance}
+                  max={userVaultBalance}
                   placeholder="Burn amount..."
                   value={burnAmount > 0 ? burnAmount : ""}
                   setValue={setBurnAmount}

@@ -147,7 +147,9 @@ function Staking() {
               />
             </div>
             <div className="mt-5">
-              <LpStakingCard />
+              <LpStakingCard
+                nativeGas={contractAddresses[activeChain?.network]?.nativeGas}
+              />
             </div>
           </div>
           <div className="w-[40%] z-10 h-full flex flex-col justify-between">

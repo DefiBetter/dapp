@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 
 import { InputNumber } from "../common/Input";
 import { ethers } from "ethers";
@@ -14,11 +14,14 @@ import {
   usePrepareContractWrite,
 } from "wagmi";
 import { bignumber } from "mathjs";
+import Col from "./Col.js";
+import AlertContext from "../../context/AlertContext";
 
-const LpStakingCard = () => {
+const LpStakingCard = (props) => {
   /* global hooks */
   const { chain: activeChain } = useNetwork();
   const { address: connectedAddress, isConnected } = useAccount();
+  const [alertMessageList, setAlertMessageList] = useContext(AlertContext);
 
   /* constants */
   const lpStakingPoolContractConfig = {
@@ -33,11 +36,13 @@ const LpStakingCard = () => {
 
   /* states */
   const [lpAmount, setLpAmount] = useState(0);
-  const [zapAmount, setZapAmount] = useState(0);
   const [lpAllowance, setLpAllowance] = useState(bignumber("0"));
   const [lpBalance, setLpBalance] = useState(0);
-  const [zapBalance, setZapBalance] = useState(0);
   const [totalLpStaked, setTotalLpStaked] = useState(0);
+  const [pendingRewards, setPendingRewards] = useState(0);
+
+  const [zapAmount, setZapAmount] = useState(0);
+  const [zapBalance, setZapBalance] = useState(0);
 
   /* web3 read/write */
   /* LP */
@@ -46,12 +51,12 @@ const LpStakingCard = () => {
     ...lpTokenContractConfig,
     functionName: "allowance",
     args: [connectedAddress, lpStakingPoolContractConfig.address],
-    watch: true,
     // watch: true,
     onError(data) {},
     onSuccess(data) {
       setLpAllowance(data);
     },
+    watch: true,
   });
 
   // infinite approve lp
@@ -63,6 +68,11 @@ const LpStakingCard = () => {
       lpStakingPoolContractConfig.address,
       ethers.constants.MaxUint256.sub("1").toString(),
     ],
+    onError(data) {
+      setAlertMessageList((prevState) =>
+        [...prevState].push("Error approving LP token")
+      );
+    },
     onSuccess(data) {},
   });
 
@@ -72,9 +82,26 @@ const LpStakingCard = () => {
     mode: "recklesslyUnprepared",
     functionName: "stake",
     args: [0, ethers.utils.parseEther(lpAmount.toString()), connectedAddress],
-    onError(e) {},
+    onMutate(data) {
+      console.log("stake", lpStakingPoolContractConfig, [
+        0,
+        ethers.utils.parseEther(lpAmount.toString()),
+        connectedAddress,
+      ]);
+      setAlertMessageList((prevState) => [...prevState, "Staking LP token..."]);
+    },
+    onError(data) {
+      setAlertMessageList((prevState) => [
+        ...prevState,
+        "Error staking LP token",
+      ]);
+    },
     onSuccess(data) {
       setLpAmount(0);
+      setAlertMessageList((prevState) => [
+        ...prevState,
+        "Successfully staked LP token",
+      ]);
     },
   });
 
@@ -83,7 +110,7 @@ const LpStakingCard = () => {
     ...lpStakingPoolContractConfig,
     mode: "recklesslyUnprepared",
     functionName: "unstake",
-    args: [ethers.utils.parseEther(lpAmount.toString())],
+    args: [0, ethers.utils.parseEther(lpAmount.toString())],
     onSuccess(data) {},
   });
 
@@ -92,7 +119,7 @@ const LpStakingCard = () => {
     ...lpStakingPoolContractConfig,
     mode: "recklesslyUnprepared",
     functionName: "claim",
-    args: [],
+    args: [0],
     onSuccess(data) {},
     onError(data) {},
   });
@@ -121,6 +148,18 @@ const LpStakingCard = () => {
     watch: true,
   });
 
+  // pending staking rewards
+  useContractRead({
+    ...lpStakingPoolContractConfig,
+    functionName: "getPendingRewards",
+    args: [connectedAddress, 0],
+    onError(data) {},
+    onSuccess(data) {
+      setPendingRewards(ethers.utils.formatEther(data));
+    },
+    watch: true,
+  });
+
   /* ZAP */
   useBalance({
     address: connectedAddress,
@@ -133,6 +172,7 @@ const LpStakingCard = () => {
   /* handle callback */
   // lp staking
   const handleLpAmount = (e) => {
+    console.log("handle lpAmount", e.target.value);
     setLpAmount(e.target.value ? e.target.value : 0);
   };
 
@@ -161,7 +201,7 @@ const LpStakingCard = () => {
                 Your Stake
               </div>
               <div className="flex-1 text-sm text-center  font-bold">
-                42{' '}
+                {totalLpStaked}{" "}
                 {`BT-${contractAddresses[activeChain?.network]?.nativeGas} LP`}
               </div>
             </div>
@@ -173,14 +213,16 @@ const LpStakingCard = () => {
               <div className="shadow-db w-36 text-center font-bold bg-db-french-sky p-3 border-[1px] border-black rounded-lg">
                 Current APR
               </div>
-              <div className="flex-1 text-sm text-center text-lime-500 font-bold">69%</div>
+              <div className="flex-1 text-sm text-center text-lime-500 font-bold">
+                69%
+              </div>
             </div>
             <div className="flex items-center gap-2">
               <div className="shadow-db w-36 text-center font-bold bg-db-french-sky p-3 border-[1px] border-black rounded-lg">
                 Your Balance
               </div>
               <div className="flex-1 text-sm text-center font-bold">
-                42{' '}
+                {lpBalance}{" "}
                 {`BT-${contractAddresses[activeChain?.network]?.nativeGas} LP`}
               </div>
             </div>
@@ -242,7 +284,8 @@ const LpStakingCard = () => {
           <div className="w-1/3">
             <button
               className="border-[1px] border-black shadow-db pt-1 font-fancy bg-db-cyan-process h-10 w-full rounded-lg text-lg text-white hover:bg-db-blue-200"
-              onClick={unstakeLpWrite}
+              disabled
+              onClick={() => {}}
             >
               Zap In
             </button>
@@ -256,7 +299,10 @@ const LpStakingCard = () => {
           >
             <div className="flex justify-center items-center gap-2">
               <div>Claim</div>
-              <div className="pb-1 font-sans text-sm leading-none">123 BTC</div>
+              <div className="pb-1 font-sans text-sm leading-none">
+                {Math.round(+pendingRewards * 10_000) / 10_000}{" "}
+                {props.nativeGas}
+              </div>
             </div>
           </button>
         </div>
