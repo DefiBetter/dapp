@@ -117,7 +117,7 @@ function PublicSale() {
         setOutput(ethers.utils.formatEther(data));
       },
       onError(error) {
-        setOutput(error);
+        setOutput('0');
       },
     });
 
@@ -272,13 +272,16 @@ function PublicSale() {
       </div>
 
       <div className="relative z-10 flex flex-col shadow-db m-auto w-full md:w-1/2 mt-5 bg-white border-2 border-db-cyan-process rounded-2xl p-4">
-        <div className="flex justify-center">
+        <div className="flex justify-center gap-10 items-center">
           <div className="shadow-db px-10 text-center bg-db-french-sky p-3 border-[1px] border-black rounded-lg">
-            <span className="font-bold">Current Price:</span> {input / output}{" "}
-            WETH ($
+            <span className="font-bold">Current Price</span>
+          </div>
+          <div>
+            {input / output} WETH ($
             {(input / output) * 1500})
           </div>
         </div>
+
         <div className="mt-4 flex flex-col md:flex-row items-center justify-between gap-3">
           <div className="w-full md:w-1/2 flex items-center">
             <div className="flex-1 shadow-db text-center font-bold bg-db-french-sky p-3 border-[1px] border-black rounded-lg">
@@ -309,7 +312,7 @@ function PublicSale() {
               className="text-black text-sm flex-1"
             />
 
-            <div className="text-black font-bold">BT</div>
+            <div className="text-black font-bold w-12 text-center">BT</div>
           </div>
         </div>
         <div className="mt-3 flex items-center w-full">
@@ -320,7 +323,7 @@ function PublicSale() {
             <div className="text-black text-sm flex-1 text-center">
               {output}
             </div>
-            <div className="text-black font-bold">WETH</div>
+            <div className="text-black font-bold w-12 text-center">WETH</div>
           </div>
         </div>
         <button

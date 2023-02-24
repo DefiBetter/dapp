@@ -264,10 +264,11 @@ function PublicSale() {
       </div>
 
       <div className="relative z-10 flex flex-col shadow-db m-auto w-full md:w-1/2 mt-5 bg-white border-2 border-db-cyan-process rounded-2xl p-4">
-        <div className="flex justify-center">
+        <div className="flex justify-center gap-10 items-center">
           <div className="shadow-db px-10 text-center bg-db-french-sky p-3 border-[1px] border-black rounded-lg">
-            <span className="font-bold">Current Price:</span> 100 WETH/BT
+            <span className="font-bold">Current Price</span>
           </div>
+          <div>100 WETH/BT</div>
         </div>
         <div className="mt-4 flex flex-col md:flex-row items-center justify-between gap-3">
           <div className="w-full md:w-1/2 flex items-center">
@@ -299,7 +300,7 @@ function PublicSale() {
               className="text-black text-sm flex-1"
             />
 
-            <div className="text-black font-bold">BT</div>
+            <div className="text-black font-bold w-12 text-center">BT</div>
           </div>
         </div>
         <div className="mt-3 flex items-center w-full">
@@ -309,7 +310,7 @@ function PublicSale() {
           <div className="w-full flex items-center p-2 justify-center bg-db-background rounded-lg shadow-db">
             <div className="text-black text-sm flex-1" />
 
-            <div className="text-black font-bold">WETH</div>
+            <div className="text-black font-bold w-12 text-center">WETH</div>
           </div>
         </div>
         <button className="mt-3 border-[1px] border-black shadow-db pt-1 font-fancy bg-db-cyan-process h-10 w-full rounded-lg text-lg text-white hover:bg-db-blue-200">
