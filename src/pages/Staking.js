@@ -136,8 +136,8 @@ function Staking() {
           ></img>
         </div>
 
-        <div className="px-10 py-5 flex justify-between">
-          <div className="w-[40%] z-10 h-full flex flex-col justify-between">
+        <div className="px-2 md:px-4 lg:px-10 py-5 flex flex-col lg:flex-row justify-between gap-10 lg:gap-0">
+          <div className="w-full lg:w-[45%] xl:w-[40%] z-10 h-full flex flex-col justify-between">
             <div>
               <StakeDiagram
                 stakeSymbol={lpTokenSymbol}
@@ -150,7 +150,7 @@ function Staking() {
               <LpStakingCard />
             </div>
           </div>
-          <div className="w-[40%] z-10 h-full flex flex-col justify-between">
+          <div className="w-full lg:w-[45%] xl:w-[40%] z-10 h-full flex flex-col justify-between">
             <StakeDiagram
               stakeSymbol={"BT"}
               rewardSymbol={contractAddresses[activeChain?.network]?.nativeGas}

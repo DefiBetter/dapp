@@ -3,11 +3,11 @@ const StakeDiagram = (props) => {
     <div>
       <div>
         <div className="flex items-center justify-center">
-          <div className="font-bold border-black flex justify-center items-center w-28 h-28 rounded-full bg-db-little-boy border-2 shadow-db">
+          <div className="hidden md:flex font-bold border-black justify-center items-center w-24 h-24 md:w-28 md:h-28 rounded-full bg-db-little-boy border-2 shadow-db">
             {props.stakeSymbol}
           </div>
-          <div className=" h-2 w-10 bg-db-cyan-process"></div>
-          <div className="bg-white border-[3px] border-db-cyan-process rounded-2xl min-w-[180px]">
+          <div className="hidden md:flex  h-2 w-10 bg-db-cyan-process"></div>
+          <div className="bg-white border-[3px] border-db-cyan-process rounded-2xl w-[180px] md:w-[140px]">
             <div className="p-2">
               <div className="flex flex-col items-center gap-2">
                 <div className="font-fancy text-db-cyan-process underline">Stake</div>
@@ -19,7 +19,7 @@ const StakeDiagram = (props) => {
               </div>
             </div>
           </div>
-          <div className='text-db-cyan-process'>
+          <div className='hidden md:flex text-db-cyan-process'>
             <svg
               className="w-10 h-10 rotate-180"
               stroke="currentColor"
@@ -34,7 +34,7 @@ const StakeDiagram = (props) => {
               ></path>
             </svg>
           </div>
-          <div className="font-bold border-black flex justify-center items-center w-28 h-28 rounded-full bg-db-little-boy border-2 shadow-db">
+          <div className="hidden md:flex font-bold border-black justify-center items-center w-28 h-28 rounded-full bg-db-little-boy border-2 shadow-db">
             {props.rewardSymbol}
           </div>
         </div>

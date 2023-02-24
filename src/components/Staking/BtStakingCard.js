@@ -183,11 +183,11 @@ const BtStakingCard = (props) => {
 
   return (
     <div className="w-full border-[3px] border-db-cyan-process bg-white rounded-2xl">
-      <div className="p-4 flex flex-col gap-3">
+      <div className="p-4 flex flex-col gap-2">
         
-      <div className="flex gap-4">
+      <div className="flex gap-2 md:gap-4 flex-col md:flex-row">
           {/* Left */}
-          <div className="w-1/2 flex flex-col gap-2">
+          <div className="w-full md:w-1/2 flex flex-col gap-2">
             <div className="flex justify-between items-center gap-2">
               <div className="shadow-db w-36 text-center font-bold bg-db-french-sky p-3 border-[1px] border-black rounded-lg">
                 Total Staked
@@ -207,7 +207,7 @@ const BtStakingCard = (props) => {
           </div>
 
           {/* Right */}
-          <div className="w-1/2 flex flex-col gap-2">
+          <div className="w-full md:w-1/2 flex flex-col gap-2">
             <div className="flex justify-between items-center gap-2">
               <div className="shadow-db w-36 text-center font-bold bg-db-french-sky p-3 border-[1px] border-black rounded-lg">
                 Current APR
