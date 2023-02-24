@@ -42,10 +42,10 @@ const BtStakingCard = (props) => {
   const [btAllowance, setBtAllowance] = useState(bignumber("0"));
   const [btBalance, setBtBalance] = useState(0);
   const [totalBtStaked, setTotalBtStaked] = useState(0);
-  const [pendingRewards, setPedingRewards] = useState(0);
+  const [pendingRewards, setPendingRewards] = useState(0);
 
   /* web3 read/write */
-  // btAllowance bt
+  // btAllowance
   useContractRead({
     ...btTokenContractConfig,
     functionName: "allowance",
@@ -170,7 +170,7 @@ const BtStakingCard = (props) => {
     args: [connectedAddress],
     onError(data) {},
     onSuccess(data) {
-      setPedingRewards(ethers.utils.formatEther(data));
+      setPendingRewards(ethers.utils.formatEther(data));
     },
     watch: true,
   });
@@ -193,7 +193,7 @@ const BtStakingCard = (props) => {
                 Total Staked
               </div>
               <div className="flex-1 text-sm text-center font-bold">
-                {totalBtStaked}{" "}BT
+                {totalBtStaked} BT
               </div>
             </div>
             <div className="flex justify-between items-center gap-2">
@@ -201,7 +201,7 @@ const BtStakingCard = (props) => {
                 Your Stake
               </div>
               <div className="flex-1 text-sm text-center  font-bold">
-                42{' '}BT
+                {totalBtStaked} BT
               </div>
             </div>
           </div>
@@ -212,14 +212,16 @@ const BtStakingCard = (props) => {
               <div className="shadow-db w-36 text-center font-bold bg-db-french-sky p-3 border-[1px] border-black rounded-lg">
                 Current APR
               </div>
-              <div className="flex-1 text-sm text-center text-lime-500 font-bold">69%</div>
+              <div className="flex-1 text-sm text-center text-lime-500 font-bold">
+                69%
+              </div>
             </div>
             <div className="flex items-center gap-2">
               <div className="shadow-db w-36 text-center font-bold bg-db-french-sky p-3 border-[1px] border-black rounded-lg">
                 Your Balance
               </div>
               <div className="flex-1 text-sm text-center font-bold">
-                42 BT
+                {btBalance} BT
               </div>
             </div>
           </div>

@@ -17,12 +17,12 @@ import { ethers } from "ethers";
 
 import { CountdownFormatted } from "../components/common/helper";
 
-function PublicSale() {
+function VcPresale() {
   const { address: connectedAddress, isConnected } = useAccount();
   const { chain } = useNetwork();
 
-  const publicSaleContractConfig = {
-    address: contractAddresses[chain?.network]?.publicSale,
+  const vcPresaleContractConfig = {
+    address: contractAddresses[chain?.network]?.vcPresale,
     abi: DutchAuctionABI,
   };
 
@@ -44,7 +44,7 @@ function PublicSale() {
 
   // current price
   useContractRead({
-    ...publicSaleContractConfig,
+    ...vcPresaleContractConfig,
     functionName: "estimateOutput",
     args: [ethers.utils.parseEther("1")], // input in WETH
     onError(data) {},
@@ -55,7 +55,7 @@ function PublicSale() {
   });
 
   useContractRead({
-    ...publicSaleContractConfig,
+    ...vcPresaleContractConfig,
     functionName: "startTime",
     onSuccess(data) {
       setStartTime(+data);
@@ -63,7 +63,7 @@ function PublicSale() {
   });
 
   useContractRead({
-    ...publicSaleContractConfig,
+    ...vcPresaleContractConfig,
     functionName: "duration",
     onSuccess(data) {
       setDuration(+data);
@@ -72,7 +72,7 @@ function PublicSale() {
 
   // get payment token
   useContractRead({
-    ...publicSaleContractConfig,
+    ...vcPresaleContractConfig,
     functionName: "paymentToken",
     onSuccess(data) {
       setPaymentToken(data);
@@ -81,7 +81,7 @@ function PublicSale() {
 
   // get reward token
   useContractRead({
-    ...publicSaleContractConfig,
+    ...vcPresaleContractConfig,
     functionName: "rewardToken",
     onSuccess(data) {
       setRewardToken(data);
@@ -95,7 +95,7 @@ function PublicSale() {
     mode: "recklesslyUnprepared",
     functionName: "approve",
     args: [
-      publicSaleContractConfig.address,
+      vcPresaleContractConfig.address,
       ethers.constants.MaxUint256.sub("1"),
     ],
   });
@@ -105,7 +105,7 @@ function PublicSale() {
     address: paymentToken,
     abi: IERC20MetadataABI,
     functionName: "allowance",
-    args: [connectedAddress, publicSaleContractConfig.address],
+    args: [connectedAddress, vcPresaleContractConfig.address],
     onSuccess(data) {
       setAllowance(data);
     },
@@ -114,7 +114,7 @@ function PublicSale() {
 
   // buy into public sale
   const { write: buyWrite } = useContractWrite({
-    ...publicSaleContractConfig,
+    ...vcPresaleContractConfig,
     mode: "recklesslyUnprepared",
     functionName: "buy",
     args: [buyAmount],
@@ -131,7 +131,7 @@ function PublicSale() {
     address: rewardToken,
     abi: IERC20MetadataABI,
     functionName: "balanceOf",
-    args: [publicSaleContractConfig.address],
+    args: [vcPresaleContractConfig.address],
     onSuccess(data) {
       setSupplyLeft(ethers.utils.formatEther(data));
     },
@@ -139,7 +139,7 @@ function PublicSale() {
 
   // get estimate reward
   useContractRead({
-    ...publicSaleContractConfig,
+    ...vcPresaleContractConfig,
     functionName: "estimateOutput",
     args: [buyAmount], // in WETH
     onError(data) {},
@@ -152,7 +152,7 @@ function PublicSale() {
     <div className="relative bg-db-background border-[3px] border-db-cyan-process h-full p-2 md:p-0">
       <div className="shadow-db m-auto w-full md:w-1/2 mt-5 bg-white border-2 border-db-cyan-process rounded-2xl p-4">
         <div className="flex justify-center text-5xl">
-          Public
+          VC Pre
           <span className="font-bold mt-7 font-fancy text-5xl text-db-cyan-process">
             Sale
           </span>
@@ -160,14 +160,13 @@ function PublicSale() {
       </div>
 
       <div className="relative z-10 flex flex-col shadow-db m-auto w-full md:w-1/2 mt-5 bg-white border-2 border-db-cyan-process rounded-2xl p-4">
-        
         <div className="flex justify-center">
           <div className="shadow-db px-10 text-center bg-db-french-sky p-3 border-[1px] border-black rounded-lg">
-            <span className="font-bold">Current Price: </span> 
-            {currentPrice}{" "} WETH (≈${(currentPrice * 1500).toFixed(2)})
+            <span className="font-bold">Current Price:</span> {currentPrice}{" "}
+            WETH ($
+            {currentPrice * 1500})
           </div>
         </div>
-
         <div className="mt-4 flex justify-between items-center">
           <div className="flex-1 shadow-db text-center font-bold bg-db-french-sky p-3 border-[1px] border-black rounded-lg">
             Time Left
@@ -180,7 +179,6 @@ function PublicSale() {
           </div>
           <div className="flex-1 text-center">{supplyLeft}</div>
         </div>
-
         <div className="mt-3 flex items-center w-full">
           <div className="font-fancy text-db-cyan-process w-24 text-center text-xl pt-1">
             buy
@@ -241,4 +239,4 @@ function PublicSale() {
   );
 }
 
-export default PublicSale;
+export default VcPresale;

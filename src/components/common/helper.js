@@ -25,7 +25,7 @@ const timeFormat = (seconds) => {
       seconds %= e[1];
     }
   });
-  return timeFormattedList.join("");
+  return timeFormattedList.join(" ");
 };
 
 const CountdownFormatted = ({ ms }) => {

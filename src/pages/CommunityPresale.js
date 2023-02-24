@@ -1,40 +1,35 @@
-import { Button } from "../components/common/Button";
 import {
-  useNetwork,
   useContractRead,
-  useAccount,
-  usePrepareContractWrite,
   useContractWrite,
-  erc20ABI,
-  useWaitForTransaction,
+  useAccount,
+  useNetwork,
 } from "wagmi";
-import { useCallback, useState } from "react";
+import { useState } from "react";
 
-import DutchAuctionABI from "../static/ABI/DutchAuctionABI.json";
 import IERC20MetadataABI from "../static/ABI/IERC20MetadataABI.json";
 import { contractAddresses } from "../static/contractAddresses";
 import { ethers } from "ethers";
 
+import BtPresaleABI from "../static/ABI/BtPresaleABI.json";
 import { CountdownFormatted } from "../components/common/helper";
 
-function PublicSale() {
-  const { address: connectedAddress, isConnected } = useAccount();
+function CommunityPresale() {
+  const { address: connectedAddress } = useAccount();
   const { chain } = useNetwork();
 
-  const publicSaleContractConfig = {
-    address: contractAddresses[chain?.network]?.publicSale,
-    abi: DutchAuctionABI,
+  const communityPresaleContractConfig = {
+    address: contractAddresses[chain?.network]?.communityPresale,
+    abi: BtPresaleABI,
   };
 
   const [paymentToken, setPaymentToken] = useState("");
   const [rewardToken, setRewardToken] = useState("");
   const [allowance, setAllowance] = useState(ethers.BigNumber.from("0"));
 
-  const [buyAmount, setBuyAmount] = useState("0");
+  const [amountOut, setAmountOut] = useState("0"); // in WETH
+  const [buyAmount, setBuyAmount] = useState("0"); // in BT
 
   const [supplyLeft, setSupplyLeft] = useState("0");
-
-  const [estimateOutput, setEstimateOutput] = useState("0");
 
   // public sale duration
   const [startTime, setStartTime] = useState(0);
@@ -44,27 +39,26 @@ function PublicSale() {
 
   // current price
   useContractRead({
-    ...publicSaleContractConfig,
-    functionName: "estimateOutput",
+    ...communityPresaleContractConfig,
+    functionName: "getRequiredPayment",
     args: [ethers.utils.parseEther("1")], // input in WETH
     onError(data) {},
     onSuccess(data) {
-      console.log("estimate", ethers.utils.formatEther(data));
-      setCurrentPrice((1 / +ethers.utils.formatEther(data)).toFixed(9));
+      setCurrentPrice((+ethers.utils.formatEther(data)).toFixed(9));
     },
   });
 
   useContractRead({
-    ...publicSaleContractConfig,
-    functionName: "startTime",
+    ...communityPresaleContractConfig,
+    functionName: "START_TIME",
     onSuccess(data) {
       setStartTime(+data);
     },
   });
 
   useContractRead({
-    ...publicSaleContractConfig,
-    functionName: "duration",
+    ...communityPresaleContractConfig,
+    functionName: "DURATION",
     onSuccess(data) {
       setDuration(+data);
     },
@@ -72,8 +66,8 @@ function PublicSale() {
 
   // get payment token
   useContractRead({
-    ...publicSaleContractConfig,
-    functionName: "paymentToken",
+    ...communityPresaleContractConfig,
+    functionName: "PAYMENT_TOKEN",
     onSuccess(data) {
       setPaymentToken(data);
     },
@@ -81,8 +75,8 @@ function PublicSale() {
 
   // get reward token
   useContractRead({
-    ...publicSaleContractConfig,
-    functionName: "rewardToken",
+    ...communityPresaleContractConfig,
+    functionName: "BUYABLE_TOKEN",
     onSuccess(data) {
       setRewardToken(data);
     },
@@ -95,7 +89,7 @@ function PublicSale() {
     mode: "recklesslyUnprepared",
     functionName: "approve",
     args: [
-      publicSaleContractConfig.address,
+      communityPresaleContractConfig.address,
       ethers.constants.MaxUint256.sub("1"),
     ],
   });
@@ -105,7 +99,7 @@ function PublicSale() {
     address: paymentToken,
     abi: IERC20MetadataABI,
     functionName: "allowance",
-    args: [connectedAddress, publicSaleContractConfig.address],
+    args: [connectedAddress, communityPresaleContractConfig.address],
     onSuccess(data) {
       setAllowance(data);
     },
@@ -114,7 +108,7 @@ function PublicSale() {
 
   // buy into public sale
   const { write: buyWrite } = useContractWrite({
-    ...publicSaleContractConfig,
+    ...communityPresaleContractConfig,
     mode: "recklesslyUnprepared",
     functionName: "buy",
     args: [buyAmount],
@@ -131,20 +125,21 @@ function PublicSale() {
     address: rewardToken,
     abi: IERC20MetadataABI,
     functionName: "balanceOf",
-    args: [publicSaleContractConfig.address],
+    args: [communityPresaleContractConfig.address],
     onSuccess(data) {
       setSupplyLeft(ethers.utils.formatEther(data));
     },
   });
 
-  // get estimate reward
+  // get WETH needed from
   useContractRead({
-    ...publicSaleContractConfig,
-    functionName: "estimateOutput",
+    ...communityPresaleContractConfig,
+    functionName: "getRequiredPayment",
     args: [buyAmount], // in WETH
     onError(data) {},
     onSuccess(data) {
-      setEstimateOutput(ethers.utils.formatEther(data));
+      console.log("amountOut", data);
+      setAmountOut(+ethers.utils.formatEther(data));
     },
   });
 
@@ -152,7 +147,7 @@ function PublicSale() {
     <div className="relative bg-db-background border-[3px] border-db-cyan-process h-full p-2 md:p-0">
       <div className="shadow-db m-auto w-full md:w-1/2 mt-5 bg-white border-2 border-db-cyan-process rounded-2xl p-4">
         <div className="flex justify-center text-5xl">
-          Public
+          Pre
           <span className="font-bold mt-7 font-fancy text-5xl text-db-cyan-process">
             Sale
           </span>
@@ -160,25 +155,26 @@ function PublicSale() {
       </div>
 
       <div className="relative z-10 flex flex-col shadow-db m-auto w-full md:w-1/2 mt-5 bg-white border-2 border-db-cyan-process rounded-2xl p-4">
-        
         <div className="flex justify-center">
           <div className="shadow-db px-10 text-center bg-db-french-sky p-3 border-[1px] border-black rounded-lg">
-            <span className="font-bold">Current Price: </span> 
-            {currentPrice}{" "} WETH (≈${(currentPrice * 1500).toFixed(2)})
+            <span className="font-bold">Current Price: </span> {currentPrice}{" "} WETH (≈${(currentPrice * 1500).toFixed(2)})
           </div>
         </div>
-
-        <div className="mt-4 flex justify-between items-center">
-          <div className="flex-1 shadow-db text-center font-bold bg-db-french-sky p-3 border-[1px] border-black rounded-lg">
-            Time Left
+        <div className="mt-4 flex flex-col md:flex-row items-center justify-between gap-3">
+          <div className="w-full md:w-1/2 flex items-center">
+            <div className="flex-1 shadow-db text-center font-bold bg-db-french-sky p-3 border-[1px] border-black rounded-lg">
+              Time Left
+            </div>
+            <div className="flex-1 text-center">
+              <CountdownFormatted ms={Date.now() * 2} />
+            </div>
           </div>
-          <div className="flex-1 text-center">
-            <CountdownFormatted ms={(startTime + duration) * 1000} />
+          <div className="w-full md:w-1/2 flex items-center">
+            <div className="flex-1 shadow-db text-center font-bold bg-db-french-sky p-3 border-[1px] border-black rounded-lg">
+              Supply Left
+            </div>
+            <div className="flex-1 text-center">{supplyLeft}</div>
           </div>
-          <div className="flex-1 shadow-db text-center font-bold bg-db-french-sky p-3 border-[1px] border-black rounded-lg">
-            Supply Left
-          </div>
-          <div className="flex-1 text-center">{supplyLeft}</div>
         </div>
 
         <div className="mt-3 flex items-center w-full">
@@ -186,9 +182,18 @@ function PublicSale() {
             buy
           </div>
           <div className="w-full flex items-center p-2 justify-center bg-db-background rounded-lg shadow-db">
-            <div className="text-black text-sm flex-1 text-center">
-              {estimateOutput}
-            </div>
+            <input
+              onChange={(e) => {
+                const val = e.target.value || 0;
+                setBuyAmount(ethers.utils.parseEther(val.toString()));
+              }}
+              type={"number"}
+              min={0}
+              placeholder="Amount"
+              //value={props.value}
+              //max={props.max}
+              className="text-black text-sm flex-1"
+            />
 
             <div className="text-black font-bold">BT</div>
           </div>
@@ -198,17 +203,10 @@ function PublicSale() {
             for
           </div>
           <div className="w-full flex items-center p-2 justify-center bg-db-background rounded-lg shadow-db">
-            <input
-              onChange={(e) => {
-                const val = e.target.value || 0;
-                setBuyAmount(ethers.utils.parseEther(val.toString()));
-                console.log("val", ethers.utils.parseEther(val.toString()));
-              }}
-              type={"number"}
-              min={0}
-              placeholder="Amount"
-              className="text-black text-sm flex-1"
-            />
+            <div className="text-black text-sm flex-1 text-center">
+              {amountOut}
+            </div>
+
             <div className="text-black font-bold">WETH</div>
           </div>
         </div>
@@ -241,4 +239,4 @@ function PublicSale() {
   );
 }
 
-export default PublicSale;
+export default CommunityPresale;
