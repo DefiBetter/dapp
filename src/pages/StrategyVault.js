@@ -3,7 +3,7 @@ import VaultCard from "../components/StrategyVault/VaultCard.js";
 function StrategyVault() {
   return (
     <div className="relative bg-db-background border-[3px] border-db-cyan-process h-full">
-      <div className="p-4 flex justify-around items-center">
+      <div className="p-2 md:p-4 flex justify-around items-center">
         <div className="hidden lg:block lg:p-4 p-0 w-1/4">
           <img
             alt="vault"

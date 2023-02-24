@@ -245,22 +245,19 @@ const VaultCard = () => {
     <>
       <div className="w-full border-[3px] border-db-cyan-process bg-white rounded-[3rem] p-4">
         <div className="flex items-baseline justify-center gap-5">
-          <div className="font-bold flex justify-center text-4xl gap-2">
+          <div className="font-bold flex justify-center text-2xl md:text-4xl gap-2">
             Strategy
-            <span className="mt-7 font-fancy text-4xl text-db-cyan-process">
-              Vaults
-            </span>
+            <span className="mt-7 font-fancy text-db-cyan-process">Vaults</span>
           </div>
           <div className="text-sm p-3 border-[1px] border-black rounded-full w-8 h-8 flex justify-center items-center">
             i
           </div>
         </div>
 
-        <div className="flex gap-5 justify-between mt-2">
-          {/* Left */}
-          <div className="w-1/2 flex flex-col gap-3">
-            <div className="flex gap-2 items-center">
-              <div>
+        <div className=" mt-10 md:mt-2 flex gap-5 justify-between flex-col">
+          <div className="flex gap-5 flex-col md:flex-row">
+            <div className="flex w-full md:w-1/2 gap-2 items-center">
+              <div className="">
                 <img
                   className="h-10 w-10"
                   alt="binance"
@@ -279,6 +276,20 @@ const VaultCard = () => {
                 />
               </div>
             </div>
+            <div className="flex w-full md:w-1/2 gap-2 items-center">
+              <Dropdown
+                currentItem={currentVault}
+                currentItemLabel={strategyRef[vaultList?.indexOf(currentVault)]}
+                setCurrentItem={setCurrentVault}
+                itemList={vaultList}
+                itemLabelList={strategyRef}
+              />
+              <div className="p-3 border-[1px] border-black rounded-full w-8 h-8 flex justify-center items-center">
+                i
+              </div>
+            </div>
+          </div>
+          <div className="flex gap-5 flex-col md:flex-row">
             <div className="flex justify-between w-full items-center">
               <div className="flex-1 shadow-db w-36 text-center font-bold bg-db-background p-3 border-[1px] border-black rounded-lg">
                 Vault Balance
@@ -293,6 +304,21 @@ const VaultCard = () => {
                 {nativeGas}
               </div>
             </div>
+
+            <div className="flex justify-between w-full items-center">
+              <div className="flex-1 shadow-db w-36 text-center font-bold bg-db-background p-3 border-[1px] border-black rounded-lg">
+                Vault Performance
+              </div>
+              <div className="flex-1 text-center text-lime-500 font-bold">
+                69% APR
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="flex gap-5 justify-between mt-5 flex-col md:flex-row">
+          {/* Left */}
+          <div className="w-full md:w-[50%] flex flex-col gap-3">
             <div className="w-full">
               <button
                 className="border-[1px] border-black shadow-db pt-1 font-fancy bg-db-cyan-process h-10 w-full rounded-lg text-lg text-white hover:bg-db-blue-200"
@@ -333,27 +359,8 @@ const VaultCard = () => {
           </div>
 
           {/* Right */}
-          <div className="w-1/2 flex flex-col gap-3">
-            <div className="flex gap-2 items-center">
-              <Dropdown
-                currentItem={currentVault}
-                currentItemLabel={strategyRef[vaultList?.indexOf(currentVault)]}
-                setCurrentItem={setCurrentVault}
-                itemList={vaultList}
-                itemLabelList={strategyRef}
-              />
-              <div className="p-3 border-[1px] border-black rounded-full w-8 h-8 flex justify-center items-center">
-                i
-              </div>
-            </div>
-            <div className="flex justify-between w-full items-center">
-              <div className="flex-1 shadow-db w-36 text-center font-bold bg-db-background p-3 border-[1px] border-black rounded-lg">
-                Vault Performance
-              </div>
-              <div className="flex-1 text-center text-lime-500 font-bold">
-                69% APR
-              </div>
-            </div>
+          <div className="flex h-0.5 w-full bg-db-cyan-process md:hidden justify-center"></div>
+          <div className="w-full md:w-1/2 flex flex-col gap-3">
             <div className="w-full">
               <button
                 className="border-[1px] border-black shadow-db bg-db-cyan-process h-10 w-full rounded-lg text-lg text-white hover:bg-db-blue-200"
