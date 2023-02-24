@@ -24,7 +24,7 @@ export function WalletConnect() {
       <div>
         {chain && chain.id !== DEFAULT_CHAIN_ID ? (
           <button
-            className="border-[1px] border-black shadow-db bg-db-cyan-process h-10 w-36 rounded-lg text-lg text-white hover:bg-db-blue-200"
+            className="border-[1px] border-black shadow-db bg-red-100 h-10 w-36 rounded-lg text-lg text-black hover:bg-db-blue-200"
             onClick={() => switchNetwork(DEFAULT_CHAIN_ID)}
           >
             Switch Network

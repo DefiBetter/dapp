@@ -25,16 +25,13 @@ import {
 } from "wagmi";
 import { watchContractEvent } from "@wagmi/core";
 import { bignumber } from "mathjs";
-import Connect from "../components/common/Connect";
 import { CenterText, FancyText } from "../components/common/Text";
 import Dropdown from "../components/common/Dropdown";
 import AlertContext from "../context/AlertContext";
-import WindowContext from "../context/WindowContext";
 import LpStakingCard from "../components/Staking/LpStakingCard";
 import BtStakingCard from "../components/Staking/BtStakingCard";
 
 function Staking() {
-  const windowDimension = useContext(WindowContext);
 
   const [alertMessageList, setAlertMessageList] = useContext(AlertContext);
 
