@@ -261,7 +261,7 @@ function PublicSale() {
   // ------------------------------------------------------------------------------------------
 
   return (
-    <div className="relative bg-db-background border-[3px] border-db-cyan-process h-full">
+    <div className="relative bg-db-background border-[3px] border-db-cyan-process h-full p-2 md:p-0">
       <div className="shadow-db m-auto w-full md:w-1/2 mt-5 bg-white border-2 border-db-cyan-process rounded-2xl p-4">
         <div className="flex justify-center text-5xl">
           Public
@@ -279,18 +279,23 @@ function PublicSale() {
             {(input / output) * 1500})
           </div>
         </div>
-        <div className="mt-4 flex justify-between items-center">
-          <div className="flex-1 shadow-db text-center font-bold bg-db-french-sky p-3 border-[1px] border-black rounded-lg">
-            Time Left
+        <div className="mt-4 flex flex-col md:flex-row items-center justify-between gap-3">
+          <div className="w-full md:w-1/2 flex items-center">
+            <div className="flex-1 shadow-db text-center font-bold bg-db-french-sky p-3 border-[1px] border-black rounded-lg">
+              Time Left
+            </div>
+            <div className="flex-1 text-center">2:11:59:47</div>
           </div>
-          <div className="flex-1 text-center">2:11:59:47</div>
-          <div className="flex-1 shadow-db text-center font-bold bg-db-french-sky p-3 border-[1px] border-black rounded-lg">
-            Supply Left
-          </div>
-          <div className="flex-1 text-center">
-            {ethers.utils.formatEther(supplyLeft || 0)}
+          <div className="w-full md:w-1/2 flex items-center">
+            <div className="flex-1 shadow-db text-center font-bold bg-db-french-sky p-3 border-[1px] border-black rounded-lg">
+              Supply Left
+            </div>
+            <div className="flex-1 text-center">
+              {ethers.utils.formatEther(supplyLeft || 0)}
+            </div>
           </div>
         </div>
+
         <div className="mt-3 flex items-center w-full">
           <div className="font-fancy text-db-cyan-process w-24 text-center text-xl pt-1">
             buy
@@ -312,7 +317,9 @@ function PublicSale() {
             for
           </div>
           <div className="w-full flex items-center p-2 justify-center bg-db-background rounded-lg shadow-db">
-            <div className="text-black text-sm flex-1 text-center">{output}</div>
+            <div className="text-black text-sm flex-1 text-center">
+              {output}
+            </div>
             <div className="text-black font-bold">WETH</div>
           </div>
         </div>
@@ -323,7 +330,7 @@ function PublicSale() {
           Buy
         </button>
       </div>
-      <div className="z-0 absolute h-60 bottom-5 left-[13%]">
+      <div className="z-0 absolute h-60 bottom-10 left-[13%]">
         <img
           alt="faucet"
           className="h-full z-0"
