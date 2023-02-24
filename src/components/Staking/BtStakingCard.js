@@ -5,7 +5,6 @@ import { InputNumber } from "../common/Input";
 import Col from "./Col";
 import { ethers } from "ethers";
 import { useContext, useState } from "react";
-import WindowContext from "../../context/WindowContext";
 import {
   useAccount,
   useContractRead,
@@ -21,7 +20,6 @@ import { CenterText, MedText, SmallText, NormalText } from "../common/Text";
 
 const BtStakingCard = (props) => {
   /* global hooks */
-  const windowDimension = useContext(WindowContext);
   const { address: connectedAddress, isConnected } = useAccount();
   const { chain: activeChain } = useNetwork();
   const [alertMessageList, setAlertMessageList] = useContext(AlertContext);

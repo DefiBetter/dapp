@@ -12,7 +12,6 @@ import { AlertOverlay } from "./common/AlertMessage";
 import { createContext } from "react";
 import AppContainer from "./common/container/AppContainer";
 import { Grid, GridCol, GridRow } from "./common/Grid";
-import Connect from "./common/Connect";
 import CommunityPresale from "../pages/CommunityPresale";
 import VcPresale from "../pages/VcPresale";
 
@@ -29,11 +28,13 @@ function Connector() {
             <>
               {process.env.REACT_APP_PHASE === "PRODUCTION" ? (
                 <AppContainer>
-                  <Connect isConnected={isConnected} activeChain={activeChain}>
-                    <Better />
-                  </Connect>
+                  <Better />
                 </AppContainer>
               ) : process.env.REACT_APP_PHASE === "PUBLIC_SALE" ? (
+                <AppContainer>
+                  <PublicSale />
+                </AppContainer>
+              ) : process.env.REACT_APP_PHASE === "COMMUNITY_PRESALE" ? (
                 <AppContainer>
                   <Connect isConnected={isConnected} activeChain={activeChain}>
                     <PublicSale />
@@ -47,9 +48,7 @@ function Connector() {
                 </AppContainer>
               ) : process.env.REACT_APP_PHASE === "VC_PRESALE" ? (
                 <AppContainer>
-                  <Connect isConnected={isConnected} activeChain={activeChain}>
-                    <VcPresale />
-                  </Connect>
+                  <VcPresale />
                 </AppContainer>
               ) : process.env.REACT_APP_PHASE === "LANDING" ? (
                 <AppContainer>
@@ -68,9 +67,7 @@ function Connector() {
           path="/staking"
           element={
             <AppContainer>
-              <Connect isConnected={isConnected} activeChain={activeChain}>
-                <Staking />
-              </Connect>
+              <Staking />
             </AppContainer>
           }
         />
@@ -79,9 +76,7 @@ function Connector() {
           path="/vaults"
           element={
             <AppContainer>
-              <Connect isConnected={isConnected} activeChain={activeChain}>
-                <StrategyVault />
-              </Connect>
+              <StrategyVault />
             </AppContainer>
           }
         />
@@ -89,9 +84,7 @@ function Connector() {
           path="/template"
           element={
             <AppContainer>
-              <Connect isConnected={isConnected} activeChain={activeChain}>
-                <PublicSale />
-              </Connect>
+              <PublicSale />
             </AppContainer>
           }
         />

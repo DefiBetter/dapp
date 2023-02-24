@@ -26,7 +26,6 @@ import AppContainer from "../components/common/container/AppContainer";
 // ABIs
 import DeFiBetterV1ABI from "../static/ABI/DeFiBetterV1ABI.json";
 import AggregatorV3InterfaceABI from "../static/ABI/AggregatorV3InterfaceABI.json";
-import Connect from "../components/common/Connect";
 import ContentLoader from "react-content-loader";
 import AlertContext from "../context/AlertContext";
 
