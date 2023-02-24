@@ -1,12 +1,39 @@
-const Connect = ({ isConnected, activeChain, children }) => {
+import { useAccount, useNetwork, useSwitchNetwork } from "wagmi";
+import { DEFAULT_CHAIN_ID } from "../../static/constant";
+import { WalletConnect } from "../Navbar/web3/WalletConnect";
+
+const Connect = ({ children }) => {
+  const { chain } = useNetwork();
+  const { isConnected } = useAccount();
+  const { switchNetwork } = useSwitchNetwork();
+
   if (!isConnected) {
-    return <div>Please connect your wallet</div>;
+    return (
+      <div className="relative mt-32 text-3xl flex items-center flex-col gap-3 h-full">
+        <div className="rounded-lg p-2">Connect your wallet</div>
+        <div className="relative">
+          <WalletConnect />
+        </div>
+      </div>
+    );
   }
 
-  // if (activeChain?.unsupported) {
-
-  //   return <div>Unsupported chain - </div>;
-  // }
+  if (chain && chain.id !== DEFAULT_CHAIN_ID) {
+    return (
+      <div className="mt-32 text-3xl flex items-center flex-col gap-3 h-full">
+        <div className="rounded-lg p-2">Switch to a </div>
+        <div>
+          <span className="pl-4 pr-2 text-db-cyan-process font-fancy font-bold text-4xl">
+            Better
+          </span>
+        </div>
+        <div>chain</div>
+        <div className="relative">
+          <WalletConnect />
+        </div>
+      </div>
+    );
+  }
 
   return children;
 };
