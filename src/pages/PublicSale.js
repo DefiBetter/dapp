@@ -160,13 +160,14 @@ function PublicSale() {
       </div>
 
       <div className="relative z-10 flex flex-col shadow-db m-auto w-full md:w-1/2 mt-5 bg-white border-2 border-db-cyan-process rounded-2xl p-4">
+        
         <div className="flex justify-center">
           <div className="shadow-db px-10 text-center bg-db-french-sky p-3 border-[1px] border-black rounded-lg">
-            <span className="font-bold">Current Price:</span> {currentPrice}{" "}
-            WETH ($
-            {currentPrice * 1500})
+            <span className="font-bold">Current Price: </span> 
+            {currentPrice}{" "} WETH (≈${(currentPrice * 1500).toFixed(2)})
           </div>
         </div>
+
         <div className="mt-4 flex justify-between items-center">
           <div className="flex-1 shadow-db text-center font-bold bg-db-french-sky p-3 border-[1px] border-black rounded-lg">
             Time Left
@@ -179,6 +180,7 @@ function PublicSale() {
           </div>
           <div className="flex-1 text-center">{supplyLeft}</div>
         </div>
+
         <div className="mt-3 flex items-center w-full">
           <div className="font-fancy text-db-cyan-process w-24 text-center text-xl pt-1">
             buy

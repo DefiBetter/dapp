@@ -157,8 +157,7 @@ function CommunityPresale() {
       <div className="relative z-10 flex flex-col shadow-db m-auto w-full md:w-1/2 mt-5 bg-white border-2 border-db-cyan-process rounded-2xl p-4">
         <div className="flex justify-center">
           <div className="shadow-db px-10 text-center bg-db-french-sky p-3 border-[1px] border-black rounded-lg">
-            <span className="font-bold">Current Price:</span> {currentPrice}{" "}
-            WETH/BT
+            <span className="font-bold">Current Price: </span> {currentPrice}{" "} WETH (≈${(currentPrice * 1500).toFixed(2)})
           </div>
         </div>
         <div className="mt-4 flex flex-col md:flex-row items-center justify-between gap-3">
