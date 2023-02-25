@@ -144,7 +144,7 @@ function CommunityPresale() {
   });
 
   return (
-    <div className="relative bg-db-background border-[3px] border-db-cyan-process h-full p-2 md:p-0">
+    <div className="relative bg-db-background border-[3px] border-db-cyan-process p-4 h-[80vh]">
       <div className="shadow-db m-auto w-full md:w-1/2 mt-5 bg-white border-2 border-db-cyan-process rounded-2xl p-4">
         <div className="flex justify-center text-5xl">
           Pre
@@ -155,13 +155,17 @@ function CommunityPresale() {
       </div>
 
       <div className="relative z-10 flex flex-col shadow-db m-auto w-full md:w-1/2 mt-5 bg-white border-2 border-db-cyan-process rounded-2xl p-4">
-        <div className="flex justify-center">
+        <div className="flex justify-center gap-10 items-center">
           <div className="shadow-db px-10 text-center bg-db-french-sky p-3 border-[1px] border-black rounded-lg">
-            <span className="font-bold">Current Price: </span> {currentPrice}{" "} WETH (≈${(currentPrice * 1500).toFixed(2)})
+            <span className="font-bold">Current Price</span>
+          </div>
+          <div>
+            {currentPrice} WETH (≈${(currentPrice * 1500).toFixed(2)})
           </div>
         </div>
-        <div className="mt-4 flex flex-col md:flex-row items-center justify-between gap-3">
-          <div className="w-full md:w-1/2 flex items-center">
+
+        <div className="mt-4 flex flex-col lg:flex-row justify-between items-center gap-2">
+          <div className="flex justify-between w-full items-center">
             <div className="flex-1 shadow-db text-center font-bold bg-db-french-sky p-3 border-[1px] border-black rounded-lg">
               Time Left
             </div>
@@ -169,14 +173,14 @@ function CommunityPresale() {
               <CountdownFormatted ms={Date.now() * 2} />
             </div>
           </div>
-          <div className="w-full md:w-1/2 flex items-center">
+
+          <div className="flex justify-between w-full items-center">
             <div className="flex-1 shadow-db text-center font-bold bg-db-french-sky p-3 border-[1px] border-black rounded-lg">
               Supply Left
             </div>
             <div className="flex-1 text-center">{supplyLeft}</div>
           </div>
         </div>
-
         <div className="mt-3 flex items-center w-full">
           <div className="font-fancy text-db-cyan-process w-24 text-center text-xl pt-1">
             buy
@@ -195,7 +199,7 @@ function CommunityPresale() {
               className="text-black text-sm flex-1"
             />
 
-            <div className="text-black font-bold">BT</div>
+            <div className="text-black font-bold w-12 text-center">BT</div>
           </div>
         </div>
         <div className="mt-3 flex items-center w-full">
@@ -207,7 +211,7 @@ function CommunityPresale() {
               {amountOut}
             </div>
 
-            <div className="text-black font-bold">WETH</div>
+            <div className="text-black font-bold w-12 text-center">WETH</div>
           </div>
         </div>
         {ethers.BigNumber.from(allowance.toString()).lte(

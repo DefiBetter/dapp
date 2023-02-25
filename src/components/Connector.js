@@ -1,25 +1,14 @@
-import { useNetwork, useSwitchNetwork, useAccount } from "wagmi";
-
-import { Link, Route, Routes } from "react-router-dom";
-
+import { Route, Routes } from "react-router-dom";
 import Better from "./../pages/Better";
 import Staking from "./../pages/Staking";
 import PublicSale from "../pages/PublicSale";
-import Presale from "../pages/CommunityPresale";
 import Landing from "../pages/Landing";
 import StrategyVault from "../pages/StrategyVault";
-import { AlertOverlay } from "./common/AlertMessage";
-import { createContext } from "react";
 import AppContainer from "./common/container/AppContainer";
-import { Grid, GridCol, GridRow } from "./common/Grid";
 import CommunityPresale from "../pages/CommunityPresale";
 import VcPresale from "../pages/VcPresale";
-import Connect from "./common/Connect";
 
 function Connector() {
-  const { chain: activeChain } = useNetwork();
-  const { address: connectedAddress, isConnected } = useAccount();
-
   return (
     <>
       <Routes>
@@ -37,9 +26,7 @@ function Connector() {
                 </AppContainer>
               ) : process.env.REACT_APP_PHASE === "COMMUNITY_PRESALE" ? (
                 <AppContainer>
-                  <Connect isConnected={isConnected} activeChain={activeChain}>
-                    <CommunityPresale />
-                  </Connect>
+                  <CommunityPresale />
                 </AppContainer>
               ) : process.env.REACT_APP_PHASE === "VC_PRESALE" ? (
                 <AppContainer>

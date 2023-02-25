@@ -1,15 +1,13 @@
 import { useContext, useEffect, useState } from "react";
-import styles from "./Detail.module.css";
-import { useContractRead, useNetwork } from "wagmi";
+import styles from "./Bins.module.css";
+import {  useNetwork } from "wagmi";
 import { ethers } from "ethers";
-import truncateEthAddress from "truncate-eth-address";
 import { contractAddresses } from "../../static/contractAddresses";
-import Countdown from "react-countdown";
-import { Scrollbar } from "react-scrollbars-custom";
 import { trimNumber } from "../common/helper";
 import AlertContext from "../../context/AlertContext";
+import { AiOutlineDoubleLeft, AiOutlineDoubleRight } from "react-icons/ai";
 
-const Detail = (props) => {
+const Bins = (props) => {
   /* account, network, configs */
   // network
   const { chain: activeChain } = useNetwork();
@@ -17,7 +15,7 @@ const Detail = (props) => {
   /* states */
   //
   const [total, setTotal] = useState(0);
-  const [rewardPeriodLength, setRewardPeriodLength] = useState(0); // seconds
+  const [binsOpen, setBinsOpen] = useState(false);
   const [binBorderList, setBinBorderList] = useState([
     "0",
     "0",
@@ -28,27 +26,6 @@ const Detail = (props) => {
     "0",
     "0",
   ]);
-
-  // current period
-  const [weekBiggestRelativeGainAmount, setWeekBiggestRelativeGainAmount] =
-    useState();
-
-  // past period
-  const [
-    lastWeekBiggestRelativeGainAmount,
-    setLastWeekBiggestRelativeGainAmount,
-  ] = useState();
-
-  /* contract read/writes */
-  useContractRead({
-    ...props.betterContractConfig,
-    functionName: "rewardPeriodLength",
-    args: [],
-    onError(data) {},
-    onSuccess(data) {
-      setRewardPeriodLength(+data.toString());
-    },
-  });
 
   // // user gain info current period
   // useContractRead({
@@ -162,19 +139,6 @@ const Detail = (props) => {
       result = sampleList[distanceFromCentre];
     }
 
-    // console.log("sampleList props.binAmountList", props.binAmountList);
-    // console.log(
-    //   "sampleList Math.max(...props.binAmountList)",
-    //   Math.max(...props.binAmountList)
-    // );
-
-    // console.log("sampleList idx", idx);
-    // console.log("sampleList distanceFromCentre", distanceFromCentre);
-    // console.log("sampleList", sampleList);
-
-    // console.log("sampleList result", result);
-    // console.log("sampleList props.binTotal", props.binTotal);
-
     let newArr = [];
     result.map((r) => {
       newArr.push(+((r / 10_000) * props.binTotal).toFixed(9));
@@ -205,9 +169,9 @@ const Detail = (props) => {
     }
   }, [props]);
 
-  return (
-    <div className="flex w-full h-full bg-db-beau-blue">
-      <div className="w-1/2 h-full px-2 flex flex-col">
+  function bins() {
+    return (
+      <div className="h-full">
         <div className="mt-2.5 h-[calc(100%/27*2)] flex flex-col text-center">
           <div className="text-xs border-[1px] border-black bg-db-background flex flex-col rounded-md">
             <div className="">
@@ -301,8 +265,8 @@ const Detail = (props) => {
             </>
           );
         })}
-        <div className='h-[calc(100%/27*2)] flex flex-col text-center'>
-          <div className='flex justify-between gap-2'>
+        <div className="h-[calc(100%/27*2)] flex flex-col text-center">
+          <div className="flex justify-between gap-2">
             <button
               className="flex justify-center items-center gap-2 border-[1px] border-black shadow-db bg-db-cyan-process h-10 w-full rounded-lg text-white hover:bg-db-blue-200"
               onClick={handleOnClickNormal}
@@ -326,202 +290,39 @@ const Detail = (props) => {
           </div>
         </div>
       </div>
-      <div className="w-1/2 overflow-y-auto">
-        <Scrollbar>
-          <div className="flex flex-col gap-2 w-full p-2">
-            <div className="border-2 border-black shadow-db bg-white flex flex-col">
-              <div className="flex justify-center font-bold py-1">
-                Epoch Data
-              </div>
-              <div className="p-1 text-xs">
-                <div className="bg-db-background border-[1px] border-black flex flex-col p-1">
-                  <div className="flex justify-between">
-                    <div>Epoch</div>
-                    <div>
-                      {props.instrument
-                        ? props.instrument.epoch.toString()
-                        : null}
-                    </div>
-                  </div>
-                  <div className="flex justify-between">
-                    <div>Pot Size</div>
-                    <div>
-                      {props.epochData
-                        ? trimNumber(
-                            ethers.utils.formatEther(props.epochData.pot),
-                            6,
-                            "dp"
-                          )
-                        : null}{" "}
-                      {props.nativeGas ? props.nativeGas : null}
-                    </div>
-                  </div>
-                  <div className="flex justify-between">
-                    <div>Number of bets</div>
-                    <div>
-                      {props.epochData
-                        ? props.epochData.numBets.toString()
-                        : null}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+    );
+  }
 
-          <div className="flex flex-col gap-2 w-full p-2">
-            <div className="border-2 border-db-cyan-process shadow-db bg-white flex flex-col rounded-xl">
-              <div className="text-center font-bold flex justify-center py-1">
-                My
-                <span className="font-fancy mt-3 text-db-cyan-process">
-                  Statistics
-                </span>
-              </div>
-              <div className="p-1 pt-0 text-xs">
-                <div className="bg-db-background border-[1px] border-black flex flex-col p-1 rounded-xl">
-                  <div className="flex justify-between font-bold">
-                    <div>Position value</div>
-                    <div>
-                      {trimNumber(
-                        ethers.utils.formatEther(props.userPosition || 0),
-                        6,
-                        "dp"
-                      )}{" "}
-                      {props.nativeGas}
-                    </div>
-                  </div>
-                  <div className="flex justify-between font-bold">
-                    <div>Pending Rewards</div>
-                    <div>
-                      {trimNumber(props.pendingBetterBalance, 6, "dp")}{" "}
-                      {props.nativeGas}
-                    </div>
-                  </div>
-                  <div className="flex justify-between">
-                    <div>Number of games</div>
-                    <div>{props.userGainsInfo.numberOfGames.toString()}</div>
-                  </div>
-                  <div className="flex justify-between">
-                    <div>Biggest gain</div>
-                    <div className="text-lime-500">
-                      {+props.userGainsInfo.biggestRelativeGainAmount >= 0
-                        ? "+"
-                        : "-"}
-                      {+props.userGainsInfo.biggestRelativeGainAmount}%{" "}
-                    </div>
-                  </div>
-                  <div className="flex justify-between">
-                    <div>Most recent gain</div>
-                    <div className="text-lime-500">
-                      {+props.userGainsInfo.mostRecentRelativeGainAmount >= 0
-                        ? "+"
-                        : "-"}
-                      {+props.userGainsInfo.mostRecentRelativeGainAmount}%
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+  return (
+    <div className="flex w-full h-full flex-wrap">
 
-          <div className="flex flex-col gap-2 w-full p-2">
-            <div className="border-2 border-db-cyan-process shadow-db bg-white flex flex-col rounded-xl">
-              <div className="text-center font-bold flex justify-center py-1">
-                Better
-                <span className="font-fancy mt-3 text-db-cyan-process">
-                  Gains
-                </span>
-              </div>
-              <div className="p-1 pt-0 text-xs">
-                <div className="bg-db-background border-[1px] border-black flex flex-col p-1 rounded-xl">
-                  <div className="flex justify-between">
-                    <div className="w-1/2">Time left for current week</div>
-                    <div className=" text-right">
-                      {props.rewardPeriodInfo ? (
-                        <Countdown
-                          key={
-                            (+props.rewardPeriodInfo.rewardPeriodStart +
-                              +rewardPeriodLength) *
-                            1000
-                          }
-                          date={
-                            (+props.rewardPeriodInfo.rewardPeriodStart +
-                              +rewardPeriodLength) *
-                            1000
-                          }
-                        />
-                      ) : null}
-                    </div>
-                  </div>
-                  <div className="flex justify-between">
-                    <div className="w-1/2">Week's biggest gain</div>
-                    <div className="text-lime-500 text-right flex flex-col">
-                      <div>
-                        {+props.rewardPeriodInfo
-                          .globalBiggestRelativeGainCurrentPeriod >= 0
-                          ? "+"
-                          : "-"}
-                        {
-                          +props.rewardPeriodInfo
-                            .globalBiggestRelativeGainCurrentPeriod
-                        }
-                        %
-                      </div>
-                      <div className="text-black">
-                        {truncateEthAddress(
-                          props.rewardPeriodInfo
-                            .globalBiggestRelativeGainCurrentPeriodAddress
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                  <div className="flex justify-between">
-                    <div className="w-1/2">Last week's biggest gain</div>
-                    <div className="text-lime-500 text-right flex flex-col">
-                      <div>
-                        {+props.rewardPeriodInfo
-                          .globalBiggestRelativeGainPastPeriod >= 0
-                          ? "+"
-                          : "-"}
-                        {
-                          +props.rewardPeriodInfo
-                            .globalBiggestRelativeGainPastPeriod
-                        }
-                        %
-                      </div>
-                      <div className="text-black">
-                        {truncateEthAddress(
-                          props.rewardPeriodInfo
-                            .globalBiggestRelativeGainPastPeriodAddress
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                  <div className="flex justify-between">
-                    <div className="w-1/2">Biggest gain of all time</div>
-                    <div className="text-lime-500 text-right flex flex-col">
-                      <div>
-                        {+props.rewardPeriodInfo.globalBiggestRelativeGain >= 0
-                          ? "+"
-                          : "-"}
-                        {+props.rewardPeriodInfo.globalBiggestRelativeGain}%
-                      </div>
-                      <div className="text-black">
-                        {truncateEthAddress(
-                          props.rewardPeriodInfo
-                            .globalBiggestRelativeGainAddress
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </Scrollbar>
+      {/* Desktop */}
+      <div className="hidden w-full h-full px-2 lg:flex flex-col">{bins()}</div>
+
+      {/* Floating Button */}
+      <div
+        onClick={() => setBinsOpen(!binsOpen)}
+        className={`lg:hidden z-20 absolute top-[210px] ${
+          binsOpen ? "right-[calc(66%+1rem)]" : "right-5"
+        } flex items-center`}
+      >
+        <div className="cursor-pointer bg-db-beau-blue rounded-xl w-10 h-10 animate-pulse flex justify-center items-center">
+          {binsOpen ? (
+            <AiOutlineDoubleRight size={30} className="text-db-cyan-process " />
+          ) : (
+            <AiOutlineDoubleLeft size={30} className="text-db-cyan-process " />
+          )}
+        </div>
       </div>
+
+      {/* Mobile */}
+      {binsOpen && (
+        <div className="bg-db-beau-blue absolute w-2/3 top-0 right-0 px-2 h-[480px]">
+          {bins()}
+        </div>
+      )}
     </div>
   );
 };
 
-export default Detail;
+export default Bins;
