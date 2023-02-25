@@ -16,6 +16,7 @@ import { contractAddresses } from "../static/contractAddresses";
 import { ethers } from "ethers";
 
 import { CountdownFormatted } from "../components/common/helper";
+import useWethPrice from "../hooks/useWethPrice";
 
 function PublicSale() {
   const { address: connectedAddress, isConnected } = useAccount();
@@ -41,6 +42,8 @@ function PublicSale() {
   const [duration, setDuration] = useState(0);
 
   const [currentPrice, setCurrentPrice] = useState(0);
+
+  const wethPrice = useWethPrice();
 
   // current price
   useContractRead({
@@ -165,7 +168,7 @@ function PublicSale() {
             <span className="font-bold">Current Price</span>
           </div>
           <div>
-            {currentPrice} WETH (≈${(currentPrice * 1500).toFixed(2)})
+            {currentPrice} WETH (≈${(currentPrice * wethPrice).toFixed(2)})
           </div>
         </div>
 

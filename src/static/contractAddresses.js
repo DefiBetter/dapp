@@ -10,6 +10,7 @@ const contractAddresses = {
     lpToken: process.env.REACT_APP_lpToken,
     lpStaking: process.env.REACT_APP_lpStaking,
     nativeGas: "bBNB",
+    WETH: process.env.REACT_APP_PRICE_FEED_ETH,
   },
   defibetter: {
     better: "0x4C2F7092C2aE51D986bEFEe378e50BD4dB99C901",
