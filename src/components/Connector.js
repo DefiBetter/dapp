@@ -14,6 +14,7 @@ import AppContainer from "./common/container/AppContainer";
 import { Grid, GridCol, GridRow } from "./common/Grid";
 import CommunityPresale from "../pages/CommunityPresale";
 import VcPresale from "../pages/VcPresale";
+import Connect from "./common/Connect";
 
 function Connector() {
   const { chain: activeChain } = useNetwork();
@@ -33,12 +34,6 @@ function Connector() {
               ) : process.env.REACT_APP_PHASE === "PUBLIC_SALE" ? (
                 <AppContainer>
                   <PublicSale />
-                </AppContainer>
-              ) : process.env.REACT_APP_PHASE === "COMMUNITY_PRESALE" ? (
-                <AppContainer>
-                  <Connect isConnected={isConnected} activeChain={activeChain}>
-                    <PublicSale />
-                  </Connect>
                 </AppContainer>
               ) : process.env.REACT_APP_PHASE === "COMMUNITY_PRESALE" ? (
                 <AppContainer>
