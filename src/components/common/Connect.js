@@ -1,11 +1,10 @@
-import { useAccount, useNetwork, useSwitchNetwork } from "wagmi";
+import { useAccount, useNetwork } from "wagmi";
 import { DEFAULT_CHAIN_ID } from "../../static/constant";
 import { WalletConnect } from "../Navbar/web3/WalletConnect";
 
 const Connect = ({ children }) => {
   const { chain } = useNetwork();
   const { isConnected } = useAccount();
-  const { switchNetwork } = useSwitchNetwork();
 
   if (!isConnected) {
     return (

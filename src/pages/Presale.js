@@ -253,7 +253,7 @@ function PublicSale() {
   // ------------------------------------------------------------------------------------------
 
   return (
-    <div className="relative bg-db-background border-[3px] border-db-cyan-process h-full p-2 md:p-0">
+    <div className="relative bg-db-background border-[3px] border-db-cyan-process p-4 h-[80vh]">
       <div className="shadow-db m-auto w-full md:w-1/2 mt-5 bg-white border-2 border-db-cyan-process rounded-2xl p-4">
         <div className="flex justify-center text-5xl">
           Pre
