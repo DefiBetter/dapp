@@ -16,6 +16,7 @@ import { contractAddresses } from "../static/contractAddresses";
 import { ethers } from "ethers";
 
 import { CountdownFormatted } from "../components/common/helper";
+import useWethPrice from "../hooks/useWethPrice";
 
 function VcPresale() {
   const { address: connectedAddress, isConnected } = useAccount();
@@ -41,6 +42,8 @@ function VcPresale() {
   const [duration, setDuration] = useState(0);
 
   const [currentPrice, setCurrentPrice] = useState(0);
+
+  const wethPrice = useWethPrice();
 
   // current price
   useContractRead({
@@ -135,6 +138,7 @@ function VcPresale() {
     onSuccess(data) {
       setSupplyLeft(ethers.utils.formatEther(data));
     },
+    watch: true,
   });
 
   // get estimate reward
@@ -162,10 +166,8 @@ function VcPresale() {
       <div className="relative z-10 flex flex-col shadow-db m-auto w-full md:w-1/2 mt-5 bg-white border-2 border-db-cyan-process rounded-2xl p-4">
         <div className="flex justify-center gap-10 items-center">
           <div className="shadow-db px-10 text-center bg-db-french-sky p-3 border-[1px] border-black rounded-lg">
-            <span className="font-bold">Current Price</span>
-          </div>
-          <div>
-            {currentPrice} WETH (≈${(currentPrice * 1500).toFixed(2)})
+            <span className="font-bold">Current Price:</span> {currentPrice}{" "}
+            WETH (≈${(currentPrice * wethPrice).toFixed(2)})
           </div>
         </div>
 

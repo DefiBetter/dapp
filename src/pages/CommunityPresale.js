@@ -12,6 +12,7 @@ import { ethers } from "ethers";
 
 import BtPresaleABI from "../static/ABI/BtPresaleABI.json";
 import { CountdownFormatted } from "../components/common/helper";
+import useWethPrice from "../hooks/useWethPrice";
 
 function CommunityPresale() {
   const { address: connectedAddress } = useAccount();
@@ -36,6 +37,8 @@ function CommunityPresale() {
   const [duration, setDuration] = useState(0);
 
   const [currentPrice, setCurrentPrice] = useState(0);
+
+  const wethPrice = useWethPrice();
 
   // current price
   useContractRead({
@@ -160,7 +163,7 @@ function CommunityPresale() {
             <span className="font-bold">Current Price</span>
           </div>
           <div>
-            {currentPrice} WETH (≈${(currentPrice * 1500).toFixed(2)})
+            {currentPrice} WETH (≈${(currentPrice * wethPrice).toFixed(2)})
           </div>
         </div>
 
