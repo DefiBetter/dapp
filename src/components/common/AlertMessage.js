@@ -49,10 +49,7 @@ const AlertMessage = ({
       <div
         style={{ textAlign: "right", fontSize: "1.5rem" }}
         onClick={() => {
-          console.log("alertMessageList", idx, alertMessageList);
-          const arr = [...alertMessageList].splice(idx);
-          console.log("alertMessageList arr", arr);
-          setAlertMessageList(arr);
+          setAlertMessageList((prevState) => [...prevState].splice(idx));
         }}
       >
         &times;

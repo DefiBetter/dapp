@@ -2,10 +2,11 @@ import { Route, Routes } from "react-router-dom";
 import Better from "./../pages/Better";
 import Staking from "./../pages/Staking";
 import PublicSale from "../pages/PublicSale";
-import Presale from "../pages/Presale";
 import Landing from "../pages/Landing";
 import StrategyVault from "../pages/StrategyVault";
 import AppContainer from "./common/container/AppContainer";
+import CommunityPresale from "../pages/CommunityPresale";
+import VcPresale from "../pages/VcPresale";
 
 function Connector() {
   return (
@@ -23,9 +24,13 @@ function Connector() {
                 <AppContainer>
                   <PublicSale />
                 </AppContainer>
-              ) : process.env.REACT_APP_PHASE === "PRESALE" ? (
+              ) : process.env.REACT_APP_PHASE === "COMMUNITY_PRESALE" ? (
                 <AppContainer>
-                  <Presale />
+                  <CommunityPresale />
+                </AppContainer>
+              ) : process.env.REACT_APP_PHASE === "VC_PRESALE" ? (
+                <AppContainer>
+                  <VcPresale />
                 </AppContainer>
               ) : process.env.REACT_APP_PHASE === "LANDING" ? (
                 <AppContainer>
