@@ -1,25 +1,21 @@
-import { Button } from "../components/common/Button";
 import {
   useNetwork,
   useContractRead,
   useAccount,
-  usePrepareContractWrite,
   useContractWrite,
-  erc20ABI,
-  useWaitForTransaction,
 } from "wagmi";
-import { useCallback, useState } from "react";
+import { useState } from "react";
 
 import DutchAuctionABI from "../static/ABI/DutchAuctionABI.json";
 import IERC20MetadataABI from "../static/ABI/IERC20MetadataABI.json";
 import { contractAddresses } from "../static/contractAddresses";
 import { ethers } from "ethers";
 
-import { CountdownFormatted } from "../components/common/helper";
+import { CountdownFormatted, trimNumber } from "../components/common/helper";
 import useWethPrice from "../hooks/useWethPrice";
 
 function VcPresale() {
-  const { address: connectedAddress, isConnected } = useAccount();
+  const { address: connectedAddress } = useAccount();
   const { chain } = useNetwork();
 
   const vcPresaleContractConfig = {
@@ -169,7 +165,8 @@ function VcPresale() {
             <span className="font-bold">Current Price</span>
           </div>
           <div>
-            {currentPrice} WETH (≈${(currentPrice * wethPrice).toFixed(2)})
+            {trimNumber(currentPrice, 4, "dp")} WETH (≈$
+            {trimNumber(currentPrice * wethPrice, 4, "dp")})
           </div>
         </div>
 
@@ -187,7 +184,9 @@ function VcPresale() {
             <div className="flex-1 shadow-db text-center font-bold bg-db-french-sky p-3 border-[1px] border-black rounded-lg">
               Supply Left
             </div>
-            <div className="flex-1 text-center">{supplyLeft}</div>
+            <div className="flex-1 text-center">
+              {trimNumber(+supplyLeft, 4, "dp")}
+            </div>
           </div>
         </div>
 
@@ -197,7 +196,7 @@ function VcPresale() {
           </div>
           <div className="w-full flex items-center p-2 justify-center bg-db-background rounded-lg shadow-db">
             <div className="text-black text-sm flex-1 text-center">
-              {estimateOutput}
+              {trimNumber(estimateOutput, 9, "dp")}
             </div>
 
             <div className="text-black font-bold w-12 text-center">BT</div>

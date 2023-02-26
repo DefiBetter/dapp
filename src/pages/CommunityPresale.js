@@ -11,7 +11,7 @@ import { contractAddresses } from "../static/contractAddresses";
 import { ethers } from "ethers";
 
 import BtPresaleABI from "../static/ABI/BtPresaleABI.json";
-import { CountdownFormatted } from "../components/common/helper";
+import { CountdownFormatted, trimNumber } from "../components/common/helper";
 import useWethPrice from "../hooks/useWethPrice";
 
 function CommunityPresale() {
@@ -162,7 +162,8 @@ function CommunityPresale() {
             <span className="font-bold">Current Price</span>
           </div>
           <div>
-            {currentPrice} WETH (≈${(currentPrice * wethPrice).toFixed(2)})
+            {trimNumber(currentPrice, 4, "dp")} WETH (≈$
+            {trimNumber(currentPrice * wethPrice, 4, "dp")})
           </div>
         </div>
 
@@ -180,7 +181,9 @@ function CommunityPresale() {
             <div className="flex-1 shadow-db text-center font-bold bg-db-french-sky p-3 border-[1px] border-black rounded-lg">
               Supply Left
             </div>
-            <div className="flex-1 text-center">{supplyLeft}</div>
+            <div className="flex-1 text-center">
+              {trimNumber(+supplyLeft, 4, "dp")}
+            </div>
           </div>
         </div>
         <div className="mt-3 flex items-center w-full">
@@ -189,7 +192,7 @@ function CommunityPresale() {
           </div>
           <div className="w-full flex items-center p-2 justify-center bg-db-background rounded-lg shadow-db">
             <div className="text-black text-sm flex-1 text-center">
-              {amountOut}
+              {trimNumber(amountOut, 9, "dp")}
             </div>
 
             <div className="text-black font-bold w-12 text-center">BT</div>
