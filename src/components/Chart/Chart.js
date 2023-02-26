@@ -466,7 +466,7 @@ const Chart = (props) => {
           color={"#2AAEE6"}
         />
       </svg>
-      <div className="text-xs absolute w-full left-2 top-0 text-white flex font-bold gap-6">
+      <div className="text-xs absolute w-full left-2 top-0 text-white flex flex-col lg:flex-row font-bold gap-2 lg:gap-6">
         <div>Current: {currentPrice}</div>
         <div>
           Epoch open:{" "}
