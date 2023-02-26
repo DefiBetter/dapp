@@ -312,7 +312,8 @@ const VaultCard = () => {
                 {vaultBalanceInfo
                   ? trimNumber(
                       ethers.utils.formatEther(vaultBalanceInfo.totalBalance),
-                      6
+                      4,
+                      "dp"
                     )
                   : null}{" "}
                 {nativeGas}
@@ -324,7 +325,7 @@ const VaultCard = () => {
                 Vault Performance
               </div>
               <div className="flex-1 text-center text-lime-500 font-bold">
-                69% APR
+                {trimNumber(69, 4, "dp")}% APR
               </div>
             </div>
           </div>
@@ -364,7 +365,7 @@ const VaultCard = () => {
               and receive
             </div>
             <div className="w-full shadow-db text-center font-bold bg-db-french-sky p-3 border-[1px] border-black rounded-lg">
-              {previewMintAmount}
+              {trimNumber(previewMintAmount, 4, "dp")}
             </div>
             <div className="w-full text-center flex justify-center gap-1 text-sm">
               {instrumentLabel(currentInstrument, false)}{" "}
@@ -389,14 +390,8 @@ const VaultCard = () => {
                       : `Burn`}
                   </div>
                   <div className="text-sm">
-                    {queuedAmount} {nativeGas}{" "}
-                    {console.log(
-                      "epochEndTime >= Date.now()",
-                      epochEndTime,
-                      Date.now(),
-                      epochEndTime >= Date.now()
-                    )}{" "}
-                    ({epochEndTime >= Date.now() ? "queued for " : "claim now"}
+                    {trimNumber(queuedAmount, 4, "dp")} {nativeGas} (
+                    {epochEndTime >= Date.now() ? "queued for " : "claim now"}
                     <CountdownFormatted ms={epochEndTime} />)
                   </div>
                 </div>
@@ -427,7 +422,7 @@ const VaultCard = () => {
             </div>
 
             <div className="w-full shadow-db text-center font-bold bg-db-french-sky p-3 border-[1px] border-black rounded-lg">
-              {previewBurnAmount}
+              {trimNumber(previewBurnAmount, 4, "dp")}
             </div>
             <div className="w-full text-center flex justify-center gap-1 text-sm">
               {nativeGas}
