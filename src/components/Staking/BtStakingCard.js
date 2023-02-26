@@ -1,8 +1,4 @@
-import { Button, ButtonWithInfo } from "../common/Button";
-import { Card, CardBlueBgBlackBorder } from "../common/Card";
-import { Grid, GridRow } from "../common/Grid";
 import { InputNumber } from "../common/Input";
-import Col from "./Col";
 import { ethers } from "ethers";
 import { useContext, useState } from "react";
 import {
@@ -16,7 +12,7 @@ import BtStakingABI from "../../static/ABI/BtStakingABI.json";
 import BTABI from "../../static/ABI/BTABI.json";
 import AlertContext from "../../context/AlertContext";
 import { bignumber } from "mathjs";
-import { CenterText, MedText, SmallText, NormalText } from "../common/Text";
+import { trimNumber } from "../common/helper";
 
 const BtStakingCard = (props) => {
   /* global hooks */
@@ -182,8 +178,7 @@ const BtStakingCard = (props) => {
   return (
     <div className="w-full border-[3px] border-db-cyan-process bg-white rounded-2xl">
       <div className="p-4 flex flex-col gap-2">
-        
-      <div className="flex gap-2 md:gap-4 flex-col md:flex-row">
+        <div className="flex gap-2 md:gap-4 flex-col md:flex-row">
           {/* Left */}
           <div className="w-full md:w-1/2 flex flex-col gap-2">
             <div className="flex justify-between items-center gap-2">
@@ -191,7 +186,7 @@ const BtStakingCard = (props) => {
                 Total Staked
               </div>
               <div className="flex-1 text-sm text-center font-bold">
-                {totalBtStaked} BT
+                {trimNumber(totalBtStaked, 4, "dp")} BT
               </div>
             </div>
             <div className="flex justify-between items-center gap-2">
@@ -199,7 +194,7 @@ const BtStakingCard = (props) => {
                 Your Stake
               </div>
               <div className="flex-1 text-sm text-center  font-bold">
-                {totalBtStaked} BT
+                {trimNumber(totalBtStaked, 4, "dp")} BT
               </div>
             </div>
           </div>
@@ -211,7 +206,7 @@ const BtStakingCard = (props) => {
                 Current APR
               </div>
               <div className="flex-1 text-sm text-center text-lime-500 font-bold">
-                69%
+                {trimNumber(69, 4, "dp")}%
               </div>
             </div>
             <div className="flex items-center gap-2">
@@ -219,7 +214,7 @@ const BtStakingCard = (props) => {
                 Your Balance
               </div>
               <div className="flex-1 text-sm text-center font-bold">
-                {btBalance} BT
+                {trimNumber(btBalance, 4, "dp")} BT
               </div>
             </div>
           </div>
@@ -270,8 +265,7 @@ const BtStakingCard = (props) => {
             <div className="flex justify-center items-center gap-2">
               <div>Claim</div>
               <div className="pb-1 font-sans text-sm leading-none">
-                {Math.round(+pendingRewards * 10_000) / 10_000}{" "}
-                {props.nativeGas}
+                {trimNumber(pendingRewards, 4, "dp")} {props.nativeGas}
               </div>
             </div>
           </button>
