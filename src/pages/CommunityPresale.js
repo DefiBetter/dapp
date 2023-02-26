@@ -47,7 +47,6 @@ function CommunityPresale() {
     args: [ethers.utils.parseEther("1")], // input in WETH
     onError(data) {},
     onSuccess(data) {
-      console.log("getOutputAmount", data);
       setCurrentPrice((+ethers.utils.formatEther(data)).toFixed(9));
     },
   });
@@ -172,7 +171,7 @@ function CommunityPresale() {
               Time Left
             </div>
             <div className="flex-1 text-center">
-              <CountdownFormatted ms={Date.now() * 2} />
+              <CountdownFormatted ms={(startTime + duration) * 1000} />
             </div>
           </div>
 
