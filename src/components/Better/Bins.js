@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from "react";
 import styles from "./Bins.module.css";
-import {  useNetwork } from "wagmi";
+import { useNetwork } from "wagmi";
 import { ethers } from "ethers";
 import { contractAddresses } from "../../static/contractAddresses";
 import { trimNumber } from "../common/helper";
@@ -178,20 +178,21 @@ const Bins = (props) => {
               Total position:{" "}
               <span className="font-bold">
                 {" "}
-                {total} {contractAddresses[activeChain?.network]?.nativeGas}
+                {trimNumber(total, 6, "sf")}{" "}
+                {contractAddresses[activeChain?.network]?.nativeGas}
               </span>
             </div>
             <div className="text-xs text-center">
               (
               <span className="font-bold">
                 {total - props.pendingBetterBalance > 0
-                  ? total - props.pendingBetterBalance
+                  ? trimNumber(total - props.pendingBetterBalance, 6, "sf")
                   : 0}
               </span>
               {" + "}
               {total > props.pendingBetterBalance
                 ? Number(props.pendingBetterBalance) > 0
-                  ? Number(props.pendingBetterBalance).toFixed(6)
+                  ? trimNumber(props.pendingBetterBalance, 6, "sf")
                   : 0
                 : total}{" "}
               pending)
@@ -208,12 +209,8 @@ const Bins = (props) => {
                   {props.epochData ? binBorderList[i + 1] : null}
                 </div>
                 <div>
-                  {+ethers.utils.formatEther(binValue.toString()) > 0
-                    ? trimNumber(
-                        ethers.utils.formatEther(binValue.toString()),
-                        6,
-                        "dp"
-                      ) +
+                  {+ethers.utils.formatEther(binValue) > 0
+                    ? trimNumber(ethers.utils.formatEther(binValue), 6, "dp") +
                       " " +
                       props.nativeGas
                     : null}
@@ -295,7 +292,6 @@ const Bins = (props) => {
 
   return (
     <div className="flex w-full h-full flex-wrap">
-
       {/* Desktop */}
       <div className="hidden w-full h-full px-2 lg:flex flex-col">{bins()}</div>
 

@@ -11,11 +11,10 @@ import {
   useContractRead,
   useContractWrite,
   useNetwork,
-  usePrepareContractWrite,
 } from "wagmi";
 import { bignumber } from "mathjs";
-import Col from "./Col.js";
 import AlertContext from "../../context/AlertContext";
+import { trimNumber } from "../common/helper";
 
 const LpStakingCard = (props) => {
   /* global hooks */
@@ -192,7 +191,7 @@ const LpStakingCard = (props) => {
                 Total Staked
               </div>
               <div className="flex-1 text-sm text-center font-bold">
-                {totalLpStaked}{" "}
+                {trimNumber(totalLpStaked, 4, "dp")}{" "}
                 {`BT-${contractAddresses[activeChain?.network]?.nativeGas} LP`}
               </div>
             </div>
@@ -201,7 +200,7 @@ const LpStakingCard = (props) => {
                 Your Stake
               </div>
               <div className="flex-1 text-sm text-center  font-bold">
-                {totalLpStaked}{" "}
+                {trimNumber(totalLpStaked, 4, "dp")}{" "}
                 {`BT-${contractAddresses[activeChain?.network]?.nativeGas} LP`}
               </div>
             </div>
@@ -214,7 +213,7 @@ const LpStakingCard = (props) => {
                 Current APR
               </div>
               <div className="flex-1 text-sm text-center text-lime-500 font-bold">
-                69%
+                {trimNumber(69, 4, "dp")}%
               </div>
             </div>
             <div className="flex items-center gap-2">
@@ -222,7 +221,7 @@ const LpStakingCard = (props) => {
                 Your Balance
               </div>
               <div className="flex-1 text-sm text-center font-bold">
-                {lpBalance}{" "}
+                {trimNumber(lpBalance, 4, "dp")}{" "}
                 {`BT-${contractAddresses[activeChain?.network]?.nativeGas} LP`}
               </div>
             </div>
@@ -300,8 +299,7 @@ const LpStakingCard = (props) => {
             <div className="flex justify-center items-center gap-2">
               <div>Claim</div>
               <div className="pb-1 font-sans text-sm leading-none">
-                {Math.round(+pendingRewards * 10_000) / 10_000}{" "}
-                {props.nativeGas}
+                {trimNumber(pendingRewards, 4, "dp")} {props.nativeGas}
               </div>
             </div>
           </button>
