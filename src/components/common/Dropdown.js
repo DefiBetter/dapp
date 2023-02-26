@@ -2,10 +2,12 @@ import { useState } from "react";
 
 import { RiArrowDownSFill } from "react-icons/ri";
 import { instrumentLabel } from "./helper";
+import Countdown from "react-countdown";
 
 const Dropdown = ({
   currentItem,
   currentItemLabel,
+  type,
   setCurrentItem,
   itemList,
   itemLabelList,
@@ -53,7 +55,28 @@ const Dropdown = ({
                       : "text-black"
                   }
                 >
-                  {itemLabelList[i]}
+                  <div>{itemLabelList[i]}</div>
+                  {type === "instrument" && (
+                    <div className="text-xs">
+                      <div>
+                        Time left:{" "}
+                        <Countdown
+                          key={
+                            (+itemList[i].lastEpochClosingTime +
+                              +itemList[i].epochDurationInSeconds +
+                              +itemList[i].bufferDurationInSeconds) *
+                            1000
+                          }
+                          date={
+                            (+itemList[i].lastEpochClosingTime +
+                              +itemList[i].epochDurationInSeconds +
+                              +itemList[i].bufferDurationInSeconds) *
+                            1000
+                          }
+                        />
+                      </div>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
