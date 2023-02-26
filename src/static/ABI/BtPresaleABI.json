@@ -153,7 +153,7 @@
     "inputs": [
       {
         "internalType": "uint256",
-        "name": "amount",
+        "name": "input",
         "type": "uint256"
       }
     ],
@@ -194,15 +194,15 @@
     "inputs": [
       {
         "internalType": "uint256",
-        "name": "targetAmount",
+        "name": "input",
         "type": "uint256"
       }
     ],
-    "name": "getRequiredPayment",
+    "name": "getOutputAmount",
     "outputs": [
       {
         "internalType": "uint256",
-        "name": "req",
+        "name": "output",
         "type": "uint256"
       }
     ],
