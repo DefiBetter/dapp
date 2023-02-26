@@ -119,13 +119,21 @@ function Better() {
       if (!instrument) {
         setInstrument(data);
       }
-      if (data.selector == instrument.selector) {
-        if (data.epoch != instrument.epoch) {
+
+      if (data.selector === instrument.selector) {
+        if (data.epoch !== instrument.epoch) {
           setInstrument(data);
-        } else {
         }
-      } else {
       }
+
+      // Setting the retrieved instrument in the instrument List to update timers
+      const tmpInstrumentList = instrumentList;
+      for (let index = 0; index < tmpInstrumentList.length; index++) {
+        if (tmpInstrumentList[index].selector === data.selector) {
+          tmpInstrumentList[index] = data;
+        }
+      }
+      setInstrumentList(tmpInstrumentList);
     },
   });
 

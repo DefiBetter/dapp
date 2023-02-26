@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Countdown from "react-countdown";
 import Dropdown from "../common/Dropdown";
 import { instrumentToLabel } from "../common/helper";
@@ -17,6 +17,7 @@ const Pair = (props) => {
         <Dropdown
           currentItem={props.instrument}
           currentItemLabel={instrumentToLabel(props.instrument, false)}
+          type="instrument"
           setCurrentItem={props.setInstrument}
           itemList={props.instrumentList}
           itemLabelList={props.instrumentList.map((instrument) => {
@@ -41,6 +42,7 @@ const Pair = (props) => {
               }
               onComplete={() => {
                 props.getInstrumentBySelectorRefetch().then((result) => {
+
                   props.setInstrument({
                     ...props.instrument,
                     ...result.data,
