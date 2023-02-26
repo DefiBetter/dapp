@@ -43,10 +43,11 @@ function CommunityPresale() {
   // current price
   useContractRead({
     ...communityPresaleContractConfig,
-    functionName: "getRequiredPayment",
+    functionName: "getOutputAmount",
     args: [ethers.utils.parseEther("1")], // input in WETH
     onError(data) {},
     onSuccess(data) {
+      console.log("getOutputAmount", data);
       setCurrentPrice((+ethers.utils.formatEther(data)).toFixed(9));
     },
   });
@@ -134,14 +135,12 @@ function CommunityPresale() {
     },
   });
 
-  // get WETH needed from
   useContractRead({
     ...communityPresaleContractConfig,
-    functionName: "getRequiredPayment",
+    functionName: "getOutputAmount",
     args: [buyAmount], // in WETH
     onError(data) {},
     onSuccess(data) {
-      console.log("amountOut", data);
       setAmountOut(+ethers.utils.formatEther(data));
     },
   });
@@ -189,6 +188,18 @@ function CommunityPresale() {
             buy
           </div>
           <div className="w-full flex items-center p-2 justify-center bg-db-background rounded-lg shadow-db">
+            <div className="text-black text-sm flex-1 text-center">
+              {amountOut}
+            </div>
+
+            <div className="text-black font-bold w-12 text-center">BT</div>
+          </div>
+        </div>
+        <div className="mt-3 flex items-center w-full">
+          <div className="font-fancy text-db-cyan-process w-24 text-center text-xl pt-1">
+            for
+          </div>
+          <div className="w-full flex items-center p-2 justify-center bg-db-background rounded-lg shadow-db">
             <input
               onChange={(e) => {
                 const val = e.target.value || 0;
@@ -201,18 +212,6 @@ function CommunityPresale() {
               //max={props.max}
               className="text-black text-sm flex-1"
             />
-
-            <div className="text-black font-bold w-12 text-center">BT</div>
-          </div>
-        </div>
-        <div className="mt-3 flex items-center w-full">
-          <div className="font-fancy text-db-cyan-process w-24 text-center text-xl pt-1">
-            for
-          </div>
-          <div className="w-full flex items-center p-2 justify-center bg-db-background rounded-lg shadow-db">
-            <div className="text-black text-sm flex-1 text-center">
-              {amountOut}
-            </div>
 
             <div className="text-black font-bold w-12 text-center">WETH</div>
           </div>
