@@ -133,6 +133,7 @@ function CommunityPresale() {
     onSuccess(data) {
       setSupplyLeft(ethers.utils.formatEther(data));
     },
+    watch: true,
   });
 
   useContractRead({

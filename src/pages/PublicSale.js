@@ -138,6 +138,7 @@ function PublicSale() {
     onSuccess(data) {
       setSupplyLeft(ethers.utils.formatEther(data));
     },
+    watch: true,
   });
 
   // get estimate reward
