@@ -1,172 +1,59 @@
-import { useContext, useState } from "react";
-
+import { useState } from "react";
 import { InputNumber } from "../common/Input";
-import { ethers } from "ethers";
 import { contractAddresses } from "../../static/contractAddresses";
-import LpStakingABI from "../../static/ABI/LpStakingABI.json";
-import IERC20MetadataABI from "../../static/ABI/IERC20MetadataABI.json";
-import {
-  useAccount,
-  useBalance,
-  useContractRead,
-  useContractWrite,
-  useNetwork,
-} from "wagmi";
-import { bignumber } from "mathjs";
-import AlertContext from "../../context/AlertContext";
+import { useNetwork } from "wagmi";
 import { trimNumber } from "../common/helper";
+import useAllowance from "../../hooks/useAllowance";
+import useApprove from "../../hooks/useApprove";
+import useStake from "../../hooks/useStake";
+import useUnstake from "../../hooks/useUnstake";
+import useClaim from "../../hooks/useClaim";
+import useBalanceOf from "../../hooks/useBalanceOf";
+import usePendingRewards from "../../hooks/usePendingRewards";
+import useNativeBalance from "../../hooks/useNativeBalance";
+import Loader from "../common/Loader";
 
 const LpStakingCard = (props) => {
-  /* global hooks */
   const { chain: activeChain } = useNetwork();
-  const { address: connectedAddress, isConnected } = useAccount();
-  const [alertMessageList, setAlertMessageList] = useContext(AlertContext);
-
   /* constants */
-  const lpStakingPoolContractConfig = {
-    address: contractAddresses[activeChain?.network]?.lpStaking,
-    abi: LpStakingABI,
-  };
-
-  const lpTokenContractConfig = {
-    address: contractAddresses[activeChain?.network]?.lpToken,
-    abi: IERC20MetadataABI,
-  };
 
   /* states */
   const [lpAmount, setLpAmount] = useState(0);
-  const [lpAllowance, setLpAllowance] = useState(bignumber("0"));
-  const [lpBalance, setLpBalance] = useState(0);
-  const [totalLpStaked, setTotalLpStaked] = useState(0);
-  const [pendingRewards, setPendingRewards] = useState(0);
-
   const [zapAmount, setZapAmount] = useState(0);
-  const [zapBalance, setZapBalance] = useState(0);
 
-  /* web3 read/write */
-  /* LP */
-  // lpAllowance
-  useContractRead({
-    ...lpTokenContractConfig,
-    functionName: "allowance",
-    args: [connectedAddress, lpStakingPoolContractConfig.address],
-    // watch: true,
-    onError(data) {},
-    onSuccess(data) {
-      setLpAllowance(data);
-    },
-    watch: true,
+  const lpAllowance = useAllowance(
+    contractAddresses[activeChain?.network]?.lpStaking
+  );
+  const approveLpWrite = useApprove(
+    contractAddresses[activeChain?.network]?.lpToken,
+    contractAddresses[activeChain?.network]?.lpStaking
+  );
+
+  const stakeLpWrite = useStake(lpAmount, () => {
+    console.log("stake success callback");
+    setLpAmount(0);
   });
 
-  // infinite approve lp
-  const { write: approveLpWrite } = useContractWrite({
-    ...lpTokenContractConfig,
-    mode: "recklesslyUnprepared",
-    functionName: "approve",
-    args: [
-      lpStakingPoolContractConfig.address,
-      ethers.constants.MaxUint256.sub("1").toString(),
-    ],
-    onError(data) {
-      setAlertMessageList((prevState) =>
-        [...prevState].push("Error approving LP token")
-      );
-    },
-    onSuccess(data) {},
+  const unstakeLpWrite = useUnstake(lpAmount, () => {
+    console.log("unstakke success callback");
+    setLpAmount(0);
   });
 
-  // stake lp
-  const { write: stakeLpWrite } = useContractWrite({
-    ...lpStakingPoolContractConfig,
-    mode: "recklesslyUnprepared",
-    functionName: "stake",
-    args: [0, ethers.utils.parseEther(lpAmount.toString()), connectedAddress],
-    onMutate(data) {
-      console.log("stake", lpStakingPoolContractConfig, [
-        0,
-        ethers.utils.parseEther(lpAmount.toString()),
-        connectedAddress,
-      ]);
-      setAlertMessageList((prevState) => [...prevState, "Staking LP token..."]);
-    },
-    onError(data) {
-      setAlertMessageList((prevState) => [
-        ...prevState,
-        "Error staking LP token",
-      ]);
-    },
-    onSuccess(data) {
-      setLpAmount(0);
-      setAlertMessageList((prevState) => [
-        ...prevState,
-        "Successfully staked LP token",
-      ]);
-    },
+  const claimLpWrite = useClaim(() => {
+    console.log("claim success callback");
   });
 
-  // unstake lp
-  const { write: unstakeLpWrite } = useContractWrite({
-    ...lpStakingPoolContractConfig,
-    mode: "recklesslyUnprepared",
-    functionName: "unstake",
-    args: [0, ethers.utils.parseEther(lpAmount.toString())],
-    onSuccess(data) {},
-  });
+  const userBalance = useBalanceOf(
+    contractAddresses[activeChain?.network]?.lpToken
+  );
 
-  // claim lp rewards
-  const { write: claimLpWrite } = useContractWrite({
-    ...lpStakingPoolContractConfig,
-    mode: "recklesslyUnprepared",
-    functionName: "claim",
-    args: [0],
-    onSuccess(data) {},
-    onError(data) {},
-  });
+  const vaultBalance = useBalanceOf(
+    contractAddresses[activeChain?.network]?.lpToken,
+    contractAddresses[activeChain?.network]?.lpStaking
+  );
 
-  // balance of lp
-  useContractRead({
-    ...lpTokenContractConfig,
-    functionName: "balanceOf",
-    args: [connectedAddress],
-    onError(data) {},
-    onSuccess(data) {
-      setLpBalance(ethers.utils.formatEther(data));
-    },
-    watch: true,
-  });
-
-  // total lp staked
-  useContractRead({
-    ...lpTokenContractConfig,
-    functionName: "balanceOf",
-    args: [lpStakingPoolContractConfig.address],
-    onError(data) {},
-    onSuccess(data) {
-      setTotalLpStaked(ethers.utils.formatEther(data));
-    },
-    watch: true,
-  });
-
-  // pending staking rewards
-  useContractRead({
-    ...lpStakingPoolContractConfig,
-    functionName: "getPendingRewards",
-    args: [connectedAddress, 0],
-    onError(data) {},
-    onSuccess(data) {
-      setPendingRewards(ethers.utils.formatEther(data));
-    },
-    watch: true,
-  });
-
-  /* ZAP */
-  useBalance({
-    address: connectedAddress,
-    onError(data) {},
-    onSuccess(data) {
-      setZapBalance(+data.formatted);
-    },
-  });
+  const pendingRewards = usePendingRewards();
+  const zapBalance = useNativeBalance();
 
   /* handle callback */
   // lp staking
@@ -191,7 +78,7 @@ const LpStakingCard = (props) => {
                 Total Staked
               </div>
               <div className="flex-1 text-sm text-center font-bold">
-                {trimNumber(totalLpStaked, 4, "dp")}{" "}
+                {trimNumber(vaultBalance, 4, "dp")}{" "}
                 {`BT-${contractAddresses[activeChain?.network]?.nativeGas} LP`}
               </div>
             </div>
@@ -200,7 +87,7 @@ const LpStakingCard = (props) => {
                 Your Stake
               </div>
               <div className="flex-1 text-sm text-center  font-bold">
-                {trimNumber(totalLpStaked, 4, "dp")}{" "}
+                {trimNumber(vaultBalance, 4, "dp")}{" "}
                 {`BT-${contractAddresses[activeChain?.network]?.nativeGas} LP`}
               </div>
             </div>
@@ -221,7 +108,7 @@ const LpStakingCard = (props) => {
                 Your Balance
               </div>
               <div className="flex-1 text-sm text-center font-bold">
-                {trimNumber(lpBalance, 4, "dp")}{" "}
+                {trimNumber(userBalance, 4, "dp")}{" "}
                 {`BT-${contractAddresses[activeChain?.network]?.nativeGas} LP`}
               </div>
             </div>
@@ -234,8 +121,8 @@ const LpStakingCard = (props) => {
               onChange={handleLpAmount}
               min={0}
               max={() => {
-                console.log("lpBalance", lpBalance);
-                return lpBalance;
+                console.log("lpBalance", userBalance);
+                return userBalance;
               }}
               placeholder={0}
               value={lpAmount > 0 ? lpAmount : ""}
@@ -256,28 +143,52 @@ const LpStakingCard = (props) => {
 
         <div className="flex gap-2">
           <div className="w-2/3 flex gap-2">
-            {ethers.BigNumber.from(lpAllowance.toString()).lte(
-              ethers.BigNumber.from("0")
-            ) ? (
+            {!lpAllowance ? (
               <button
                 className="border-[1px] border-black shadow-db pt-1 font-fancy bg-db-cyan-process h-10 w-full rounded-lg text-lg text-white hover:bg-db-blue-200"
-                onClick={approveLpWrite}
+                onClick={() => {
+                  if (approveLpWrite.transaction.write) {
+                    approveLpWrite.transaction.write();
+                  }
+                }}
               >
-                Approve
+                {approveLpWrite.confirmation.isLoading ? (
+                  <Loader text="Approving" />
+                ) : (
+                  "Approve"
+                )}
               </button>
             ) : (
               <button
-                className="border-[1px] border-black shadow-db pt-1 font-fancy bg-db-cyan-process h-10 w-full rounded-lg text-lg text-white hover:bg-db-blue-200"
-                onClick={stakeLpWrite}
+                disabled={lpAmount === 0}
+                className="border-[1px] text-center border-black shadow-db pt-1 font-fancy bg-db-cyan-process h-10 w-full rounded-lg text-lg text-white hover:bg-db-blue-200"
+                onClick={() => {
+                  if (stakeLpWrite.transaction.write) {
+                    stakeLpWrite.transaction.write();
+                  }
+                }}
               >
-                Stake
+                {stakeLpWrite.confirmation.isLoading ? (
+                  <Loader text="Staking" />
+                ) : (
+                  "Stake"
+                )}
               </button>
             )}
             <button
+              disabled={lpAmount === 0}
               className="border-[1px] border-black shadow-db pt-1 font-fancy bg-db-cyan-process h-10 w-full rounded-lg text-lg text-white hover:bg-db-blue-200"
-              onClick={unstakeLpWrite}
+              onClick={() => {
+                if (unstakeLpWrite.transaction.write) {
+                  unstakeLpWrite.transaction.write();
+                }
+              }}
             >
-              Unstake
+              {unstakeLpWrite.confirmation.isLoading ? (
+                <Loader text="Unstaking" />
+              ) : (
+                "Unstake"
+              )}
             </button>
           </div>
           <div className="w-1/3">
