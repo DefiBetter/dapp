@@ -91,7 +91,7 @@ const LpStakingCard = (props) => {
                 Your Stake
               </div>
               <div className="flex-1 text-sm text-center  font-bold">
-                {trimNumber(userStaked, 4, "dp")}{" "}
+                {userStaked}{" "}
                 {`BT-${contractAddresses[activeChain?.network]?.nativeGas} LP`}
               </div>
             </div>

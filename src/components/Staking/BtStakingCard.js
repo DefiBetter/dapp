@@ -47,7 +47,7 @@ const BtStakingCard = (props) => {
     console.log("claim success callback");
   });
 
-  const userStaked = useUserBTStake()
+  const userStaked = useUserBTStake();
 
   const vaultBalance = useBalanceOf(
     contractAddresses[activeChain?.network]?.btToken,
@@ -85,7 +85,7 @@ const BtStakingCard = (props) => {
                 Your Stake
               </div>
               <div className="flex-1 text-sm text-center  font-bold">
-                {trimNumber(userStaked, 4, "dp")} BT
+                {userStaked} BT
               </div>
             </div>
           </div>
@@ -155,6 +155,7 @@ const BtStakingCard = (props) => {
               )}
             </button>
           )}
+
           <button
             disabled={btAmount === 0 || btAmount > userStaked}
             className="border-[1px] border-black shadow-db pt-1 font-fancy bg-db-cyan-process h-10 w-full rounded-lg text-lg text-white hover:bg-db-blue-200"
