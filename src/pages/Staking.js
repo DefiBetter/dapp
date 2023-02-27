@@ -1,46 +1,14 @@
-import { Button } from "../components/common/Button";
-import { Contract, ethers } from "ethers";
-import { useCallback, useContext, useEffect, useState } from "react";
-import { Card, CardBlueBgBlackBorder } from "../components/common/Card";
-import { Container } from "../components/common/container/Container";
-import AppContainer from "../components/common/container/AppContainer";
-import { Grid, GridCol, GridRow } from "../components/common/Grid";
-import { InputNumber } from "../components/common/Input";
-import Navbar from "../components/Navbar/Navbar";
+import { useEffect, useState } from "react";
 import StakeDiagram from "../components/Staking/StakeDiagram";
 import { contractAddresses } from "../static/contractAddresses";
-import BtStakingABI from "../static/ABI/BtStakingABI.json";
-import LpStakingABI from "../static/ABI/LpStakingABI.json";
-import BTABI from "../static/ABI/BTABI.json";
-import IERC20MetadataABI from "../static/ABI/IERC20MetadataABI.json";
 
-import {
-  useAccount,
-  useBalance,
-  useContractRead,
-  useContractWrite,
-  useNetwork,
-  usePrepareContractWrite,
-  useProvider,
-} from "wagmi";
-import { watchContractEvent } from "@wagmi/core";
-import { bignumber } from "mathjs";
-import { CenterText, FancyText } from "../components/common/Text";
-import Dropdown from "../components/common/Dropdown";
-import AlertContext from "../context/AlertContext";
+import { useNetwork } from "wagmi";
 import LpStakingCard from "../components/Staking/LpStakingCard";
 import BtStakingCard from "../components/Staking/BtStakingCard";
 
 function Staking() {
-
-  const [alertMessageList, setAlertMessageList] = useContext(AlertContext);
-
   // fetch account and current network
-  const { address: connectedAddress, isConnected } = useAccount();
   const { chain: activeChain } = useNetwork();
-
-  // ------vars--------------------------
-  const [bridgeAmount, setBridgeAmount] = useState(0);
 
   /* set lp token symbol */
   const [lpTokenSymbol, setLpTokenSymbol] = useState();
@@ -49,47 +17,6 @@ function Staking() {
       `BT-${contractAddresses[activeChain?.network]?.nativeGas} LP`
     );
   }, [activeChain]);
-
-  // const unwatch = watchContractEvent(
-  //   {
-  //     address: "0x2B0d36FACD61B71CC05ab8F3D2355ec3631C0dd5",
-  //     abi: IERC20MetadataABI,
-  //     eventName: "Transfer",
-  //     onSuccess(data) {
-  //       console.log("event listener success", data);
-  //     },
-  //     onError(data) {
-  //       console.log("event listener error", data);
-  //     },
-  //   },
-  //   (from, to, value) => {
-  //     console.log("event listener", from, to, value);
-  //   }
-  // );
-
-  /* APR calculations */
-  // // fetch contract instance
-  // const contract = new ethers.Contract(
-  //   "0xd586E7F844cEa2F87f50152665BCbc2C279D8d70",
-  //   IERC20MetadataABI,
-  //   useProvider()
-  // );
-
-  // // fetch contract event logs
-  // (async () => {
-  //   const logs = await contract.filters.Transfer();
-  //   const _logs = await contract.queryFilter(logs, 24952070);
-  //   console.log(
-  //     "event listener logs",
-  //     _logs.map((log) => {
-  //       return [
-  //         log.args.from,
-  //         log.args.to,
-  //         ethers.utils.formatEther(log.args.value),
-  //       ];
-  //     })
-  //   );
-  // })();
 
   return (
     <>
