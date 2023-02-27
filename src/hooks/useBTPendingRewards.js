@@ -1,17 +1,18 @@
-import LpStakingABI from "../static/ABI/LpStakingABI.json";
+import BtStakingABI from "../static/ABI/BtStakingABI.json";
 import { useAccount, useContractRead, useNetwork } from "wagmi";
 import { ethers } from "ethers";
 import { contractAddresses } from "../static/contractAddresses";
 
-export default function usePendingRewards() {
+export default function useBTPendingRewards(userStaked) {
   const { address } = useAccount();
   const { chain } = useNetwork();
 
   const { data } = useContractRead({
-    address: contractAddresses[chain?.network]?.lpStaking,
-    abi: LpStakingABI,
+    address: contractAddresses[chain?.network]?.btStaking,
+    abi: BtStakingABI,
     functionName: "getPendingRewards",
-    args: [address, 0],
+    enabled: userStaked > 0,
+    args: [address],
     select: (data) => ethers.utils.formatEther(data),
     watch: true,
   });

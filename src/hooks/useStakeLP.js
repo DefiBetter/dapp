@@ -9,15 +9,15 @@ import { ethers } from "ethers";
 import LpStakingABI from "../static/ABI/LpStakingABI.json";
 import { contractAddresses } from "../static/contractAddresses";
 
-export default function useUnstake(lpAmount, onSuccessCallback) {
+export default function useStakeLP(poolId, lpAmount, onSuccessCallback) {
+  const { address } = useAccount();
   const { chain } = useNetwork();
 
-  console.log('lpAmount = ' + lpAmount)
   const preparation = usePrepareContractWrite({
     address: contractAddresses[chain?.network]?.lpStaking,
     abi: LpStakingABI,
-    functionName: "unstake",
-    args: [0, ethers.utils.parseEther(lpAmount.toString())],
+    functionName: "stake",
+    args: [poolId, ethers.utils.parseEther(lpAmount.toString()), address],
   });
 
   const transaction = useContractWrite(preparation.config);
@@ -26,9 +26,13 @@ export default function useUnstake(lpAmount, onSuccessCallback) {
     hash: transaction.data?.hash,
     onSuccess() {
       // TODO: Add toast
+      console.log('[useStakeLP] success:')
+
       onSuccessCallback();
     },
     onError(error) {
+      console.log('[useStakeLP] error:')
+      console.error(error)
       // TODO: Add toast
     },
   });
