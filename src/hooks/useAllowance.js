@@ -1,13 +1,11 @@
-import { contractAddresses } from "../static/contractAddresses";
 import IERC20MetadataABI from "../static/ABI/IERC20MetadataABI.json";
-import { useAccount, useContractRead, useNetwork } from "wagmi";
+import { useAccount, useContractRead } from "wagmi";
 
-export default function useAllowance(contractAddress) {
-  const { chain } = useNetwork();
+export default function useAllowance(tokenAddress, contractAddress) {
   const { address } = useAccount();
 
   const { data } = useContractRead({
-    address: contractAddresses[chain?.network]?.lpToken,
+    address: tokenAddress,
     abi: IERC20MetadataABI,
     functionName: "allowance",
     args: [address, contractAddress],

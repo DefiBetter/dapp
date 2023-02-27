@@ -6,18 +6,17 @@ import {
   useWaitForTransaction,
 } from "wagmi";
 import { ethers } from "ethers";
-import LpStakingABI from "../static/ABI/LpStakingABI.json";
+import BtStakingABI from "../static/ABI/BtStakingABI.json";
 import { contractAddresses } from "../static/contractAddresses";
 
-export default function useStake(lpAmount, onSuccessCallback) {
-  const { address } = useAccount();
+export default function useUnstakeBT(btAmount, onSuccessCallback) {
   const { chain } = useNetwork();
 
   const preparation = usePrepareContractWrite({
-    address: contractAddresses[chain?.network]?.lpStaking,
-    abi: LpStakingABI,
-    functionName: "stake",
-    args: [0, ethers.utils.parseEther(lpAmount.toString()), address],
+    address: contractAddresses[chain?.network]?.btStaking,
+    abi: BtStakingABI,
+    functionName: "unstake",
+    args: [ethers.utils.parseEther(btAmount.toString())],
   });
 
   const transaction = useContractWrite(preparation.config);

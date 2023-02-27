@@ -5,13 +5,14 @@ import { useNetwork } from "wagmi";
 import { trimNumber } from "../common/helper";
 import useAllowance from "../../hooks/useAllowance";
 import useApprove from "../../hooks/useApprove";
-import useStake from "../../hooks/useStake";
-import useUnstake from "../../hooks/useUnstake";
-import useClaim from "../../hooks/useClaim";
+import useStakeLP from "../../hooks/useStakeLP";
+import useUnstakeLP from "../../hooks/useUnstakeLP";
+import useClaimLP from "../../hooks/useClaimLP";
 import useBalanceOf from "../../hooks/useBalanceOf";
-import usePendingRewards from "../../hooks/usePendingRewards";
+import useLPPendingRewards from "../../hooks/useLPPendingRewards";
 import useNativeBalance from "../../hooks/useNativeBalance";
 import Loader from "../common/Loader";
+import useUserLPStake from "../../hooks/useUserLPStake";
 
 const LpStakingCard = (props) => {
   const { chain: activeChain } = useNetwork();
@@ -22,6 +23,7 @@ const LpStakingCard = (props) => {
   const [zapAmount, setZapAmount] = useState(0);
 
   const lpAllowance = useAllowance(
+    contractAddresses[activeChain?.network]?.lpToken,
     contractAddresses[activeChain?.network]?.lpStaking
   );
   const approveLpWrite = useApprove(
@@ -29,31 +31,33 @@ const LpStakingCard = (props) => {
     contractAddresses[activeChain?.network]?.lpStaking
   );
 
-  const stakeLpWrite = useStake(lpAmount, () => {
+  const stakeLpWrite = useStakeLP(0, lpAmount, () => {
     console.log("stake success callback");
     setLpAmount(0);
   });
 
-  const unstakeLpWrite = useUnstake(lpAmount, () => {
+  const unstakeLpWrite = useUnstakeLP(0, lpAmount, () => {
     console.log("unstakke success callback");
     setLpAmount(0);
   });
 
-  const claimLpWrite = useClaim(() => {
+  const claimLpWrite = useClaimLP(0, () => {
     console.log("claim success callback");
   });
 
-  const userBalance = useBalanceOf(
-    contractAddresses[activeChain?.network]?.lpToken
-  );
+  const userStaked = useUserLPStake(0);
 
   const vaultBalance = useBalanceOf(
     contractAddresses[activeChain?.network]?.lpToken,
     contractAddresses[activeChain?.network]?.lpStaking
   );
 
-  const pendingRewards = usePendingRewards();
+  const pendingRewards = useLPPendingRewards(0, userStaked);
   const zapBalance = useNativeBalance();
+
+  const userLPBalance = useBalanceOf(
+    contractAddresses[activeChain?.network]?.lpToken
+  );
 
   /* handle callback */
   // lp staking
@@ -87,7 +91,7 @@ const LpStakingCard = (props) => {
                 Your Stake
               </div>
               <div className="flex-1 text-sm text-center  font-bold">
-                {trimNumber(vaultBalance, 4, "dp")}{" "}
+                {trimNumber(userStaked, 4, "dp")}{" "}
                 {`BT-${contractAddresses[activeChain?.network]?.nativeGas} LP`}
               </div>
             </div>
@@ -108,7 +112,7 @@ const LpStakingCard = (props) => {
                 Your Balance
               </div>
               <div className="flex-1 text-sm text-center font-bold">
-                {trimNumber(userBalance, 4, "dp")}{" "}
+                {trimNumber(userLPBalance, 4, "dp")}{" "}
                 {`BT-${contractAddresses[activeChain?.network]?.nativeGas} LP`}
               </div>
             </div>
@@ -120,10 +124,7 @@ const LpStakingCard = (props) => {
             <InputNumber
               onChange={handleLpAmount}
               min={0}
-              max={() => {
-                console.log("lpBalance", userBalance);
-                return userBalance;
-              }}
+              max={userLPBalance}
               placeholder={0}
               value={lpAmount > 0 ? lpAmount : ""}
               setValue={setLpAmount}
@@ -176,7 +177,7 @@ const LpStakingCard = (props) => {
               </button>
             )}
             <button
-              disabled={lpAmount === 0}
+              disabled={lpAmount === 0 || lpAmount > userStaked}
               className="border-[1px] border-black shadow-db pt-1 font-fancy bg-db-cyan-process h-10 w-full rounded-lg text-lg text-white hover:bg-db-blue-200"
               onClick={() => {
                 if (unstakeLpWrite.transaction.write) {
@@ -204,11 +205,23 @@ const LpStakingCard = (props) => {
 
         <div>
           <button
+            disabled={pendingRewards === 0}
             className="border-[1px] border-black shadow-db pt-1 font-fancy bg-db-cyan-process h-10 w-full rounded-lg text-lg text-white hover:bg-db-blue-200"
-            onClick={claimLpWrite}
+            onClick={() => {
+              if (claimLpWrite.transaction.write) {
+                claimLpWrite.transaction.write();
+              }
+            }}
           >
             <div className="flex justify-center items-center gap-2">
-              <div>Claim</div>
+              <div>
+                {" "}
+                {claimLpWrite.confirmation.isLoading ? (
+                  <Loader text="Claiming" />
+                ) : (
+                  "Claim"
+                )}
+              </div>
               <div className="pb-1 font-sans text-sm leading-none">
                 {trimNumber(pendingRewards, 4, "dp")} {props.nativeGas}
               </div>

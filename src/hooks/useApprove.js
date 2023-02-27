@@ -12,6 +12,9 @@ export default function useApprove(token, contractAddress) {
     abi: IERC20MetadataABI,
     functionName: "approve",
     args: [contractAddress, ethers.constants.MaxUint256.sub("1").toString()],
+    onError(error) {
+      console.error(error)
+    }, 
   });
 
   const transaction = useContractWrite(preparation.config);
@@ -25,5 +28,5 @@ export default function useApprove(token, contractAddress) {
       // TODO: Add toast
     },
   });
-  return { confirmation, transaction };
+  return { preparation, confirmation, transaction };
 }

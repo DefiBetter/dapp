@@ -1,173 +1,64 @@
 import { InputNumber } from "../common/Input";
 import { ethers } from "ethers";
 import { useContext, useState } from "react";
-import {
-  useAccount,
-  useContractRead,
-  useContractWrite,
-  useNetwork,
-} from "wagmi";
+import { useAccount, useNetwork } from "wagmi";
 import { contractAddresses } from "../../static/contractAddresses";
-import BtStakingABI from "../../static/ABI/BtStakingABI.json";
-import BTABI from "../../static/ABI/BTABI.json";
-import AlertContext from "../../context/AlertContext";
-import { bignumber } from "mathjs";
+
 import { trimNumber } from "../common/helper";
+import useAllowance from "../../hooks/useAllowance";
+import useApprove from "../../hooks/useApprove";
+import useStakeBT from "../../hooks/useStakeBT";
+import useUnstakeBT from "../../hooks/useUnstakeBT";
+import useClaimBT from "../../hooks/useClaimBT";
+import useBalanceOf from "../../hooks/useBalanceOf";
+import useBTPendingRewards from "../../hooks/useBTPendingRewards";
+import Loader from "../common/Loader";
+import useUserBTStake from "../../hooks/useUserBTStake";
 
 const BtStakingCard = (props) => {
   /* global hooks */
-  const { address: connectedAddress, isConnected } = useAccount();
   const { chain: activeChain } = useNetwork();
-  const [alertMessageList, setAlertMessageList] = useContext(AlertContext);
-
-  /* constants */
-  const btStakingPoolContractConfig = {
-    address: contractAddresses[activeChain?.network]?.btStaking,
-    abi: BtStakingABI,
-  };
-
-  const btTokenContractConfig = {
-    address: contractAddresses[activeChain?.network]?.btToken,
-    abi: BTABI,
-  };
 
   /* states */
   const [btAmount, setBtAmount] = useState(0);
-  const [btAllowance, setBtAllowance] = useState(bignumber("0"));
-  const [btBalance, setBtBalance] = useState(0);
-  const [totalBtStaked, setTotalBtStaked] = useState(0);
-  const [pendingRewards, setPendingRewards] = useState(0);
 
   /* web3 read/write */
-  // btAllowance
-  useContractRead({
-    ...btTokenContractConfig,
-    functionName: "allowance",
-    args: [
-      connectedAddress,
-      contractAddresses[activeChain?.network]?.btStaking,
-    ],
-    onError(data) {},
-    onSuccess(data) {
-      setBtAllowance(data);
-    },
-    watch: true,
+  const btAllowance = useAllowance(
+    contractAddresses[activeChain?.network]?.btToken,
+    contractAddresses[activeChain?.network]?.btStaking
+  );
+
+  const approveBtWrite = useApprove(
+    contractAddresses[activeChain?.network]?.btToken,
+    contractAddresses[activeChain?.network]?.btStaking
+  );
+
+  const stakeBtWrite = useStakeBT(btAmount, () => {
+    console.log("stake success callback");
+    setBtAmount(0);
   });
 
-  // infinite approve bt
-  const { write: approveBtWrite } = useContractWrite({
-    ...btTokenContractConfig,
-    mode: "recklesslyUnprepared",
-    functionName: "approve",
-    args: [
-      btStakingPoolContractConfig.address,
-      ethers.constants.MaxUint256.sub("1").toString(),
-    ],
-    onSettled(data) {
-      setAlertMessageList([...alertMessageList, `Approving BT token...`]);
-    },
-    onSuccess(data) {
-      setAlertMessageList([
-        ...alertMessageList,
-        `Successfully approved BT tokens`,
-      ]);
-    },
+  const unstakeBtWrite = useUnstakeBT(btAmount, () => {
+    console.log("unstakke success callback");
+    setBtAmount(0);
   });
 
-  // stake bt
-  const { write: stakeBtWrite } = useContractWrite({
-    ...btStakingPoolContractConfig,
-    mode: "recklesslyUnprepared",
-    functionName: "stake",
-    args: [ethers.utils.parseEther(btAmount.toString())],
-    onMutate(data) {
-      setAlertMessageList((alertMessageList) => [
-        ...alertMessageList,
-        `Staking BT tokens...`,
-      ]);
-    },
-    onError(data) {
-      setAlertMessageList((alertMessageList) => [
-        ...alertMessageList,
-        `Failed to stake BT tokens`,
-      ]);
-    },
-    onSuccess(data) {
-      setBtAmount(0);
-      setAlertMessageList((alertMessageList) => [
-        ...alertMessageList,
-        `Successfully staked BT tokens`,
-      ]);
-    },
+  const claimBtWrite = useClaimBT(() => {
+    console.log("claim success callback");
   });
 
-  // unstake bt
-  const { write: unstakeBtWrite } = useContractWrite({
-    ...btStakingPoolContractConfig,
-    functionName: "unstake",
-    args: [ethers.utils.parseEther(btAmount.toString())],
-    onMutate(data) {
-      setAlertMessageList((alertMessageList) => [
-        ...alertMessageList,
-        `Unstaking BT tokens...`,
-      ]);
-    },
-    onError(data) {
-      setAlertMessageList([...alertMessageList, `Failed to unstake BT tokens`]);
-    },
-    onSuccess(data) {
-      setAlertMessageList([
-        ...alertMessageList,
-        `Successfully unstaked BT tokens`,
-      ]);
-    },
-  });
+  const userStaked = useUserBTStake()
 
-  // claim bt rewards
-  const { write: claimBtWrite } = useContractWrite({
-    mode: "recklesslyUnprepared",
-    ...btStakingPoolContractConfig,
-    functionName: "claim",
-    args: [],
-    onSuccess(data) {},
-    onError(data) {},
-  });
+  const vaultBalance = useBalanceOf(
+    contractAddresses[activeChain?.network]?.btToken,
+    contractAddresses[activeChain?.network]?.btStaking
+  );
 
-  // balance of bt
-  useContractRead({
-    ...btTokenContractConfig,
-    functionName: "balanceOf",
-    args: [connectedAddress],
-    onError(data) {},
-    onSuccess(data) {
-      setBtBalance(ethers.utils.formatEther(data));
-    },
-    watch: true,
-  });
+  const pendingRewards = useBTPendingRewards(userStaked);
 
-  // total bt staked
-  useContractRead({
-    ...btTokenContractConfig,
-    functionName: "balanceOf",
-    args: [btStakingPoolContractConfig.address],
-    onError(data) {},
-    onSuccess(data) {
-      setTotalBtStaked(ethers.utils.formatEther(data));
-    },
-    watch: true,
-  });
-
-  // pending staking rewards
-  useContractRead({
-    ...btStakingPoolContractConfig,
-    functionName: "getPendingRewards",
-    args: [connectedAddress],
-    onError(data) {},
-    onSuccess(data) {
-      setPendingRewards(ethers.utils.formatEther(data));
-    },
-    watch: true,
-  });
+  const userBTBalance = useBalanceOf(
+    contractAddresses[activeChain?.network]?.btToken
+  );
 
   /* handle callback */
   // bt staking
@@ -186,7 +77,7 @@ const BtStakingCard = (props) => {
                 Total Staked
               </div>
               <div className="flex-1 text-sm text-center font-bold">
-                {trimNumber(totalBtStaked, 4, "dp")} BT
+                {trimNumber(vaultBalance, 4, "dp")} BT
               </div>
             </div>
             <div className="flex justify-between items-center gap-2">
@@ -194,7 +85,7 @@ const BtStakingCard = (props) => {
                 Your Stake
               </div>
               <div className="flex-1 text-sm text-center  font-bold">
-                {trimNumber(totalBtStaked, 4, "dp")} BT
+                {trimNumber(userStaked, 4, "dp")} BT
               </div>
             </div>
           </div>
@@ -214,7 +105,7 @@ const BtStakingCard = (props) => {
                 Your Balance
               </div>
               <div className="flex-1 text-sm text-center font-bold">
-                {trimNumber(btBalance, 4, "dp")} BT
+                {trimNumber(userBTBalance, 4, "dp")} BT
               </div>
             </div>
           </div>
@@ -224,7 +115,7 @@ const BtStakingCard = (props) => {
           <InputNumber
             onChange={handleBtAmount}
             min={0}
-            max={btBalance}
+            max={userBTBalance}
             placeholder={0}
             value={btAmount > 0 ? btAmount : ""}
             setValue={setBtAmount}
@@ -232,38 +123,73 @@ const BtStakingCard = (props) => {
         </div>
 
         <div className="flex gap-3">
-          {ethers.BigNumber.from(btAllowance.toString()).lte(
-            ethers.BigNumber.from("0")
-          ) ? (
+          {!btAllowance ? (
             <button
               className="border-[1px] border-black shadow-db pt-1 font-fancy bg-db-cyan-process h-10 w-full rounded-lg text-lg text-white hover:bg-db-blue-200"
-              onClick={approveBtWrite}
+              onClick={() => {
+                if (approveBtWrite.transaction.write) {
+                  approveBtWrite.transaction.write();
+                }
+              }}
             >
-              Approve
+              {approveBtWrite.confirmation.isLoading ? (
+                <Loader text="Approving" />
+              ) : (
+                "Approve"
+              )}
             </button>
           ) : (
             <button
+              disabled={btAmount === 0}
               className="border-[1px] border-black shadow-db pt-1 font-fancy bg-db-cyan-process h-10 w-full rounded-lg text-lg text-white hover:bg-db-blue-200"
-              onClick={stakeBtWrite}
+              onClick={() => {
+                if (stakeBtWrite.transaction.write) {
+                  stakeBtWrite.transaction.write();
+                }
+              }}
             >
-              Stake
+              {stakeBtWrite.confirmation.isLoading ? (
+                <Loader text="Staking" />
+              ) : (
+                "Stake"
+              )}
             </button>
           )}
           <button
+            disabled={btAmount === 0 || btAmount > userStaked}
             className="border-[1px] border-black shadow-db pt-1 font-fancy bg-db-cyan-process h-10 w-full rounded-lg text-lg text-white hover:bg-db-blue-200"
-            onClick={unstakeBtWrite}
+            onClick={() => {
+              if (unstakeBtWrite.transaction.write) {
+                unstakeBtWrite.transaction.write();
+              }
+            }}
           >
-            Unstake
+            {unstakeBtWrite.confirmation.isLoading ? (
+              <Loader text="Unstaking" />
+            ) : (
+              "Unstake"
+            )}
           </button>
         </div>
 
         <div>
           <button
+            disabled={pendingRewards === 0}
+            onClick={() => {
+              if (claimBtWrite.transaction.write) {
+                claimBtWrite.transaction.write();
+              }
+            }}
             className="border-[1px] border-black shadow-db pt-1 font-fancy bg-db-cyan-process h-10 w-full rounded-lg text-lg text-white hover:bg-db-blue-200"
-            onClick={claimBtWrite}
           >
             <div className="flex justify-center items-center gap-2">
-              <div>Claim</div>
+              <div>
+                {claimBtWrite.confirmation.isLoading ? (
+                  <Loader text="Claiming" />
+                ) : (
+                  "Claim"
+                )}
+              </div>
               <div className="pb-1 font-sans text-sm leading-none">
                 {trimNumber(pendingRewards, 4, "dp")} {props.nativeGas}
               </div>
