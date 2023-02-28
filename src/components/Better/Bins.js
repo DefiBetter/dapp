@@ -6,6 +6,7 @@ import { contractAddresses } from "../../static/contractAddresses";
 import { trimNumber } from "../common/helper";
 import AlertContext from "../../context/AlertContext";
 import { AiOutlineDoubleLeft, AiOutlineDoubleRight } from "react-icons/ai";
+import DBButton from "../common/DBButton";
 
 const Bins = (props) => {
   /* account, network, configs */
@@ -264,26 +265,23 @@ const Bins = (props) => {
         })}
         <div className="h-[calc(100%/27*2)] flex flex-col text-center">
           <div className="flex justify-between gap-2">
-            <button
-              className="flex justify-center items-center gap-2 border-[1px] border-black shadow-db bg-db-cyan-process h-10 w-full rounded-lg text-white hover:bg-db-blue-200"
-              onClick={handleOnClickNormal}
-            >
-              <div className="font-fancy pt-1 ">Normal</div>
-              <div className="text-sm pb-0.5 border-[1px] border-white rounded-full w-4 h-4 flex justify-center items-center">
-                i
+            <DBButton onClick={handleOnClickNormal}>
+              <div className="flex justify-center items-center gap-2">
+                <div className="font-fancy pt-1 text-base">Normal</div>
+                <div className="font-sans text-sm pb-0.5 border-[1px] border-white rounded-full w-4 h-4 flex justify-center items-center">
+                  i
+                </div>
               </div>
-            </button>
+            </DBButton>
 
-            <button
-              className="disabled:bg-gray-400 flex justify-center items-center gap-2 border-[1px] border-black shadow-db bg-db-cyan-process h-10 w-full rounded-lg text-white hover:bg-db-blue-200"
-              onClick={handleOnClickNormal}
-              disabled
-            >
-              <div className="font-fancy pt-1 ">Implied</div>
-              <div className="text-sm pb-0.5 border-[1px] border-white rounded-full w-4 h-4 flex justify-center items-center">
-                i
+            <DBButton onClick={handleOnClickNormal} disabled>
+              <div className="flex justify-center items-center gap-2">
+                <div className="font-fancy pt-1 text-base">Implied</div>
+                <div className="font-sans text-sm pb-0.5 border-[1px] border-white rounded-full w-4 h-4 flex justify-center items-center">
+                  i
+                </div>
               </div>
-            </button>
+            </DBButton>
           </div>
         </div>
       </div>

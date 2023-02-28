@@ -41,6 +41,7 @@ const Dropdown = ({
         <div className="absolute top-10 left-0 w-full z-50">
           {itemList?.map((item, i) => (
             <div
+              key={item.selector}
               className="w-full cursor-pointer"
               onClick={() => {
                 setCurrentItem(item);

@@ -13,7 +13,7 @@ import useLPPendingRewards from "../../hooks/useLPPendingRewards";
 import useNativeBalance from "../../hooks/useNativeBalance";
 import Loader from "../common/Loader";
 import useUserLPStake from "../../hooks/useUserLPStake";
-
+import DBButton from "../../components/common/DBButton";
 const LpStakingCard = (props) => {
   const { chain: activeChain } = useNetwork();
   /* constants */
@@ -145,8 +145,7 @@ const LpStakingCard = (props) => {
         <div className="flex gap-2">
           <div className="w-2/3 flex gap-2">
             {!lpAllowance ? (
-              <button
-                className="border-[1px] border-black shadow-db pt-1 font-fancy bg-db-cyan-process h-10 w-full rounded-lg text-lg text-white hover:bg-db-blue-200"
+              <DBButton
                 onClick={() => {
                   if (approveLpWrite.transaction.write) {
                     approveLpWrite.transaction.write();
@@ -158,11 +157,10 @@ const LpStakingCard = (props) => {
                 ) : (
                   "Approve"
                 )}
-              </button>
+              </DBButton>
             ) : (
-              <button
+              <DBButton
                 disabled={lpAmount === 0}
-                className="border-[1px] text-center border-black shadow-db pt-1 font-fancy bg-db-cyan-process h-10 w-full rounded-lg text-lg text-white hover:bg-db-blue-200"
                 onClick={() => {
                   if (stakeLpWrite.transaction.write) {
                     stakeLpWrite.transaction.write();
@@ -174,11 +172,10 @@ const LpStakingCard = (props) => {
                 ) : (
                   "Stake"
                 )}
-              </button>
+              </DBButton>
             )}
-            <button
+            <DBButton
               disabled={lpAmount === 0 || lpAmount > userStaked}
-              className="border-[1px] border-black shadow-db pt-1 font-fancy bg-db-cyan-process h-10 w-full rounded-lg text-lg text-white hover:bg-db-blue-200"
               onClick={() => {
                 if (unstakeLpWrite.transaction.write) {
                   unstakeLpWrite.transaction.write();
@@ -190,23 +187,18 @@ const LpStakingCard = (props) => {
               ) : (
                 "Unstake"
               )}
-            </button>
+            </DBButton>
           </div>
           <div className="w-1/3">
-            <button
-              className="border-[1px] border-black shadow-db pt-1 font-fancy bg-db-cyan-process h-10 w-full rounded-lg text-lg text-white hover:bg-db-blue-200"
-              disabled
-              onClick={() => {}}
-            >
+            <DBButton disabled onClick={() => {}}>
               Zap In
-            </button>
+            </DBButton>
           </div>
         </div>
 
         <div>
-          <button
+          <DBButton
             disabled={pendingRewards === 0}
-            className="border-[1px] border-black shadow-db pt-1 font-fancy bg-db-cyan-process h-10 w-full rounded-lg text-lg text-white hover:bg-db-blue-200"
             onClick={() => {
               if (claimLpWrite.transaction.write) {
                 claimLpWrite.transaction.write();
@@ -215,7 +207,6 @@ const LpStakingCard = (props) => {
           >
             <div className="flex justify-center items-center gap-2">
               <div>
-                {" "}
                 {claimLpWrite.confirmation.isLoading ? (
                   <Loader text="Claiming" />
                 ) : (
@@ -226,7 +217,7 @@ const LpStakingCard = (props) => {
                 {trimNumber(pendingRewards, 4, "dp")} {props.nativeGas}
               </div>
             </div>
-          </button>
+          </DBButton>
         </div>
       </div>
     </div>
