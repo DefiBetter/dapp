@@ -14,6 +14,7 @@ import useBalanceOf from "../../hooks/useBalanceOf";
 import useBTPendingRewards from "../../hooks/useBTPendingRewards";
 import Loader from "../common/Loader";
 import useUserBTStake from "../../hooks/useUserBTStake";
+import DBButton from "../../components/common/DBButton";
 
 const BtStakingCard = (props) => {
   /* global hooks */
@@ -47,7 +48,7 @@ const BtStakingCard = (props) => {
     console.log("claim success callback");
   });
 
-  const userStaked = useUserBTStake()
+  const userStaked = useUserBTStake();
 
   const vaultBalance = useBalanceOf(
     contractAddresses[activeChain?.network]?.btToken,
@@ -85,7 +86,7 @@ const BtStakingCard = (props) => {
                 Your Stake
               </div>
               <div className="flex-1 text-sm text-center  font-bold">
-                {trimNumber(userStaked, 4, "dp")} BT
+                {userStaked} BT
               </div>
             </div>
           </div>
@@ -124,8 +125,7 @@ const BtStakingCard = (props) => {
 
         <div className="flex gap-3">
           {!btAllowance ? (
-            <button
-              className="border-[1px] border-black shadow-db pt-1 font-fancy bg-db-cyan-process h-10 w-full rounded-lg text-lg text-white hover:bg-db-blue-200"
+            <DBButton
               onClick={() => {
                 if (approveBtWrite.transaction.write) {
                   approveBtWrite.transaction.write();
@@ -137,11 +137,10 @@ const BtStakingCard = (props) => {
               ) : (
                 "Approve"
               )}
-            </button>
+            </DBButton>
           ) : (
-            <button
+            <DBButton
               disabled={btAmount === 0}
-              className="border-[1px] border-black shadow-db pt-1 font-fancy bg-db-cyan-process h-10 w-full rounded-lg text-lg text-white hover:bg-db-blue-200"
               onClick={() => {
                 if (stakeBtWrite.transaction.write) {
                   stakeBtWrite.transaction.write();
@@ -153,11 +152,11 @@ const BtStakingCard = (props) => {
               ) : (
                 "Stake"
               )}
-            </button>
+            </DBButton>
           )}
-          <button
+
+          <DBButton
             disabled={btAmount === 0 || btAmount > userStaked}
-            className="border-[1px] border-black shadow-db pt-1 font-fancy bg-db-cyan-process h-10 w-full rounded-lg text-lg text-white hover:bg-db-blue-200"
             onClick={() => {
               if (unstakeBtWrite.transaction.write) {
                 unstakeBtWrite.transaction.write();
@@ -169,18 +168,17 @@ const BtStakingCard = (props) => {
             ) : (
               "Unstake"
             )}
-          </button>
+          </DBButton>
         </div>
 
         <div>
-          <button
+          <DBButton
             disabled={pendingRewards === 0}
             onClick={() => {
               if (claimBtWrite.transaction.write) {
                 claimBtWrite.transaction.write();
               }
             }}
-            className="border-[1px] border-black shadow-db pt-1 font-fancy bg-db-cyan-process h-10 w-full rounded-lg text-lg text-white hover:bg-db-blue-200"
           >
             <div className="flex justify-center items-center gap-2">
               <div>
@@ -194,7 +192,7 @@ const BtStakingCard = (props) => {
                 {trimNumber(pendingRewards, 4, "dp")} {props.nativeGas}
               </div>
             </div>
-          </button>
+          </DBButton>
         </div>
       </div>
     </div>

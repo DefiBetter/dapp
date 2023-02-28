@@ -2,6 +2,7 @@ import { ethers } from "ethers";
 import { usePrepareContractWrite, useContractWrite } from "wagmi";
 import { useContext } from "react";
 import AlertContext from "../../context/AlertContext";
+import DBButton from "../common/DBButton";
 
 const Action = (props) => {
   const [alertMessageList, setAlertMessageList] = useContext(AlertContext);
@@ -73,33 +74,29 @@ const Action = (props) => {
         {Date.now() / 1000 >
         +props.instrument.lastEpochClosingTime.toString() +
           +props.instrument.epochDurationInSeconds.toString() ? (
-          <button
+          <DBButton
             disabled
-            className="disabled:bg-gray-400 flex justify-center text-lg items-center gap-2 border-[1px] border-black shadow-db bg-db-cyan-process h-10 w-full rounded-lg text-white hover:bg-db-blue-200"
-          >
-            <div className="font-fancy pt-1 ">Deposit</div>
-            <div className="text-sm pb-0.5 border-[1px] border-white rounded-full w-4 h-4 flex justify-center items-center">
-              i
-            </div>
-          </button>
-        ) : (
-          <button
             className="flex justify-center text-lg items-center gap-2 border-[1px] border-black shadow-db bg-db-cyan-process h-10 w-full rounded-lg text-white hover:bg-db-blue-200"
-            onClick={handleOnDeposit}
           >
             <div className="font-fancy pt-1 ">Deposit</div>
             <div className="text-sm pb-0.5 border-[1px] border-white rounded-full w-4 h-4 flex justify-center items-center">
               i
             </div>
-          </button>
+          </DBButton>
+        ) : (
+          <DBButton onClick={handleOnDeposit}>
+            <div className="flex justify-center items-center gap-2">
+              <div className="font-fancy pt-1">Deposit</div>
+              <div className="font-sans text-sm pb-0.5 border-[1px] border-white rounded-full w-4 h-4 flex justify-center items-center">
+                i
+              </div>
+            </div>
+          </DBButton>
         )}
       </div>
 
       <div className="flex-1">
-        <button
-          className="border-[1px] border-black shadow-db pt-1 font-fancy bg-db-cyan-process h-10 w-full rounded-lg text-lg text-white hover:bg-db-blue-200"
-          onClick={claimWrite}
-        >
+        <DBButton onClick={claimWrite}>
           <div className="flex justify-center items-center gap-2">
             <div>Claim</div>
             <div className="pb-1 font-sans text-sm leading-none">
@@ -107,7 +104,7 @@ const Action = (props) => {
               {props.nativeGas}
             </div>
           </div>
-        </button>
+        </DBButton>
       </div>
     </div>
   );

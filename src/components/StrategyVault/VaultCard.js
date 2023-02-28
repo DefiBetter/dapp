@@ -3,6 +3,7 @@ import { useContext, useEffect, useState } from "react";
 import { contractAddresses } from "../../static/contractAddresses";
 import { RiInformationLine } from "react-icons/ri";
 import Dropdown from "../common/Dropdown";
+import Loader from "../common/Loader";
 
 import {
   CountdownFormatted,
@@ -13,31 +14,30 @@ import {
 import { InputNumber } from "../common/Input";
 import IERC20MetadataABI from "../../static/ABI/IERC20MetadataABI.json";
 import StrategyVaultABI from "../../static/ABI/StrategyVaultABI.json";
-import StrategyVaultManagerABI from "../../static/ABI/StrategyVaultManagerABI.json";
-import DeFiBetterV1ABI from "../../static/ABI/DeFiBetterV1ABI.json";
-import {
-  useAccount,
-  useBalance,
-  useContractRead,
-  useContractWrite,
-  useNetwork,
-} from "wagmi";
+
+import { useContractRead, useNetwork } from "wagmi";
 import AlertContext from "../../context/AlertContext";
+import useInstruments from "../../hooks/useInstruments";
+import useVaults from "../../hooks/useVaults";
+import useNativeBalance from "../../hooks/useNativeBalance";
+import useBalanceOf from "../../hooks/useBalanceOf";
+import useVaultDeposit from "../../hooks/useVaultDeposit";
+import useVaultWithdraw from "../../hooks/useVaultWithdraw";
+import useVaultBalanceInfo from "../../hooks/useVaultBalanceInfo";
+import usePreviewMintAmount from "../../hooks/usePreviewMintAmount";
+import usePreviewBurnAmount from "../../hooks/usePreviewBurnAmount";
+import useVaultName from "../../hooks/useVaultName";
+import useVaultPerformance from "../../hooks/useVaultPerformance";
+import DBButton from "../common/DBButton";
 
 const VaultCard = () => {
   /* global hooks */
-  const { address: connectedAddress, isConnected } = useAccount();
   const { chain: activeChain } = useNetwork();
   const [nativeGas, setNativeGas] = useState();
   const [alertMessageList, setAlertMessageList] = useContext(AlertContext);
 
   /* constants */
   // contract config
-  const betterContractConfig = {
-    address: contractAddresses[activeChain?.network]?.better,
-    abi: DeFiBetterV1ABI,
-  };
-
   // constants
   const strategyRef = [
     "BEAR 3",
@@ -53,189 +53,42 @@ const VaultCard = () => {
   // instrument
   const [currentInstrument, setCurrentInstrument] = useState();
   const [epochEndTime, setEpochEndTime] = useState();
-  const [instrumentList, setInstrumentList] = useState();
-
-  console.log(
-    "currentInstrument",
-    (+currentInstrument?.lastEpochClosingTime +
-      +currentInstrument?.bufferDurationInSeconds +
-      +currentInstrument?.epochDurationInSeconds) *
-      1000
-  );
-
   // vault
-  const [vaultList, setVaultList] = useState();
   const [currentVault, setCurrentVault] = useState();
-  const [vaultBalanceInfo, setVaultBalanceInfo] = useState();
-  const [previewMintAmount, setPreviewMintAmount] = useState(0);
-  const [previewBurnAmount, setPreviewBurnAmount] = useState(0);
-  const [currentVaultName, setCurrentVaultName] = useState("");
   const [queuedAmount, setQueuedAmount] = useState(0);
-  const [currentVaultPerformance, setCurrentVaultPerformance] = useState("0");
-
-  // user
-  const [userGasBalance, setUserGasBalance] = useState(0);
-  const [userVaultBalance, setUserVaultBalance] = useState(0);
-
   // input amounts
   const [mintAmount, setMintAmount] = useState(0);
   const [burnAmount, setBurnAmount] = useState(0);
 
-  /* web3 read/write */
-  // get instrument list
-  useContractRead({
-    ...betterContractConfig,
-    functionName: "getInstruments",
-    onError(data) {},
-    onSuccess(data) {
-      console.log("getInstruments", data);
-      setCurrentInstrument(data[0]);
-      setInstrumentList(data);
-      setEpochEndTime(
-        +data[0].lastEpochClosingTime +
-          (+data[0].bufferDurationInSeconds + +data[0].epochDurationInSeconds) *
-            1000
-      );
-    },
+  const instrumentList = useInstruments((data) => {
+    // Success callback function
+    setCurrentInstrument(data[0]);
+    setEpochEndTime(
+      +data[0].lastEpochClosingTime +
+        (+data[0].bufferDurationInSeconds + +data[0].epochDurationInSeconds) *
+          1000
+    );
   });
+  const vaultList = useVaults(currentInstrument?.vaultManager, (data) => {
+    // Success callback function
+    setCurrentVault(data[3]);
+  });
+  const userGasBalance = useNativeBalance();
+  const userVaultBalance = useBalanceOf(currentVault);
 
-  // get list of strategy vaults from vault manager
-  useContractRead({
-    address: currentInstrument?.vaultManager,
-    abi: StrategyVaultManagerABI,
-    functionName: "getVaults",
-    args: [],
-    onError(data) {
-      console.log("getVaults currentInstrument", currentInstrument);
-      console.log("getVaults vaultManager", currentInstrument?.vaultManager);
-    },
-    onSuccess(data) {
-      console.log("getVaults", data);
-      setVaultList(data);
-      setCurrentVault(data[3]);
-    },
-  });
-
-  // user gas balance
-  useBalance({
-    address: connectedAddress,
-    onSuccess(data) {
-      setUserGasBalance(+data.formatted);
-    },
-    watch: true,
-  });
-
-  // user vault balance
-  useContractRead({
-    address: currentVault,
-    abi: IERC20MetadataABI,
-    functionName: "balanceOf",
-    args: [connectedAddress],
-    onSuccess(data) {
-      setUserVaultBalance(+ethers.utils.formatEther(data));
-    },
-    watch: true,
-  });
+  const vaultBalanceInfo = useVaultBalanceInfo(currentVault);
+  const previewMintAmount = usePreviewMintAmount(currentVault, mintAmount);
+  const previewBurnAmount = usePreviewBurnAmount(currentVault, burnAmount);
+  const currentVaultName = useVaultName(currentVault);
 
   // mint strategy vault token
-  const { write: depositWrite } = useContractWrite({
-    mode: "recklesslyUnprepared",
-    address: currentVault,
-    abi: StrategyVaultABI,
-    functionName: "deposit",
-    overrides: {
-      value: ethers.utils.parseEther(mintAmount?.toString()),
-    },
-    onSuccess(data) {
-      setMintAmount(0);
-    },
+  const depositWrite = useVaultDeposit(currentVault, mintAmount, () => {
+    // Success callback function
+    setMintAmount(0);
   });
 
-  // burn strategy vault token
-  const { write: withdrawWrite } = useContractWrite({
-    mode: "recklesslyUnprepared",
-    address: currentVault,
-    abi: StrategyVaultABI,
-    functionName: "withdraw",
-    args: [ethers.utils.parseEther(burnAmount.toString())],
-    onMutate(data) {
-      console.log("withdraw mutate", data);
-      setAlertMessageList([...alertMessageList, "Burning..."]);
-    },
-    onSuccess(data) {
-      setBurnAmount(0);
-      setAlertMessageList([
-        ...alertMessageList,
-        "Successfully burned vault tokens",
-      ]);
-    },
-    onError(data) {
-      console.log("withdraw error", data);
-      setAlertMessageList([...alertMessageList, "Error burning vault tokens!"]);
-    },
-  });
-
-  // vault balance info
-  useContractRead({
-    address: currentVault,
-    abi: StrategyVaultABI,
-    functionName: "getVaultBalanceInfo",
-    args: [],
-    onSuccess(data) {
-      console.log("getVaultBalanceInfo", currentVault, data);
-      setVaultBalanceInfo(data);
-    },
-    watch: true,
-  });
-
-  // preview gas deposit when mint vault token
-  useContractRead({
-    address: currentVault,
-    abi: StrategyVaultABI,
-    functionName: "previewDeposit",
-    args: [ethers.utils.parseEther(mintAmount.toString())],
-    onSuccess(data) {
-      console.log("preview", +ethers.utils.formatEther(data));
-      setPreviewMintAmount(+ethers.utils.formatEther(data));
-    },
-  });
-
-  // preview gas withdraw when burn vault token
-  useContractRead({
-    address: currentVault,
-    abi: StrategyVaultABI,
-    functionName: "previewWithdraw",
-    args: [ethers.utils.parseEther(burnAmount.toString())],
-    onSuccess(data) {
-      setPreviewBurnAmount(+ethers.utils.formatEther(data));
-    },
-  });
-
-  // vault token name
-  useContractRead({
-    address: currentVault,
-    abi: IERC20MetadataABI,
-    functionName: "name",
-    args: [],
-    onSuccess(data) {
-      setCurrentVaultName(data);
-    },
-  });
-
-  // vault performance
-  useContractRead({
-    address: currentVault,
-    abi: StrategyVaultABI,
-    functionName: "getVaultPerformance",
-    args: [],
-    onError(data) {
-      console.log("getVaultPerformance", data);
-    },
-    onSuccess(data) {
-      console.log("getVaultPerformance", data);
-      setCurrentVaultPerformance(data);
-    },
-    watch: true,
+  const withdrawWrite = useVaultWithdraw(currentVault, burnAmount, () => {
+    setBurnAmount(0);
   });
 
   /* handle callback */
@@ -249,10 +102,7 @@ const VaultCard = () => {
 
   /* useEffect */
   useEffect(() => {
-    // set nativeGas for current network
     setNativeGas(contractAddresses[activeChain?.network]?.nativeGas);
-
-    // set bin total
   }, [activeChain]);
 
   return (
@@ -335,12 +185,20 @@ const VaultCard = () => {
           {/* Left */}
           <div className="w-full md:w-[50%] flex flex-col gap-3">
             <div className="w-full">
-              <button
-                className="border-[1px] border-black shadow-db pt-1 font-fancy bg-db-cyan-process h-10 w-full rounded-lg text-lg text-white hover:bg-db-blue-200"
-                onClick={depositWrite}
+              <DBButton
+                disabled={mintAmount === 0}
+                onClickCallback={() => {
+                  if (depositWrite.transaction.write) {
+                    depositWrite.transaction.write();
+                  }
+                }}
               >
-                Mint
-              </button>
+                {depositWrite.confirmation.isLoading ? (
+                  <Loader text="Depositing" />
+                ) : (
+                  "Deposit"
+                )}
+              </DBButton>
             </div>
             <div className="flex items-center w-full">
               <div className="pt-1 px-5 text-center font-fancy text-xl text-db-cyan-process font-bold">
@@ -377,25 +235,33 @@ const VaultCard = () => {
           <div className="flex h-0.5 w-full bg-db-cyan-process md:hidden justify-center"></div>
           <div className="w-full md:w-1/2 flex flex-col gap-3">
             <div className="w-full">
-              <button
-                className="border-[1px] border-black shadow-db bg-db-cyan-process h-10 w-full rounded-lg text-lg text-white hover:bg-db-blue-200"
-                onClick={withdrawWrite}
+              <DBButton
+                disabled={burnAmount === 0}
+                onClick={() => {
+                  if (withdrawWrite.transaction.write) {
+                    withdrawWrite.transaction.write();
+                  }
+                }}
               >
                 <div className="flex gap-2 items-center justify-center">
-                  <div className="pt-1 font-fancy">
-                    {queuedAmount > 0 && burnAmount > 0
-                      ? `Claim queued\xa0 & \xa0burn`
-                      : queuedAmount > 0
-                      ? `Claim queued`
-                      : `Burn`}
+                  <div className="font-fancy">
+                    {queuedAmount > 0 && burnAmount > 0 ? (
+                      `Claim queued\xa0 & \xa0burn`
+                    ) : queuedAmount > 0 ? (
+                      `Claim queued`
+                    ) : withdrawWrite.confirmation.isLoading ? (
+                      <Loader text="Burning" />
+                    ) : (
+                      "Burn"
+                    )}
                   </div>
-                  <div className="text-sm">
+                  <div className="pb-1 font-sans text-sm leading-none">
                     {trimNumber(queuedAmount, 4, "dp")} {nativeGas} (
                     {epochEndTime >= Date.now() ? "queued for " : "claim now"}
                     <CountdownFormatted ms={epochEndTime} />)
                   </div>
                 </div>
-              </button>
+              </DBButton>
             </div>
             <div className="flex items-center w-full">
               <div className="pt-1 px-5 text-center font-fancy text-xl text-db-cyan-process font-bold">

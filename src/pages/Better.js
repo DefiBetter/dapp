@@ -1,14 +1,5 @@
-import {
-  useContractRead,
-  usePrepareContractWrite,
-  useContractWrite,
-  erc20ABI,
-  useWaitForTransaction,
-  useAccount,
-  useNetwork,
-  useContractReads,
-} from "wagmi";
-import { useCallback, useContext, useEffect, useRef, useState } from "react";
+import { useNetwork } from "wagmi";
+import { useEffect, useRef, useState } from "react";
 
 import { contractAddresses } from "../static/contractAddresses";
 import { ethers } from "ethers";
@@ -18,26 +9,22 @@ import Bins from "../components/Better/Bins";
 import Epoch from "../components/Better/Epoch";
 import Pair from "../components/Better/Pair";
 import Chart from "../components/Chart/Chart";
-import Navbar from "../components/Navbar/Navbar";
-import styles from "./Better.module.css";
 import { Container } from "../components/common/container/Container";
-import AppContainer from "../components/common/container/AppContainer";
-
+import useInstruments from "../hooks/useInstruments";
 // ABIs
 import DeFiBetterV1ABI from "../static/ABI/DeFiBetterV1ABI.json";
-import AggregatorV3InterfaceABI from "../static/ABI/AggregatorV3InterfaceABI.json";
-import Connect from "../components/common/Connect";
 import ContentLoader from "react-content-loader";
-import AlertContext from "../context/AlertContext";
 import Stats from "../components/Better/Stats";
+import useInstrumentBySelector from "../hooks/useInstrumentBySelector";
+import useEpochData from "../hooks/useEpochData";
+import useUserPendingBetterBalance from "../hooks/useUserPendingBetterBalance";
+import useUserPositionValueForInstrument from "../hooks/useUserPositionValueForInstrument";
+import useRewardPeriodInfo from "../hooks/useRewardPeriodInfo";
+import useUserGainsInfo from "../hooks/useUserGainsInfo";
 
 function Better() {
-  const [alertMessageList, setAlertMessageList] = useContext(AlertContext);
-
   /* account, network, configs */
   // account
-  const { address: connectedAddress, isConnected } = useAccount();
-
   // network
   const { chain: activeChain } = useNetwork();
 
@@ -47,13 +34,11 @@ function Better() {
     abi: DeFiBetterV1ABI,
   };
 
-  const betterInterface = new ethers.utils.Interface(DeFiBetterV1ABI);
-
   /* states */
   // current instrument
-  const [instrumentList, setInstrumentList] = useState();
   const [instrumentSelector, setInstrumentSelector] = useState();
   const [instrument, setInstrument] = useState();
+  const [instrumentList, setInstrumentList] = useState();
 
   // epoch data
   const [epochData, setEpochData] = useState();
@@ -65,14 +50,6 @@ function Better() {
   const [binAmountList, setBinAmountList] = useState([0, 0, 0, 0, 0, 0, 0]);
   const [binTotal, setBinTotal] = useState(0);
 
-  // user data
-  const [pendingBetterBalance, setPendingBetterBalance] = useState(0);
-  const [userPosition, setUserPosition] = useState();
-  const [userGainsInfo, setUserGainsInfo] = useState();
-
-  // reward period info
-  const [rewardPeriodInfo, setRewardPeriodInfo] = useState();
-
   // better
   const [customFlatFee, setCustomFlatFee] = useState(10_000);
   const [customGainFee, setCustomGainFee] = useState(10_000);
@@ -82,147 +59,64 @@ function Better() {
 
   /* initial contract read/writes */
   // instrument list
-  useContractRead({
-    ...betterContractConfig,
-    functionName: "getInstruments",
-    onError(data) {},
-    onSuccess(data) {
-      // create mutable copy
-      let _data = [...data];
-      if (data.length > 0) {
-        // sort via underlyingDescription
-        _data = _data.sort((a, b) => {
-          const _a = a.underlyingDescription;
-          const _b = b.underlyingDescription;
-          return _a < _b ? -1 : _a > _b ? 1 : 0;
-          // possibly add time sort as well later
-        });
-        // set instrument list
-        setInstrumentList(_data);
-        // set default instrument
-        setInstrumentSelector(_data[0].selector);
-      }
-    },
+  useInstruments((data) => {
+    // create mutable copy
+    let _data = [...data];
+    if (data.length > 0) {
+      // sort via underlyingDescription
+      _data = _data.sort((a, b) => {
+        const _a = a.underlyingDescription;
+        const _b = b.underlyingDescription;
+        return _a < _b ? -1 : _a > _b ? 1 : 0;
+        // possibly add time sort as well later
+      });
+
+      setInstrumentList(_data);
+      // set default instrument
+      setInstrumentSelector(_data[0].selector);
+    }
   });
 
-  // instrument
   const {
     refetch: getInstrumentBySelectorRefetch,
     isRefetching: getInstrumentBySelectorIsRefetching,
-  } = useContractRead({
-    ...betterContractConfig,
-    functionName: "getInstrumentBySelector",
-    args: [instrumentSelector],
-    onError(data) {},
-    onSuccess(data) {
-      console.log("getInstrumentBySelector", data);
-      if (!instrument) {
+  } = useInstrumentBySelector(instrumentSelector, (data) => {
+    if (!instrument) {
+      setInstrument(data);
+    }
+
+    if (data.selector === instrument.selector) {
+      if (data.epoch !== instrument.epoch) {
         setInstrument(data);
       }
-
-      if (data.selector === instrument.selector) {
-        if (data.epoch !== instrument.epoch) {
-          setInstrument(data);
-        }
+    }
+    // Setting the retrieved instrument in the instrument List to update timers
+    const tmpInstrumentList = instrumentList;
+    for (let index = 0; index < tmpInstrumentList.length; index++) {
+      if (tmpInstrumentList[index].selector === data.selector) {
+        tmpInstrumentList[index] = data;
       }
-
-      // Setting the retrieved instrument in the instrument List to update timers
-      const tmpInstrumentList = instrumentList;
-      for (let index = 0; index < tmpInstrumentList.length; index++) {
-        if (tmpInstrumentList[index].selector === data.selector) {
-          tmpInstrumentList[index] = data;
-        }
-      }
-      setInstrumentList(tmpInstrumentList);
-    },
+    }
+    setInstrumentList(tmpInstrumentList);
   });
-
-  let interval = useRef(null);
-  useEffect(() => {
-    interval.current = setInterval(getInstrumentBySelectorRefetch, 10000);
-    return () => {
-      clearInterval(interval.current);
-    };
-  }, []);
-
-  // epoch data for currently selected instrument
-  useContractRead({
-    ...betterContractConfig,
-    functionName: "getEpochData",
-    args: [instrument?.epoch, instrument?.selector],
-    onSuccess(data) {
-      setEpochData(data);
-      console.log("getEpochData", data);
-      setNormalisedBinValueList(
-        data.binValues.map((v, i, binValues) => {
-          const b = binValues.map((vv) => Number(ethers.utils.formatEther(vv)));
-          return Math.max(...b) - 0 == 0
-            ? 0
-            : (Number(ethers.utils.formatEther(v)) - 0) / (Math.max(...b) - 0);
-        })
-      );
-    },
-    watch: true,
+  useEpochData(instrument, (data) => {
+    setEpochData(data);
+    setNormalisedBinValueList(
+      data.binValues.map((v, i, binValues) => {
+        const b = binValues.map((vv) => Number(ethers.utils.formatEther(vv)));
+        return Math.max(...b) - 0 === 0
+          ? 0
+          : (Number(ethers.utils.formatEther(v)) - 0) / (Math.max(...b) - 0);
+      })
+    );
   });
-
-  // user pending rewards
-  useContractRead({
-    ...betterContractConfig,
-    functionName: "getUserPendingBetterBalance",
-    args: [connectedAddress, customGainFee],
-    onSuccess(data) {
-      setPendingBetterBalance((+ethers.utils.formatEther(data))?.toFixed(18));
-    },
-    onError(data) {},
-    watch: true,
-  });
-
-  // user positions
-  useContractRead({
-    ...betterContractConfig,
-    functionName: "getUserPositionValueForInstrument",
-    args: [
-      connectedAddress,
-      instrument?.selector,
-      instrument?.epoch,
-      10000,
-      10000,
-      binAmountList,
-    ],
-    onSuccess(data) {
-      setUserPosition(data);
-    },
-    onError(data) {},
-    watch: true,
-  });
-
-  // reward period info
-  useContractRead({
-    ...betterContractConfig,
-    functionName: "rewardPeriodInfo",
-    args: [],
-    onError(data) {},
-    onSuccess(data) {
-      console.log("rewardPeriodInfo", data);
-      setRewardPeriodInfo(data);
-    },
-    watch: true,
-  });
-
-  // user gains info
-  useContractRead({
-    ...betterContractConfig,
-    functionName: "getUserGainsInfo",
-    args: [connectedAddress],
-    onError(data) {
-      // console.log("getUserGainsInfo error", data);
-    },
-    onSuccess(data) {
-      console.log("getUserGainsInfo", connectedAddress, data);
-      setUserGainsInfo(data);
-    },
-    watch: true,
-  });
+  const pendingBetterBalance = useUserPendingBetterBalance(customGainFee);
+  const userPosition = useUserPositionValueForInstrument(
+    instrument,
+    binAmountList
+  );
+  const rewardPeriodInfo = useRewardPeriodInfo();
+  const userGainsInfo = useUserGainsInfo();
 
   /* useEffect */
   useEffect(() => {
@@ -231,6 +125,14 @@ function Better() {
 
     // set bin total
   }, [activeChain]);
+
+  let interval = useRef(null);
+  useEffect(() => {
+    interval.current = setInterval(getInstrumentBySelectorRefetch, 10000);
+    return () => {
+      clearInterval(interval.current);
+    };
+  }, []);
 
   /* some extra details for dynamic calc
   max-width: 1219.2
