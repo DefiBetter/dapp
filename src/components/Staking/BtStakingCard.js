@@ -1,7 +1,6 @@
 import { InputNumber } from "../common/Input";
-import { ethers } from "ethers";
-import { useContext, useState } from "react";
-import { useAccount, useNetwork } from "wagmi";
+import { useState } from "react";
+import { useNetwork } from "wagmi";
 import { contractAddresses } from "../../static/contractAddresses";
 
 import { trimNumber } from "../common/helper";
@@ -35,18 +34,14 @@ const BtStakingCard = (props) => {
   );
 
   const stakeBtWrite = useStakeBT(btAmount, () => {
-    console.log("stake success callback");
     setBtAmount(0);
   });
 
   const unstakeBtWrite = useUnstakeBT(btAmount, () => {
-    console.log("unstakke success callback");
     setBtAmount(0);
   });
 
-  const claimBtWrite = useClaimBT(() => {
-    console.log("claim success callback");
-  });
+  const claimBtWrite = useClaimBT();
 
   const userStaked = useUserBTStake();
 

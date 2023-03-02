@@ -13,6 +13,7 @@ import { ethers } from "ethers";
 import BtPresaleABI from "../static/ABI/BtPresaleABI.json";
 import { CountdownFormatted, trimNumber } from "../components/common/helper";
 import useWethPrice from "../hooks/useWethPrice";
+import { ToastStatus, useToast } from "../context/ToastContext";
 
 function CommunityPresale() {
   const { address: connectedAddress } = useAccount();
@@ -40,6 +41,7 @@ function CommunityPresale() {
 
   const wethPrice = useWethPrice();
 
+  const toastContext = useToast();
   // current price
   useContractRead({
     ...communityPresaleContractConfig,
@@ -95,6 +97,13 @@ function CommunityPresale() {
       communityPresaleContractConfig.address,
       ethers.constants.MaxUint256.sub("1"),
     ],
+    onError(error) {
+      console.error(error);
+      toastContext.addToast(ToastStatus.Failed, "Failed to approve", null);
+    },
+    onSuccess() {
+      toastContext.addToast(ToastStatus.Success, "Successfuly approved", null);
+    },
   });
 
   // get allowance
@@ -115,11 +124,12 @@ function CommunityPresale() {
     mode: "recklesslyUnprepared",
     functionName: "buy",
     args: [buyAmount],
-    onError(data) {
-      console.log("buy error", data);
+    onError(error) {
+      console.error(error);
+      toastContext.addToast(ToastStatus.Failed, "Failed to buy", null);
     },
-    onSuccess(data) {
-      console.log("bought", data);
+    onSuccess() {
+      toastContext.addToast(ToastStatus.Success, "Successfuly bought", null);
     },
   });
 

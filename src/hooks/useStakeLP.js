@@ -26,6 +26,14 @@ export default function useStakeLP(poolId, lpAmount, onSuccessCallback) {
   const confirmation = useWaitForTransaction({
     confirmations: 2,
     hash: transaction.data?.hash,
+    onError(error) {
+      console.error(error);
+      toastContext.addToast(
+        ToastStatus.Failed,
+        "Failed to stake LP",
+        transaction.data?.hash
+      );
+    },
     onSuccess() {
       toastContext.addToast(
         ToastStatus.Success,
@@ -33,11 +41,6 @@ export default function useStakeLP(poolId, lpAmount, onSuccessCallback) {
         transaction.data?.hash
       );
       onSuccessCallback();
-    },
-    onError(error) {
-      console.log("[useStakeLP] error:");
-      console.error(error);
-      // TODO: Add toast
     },
   });
   return { confirmation, transaction };

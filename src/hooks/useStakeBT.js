@@ -8,10 +8,11 @@ import {
 import { ethers } from "ethers";
 import BtStakingABI from "../static/ABI/BtStakingABI.json";
 import { contractAddresses } from "../static/contractAddresses";
+import { ToastStatus, useToast } from "../context/ToastContext";
 
 export default function useStakeBT(btAmount, onSuccessCallback) {
   const { chain } = useNetwork();
-
+  const toastContext = useToast()
   const preparation = usePrepareContractWrite({
     address: contractAddresses[chain?.network]?.btStaking,
     abi: BtStakingABI,
@@ -23,12 +24,21 @@ export default function useStakeBT(btAmount, onSuccessCallback) {
   const confirmation = useWaitForTransaction({
     confirmations: 2,
     hash: transaction.data?.hash,
-    onSuccess() {
-      // TODO: Add toast
-      onSuccessCallback();
-    },
     onError(error) {
-      // TODO: Add toast
+      console.error(error);
+      toastContext.addToast(
+        ToastStatus.Failed,
+        "Failed to stake BT",
+        transaction.data?.hash
+      );
+    },
+    onSuccess() {
+      toastContext.addToast(
+        ToastStatus.Success,
+        "Successfuly staked BT",
+        transaction.data?.hash
+      );
+      onSuccessCallback();
     },
   });
   return { confirmation, transaction };

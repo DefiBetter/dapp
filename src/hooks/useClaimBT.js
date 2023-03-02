@@ -6,9 +6,11 @@ import {
 } from "wagmi";
 import BtStakingABI from "../static/ABI/BtStakingABI.json";
 import { contractAddresses } from "../static/contractAddresses";
+import { ToastStatus, useToast } from "../context/ToastContext";
 
-export default function useClaimBT(onSuccessCallback) {
+export default function useClaimBT() {
   const { chain } = useNetwork();
+  const toastContext = useToast();
 
   const preparation = usePrepareContractWrite({
     address: contractAddresses[chain?.network]?.btStaking,
@@ -20,12 +22,20 @@ export default function useClaimBT(onSuccessCallback) {
   const confirmation = useWaitForTransaction({
     confirmations: 2,
     hash: transaction.data?.hash,
-    onSuccess() {
-      // TODO: Add toast
-      onSuccessCallback();
-    },
     onError(error) {
-      // TODO: Add toast
+      console.error(error);
+      toastContext.addToast(
+        ToastStatus.Failed,
+        "Failed to claim",
+        transaction.data?.hash
+      );
+    },
+    onSuccess() {
+      toastContext.addToast(
+        ToastStatus.Success,
+        "Successfuly claimed",
+        transaction.data?.hash
+      );
     },
   });
   return { confirmation, transaction };

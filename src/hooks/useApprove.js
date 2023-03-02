@@ -5,16 +5,20 @@ import {
   useWaitForTransaction,
 } from "wagmi";
 import { ethers } from "ethers";
+import { useToast } from "../context/ToastContext";
+import { ToastStatus } from "../context/ToastContext";
 
 export default function useApprove(token, contractAddress) {
+  const toastContext = useToast();
+
   const preparation = usePrepareContractWrite({
     address: token,
     abi: IERC20MetadataABI,
     functionName: "approve",
     args: [contractAddress, ethers.constants.MaxUint256.sub("1").toString()],
     onError(error) {
-      console.error(error)
-    }, 
+      console.error(error);
+    },
   });
 
   const transaction = useContractWrite(preparation.config);
@@ -22,10 +26,19 @@ export default function useApprove(token, contractAddress) {
     confirmations: 2,
     hash: transaction.data?.hash,
     onSuccess() {
-      // TODO: Add toast
+      toastContext.addToast(
+        ToastStatus.Success,
+        "Successfuly approved",
+        transaction.data?.hash
+      );
     },
     onError(error) {
-      // TODO: Add toast
+      console.error(error);
+      toastContext.addToast(
+        ToastStatus.Failed,
+        "Failed to approve",
+        transaction.data?.hash
+      );
     },
   });
   return { preparation, confirmation, transaction };

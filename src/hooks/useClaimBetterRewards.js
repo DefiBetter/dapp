@@ -3,21 +3,15 @@ import {
   usePrepareContractWrite,
   useWaitForTransaction,
 } from "wagmi";
-import { ethers } from "ethers";
-import StrategyVaultABI from "../static/ABI/StrategyVaultABI.json";
-import { useToast } from "../context/ToastContext";
-import { ToastStatus } from "../context/ToastContext";
+import { ToastStatus, useToast } from "../context/ToastContext";
 
-export default function useVaultDeposit(vault, amount, onSuccessCallback) {
+export default function useClaimBetterRewards(props) {
   const toastContext = useToast();
+
   const preparation = usePrepareContractWrite({
-    address: vault,
-    abi: StrategyVaultABI,
-    functionName: "deposit",
-    enabled: amount > 0,
-    overrides: {
-      value: amount ? ethers.utils.parseEther(amount.toString()) : "0",
-    },
+    ...props.betterContractConfig,
+    functionName: "claimBetterRewards",
+    args: [props.customGainFee],
   });
 
   const transaction = useContractWrite(preparation.config);
@@ -28,17 +22,16 @@ export default function useVaultDeposit(vault, amount, onSuccessCallback) {
       console.error(error);
       toastContext.addToast(
         ToastStatus.Failed,
-        "Failed to deposit",
+        "Failed to claim",
         transaction.data?.hash
       );
     },
     onSuccess() {
       toastContext.addToast(
         ToastStatus.Success,
-        "Successfuly deposited",
+        "Successfuly claimed",
         transaction.data?.hash
       );
-      onSuccessCallback();
     },
   });
   return { confirmation, transaction };

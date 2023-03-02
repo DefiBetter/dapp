@@ -8,9 +8,11 @@ import {
 import { ethers } from "ethers";
 import LpStakingABI from "../static/ABI/LpStakingABI.json";
 import { contractAddresses } from "../static/contractAddresses";
+import { ToastStatus, useToast } from "../context/ToastContext";
 
 export default function useUnstakeLP(poolId, lpAmount, onSuccessCallback) {
   const { chain } = useNetwork();
+  const toastContext = useToast()
 
   const preparation = usePrepareContractWrite({
     address: contractAddresses[chain?.network]?.lpStaking,
@@ -23,12 +25,21 @@ export default function useUnstakeLP(poolId, lpAmount, onSuccessCallback) {
   const confirmation = useWaitForTransaction({
     confirmations: 2,
     hash: transaction.data?.hash,
-    onSuccess() {
-      // TODO: Add toast
-      onSuccessCallback();
-    },
     onError(error) {
-      // TODO: Add toast
+      console.error(error);
+      toastContext.addToast(
+        ToastStatus.Failed,
+        "Failed to stake LP",
+        transaction.data?.hash
+      );
+    },
+    onSuccess() {
+      toastContext.addToast(
+        ToastStatus.Success,
+        "Successfuly staked LP",
+        transaction.data?.hash
+      );
+      onSuccessCallback();
     },
   });
   return { confirmation, transaction };
