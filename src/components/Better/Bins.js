@@ -4,7 +4,6 @@ import { useNetwork } from "wagmi";
 import { ethers } from "ethers";
 import { contractAddresses } from "../../static/contractAddresses";
 import { trimNumber } from "../common/helper";
-import AlertContext from "../../context/AlertContext";
 import { AiOutlineDoubleLeft, AiOutlineDoubleRight } from "react-icons/ai";
 import DBButton from "../common/DBButton";
 
@@ -53,8 +52,6 @@ const Bins = (props) => {
   //   },
   // });
 
-  const [alertMessageList, setAlertMessageList] = useContext(AlertContext);
-
   /* handle on input */
   const onInput = (e) => {
     let temp = [...props.binAmountList];
@@ -66,7 +63,7 @@ const Bins = (props) => {
 
   /* handle normal/implied button */
   const handleOnClickNormal = () => {
-    setAlertMessageList([...alertMessageList, "'Normal' button clicked"]);
+    //setAlertMessageList([...alertMessageList, "'Normal' button clicked"]);
     const range = (x) => [...Array(x).keys()];
 
     function getBinWeights(i) {

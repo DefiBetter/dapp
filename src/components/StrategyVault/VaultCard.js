@@ -12,11 +12,8 @@ import {
   trimNumber,
 } from "../common/helper";
 import { InputNumber } from "../common/Input";
-import IERC20MetadataABI from "../../static/ABI/IERC20MetadataABI.json";
-import StrategyVaultABI from "../../static/ABI/StrategyVaultABI.json";
 
-import { useContractRead, useNetwork } from "wagmi";
-import AlertContext from "../../context/AlertContext";
+import { useNetwork } from "wagmi";
 import useInstruments from "../../hooks/useInstruments";
 import useVaults from "../../hooks/useVaults";
 import useNativeBalance from "../../hooks/useNativeBalance";
@@ -27,14 +24,12 @@ import useVaultBalanceInfo from "../../hooks/useVaultBalanceInfo";
 import usePreviewMintAmount from "../../hooks/usePreviewMintAmount";
 import usePreviewBurnAmount from "../../hooks/usePreviewBurnAmount";
 import useVaultName from "../../hooks/useVaultName";
-import useVaultPerformance from "../../hooks/useVaultPerformance";
 import DBButton from "../common/DBButton";
 
 const VaultCard = () => {
   /* global hooks */
   const { chain: activeChain } = useNetwork();
   const [nativeGas, setNativeGas] = useState();
-  const [alertMessageList, setAlertMessageList] = useContext(AlertContext);
 
   /* constants */
   // contract config

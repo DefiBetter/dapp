@@ -1,11 +1,8 @@
 import { ethers } from "ethers";
 import { usePrepareContractWrite, useContractWrite } from "wagmi";
-import { useContext } from "react";
-import AlertContext from "../../context/AlertContext";
 import DBButton from "../common/DBButton";
 
 const Action = (props) => {
-  const [alertMessageList, setAlertMessageList] = useContext(AlertContext);
 
   // open position
   let { write: depositWrite } = useContractWrite({
@@ -30,21 +27,21 @@ const Action = (props) => {
         ),
       },
       onError(data) {
-        setAlertMessageList([...alertMessageList, JSON.stringify(data)]);
+        // setAlertMessageList([...alertMessageList, JSON.stringify(data)]);
         console.log("openPosition error", data);
         console.log("openPosition pending", props.pendingBetterBalance);
         console.log("openPosition binTotal", props.binTotal);
       },
       onSuccess(data) {
         console.log("openPosition", data);
-        setAlertMessageList([
-          ...alertMessageList,
-          `Successfully deposited ${props.binAmountList.reduce(
-            (a, b) => a + b
-          )} in Epoch ${
-            props.instrument.epoch
-          } at ${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString()}`,
-        ]);
+        // setAlertMessageList([
+        //   ...alertMessageList,
+        //   `Successfully deposited ${props.binAmountList.reduce(
+        //     (a, b) => a + b
+        //   )} in Epoch ${
+        //     props.instrument.epoch
+        //   } at ${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString()}`,
+        // ]);
         props.setBinAmountList([0, 0, 0, 0, 0, 0, 0]);
         props.setBinTotal(0);
       },
@@ -74,13 +71,12 @@ const Action = (props) => {
         {Date.now() / 1000 >
         +props.instrument.lastEpochClosingTime.toString() +
           +props.instrument.epochDurationInSeconds.toString() ? (
-          <DBButton
-            disabled
-            className="flex justify-center text-lg items-center gap-2 border-[1px] border-black shadow-db bg-db-cyan-process h-10 w-full rounded-lg text-white hover:bg-db-blue-200"
-          >
-            <div className="font-fancy pt-1 ">Deposit</div>
-            <div className="text-sm pb-0.5 border-[1px] border-white rounded-full w-4 h-4 flex justify-center items-center">
-              i
+          <DBButton disabled>
+            <div className="flex justify-center items-center gap-2">
+              <div className="font-fancy pt-1 ">Deposit</div>
+              <div className="font-sans text-sm pb-0.5 border-[1px] border-white rounded-full w-4 h-4 flex justify-center items-center">
+                i
+              </div>
             </div>
           </DBButton>
         ) : (

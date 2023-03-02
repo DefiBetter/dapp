@@ -14,6 +14,8 @@ import useNativeBalance from "../../hooks/useNativeBalance";
 import Loader from "../common/Loader";
 import useUserLPStake from "../../hooks/useUserLPStake";
 import DBButton from "../../components/common/DBButton";
+import { ToastStatus, useToast } from "../../context/ToastContext";
+
 const LpStakingCard = (props) => {
   const { chain: activeChain } = useNetwork();
   /* constants */
@@ -58,6 +60,8 @@ const LpStakingCard = (props) => {
   const userLPBalance = useBalanceOf(
     contractAddresses[activeChain?.network]?.lpToken
   );
+
+  const toastContext = useToast();
 
   /* handle callback */
   // lp staking
