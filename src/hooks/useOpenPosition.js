@@ -3,20 +3,30 @@ import {
   usePrepareContractWrite,
   useWaitForTransaction,
 } from "wagmi";
+import { ToastStatus, useToast } from "../context/ToastContext";
 import { ethers } from "ethers";
-import StrategyVaultABI from "../static/ABI/StrategyVaultABI.json";
-import { useToast } from "../context/ToastContext";
-import { ToastStatus } from "../context/ToastContext";
 
-export default function useVaultDeposit(vault, amount, onSuccessCallback) {
+export default function useOpenPosition(props, onSuccessCallback) {
   const toastContext = useToast();
+
   const preparation = usePrepareContractWrite({
-    address: vault,
-    abi: StrategyVaultABI,
-    functionName: "deposit",
-    enabled: amount > 0,
+    ...props.betterContractConfig,
+    functionName: "openPosition",
+    args: [
+      props.instrument.selector,
+      props.customFlatFee,
+      props.customGainFee,
+      props.binAmountList.map((bin) => {
+        return ethers.utils.parseEther(bin.toString());
+      }),
+    ],
     overrides: {
-      value: amount ? ethers.utils.parseEther(amount.toString()) : "0",
+      value: ethers.utils.parseEther(
+        (props.binTotal >= props.pendingBetterBalance
+          ? props.binTotal - props.pendingBetterBalance
+          : 0
+        ).toString()
+      ),
     },
   });
 
@@ -28,14 +38,14 @@ export default function useVaultDeposit(vault, amount, onSuccessCallback) {
       console.error(error);
       toastContext.addToast(
         ToastStatus.Failed,
-        "Failed to deposit",
+        "Failed to open position",
         transaction.data?.hash
       );
     },
     onSuccess() {
       toastContext.addToast(
         ToastStatus.Success,
-        "Successfuly deposited",
+        "Successfuly opened position",
         transaction.data?.hash
       );
       onSuccessCallback();

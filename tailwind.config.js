@@ -19,6 +19,38 @@ module.exports = {
       boxShadow: {
         db: "2px 2px 0px 0px rgba(0,0,0,0.25)",
       },
+      keyframes: {
+        "toast-slider": {
+          "0%": {
+            width: "0%",
+          },
+          "100%": {
+            width: "100%",
+          },
+        },
+        toast: {
+          "0%": {
+            transform: "translate(-500px)",
+            opacity: 0,
+          },
+          "3%": {
+            transform: "translate(0px)",
+            opacity: 1,
+          },
+          "97%": {
+            transform: "translate(0px)",
+            opacity: 1,
+          },
+          "100%": {
+            transform: "translate(-500px)",
+            opacity: 1,
+          },
+        },
+      },
+      animation: {
+        toast: "toast 5500ms linear",
+        "toast-slider": "toast-slider 5000ms linear",
+      },
     },
   },
   plugins: [],

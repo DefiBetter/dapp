@@ -13,6 +13,7 @@ import { ethers } from "ethers";
 
 import { CountdownFormatted, trimNumber } from "../components/common/helper";
 import useWethPrice from "../hooks/useWethPrice";
+import { ToastStatus, useToast } from "../context/ToastContext";
 
 function VcPresale() {
   const { address: connectedAddress } = useAccount();
@@ -40,6 +41,8 @@ function VcPresale() {
   const [currentPrice, setCurrentPrice] = useState(0);
 
   const wethPrice = useWethPrice();
+
+  const toastContext = useToast();
 
   // current price
   useContractRead({
@@ -88,6 +91,7 @@ function VcPresale() {
   });
 
   // approve
+  console.log('vcPresaleContractConfig.address = ' + vcPresaleContractConfig.address)
   const { write: approvePaymentTokenWrite } = useContractWrite({
     address: paymentToken,
     abi: IERC20MetadataABI,
@@ -97,6 +101,13 @@ function VcPresale() {
       vcPresaleContractConfig.address,
       ethers.constants.MaxUint256.sub("1"),
     ],
+    onError(error) {
+      console.error(error);
+      toastContext.addToast(ToastStatus.Failed, "Failed to approve", null);
+    },
+    onSuccess() {
+      toastContext.addToast(ToastStatus.Success, "Successfuly approved", null);
+    },
   });
 
   // get allowance
@@ -117,11 +128,12 @@ function VcPresale() {
     mode: "recklesslyUnprepared",
     functionName: "buy",
     args: [buyAmount],
-    onError(data) {
-      console.log("buy error", data);
+    onError(error) {
+      console.error(error);
+      toastContext.addToast(ToastStatus.Failed, "Failed to buy", null);
     },
-    onSuccess(data) {
-      console.log("bought", data);
+    onSuccess() {
+      toastContext.addToast(ToastStatus.Success, "Successfuly bought", null);
     },
   });
 

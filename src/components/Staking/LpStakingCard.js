@@ -14,6 +14,7 @@ import useNativeBalance from "../../hooks/useNativeBalance";
 import Loader from "../common/Loader";
 import useUserLPStake from "../../hooks/useUserLPStake";
 import DBButton from "../../components/common/DBButton";
+
 const LpStakingCard = (props) => {
   const { chain: activeChain } = useNetwork();
   /* constants */
@@ -32,18 +33,14 @@ const LpStakingCard = (props) => {
   );
 
   const stakeLpWrite = useStakeLP(0, lpAmount, () => {
-    console.log("stake success callback");
     setLpAmount(0);
   });
 
   const unstakeLpWrite = useUnstakeLP(0, lpAmount, () => {
-    console.log("unstakke success callback");
     setLpAmount(0);
   });
 
-  const claimLpWrite = useClaimLP(0, () => {
-    console.log("claim success callback");
-  });
+  const claimLpWrite = useClaimLP(0)
 
   const userStaked = useUserLPStake(0);
 
@@ -62,7 +59,6 @@ const LpStakingCard = (props) => {
   /* handle callback */
   // lp staking
   const handleLpAmount = (e) => {
-    console.log("handle lpAmount", e.target.value);
     setLpAmount(e.target.value ? e.target.value : 0);
   };
 
