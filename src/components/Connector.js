@@ -7,6 +7,7 @@ import StrategyVault from "../pages/StrategyVault";
 import AppContainer from "./common/container/AppContainer";
 import CommunityPresale from "../pages/CommunityPresale";
 import VcPresale from "../pages/VcPresale";
+import Dbmt from "../pages/Dbmt";
 
 function Connector() {
   return (
@@ -45,6 +46,14 @@ function Connector() {
           }
         />
 
+        <Route
+          path="/dbmt"
+          element={
+            <AppContainer>
+              <Dbmt />
+            </AppContainer>
+          }
+        />
         <Route
           path="/staking"
           element={

@@ -6,6 +6,7 @@ const ToastContext = createContext(null);
 export const ToastStatus = {
   Success: 0,
   Failed: 1,
+  Information: 2,
 };
 
 export const ToastProvider = ({ children }) => {
@@ -40,7 +41,7 @@ export const ToastProvider = ({ children }) => {
         addToast,
       }}
     >
-      <div className="fixed z-50 bottom-10 left-3 flex flex-col gap-2">
+      <div className="fixed z-50 bottom-16 left-3 flex flex-col gap-2">
         {toasts.map((toast) => (
           <Toast key={toast.hash} toast={toast} />
         ))}

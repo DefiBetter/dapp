@@ -34,6 +34,18 @@ const Navbar = () => {
                     onClick={() => setShowSideNavbar(false)}
                     to={
                       process.env.REACT_APP_PHASE === "PRODUCTION"
+                        ? "/dbmt"
+                        : "/"
+                    }
+                  >
+                    $DBMT
+                  </Link>
+                </div>
+                <div>
+                  <Link
+                    onClick={() => setShowSideNavbar(false)}
+                    to={
+                      process.env.REACT_APP_PHASE === "PRODUCTION"
                         ? "/staking"
                         : "/"
                     }
@@ -114,6 +126,17 @@ const Navbar = () => {
                     }
                   >
                     Better
+                  </Link>
+                </div>
+                <div>
+                  <Link
+                    to={
+                      process.env.REACT_APP_PHASE === "PRODUCTION"
+                        ? "/dbmt"
+                        : "/"
+                    }
+                  >
+                    $Dbmt
                   </Link>
                 </div>
                 <div>
