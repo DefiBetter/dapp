@@ -166,15 +166,15 @@ export default function Dbmt() {
   return (
     <>
       <div className="z-50 fixed left-0 bottom-0 w-full bg-gradient-to-r from-red-400 to-orange-500 flex justify-center items-center">
-        <div className="absolute left-2 lg:left-10">
+        <div className="absolute left-2 lg:left-44">
           <MdDoubleArrow size={30} className="text-white animate-slide-right" />
         </div>
-        <div className="absolute right-2 lg:right-10 rotate-180">
+        <div className="absolute right-2 lg:right-44 rotate-180">
           <MdDoubleArrow size={30} className="text-white animate-slide-right" />
         </div>
-        <div className="p-2 w-full text-white text-2xl flex justify-around flex-col sm:flex-row items-center">
+        <div className="p-2 w-full text-white text-2xl flex justify-center gap-2 md:gap-10 flex-col sm:flex-row items-center">
           <div>
-            <span className="font-bold">$DBMT</span> Sale Ends in
+            <span className="font-bold">$DBMT</span> Price increases in
           </div>
           <div className="font-bold text-3xl ">
             <CountdownFormatted ms={Date.now() + 999999999} />
@@ -182,43 +182,57 @@ export default function Dbmt() {
         </div>
       </div>
 
-      <div className="relative bg-db-background border-[3px] border-db-cyan-process mb-20 lg:mb-0">
-        <div className="p-4">
+      <div className="relative bg-db-background border-[3px] border-db-cyan-process mb-24 md:mb-14 lg:mb-14">
+        <div className="pb-5 px-4">
           <div className="relative shadow-db m-auto w-full md:w-1/2 mt-5 bg-white border-2 border-db-cyan-process rounded-2xl p-4">
             <div className="flex justify-center text-5xl">
               $DBMT
-              <span className="font-bold mt-7 font-fancy text-5xl text-orange-500">
+              <span className="font-bold mt-7 font-fancy text-5xl text-db-cyan-process">
                 Sale 💦
               </span>
             </div>
           </div>
 
-          <div className="relative z-10 flex flex-col gap-5 md:flex-row m-auto w-full xl:w-[80%] mt-5 p-4 bg-white border-2 border-db-cyan-process shadow-db">
+          <div className="relative z-10 flex flex-col gap-5 md:flex-row m-auto w-full mt-5 p-4 bg-white border-2 border-db-cyan-process shadow-db">
             <div className="p-2 bg-white w-full md:w-1/2">
-              <h2 className="font-bold">DeFiBetter Milestone Reward Program</h2>
-              <div className="flex-col">
-                <div className="flex items-center gap-2">
-                  💦 $DBMT is the first and possibly the most lucrative way to
+              <h2 className="font-bold text-xl">
+                DeFiBetter Milestone Reward Program
+              </h2>
+              <div className="flex-col mt-3 ml-3">
+                <div className="flex items-start gap-4">
+                  <span>💦</span>
+                  $DBMT is the first and possibly the most lucrative way to
                   profit from DeFiBetter's growth.
                 </div>
-                <div className="flex items-center gap-2">
-                  💦 The higher our cumulative volume gets over time, the more
-                  valuable your $DBMT becomes.
+                <div className="flex items-start gap-4">
+                  <span>💦</span> The higher our cumulative volume gets over
+                  time, the more valuable your $DBMT becomes.
                 </div>
-                <div className="flex items-center gap-2">
-                  💦 Burn your DBMT for a sizeable early reward or hold it, keep
-                  drawing attention to the protocol and watch your wealth grow
-                  exponentially!
+                <div className="flex items-start gap-4">
+                  <span>💦</span> Burn your DBMT for a sizeable early reward or
+                  hold it, keep drawing attention to the protocol and watch your
+                  wealth grow exponentially!
                 </div>
-                <div className="flex items-center gap-2">
-                  💦 The more people decide to burn, the higher the rewards for
-                  HODLers.
+                <div className="flex items-start gap-4">
+                  <span>💦</span> The more people decide to burn, the higher the
+                  rewards for HODLers.
                 </div>
-                <div className="flex items-center gap-2">
-                  💦 Secure an exclusive role in our Discord server for $DMBT
-                  holders, discuss ideas and strategies & get access to alpha
-                  earlier than everyone else.
+                <div className="flex items-start gap-4">
+                  <span>💦</span> Secure an exclusive role in our Discord server
+                  for $DMBT holders, discuss ideas and strategies & get access
+                  to alpha earlier than everyone else.
                 </div>
+              </div>
+              <div className='mt-3'>
+                Read more about how $DBMT works on our Medium page:{" "}
+                <a
+                  href="https://medium.com/@defibetter"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="text-db-cyan-process"
+                >
+                  https://medium.com/@defibetter
+                </a>
               </div>
             </div>
             <div className="w-full md:w-2/3 bg-white border-2 border-db-cyan-process rounded-2xl shadow-db ">
@@ -240,7 +254,7 @@ export default function Dbmt() {
                 </div>
               </div>
               <div className="p-4">
-                <div className="mt-4 flex flex-col lg:flex-row justify-between items-center gap-2">
+                <div className="flex flex-col lg:flex-row justify-between items-center gap-2">
                   <div className="flex justify-between w-full items-center">
                     <div className="flex-1 shadow-db text-center font-bold bg-db-french-sky p-3 border-[1px] border-black rounded-lg">
                       Time Left
@@ -260,7 +274,7 @@ export default function Dbmt() {
                   </div>
                 </div>
 
-                <div className="mt-3 flex items-center w-full">
+                <div className="mt-4 flex items-center w-full">
                   <div className="font-fancy text-db-cyan-process w-24 text-center text-xl pt-1">
                     buy
                   </div>
@@ -274,7 +288,7 @@ export default function Dbmt() {
                     </div>
                   </div>
                 </div>
-                <div className="mt-3 flex items-center w-full">
+                <div className="mt-4 flex items-center w-full">
                   <div className="font-fancy text-db-cyan-process w-24 text-center text-xl pt-1">
                     for
                   </div>
@@ -303,14 +317,14 @@ export default function Dbmt() {
                 ) ? (
                   <button
                     onClick={approvePaymentTokenWrite}
-                    className="mt-3 border-[1px] border-black shadow-db pt-1 font-fancy bg-db-cyan-process h-10 w-full rounded-lg text-lg text-white hover:bg-db-blue-200"
+                    className="mt-4 border-[1px] border-black shadow-db pt-1 font-fancy bg-db-cyan-process h-10 w-full rounded-lg text-lg text-white hover:bg-db-blue-200"
                   >
                     Approve
                   </button>
                 ) : (
                   <button
                     onClick={buyWrite}
-                    className="mt-3 border-[1px] border-black shadow-db pt-1 font-fancy bg-db-cyan-process h-10 w-full rounded-lg text-lg text-white hover:bg-db-blue-200"
+                    className="mt-4 border-[1px] border-black shadow-db pt-1 font-fancy bg-db-cyan-process h-10 w-full rounded-lg text-lg text-white hover:bg-db-blue-200"
                   >
                     Buy
                   </button>
@@ -320,7 +334,7 @@ export default function Dbmt() {
           </div>
         </div>
 
-        <div className="z-0 absolute h-60 bottom-10 right-[5%]">
+        <div className="z-0 absolute h-60 top-10 left-[2%] hidden md:block">
           <img
             alt="faucet"
             className="h-full z-0"
