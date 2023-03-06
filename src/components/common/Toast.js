@@ -6,6 +6,8 @@ const Toast = ({ toast }) => {
       return "bg-db-cyan-process";
     } else if (toast.status === ToastStatus.Failed) {
       return "bg-red-500";
+    } else if (toast.status === ToastStatus.Information) {
+      return "bg-orange-500";
     }
   }
 
@@ -14,6 +16,8 @@ const Toast = ({ toast }) => {
       return "bg-db-little-boy";
     } else if (toast.status === ToastStatus.Failed) {
       return "bg-red-500";
+    } else if (toast.status === ToastStatus.Information) {
+      return "bg-orange-500";
     }
   }
 
@@ -22,6 +26,8 @@ const Toast = ({ toast }) => {
       return "border-db-cyan-process";
     } else if (toast.status === ToastStatus.Failed) {
       return "border-red-500";
+    } else if (toast.status === ToastStatus.Information) {
+      return "border-orange-500";
     }
   }
 
@@ -30,6 +36,8 @@ const Toast = ({ toast }) => {
       return "Transaction Executed";
     } else if (toast.status === ToastStatus.Failed) {
       return "Transaction Failed";
+    } else if (toast.status === ToastStatus.Information) {
+      return "Information";
     }
   }
 
@@ -83,30 +91,32 @@ const Toast = ({ toast }) => {
             )}
             {toastTitle()}
           </p>
-          <div className="flex">
-            <a
-              className=" flex items-center gap-1 align-middle text-xs"
-              target="_blank"
-              rel="noreferrer"
-              href={`https://testnet.snowtrace.io/tx/${toast.hash}`}
-            >
-              <span className="text-xs text-white">View</span>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke-width="1.5"
-                stroke="white"
-                className="h-5 w-5"
+          {toast.hash && (
+            <div className="flex">
+              <a
+                className=" flex items-center gap-1 align-middle text-xs"
+                target="_blank"
+                rel="noreferrer"
+                href={`https://testnet.snowtrace.io/tx/${toast.hash}`}
               >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25"
-                />
-              </svg>
-            </a>
-          </div>
+                <span className="text-xs text-white">View</span>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke-width="1.5"
+                  stroke="white"
+                  className="h-5 w-5"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25"
+                  />
+                </svg>
+              </a>
+            </div>
+          )}
         </div>
         <div
           className={`absolute top-[36px] ${toastSliderColor()} animate-toast-slider w-full h-1`}

@@ -17,9 +17,7 @@ const Action = (props) => {
         {
           <DBButton
             onClick={() => {
-              if (depositWrite.transaction.write) {
-                depositWrite.transaction.write();
-              }
+              depositWrite.transaction.write();
             }}
             disabled={
               props.binTotal === 0 ||

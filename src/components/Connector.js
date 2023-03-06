@@ -7,6 +7,7 @@ import StrategyVault from "../pages/StrategyVault";
 import AppContainer from "./common/container/AppContainer";
 import CommunityPresale from "../pages/CommunityPresale";
 import VcPresale from "../pages/VcPresale";
+import Dbmt from "../pages/Dbmt";
 
 function Connector() {
   return (
@@ -19,6 +20,10 @@ function Connector() {
               {process.env.REACT_APP_PHASE === "PRODUCTION" ? (
                 <AppContainer>
                   <Better />
+                </AppContainer>
+              ) : process.env.REACT_APP_PHASE === "DBMT_SALE" ? (
+                <AppContainer>
+                  <Dbmt />
                 </AppContainer>
               ) : process.env.REACT_APP_PHASE === "PUBLIC_SALE" ? (
                 <AppContainer>

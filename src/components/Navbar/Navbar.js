@@ -10,7 +10,7 @@ const Navbar = () => {
   return (
     <div className="">
       {/* Mobile nav */}
-      <div className='md:hidden'>
+      <div className="md:hidden">
         <nav
           className={`${
             showSideNavbar ? "translate-x-0" : "-translate-x-full"
@@ -29,6 +29,7 @@ const Navbar = () => {
                     Better
                   </Link>
                 </div>
+
                 <div>
                   <Link
                     onClick={() => setShowSideNavbar(false)}
@@ -116,6 +117,7 @@ const Navbar = () => {
                     Better
                   </Link>
                 </div>
+
                 <div>
                   <Link
                     to={

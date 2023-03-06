@@ -69,7 +69,7 @@ export function WalletConnect() {
         <div className="z-50 absolute top-16 right-0">
           {connectors.map((connector) => (
             <button
-              className="z-50 border-[1px] border-black flex justify-center items-center bg-db-cyan-process h-10 rounded-lg text-lg w-36 text-white hover:bg-db-blue-200"
+              className="text-base mt-1 z-50 border-[1px] border-black  flex justify-center items-center bg-db-cyan-process h-10 rounded-lg w-36 text-white hover:bg-db-blue-200"
               onClick={() => {
                 setShowNetworks(!showNetworks);
                 connect({ connector });

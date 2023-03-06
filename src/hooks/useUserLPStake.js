@@ -12,6 +12,7 @@ export default function useUserLPStake(poolId) {
     abi: LpStakingABI,
     functionName: "getUserStake",
     args: [address, poolId],
+    enabled: address && poolId != null,
     select: (data) => ethers.utils.formatEther(data.staked),
     watch: true,
   });
