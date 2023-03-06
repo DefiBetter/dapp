@@ -21,6 +21,10 @@ function Connector() {
                 <AppContainer>
                   <Better />
                 </AppContainer>
+              ) : process.env.REACT_APP_PHASE === "DBMT_SALE" ? (
+                <AppContainer>
+                  <Dbmt />
+                </AppContainer>
               ) : process.env.REACT_APP_PHASE === "PUBLIC_SALE" ? (
                 <AppContainer>
                   <PublicSale />
@@ -46,14 +50,6 @@ function Connector() {
           }
         />
 
-        <Route
-          path="/dbmt"
-          element={
-            <AppContainer>
-              <Dbmt />
-            </AppContainer>
-          }
-        />
         <Route
           path="/staking"
           element={

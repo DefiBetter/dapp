@@ -9,9 +9,10 @@ import { ethers } from "ethers";
 export default function useOpenPosition(props, onSuccessCallback) {
   const toastContext = useToast();
 
-  const preparation = usePrepareContractWrite({
+  const transaction = useContractWrite({
     ...props.betterContractConfig,
     functionName: "openPosition",
+    mode: "recklesslyUnprepared",
     args: [
       props.instrument.selector,
       props.customFlatFee,
@@ -30,7 +31,6 @@ export default function useOpenPosition(props, onSuccessCallback) {
     },
   });
 
-  const transaction = useContractWrite(preparation.config);
   const confirmation = useWaitForTransaction({
     confirmations: 2,
     hash: transaction.data?.hash,

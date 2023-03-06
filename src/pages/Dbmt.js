@@ -193,7 +193,7 @@ export default function Dbmt() {
             </div>
           </div>
 
-          <div className="relative z-10 flex flex-col gap-5 md:flex-row m-auto w-full mt-5 p-4 bg-white border-2 border-db-cyan-process shadow-db">
+          <div className="relative z-10 flex flex-col gap-5 md:flex-row m-auto w-full mt-5 p-4 bg-white border-2 border-db-cyan-process shadow-db rounded-2xl">
             <div className="p-2 bg-white w-full md:w-1/2">
               <h2 className="font-bold text-xl">
                 DeFiBetter Milestone Reward Program
