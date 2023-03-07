@@ -21,15 +21,15 @@ function Connector() {
     abi: LimitedCapacityAirdropABI,
   };
 
-  const { data: whitelisted } = useContractRead({
+  const { data: spotsLeft } = useContractRead({
     ...config,
-    functionName: "whitelisted",
+    functionName: "spotsLeft",
     watch: true,
     select: (data) => Number(data),
     keepPreviousData: true,
   });
 
-  console.log("whitelisted = " + whitelisted);
+  console.log("spotsLeft = " + spotsLeft);
   return (
     <>
       <Routes>
@@ -43,8 +43,8 @@ function Connector() {
                 </AppContainer>
               ) : process.env.REACT_APP_PHASE === "DBMT_SALE" ? (
                 <AppContainer>
-                  {whitelisted !== null && whitelisted !== undefined ? (
-                    whitelisted === 50 ? (
+                  {spotsLeft !== null && spotsLeft !== undefined ? (
+                    spotsLeft === 0 ? (
                       <Dbmt />
                     ) : (
                       <Betterdrop />

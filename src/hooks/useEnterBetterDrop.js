@@ -12,18 +12,24 @@ export default function useEnterBetterDrop(address, onSuccessCallback) {
   const { chain } = useNetwork();
   const toastContext = useToast();
 
-  console.log('address = ' + address)
   const preparation = usePrepareContractWrite({
     address: contractAddresses[chain?.network]?.dbmtAirdrop,
     abi: LimitedCapacityAirdropABI,
     args: [address],
     functionName: "whitelistAddress",
     onError(err) {
+      console.log('error in prep')
       console.error(err);
     },
   });
 
-  const transaction = useContractWrite(preparation.config);
+  const transaction = useContractWrite({
+    ...preparation.config,
+    onError(err) {
+      console.log('tx error')
+      console.error(err);
+    },
+  });
   const confirmation = useWaitForTransaction({
     confirmations: 2,
     hash: transaction.data?.hash,
@@ -35,7 +41,7 @@ export default function useEnterBetterDrop(address, onSuccessCallback) {
         transaction.data?.hash
       );
     },
-    onSuccess() {
+    onSuccess(data) {
       onSuccessCallback();
       toastContext.addToast(
         ToastStatus.Success,

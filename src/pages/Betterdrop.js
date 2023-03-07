@@ -16,7 +16,6 @@ import useClaimBetterDrop from "../hooks/useClaimBetterDrop";
 
 export default function Betterdrop() {
   const { chain } = useNetwork();
-  const toastContext = useToast();
   const [walletAddress, setWalletAddress] = useState("");
   const [claimDisabled, setClaimDisabled] = useState(false);
 
@@ -24,9 +23,11 @@ export default function Betterdrop() {
     address: contractAddresses[chain?.network]?.dbmtAirdrop,
     abi: LimitedCapacityAirdropABI,
   };
-  const { data: whitelisted } = useContractRead({
+
+  const { data: spotsLeft } = useContractRead({
     ...config,
-    functionName: "whitelisted",
+    functionName: "spotsLeft",
+    select: (data) => Number(data),
     watch: true,
   });
 
@@ -40,16 +41,9 @@ export default function Betterdrop() {
   const enterAidrop = useEnterBetterDrop(walletAddress, () => {
     setWalletAddress("");
   });
-  const claimAirdrop = useClaimBetterDrop(() => {
+  const claimAirdrop = useClaimBetterDrop(spotsLeft, () => {
     firework();
     setClaimDisabled(true);
-  });
-
-  const { data: whitelistCapacity } = useContractRead({
-    ...config,
-    functionName: "WHITELIST_CAPACITY",
-    select: (data) => Number(data),
-    watch: false,
   });
 
   function firework() {
@@ -113,9 +107,7 @@ export default function Betterdrop() {
             Spots left
           </div>
           <div className="flex-1 text-center">
-            {whitelisted && whitelistCapacity
-              ? whitelistCapacity - whitelisted
-              : 0}
+            {spotsLeft}
           </div>
         </div>
         <input
@@ -148,7 +140,7 @@ export default function Betterdrop() {
           </div>
           <div className="flex gap-2 items-center justify-center flex-col">
             <DBButton
-              disabled={whitelistCapacity - whitelisted === 0 || claimDisabled}
+              disabled={spotsLeft !== 0 || claimDisabled}
               onClick={() => {
                 claimAirdrop.transaction.write();
               }}
@@ -159,24 +151,21 @@ export default function Betterdrop() {
                 "Claim"
               )}
             </DBButton>
-            <button 
-            className='text-db-cyan-process underline'
+            <button
+              className="text-db-cyan-process underline"
               onClick={async () => {
                 const { ethereum } = window;
-                const tokenAddress = contractAddresses[chain?.network]?.dbmtToken;
-                const tokenSymbol = "DBMT";
-                const tokenDecimals = 18;
-                const tokenImage = "";
 
-                const wasAdded = await ethereum.request({
+                await ethereum.request({
                   method: "wallet_watchAsset",
                   params: {
                     type: "ERC20", // Initially only supports ERC20, but eventually more!
                     options: {
-                      address: tokenAddress, // The address that the token is at.
-                      symbol: tokenSymbol, // A ticker symbol or shorthand, up to 5 chars.
-                      decimals: tokenDecimals, // The number of decimals in the token
-                      image: tokenImage, // A string url of the token logo
+                      address: contractAddresses[chain?.network]?.dbmtToken, // The address that the token is at.
+                      symbol: "DBMT", // A ticker symbol or shorthand, up to 5 chars.
+                      decimals: 18, // The number of decimals in the token
+                      image:
+                        "https://github.com/ArchitectOfParadise/DefiBetterV1-FrontEnd-V2/blob/feature/dbmt-airdrop/src/static/image/DBMT_icon_round.png?raw=true", // A string url of the token logo
                     },
                   },
                 });

@@ -8,7 +8,7 @@ import { contractAddresses } from "../static/contractAddresses";
 import LimitedCapacityAirdropABI from "../static/ABI/LimitedCapacityAirdropABI.json";
 import { ToastStatus, useToast } from "../context/ToastContext";
 
-export default function useClaimBetterDrop(onSuccessCallback) {
+export default function useClaimBetterDrop(spotsLeft, onSuccessCallback) {
   const { chain } = useNetwork();
   const toastContext = useToast();
 
@@ -16,6 +16,7 @@ export default function useClaimBetterDrop(onSuccessCallback) {
     address: contractAddresses[chain?.network]?.dbmtAirdrop,
     abi: LimitedCapacityAirdropABI,
     functionName: "claim",
+    enabled: spotsLeft === 0,
     onError(err) {
       console.error(err);
     },
