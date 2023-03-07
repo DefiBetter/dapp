@@ -1,167 +1,31 @@
-import {
-  useNetwork,
-  useContractRead,
-  useAccount,
-  useContractWrite,
-} from "wagmi";
 import { useState } from "react";
-
-import DutchAuctionABI from "../static/ABI/DutchAuctionABI.json";
-import IERC20MetadataABI from "../static/ABI/IERC20MetadataABI.json";
-import { contractAddresses } from "../static/contractAddresses";
 import { ethers } from "ethers";
-
 import { CountdownFormatted, trimNumber } from "../components/common/helper";
-import useWethPrice from "../hooks/useWethPrice";
-import { ToastStatus, useToast } from "../context/ToastContext";
 import { MdDoubleArrow } from "react-icons/md";
 import { CgArrowLongRight } from "react-icons/cg";
+import useDbmtPerEth from "../hooks/useDbmtPerEth";
+import useDbmtPrice from "../hooks/useDbmtPrice";
+import useDbmtSupplyLeft from "../hooks/useDbmtSupplyLeft";
+import useDbmtStartTime from "../hooks/useDbmtStartTime";
+import useDbmtDuration from "../hooks/useDbmtDuration";
+import useDbmtBuy from "../hooks/useDbmtBuy";
+import DBButton from "../components/common/DBButton";
+import Loader from "../components/common/Loader";
+import useNativeBalance from "../hooks/useNativeBalance";
 
 export default function Dbmt() {
-  const toasts = useToast();
-
-  const { address: connectedAddress } = useAccount();
-  const { chain } = useNetwork();
-
-  const vcPresaleContractConfig = {
-    address: contractAddresses[chain?.network]?.vcPresale,
-    abi: DutchAuctionABI,
-  };
-
-  const [paymentToken, setPaymentToken] = useState("");
-  const [rewardToken, setRewardToken] = useState("");
-  const [allowance, setAllowance] = useState(ethers.BigNumber.from("0"));
-
   const [buyAmount, setBuyAmount] = useState("0");
 
-  const [supplyLeft, setSupplyLeft] = useState("0");
-
-  const [estimateOutput, setEstimateOutput] = useState("0");
-
-  // public sale duration
-  const [startTime, setStartTime] = useState(0);
-  const [duration, setDuration] = useState(0);
-
-  const [currentPrice, setCurrentPrice] = useState(0);
-
-  const wethPrice = useWethPrice();
-
   // current price
-  useContractRead({
-    ...vcPresaleContractConfig,
-    functionName: "estimateOutput",
-    args: [ethers.utils.parseEther("1")], // input in WETH
-    onError(data) {},
-    onSuccess(data) {
-      console.log("estimate", ethers.utils.formatEther(data));
-      setCurrentPrice((1 / +ethers.utils.formatEther(data)).toFixed(9));
-    },
-  });
-
-  useContractRead({
-    ...vcPresaleContractConfig,
-    functionName: "startTime",
-    onSuccess(data) {
-      setStartTime(+data);
-    },
-  });
-
-  useContractRead({
-    ...vcPresaleContractConfig,
-    functionName: "duration",
-    onSuccess(data) {
-      setDuration(+data);
-    },
-  });
-
-  // get payment token
-  useContractRead({
-    ...vcPresaleContractConfig,
-    functionName: "paymentToken",
-    onSuccess(data) {
-      setPaymentToken(data);
-    },
-  });
-
-  // get reward token
-  useContractRead({
-    ...vcPresaleContractConfig,
-    functionName: "rewardToken",
-    onSuccess(data) {
-      setRewardToken(data);
-    },
-  });
-
-  // approve
-  const { write: approvePaymentTokenWrite } = useContractWrite({
-    address: paymentToken,
-    abi: IERC20MetadataABI,
-    mode: "recklesslyUnprepared",
-    functionName: "approve",
-    args: [
-      vcPresaleContractConfig.address,
-      ethers.constants.MaxUint256.sub("1"),
-    ],
-    onError(error) {
-      console.error(error);
-      toastContext.addToast(ToastStatus.Failed, "Failed to approve", null);
-    },
-    onSuccess() {
-      toastContext.addToast(ToastStatus.Success, "Successfuly approved", null);
-    },
-  });
-
-  // get allowance
-  useContractRead({
-    address: paymentToken,
-    abi: IERC20MetadataABI,
-    functionName: "allowance",
-    args: [connectedAddress, vcPresaleContractConfig.address],
-    onSuccess(data) {
-      setAllowance(data);
-    },
-    watch: true,
-  });
-
-  // buy into public sale
-  const { write: buyWrite } = useContractWrite({
-    ...vcPresaleContractConfig,
-    mode: "recklesslyUnprepared",
-    functionName: "buy",
-    args: [buyAmount],
-    onError(error) {
-      console.error(error);
-      toastContext.addToast(ToastStatus.Failed, "Failed to buy", null);
-    },
-    onSuccess() {
-      toastContext.addToast(ToastStatus.Success, "Successfuly bought", null);
-    },
-  });
-
+  const dbmtPerEth = useDbmtPerEth(buyAmount);
+  const dbmtPrice = useDbmtPrice();
   // supply left
-  useContractRead({
-    address: rewardToken,
-    abi: IERC20MetadataABI,
-    functionName: "balanceOf",
-    args: [vcPresaleContractConfig.address],
-    onSuccess(data) {
-      setSupplyLeft(ethers.utils.formatEther(data));
-    },
-    watch: true,
-  });
+  const supplyLeft = useDbmtSupplyLeft();
+  const startTime = useDbmtStartTime();
+  const duration = useDbmtDuration();
 
-  // get estimate reward
-  useContractRead({
-    ...vcPresaleContractConfig,
-    functionName: "estimateOutput",
-    args: [buyAmount], // in WETH
-    onError(data) {},
-    onSuccess(data) {
-      setEstimateOutput(ethers.utils.formatEther(data));
-    },
-  });
-
-  const toastContext = useToast();
+  const buyWrite = useDbmtBuy(buyAmount);
+  const userGasBalance = useNativeBalance();
 
   return (
     <>
@@ -223,7 +87,7 @@ export default function Dbmt() {
                   to alpha earlier than everyone else.
                 </div>
               </div>
-              <div className='mt-3'>
+              <div className="mt-3">
                 Read more about how $DBMT works on our Medium page:{" "}
                 <a
                   href="https://medium.com/@defibetter"
@@ -239,14 +103,14 @@ export default function Dbmt() {
               <div className="rounded-t-xl w-full bg-db-cyan-process pb-2">
                 <div className="flex justify-center items-center gap-5 ">
                   <div className="text-2xl font-bold text-white relative pt-2">
-                    1 WETH
+                    $2500
                     <div className="absolute bottom-[30%] -left-[5%] w-[110%] h-1 bg-gradient-to-r from-red-400 to-orange-500"></div>
                   </div>
                   <div className="pt-2">
                     <CgArrowLongRight size={40} className="text-white" />
                   </div>
                   <div className="font-bold text-transparent text-4xl bg-clip-text bg-gradient-to-b from-yellow-100 to-yellow-300">
-                    0.5 WETH
+                    ${dbmtPrice}
                   </div>
                 </div>
                 <div className="text-center text-xs italic text-white">
@@ -257,11 +121,9 @@ export default function Dbmt() {
                 <div className="flex flex-col lg:flex-row justify-between items-center gap-2">
                   <div className="flex justify-between w-full items-center">
                     <div className="flex-1 shadow-db text-center font-bold bg-db-french-sky p-3 border-[1px] border-black rounded-lg">
-                      Time Left
+                      BNB Balance
                     </div>
-                    <div className="flex-1 text-center">
-                      <CountdownFormatted ms={(startTime + duration) * 1000} />
-                    </div>
+                    <div className="flex-1 text-center">{userGasBalance}</div>
                   </div>
 
                   <div className="flex justify-between w-full items-center">
@@ -273,18 +135,25 @@ export default function Dbmt() {
                     </div>
                   </div>
                 </div>
-
+                <div className="mt-4 flex justify-between w-full md:w-2/3 items-center">
+                  <div className="flex-1 shadow-db text-center font-bold bg-db-french-sky p-3 border-[1px] border-black rounded-lg">
+                    Time Left
+                  </div>
+                  <div className="flex-1 text-center">
+                    <CountdownFormatted ms={(startTime + duration) * 1000} />
+                  </div>
+                </div>
                 <div className="mt-4 flex items-center w-full">
                   <div className="font-fancy text-db-cyan-process w-24 text-center text-xl pt-1">
                     buy
                   </div>
                   <div className="w-full flex items-center p-2 justify-center bg-db-background rounded-lg shadow-db">
                     <div className="text-black text-sm flex-1 text-center">
-                      {trimNumber(estimateOutput, 9, "dp")}
+                      {trimNumber(dbmtPerEth, 9, "dp")}
                     </div>
 
                     <div className="text-black font-bold w-12 text-center">
-                      BT
+                      DBMT
                     </div>
                   </div>
                 </div>
@@ -307,28 +176,26 @@ export default function Dbmt() {
                       placeholder="Amount"
                       className="text-black text-sm flex-1"
                     />
-                    <div className="text-black font-bold w-12 text-center">
-                      WETH
+                    <div className="relative text-black font-bold w-12 text-center">
+                      <div>BNB</div>
                     </div>
                   </div>
                 </div>
-                {ethers.BigNumber.from(allowance.toString()).lte(
-                  ethers.BigNumber.from("0")
-                ) ? (
-                  <button
-                    onClick={approvePaymentTokenWrite}
-                    className="mt-4 border-[1px] border-black shadow-db pt-1 font-fancy bg-db-cyan-process h-10 w-full rounded-lg text-lg text-white hover:bg-db-blue-200"
+                <div className="mt-4">
+                  <DBButton
+                    onClick={() => {
+                      if (buyWrite.transaction.write) {
+                        buyWrite.transaction.write();
+                      }
+                    }}
                   >
-                    Approve
-                  </button>
-                ) : (
-                  <button
-                    onClick={buyWrite}
-                    className="mt-4 border-[1px] border-black shadow-db pt-1 font-fancy bg-db-cyan-process h-10 w-full rounded-lg text-lg text-white hover:bg-db-blue-200"
-                  >
-                    Buy
-                  </button>
-                )}
+                    {buyWrite.confirmation.isLoading ? (
+                      <Loader text="Buying" />
+                    ) : (
+                      "Buy"
+                    )}
+                  </DBButton>
+                </div>
               </div>
             </div>
           </div>

@@ -9,6 +9,8 @@ const contractAddresses = {
     better: process.env.REACT_APP_better,
     lpToken: process.env.REACT_APP_lpToken,
     lpStaking: process.env.REACT_APP_lpStaking,
+    dbmtSale: process.env.REACT_APP_dbmtSale,
+    dbmtToken: process.env.REACT_APP_dbmtToken,
     nativeGas: "bBNB",
     WETH: process.env.REACT_APP_PRICE_FEED_ETH,
   },

@@ -8,8 +8,25 @@ import AppContainer from "./common/container/AppContainer";
 import CommunityPresale from "../pages/CommunityPresale";
 import VcPresale from "../pages/VcPresale";
 import Dbmt from "../pages/Dbmt";
+import Betterdrop from "../pages/Betterdrop";
+import { useContractRead, useNetwork } from "wagmi";
+import { contractAddresses } from "../static/contractAddresses";
+import Loader from "./common/Loader";
 
 function Connector() {
+  const { chain } = useNetwork();
+  const config = {
+    address: contractAddresses[chain?.network]?.dbmtSale,
+    abi: {},
+  };
+
+  const { data: alreadyEnlisted } = useContractRead({
+    ...config,
+    functionName: "alreadyEnlisted",
+    watch: true,
+    keepPreviousData: true,
+  });
+
   return (
     <>
       <Routes>
@@ -23,7 +40,15 @@ function Connector() {
                 </AppContainer>
               ) : process.env.REACT_APP_PHASE === "DBMT_SALE" ? (
                 <AppContainer>
-                  <Dbmt />
+                  {!alreadyEnlisted ? (
+                    alreadyEnlisted !== 50 ? (
+                      <Dbmt />
+                    ) : (
+                      <Betterdrop />
+                    )
+                  ) : (
+                    <Loader text="Loading" />
+                  )}
                 </AppContainer>
               ) : process.env.REACT_APP_PHASE === "PUBLIC_SALE" ? (
                 <AppContainer>
