@@ -3,22 +3,17 @@
     "inputs": [
       {
         "internalType": "uint256",
-        "name": "basePrice",
+        "name": "whitelistSpots",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "tokensPerSpot",
         "type": "uint256"
       },
       {
         "internalType": "address",
-        "name": "newToken",
-        "type": "address"
-      },
-      {
-        "internalType": "address",
-        "name": "newRouter",
-        "type": "address"
-      },
-      {
-        "internalType": "address",
-        "name": "newStableAddress",
+        "name": "tokenAddress",
         "type": "address"
       }
     ],
@@ -27,23 +22,17 @@
   },
   {
     "inputs": [],
-    "name": "FailedToSendEther",
-    "type": "error"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "name": "InsufficientTokenBalance",
+    "name": "AirdropClosed",
     "type": "error"
   },
   {
     "inputs": [],
-    "name": "InvalidParameter",
+    "name": "MaximumCapacityReached",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "NotWhitelisted",
     "type": "error"
   },
   {
@@ -67,7 +56,7 @@
   },
   {
     "inputs": [],
-    "name": "BASE_PRICE_IN_DOLLAR",
+    "name": "TOKENS_PER_SPOT",
     "outputs": [
       {
         "internalType": "uint256",
@@ -80,46 +69,40 @@
   },
   {
     "inputs": [],
-    "name": "buy",
+    "name": "TOKEN_ADDRESS",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "WHITELIST_CAPACITY",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "claim",
     "outputs": [],
-    "stateMutability": "payable",
+    "stateMutability": "nonpayable",
     "type": "function"
   },
   {
     "inputs": [],
-    "name": "discountDuration",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "discountStartTimestamp",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "ethAmount",
-        "type": "uint256"
-      }
-    ],
-    "name": "getTokenPerEth",
+    "name": "endTime",
     "outputs": [
       {
         "internalType": "uint256",
@@ -145,60 +128,16 @@
   },
   {
     "inputs": [],
-    "name": "priceInDollar",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "priceMulti",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
     "name": "renounceOwnership",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
   },
   {
-    "inputs": [],
-    "name": "router",
-    "outputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
     "inputs": [
       {
         "internalType": "uint256",
-        "name": "newPriceMulti",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "startTimestamp",
+        "name": "newStartingTimestamp",
         "type": "uint256"
       },
       {
@@ -207,32 +146,19 @@
         "type": "uint256"
       }
     ],
-    "name": "setDiscount",
+    "name": "setTimes",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
   },
   {
     "inputs": [],
-    "name": "stableAddress",
+    "name": "startTime",
     "outputs": [
       {
-        "internalType": "address",
+        "internalType": "uint256",
         "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "token",
-    "outputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
+        "type": "uint256"
       }
     ],
     "stateMutability": "view",
@@ -252,10 +178,29 @@
     "type": "function"
   },
   {
-    "inputs": [],
-    "name": "withdrawRaisedFunds",
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "addr",
+        "type": "address"
+      }
+    ],
+    "name": "whitelistAddress",
     "outputs": [],
     "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "whitelisted",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
     "type": "function"
   }
 ]

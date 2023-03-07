@@ -10,21 +10,39 @@ import { ToastStatus, useToast } from "../context/ToastContext";
 import Loader from "../components/common/Loader";
 import { useState } from "react";
 import confetti from "canvas-confetti";
+import LimitedCapacityAirdropABI from "../static/ABI/LimitedCapacityAirdropABI.json";
+import useEnterBetterDrop from "../hooks/useEnterBetterDrop";
+import useClaimBetterDrop from "../hooks/useClaimBetterDrop";
 
 export default function Betterdrop() {
   const { chain } = useNetwork();
   const toastContext = useToast();
   const [walletAddress, setWalletAddress] = useState("");
+  const [claimDisabled, setClaimDisabled] = useState(false);
 
   const config = {
-    address: contractAddresses[chain?.network]?.dbmtSale,
-    abi: {},
+    address: contractAddresses[chain?.network]?.dbmtAirdrop,
+    abi: LimitedCapacityAirdropABI,
   };
-  const { data: alreadyEnlisted } = useContractRead({
+  const { data: whitelisted } = useContractRead({
     ...config,
-    functionName: "alreadyEnlisted",
+    functionName: "whitelisted",
+    watch: true,
+  });
+
+  const { data: endTime } = useContractRead({
+    ...config,
+    functionName: "endTime",
     select: (data) => Number(data),
     watch: true,
+  });
+
+  const enterAidrop = useEnterBetterDrop(walletAddress, () => {
+    setWalletAddress("");
+  });
+  const claimAirdrop = useClaimBetterDrop(() => {
+    firework();
+    setClaimDisabled(true);
   });
 
   const { data: whitelistCapacity } = useContractRead({
@@ -32,59 +50,6 @@ export default function Betterdrop() {
     functionName: "WHITELIST_CAPACITY",
     select: (data) => Number(data),
     watch: false,
-  });
-
-  const claimAirdropTX = useContractWrite({
-    ...config,
-    functionName: "claim",
-    mode: "recklesslyUnprepared",
-  });
-
-  useWaitForTransaction({
-    confirmations: 2,
-    hash: claimAirdropTX.data?.hash,
-    onError(error) {
-      console.error(error);
-      toastContext.addToast(
-        ToastStatus.Failed,
-        "Failed to claim Airdrop",
-        enterAirdropTX.data?.hash
-      );
-    },
-    onSuccess() {
-      firework();
-      toastContext.addToast(
-        ToastStatus.Success,
-        "Successfuly claimed Airdrop",
-        enterAirdropTX.data?.hash
-      );
-    },
-  });
-
-  const enterAirdropTX = useContractWrite({
-    ...config,
-    args: [walletAddress],
-    functionName: "whitelistAddress",
-  });
-
-  const enterAirdropConf = useWaitForTransaction({
-    confirmations: 2,
-    hash: enterAirdropTX.data?.hash,
-    onError(error) {
-      console.error(error);
-      toastContext.addToast(
-        ToastStatus.Failed,
-        "Failed to enter Airdrop",
-        enterAirdropTX.data?.hash
-      );
-    },
-    onSuccess() {
-      toastContext.addToast(
-        ToastStatus.Success,
-        "Successfuly entered Airdrop",
-        enterAirdropTX.data?.hash
-      );
-    },
   });
 
   function firework() {
@@ -142,48 +107,84 @@ export default function Betterdrop() {
         </div>
       </div>
 
-      <div className="relative z-10 flex flex-col gap-3 shadow-db m-auto w-full md:w-1/2 mt-5 bg-white border-2 border-db-cyan-process rounded-2xl p-4">
+      <div className="relative z-10 flex flex-col gap-3 shadow-db m-auto w-full lg:w-1/2 mt-5 bg-white border-2 border-db-cyan-process rounded-2xl p-4">
         <div className="flex justify-between w-full items-center">
           <div className="flex-1 shadow-db text-center font-bold bg-db-french-sky p-3 border-[1px] border-black rounded-lg">
             Spots left
           </div>
           <div className="flex-1 text-center">
-            {whitelistCapacity - alreadyEnlisted}
+            {whitelisted && whitelistCapacity
+              ? whitelistCapacity - whitelisted
+              : 0}
           </div>
         </div>
         <input
           type="text"
-          className="w-full h-12 rounded-lg"
+          className="w-full h-12 rounded-lg text-base"
           placeholder="Enter your Wallet address"
+          value={walletAddress}
           onChange={(e) => {
             setWalletAddress(e.target.value);
           }}
         />
         <DBButton
-          disabled={!enterAirdropTX.write}
+          disabled={walletAddress.length === 0}
           onClick={() => {
-            if (enterAirdropTX.write) {
-              enterAirdropTX.transaction.write();
+            if (enterAidrop.transaction.write) {
+              enterAidrop.transaction.write();
             }
           }}
         >
-          {enterAirdropConf.isLoading ? (
+          {enterAidrop.confirmation.isLoading ? (
             <Loader text="Entering Airdrop" />
           ) : (
             "Enter Airdrop"
           )}
         </DBButton>
-        <div className="mt-5 w-full md:w-1/2 m-auto ">
-          <div>You will be able to claim once all spots are filled</div>
-          <DBButton
-            disabled={whitelistCapacity - alreadyEnlisted > 0}
-            onClick={() => {
-              firework();
-              claimAirdropTX.transaction.write();
-            }}
-          >
-            {enterAirdropConf.isLoading ? <Loader text="Claiming" /> : "Claim"}
-          </DBButton>
+        <div className="mt-5 w-full lg:w-2/3 m-auto text-center">
+          <div>
+            You will be able to claim once all spots are filled. A wallet can
+            enter only once.
+          </div>
+          <div className="flex gap-2 items-center justify-center flex-col">
+            <DBButton
+              disabled={whitelistCapacity - whitelisted === 0 || claimDisabled}
+              onClick={() => {
+                claimAirdrop.transaction.write();
+              }}
+            >
+              {claimAirdrop.confirmation.isLoading ? (
+                <Loader text="Claiming" />
+              ) : (
+                "Claim"
+              )}
+            </DBButton>
+            <button 
+            className='text-db-cyan-process underline'
+              onClick={async () => {
+                const { ethereum } = window;
+                const tokenAddress = contractAddresses[chain?.network]?.dbmtToken;
+                const tokenSymbol = "DBMT";
+                const tokenDecimals = 18;
+                const tokenImage = "";
+
+                const wasAdded = await ethereum.request({
+                  method: "wallet_watchAsset",
+                  params: {
+                    type: "ERC20", // Initially only supports ERC20, but eventually more!
+                    options: {
+                      address: tokenAddress, // The address that the token is at.
+                      symbol: tokenSymbol, // A ticker symbol or shorthand, up to 5 chars.
+                      decimals: tokenDecimals, // The number of decimals in the token
+                      image: tokenImage, // A string url of the token logo
+                    },
+                  },
+                });
+              }}
+            >
+              Add $DBMT to Wallet
+            </button>
+          </div>
         </div>
       </div>
       <div className="z-0 absolute h-60 bottom-10 left-[13%]">

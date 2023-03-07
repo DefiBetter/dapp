@@ -12,21 +12,24 @@ import Betterdrop from "../pages/Betterdrop";
 import { useContractRead, useNetwork } from "wagmi";
 import { contractAddresses } from "../static/contractAddresses";
 import Loader from "./common/Loader";
+import LimitedCapacityAirdropABI from "../static/ABI/LimitedCapacityAirdropABI.json";
 
 function Connector() {
   const { chain } = useNetwork();
   const config = {
-    address: contractAddresses[chain?.network]?.dbmtSale,
-    abi: {},
+    address: contractAddresses[chain?.network]?.dbmtAirdrop,
+    abi: LimitedCapacityAirdropABI,
   };
 
-  const { data: alreadyEnlisted } = useContractRead({
+  const { data: whitelisted } = useContractRead({
     ...config,
-    functionName: "alreadyEnlisted",
+    functionName: "whitelisted",
     watch: true,
+    select: (data) => Number(data),
     keepPreviousData: true,
   });
 
+  console.log("whitelisted = " + whitelisted);
   return (
     <>
       <Routes>
@@ -40,8 +43,8 @@ function Connector() {
                 </AppContainer>
               ) : process.env.REACT_APP_PHASE === "DBMT_SALE" ? (
                 <AppContainer>
-                  {!alreadyEnlisted ? (
-                    alreadyEnlisted !== 50 ? (
+                  {whitelisted !== null && whitelisted !== undefined ? (
+                    whitelisted === 50 ? (
                       <Dbmt />
                     ) : (
                       <Betterdrop />

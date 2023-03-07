@@ -1,6 +1,9 @@
 // TODO
 const contractAddresses = {
   hardhat: {
+    dbmtToken: process.env.REACT_APP_dbmtToken,
+    dbmtAirdrop: process.env.REACT_APP_airdropContract,
+    dbmtSale: process.env.REACT_APP_dbmtSale,
     btToken: process.env.REACT_APP_btToken,
     vcPresale: process.env.REACT_APP_vcPresale,
     communityPresale: process.env.REACT_APP_communityPresale,
@@ -9,8 +12,6 @@ const contractAddresses = {
     better: process.env.REACT_APP_better,
     lpToken: process.env.REACT_APP_lpToken,
     lpStaking: process.env.REACT_APP_lpStaking,
-    dbmtSale: process.env.REACT_APP_dbmtSale,
-    dbmtToken: process.env.REACT_APP_dbmtToken,
     nativeGas: "bBNB",
     WETH: process.env.REACT_APP_PRICE_FEED_ETH,
   },
