@@ -57,6 +57,11 @@ const Navbar = () => {
               </>
             )}
             <div>
+              <Link onClick={() => setShowSideNavbar(false)} to={"/dbmt"}>
+                Dbmt
+              </Link>
+            </div>
+            <div>
               <a
                 onClick={() => setShowSideNavbar(false)}
                 title="Documentation"
@@ -100,7 +105,7 @@ const Navbar = () => {
             >
               <img
                 alt="logo"
-                className="h-full w-[160px]"
+                className="w-[160px] pt-1"
                 src={require("../../static/image/better-logo.png")}
               ></img>
             </Link>
@@ -117,7 +122,6 @@ const Navbar = () => {
                     Better
                   </Link>
                 </div>
-
                 <div>
                   <Link
                     to={
@@ -142,7 +146,9 @@ const Navbar = () => {
                 </div>
               </>
             )}
-
+            <div>
+              <Link to={"dbmt"}>Dbmt</Link>
+            </div>
             <div>
               <a
                 title="Documentation"
