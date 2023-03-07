@@ -15,21 +15,6 @@ import Loader from "./common/Loader";
 import LimitedCapacityAirdropABI from "../static/ABI/LimitedCapacityAirdropABI.json";
 
 function Connector() {
-  const { chain } = useNetwork();
-  const config = {
-    address: contractAddresses[chain?.network]?.dbmtAirdrop,
-    abi: LimitedCapacityAirdropABI,
-  };
-
-  const { data: spotsLeft } = useContractRead({
-    ...config,
-    functionName: "spotsLeft",
-    watch: true,
-    select: (data) => Number(data),
-    keepPreviousData: true,
-  });
-
-  console.log("spotsLeft = " + spotsLeft);
   return (
     <>
       <Routes>
@@ -43,15 +28,7 @@ function Connector() {
                 </AppContainer>
               ) : process.env.REACT_APP_PHASE === "DBMT_SALE" ? (
                 <AppContainer>
-                  {spotsLeft !== null && spotsLeft !== undefined ? (
-                    spotsLeft === 0 ? (
-                      <Dbmt />
-                    ) : (
-                      <Betterdrop />
-                    )
-                  ) : (
-                    <Loader text="Loading" />
-                  )}
+                  <Betterdrop />
                 </AppContainer>
               ) : process.env.REACT_APP_PHASE === "PUBLIC_SALE" ? (
                 <AppContainer>
@@ -75,6 +52,15 @@ function Connector() {
                 </AppContainer>
               )}
             </>
+          }
+        />
+
+        <Route
+          path="/dbmt"
+          element={
+            <AppContainer>
+              <Dbmt />
+            </AppContainer>
           }
         />
 
