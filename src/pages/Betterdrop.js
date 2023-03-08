@@ -103,7 +103,7 @@ export default function Betterdrop() {
   }
 
   return (
-    <div className="relative bg-db-background border-[3px] border-db-cyan-process p-4 h-[83vh]">
+    <div className="relative bg-db-background border-[3px] border-db-cyan-process p-4 h-[90vh] md:h-[83vh]">
       <div className="shadow-db m-auto w-full md:w-1/2 mt-5 bg-white border-2 border-db-cyan-process rounded-2xl p-4">
         <div className="flex justify-center text-5xl gap-4">
           DBMT
@@ -111,6 +111,21 @@ export default function Betterdrop() {
             Airdrop 💦
           </span>
         </div>
+      </div>
+
+      <div className="absolute bottom-2 right-2 flex gap-2 items-center">
+        <a target="_blank" rel='noreferrer' href="https://discord.gg/DSDXSXf6Ub">
+          <img className='w-10 h-10' src={require("../static/image/discord-logo.png")} />
+        </a>
+        <a target="_blank" rel='noreferrer' href="https://t.me/+2z4mDnFAnjxiMWJl">
+          <img className='w-10 h-10' src={require("../static/image/telegram-logo.png")} />
+        </a>
+        <a target="_blank" rel='noreferrer' href="https://twitter.com/defi_better">
+          <img className='w-10 h-10' src={require("../static/image/twitter-logo.png")} />
+        </a>
+        <a target="_blank" rel='noreferrer' href="https://medium.com/@defibetter">
+          <img className='w-10 h-10' src={require("../static/image/medium-logo.png")} />
+        </a>
       </div>
 
       <div className="relative z-10 flex flex-col gap-3 shadow-db m-auto w-full lg:w-1/2 mt-5 bg-white border-2 border-db-cyan-process rounded-2xl p-4">
@@ -180,7 +195,7 @@ export default function Betterdrop() {
           </div>
         </div>
       </div>
-      <div className="z-0 absolute h-60 bottom-10 left-[13%]">
+      <div className="hidden md:block z-0 absolute h-60 bottom-10 left-[13%]">
         <img
           alt="faucet"
           className="h-full z-0"
