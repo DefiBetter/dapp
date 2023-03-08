@@ -70,7 +70,7 @@ const Navbar = () => {
               <a
                 onClick={() => setShowSideNavbar(false)}
                 title="Documentation"
-                href="https://app.gitbook.com/o/NBcMmIGNsNgrhjS2tczv/s/qLpJBZkEb6TQw9OfyioS/"
+                href="https://medium.com/@defibetter"
                 target="_blank"
                 rel="noreferrer"
               >
@@ -160,7 +160,7 @@ const Navbar = () => {
             <div>
               <a
                 title="Documentation"
-                href="https://app.gitbook.com/o/NBcMmIGNsNgrhjS2tczv/s/qLpJBZkEb6TQw9OfyioS/"
+                href="https://medium.com/@defibetter"
                 target="_blank"
                 rel="noreferrer"
               >
