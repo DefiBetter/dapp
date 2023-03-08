@@ -1,1 +1,1 @@
-export const DEFAULT_CHAIN_ID = 31337
+export const DEFAULT_CHAIN_ID = 56
