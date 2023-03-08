@@ -1,4 +1,5 @@
 import {
+  useAccount,
   useContractRead,
   useContractWrite,
   useNetwork,
@@ -8,16 +9,26 @@ import DBButton from "../components/common/DBButton";
 import { contractAddresses } from "../static/contractAddresses";
 import { ToastStatus, useToast } from "../context/ToastContext";
 import Loader from "../components/common/Loader";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import confetti from "canvas-confetti";
 import LimitedCapacityAirdropABI from "../static/ABI/LimitedCapacityAirdropABI.json";
 import useEnterBetterDrop from "../hooks/useEnterBetterDrop";
 import useClaimBetterDrop from "../hooks/useClaimBetterDrop";
+import useAddToWallet from "../hooks/useAddToWallet";
 
 export default function Betterdrop() {
   const { chain } = useNetwork();
+  const { address } = useAccount();
   const [walletAddress, setWalletAddress] = useState("");
   const [claimDisabled, setClaimDisabled] = useState(false);
+
+  const addToWallet = useAddToWallet();
+
+  useEffect(() => {
+    if (address && walletAddress.length === 0) {
+      setWalletAddress(address);
+    }
+  }, [address]);
 
   const config = {
     address: contractAddresses[chain?.network]?.dbmtAirdrop,
@@ -106,9 +117,7 @@ export default function Betterdrop() {
           <div className="flex-1 shadow-db text-center font-bold bg-db-french-sky p-3 border-[1px] border-black rounded-lg">
             Spots left
           </div>
-          <div className="flex-1 text-center">
-            {spotsLeft}
-          </div>
+          <div className="flex-1 text-center">{spotsLeft}</div>
         </div>
         <input
           type="text"
@@ -133,46 +142,40 @@ export default function Betterdrop() {
             "Enter Airdrop"
           )}
         </DBButton>
-        <div className="mt-5 w-full lg:w-2/3 m-auto text-center">
-          <div>
+        <div className="mt-5 w-full m-auto text-center">
+          <div className="text-xs">
             You will be able to claim once all spots are filled. A wallet can
             enter only once.
           </div>
-          <div className="flex gap-2 items-center justify-center flex-col">
-            <DBButton
-              disabled={spotsLeft !== 0 || claimDisabled}
-              onClick={() => {
-                claimAirdrop.transaction.write();
-              }}
-            >
-              {claimAirdrop.confirmation.isLoading ? (
-                <Loader text="Claiming" />
-              ) : (
-                "Claim"
-              )}
-            </DBButton>
-            <button
-              className="text-db-cyan-process underline"
-              onClick={async () => {
-                const { ethereum } = window;
-
-                await ethereum.request({
-                  method: "wallet_watchAsset",
-                  params: {
-                    type: "ERC20", // Initially only supports ERC20, but eventually more!
-                    options: {
-                      address: contractAddresses[chain?.network]?.dbmtToken, // The address that the token is at.
-                      symbol: "DBMT", // A ticker symbol or shorthand, up to 5 chars.
-                      decimals: 18, // The number of decimals in the token
-                      image:
-                        "https://github.com/ArchitectOfParadise/DefiBetterV1-FrontEnd-V2/blob/feature/dbmt-airdrop/src/static/image/DBMT_icon_round.png?raw=true", // A string url of the token logo
-                    },
-                  },
-                });
-              }}
-            >
-              Add $DBMT to Wallet
-            </button>
+          <div className="flex gap-2 items-center flex-col md:flex-row justify-center">
+            <div className="w-full md:w-2/3">
+              <DBButton
+                disabled={spotsLeft !== 0 || claimDisabled}
+                onClick={() => {
+                  claimAirdrop.transaction.write();
+                }}
+              >
+                {claimAirdrop.confirmation.isLoading ? (
+                  <Loader text="Claiming" />
+                ) : (
+                  "Claim"
+                )}
+              </DBButton>
+            </div>
+            <div className="w-full md:w-1/3">
+              <button
+                className="w-full bg-db-background border-[1px] h-10 border-black shadow-db rounded-lg text-sm flex items-center justify-center gap-2 "
+                onClick={() => addToWallet("DBMT")}
+              >
+                <img
+                  src={require("../../src/static/image/dbmt.png")}
+                  width={30}
+                  height={30}
+                  alt="dbmt logo"
+                />
+                Add $DBMT to wallet
+              </button>
+            </div>
           </div>
         </div>
       </div>

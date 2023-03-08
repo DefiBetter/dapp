@@ -1,5 +1,4 @@
-import { useState } from "react";
-import { ethers } from "ethers";
+import { useEffect, useState } from "react";
 import { CountdownFormatted, trimNumber } from "../components/common/helper";
 import { MdDoubleArrow } from "react-icons/md";
 import { CgArrowLongRight } from "react-icons/cg";
@@ -12,13 +11,15 @@ import useDbmtBuy from "../hooks/useDbmtBuy";
 import DBButton from "../components/common/DBButton";
 import Loader from "../components/common/Loader";
 import useNativeBalance from "../hooks/useNativeBalance";
+import useAddToWallet from "../hooks/useAddToWallet";
 
 export default function Dbmt() {
   const [buyAmount, setBuyAmount] = useState("0");
-
+  const [bnbPrice, setBnbPrice] = useState(0);
   // current price
   const dbmtPerEth = useDbmtPerEth(buyAmount);
-  const dbmtPrice = useDbmtPrice();
+  const { basePrice, currentPrice } = useDbmtPrice();
+
   // supply left
   const supplyLeft = useDbmtSupplyLeft();
   const startTime = useDbmtStartTime();
@@ -27,6 +28,24 @@ export default function Dbmt() {
   const buyWrite = useDbmtBuy(buyAmount);
   const userGasBalance = useNativeBalance();
 
+  const addToWallet = useAddToWallet();
+
+  async function fetchBnbPrice() {
+    try {
+      const bnbPriceData = await (
+        await fetch(
+          "https://api.coingecko.com/api/v3/simple/price?ids=binancecoin&vs_currencies=usd"
+        )
+      ).json();
+      setBnbPrice(bnbPriceData["binancecoin"].usd);
+    } catch (e) {
+      console.error(e);
+    }
+  }
+
+  useEffect(() => {
+    fetchBnbPrice();
+  }, []);
   return (
     <>
       <div className="z-50 fixed left-0 bottom-0 w-full bg-gradient-to-r from-red-400 to-orange-500 flex justify-center items-center">
@@ -41,7 +60,7 @@ export default function Dbmt() {
             <span className="font-bold">$DBMT</span> Price increases in
           </div>
           <div className="font-bold text-3xl ">
-            <CountdownFormatted ms={Date.now() + 999999999} />
+            <CountdownFormatted ms={startTime + duration} />
           </div>
         </div>
       </div>
@@ -103,14 +122,14 @@ export default function Dbmt() {
               <div className="rounded-t-xl w-full bg-db-cyan-process pb-2">
                 <div className="flex justify-center items-center gap-5 ">
                   <div className="text-2xl font-bold text-white relative pt-2">
-                    $2500
+                    {(basePrice / bnbPrice).toFixed(2)} BNB
                     <div className="absolute bottom-[30%] -left-[5%] w-[110%] h-1 bg-gradient-to-r from-red-400 to-orange-500"></div>
                   </div>
                   <div className="pt-2">
                     <CgArrowLongRight size={40} className="text-white" />
                   </div>
                   <div className="font-bold text-transparent text-4xl bg-clip-text bg-gradient-to-b from-yellow-100 to-yellow-300">
-                    ${dbmtPrice}
+                    {(currentPrice / bnbPrice).toFixed(2)} BNB
                   </div>
                 </div>
                 <div className="text-center text-xs italic text-white">
@@ -135,12 +154,12 @@ export default function Dbmt() {
                     </div>
                   </div>
                 </div>
-                <div className="mt-4 flex justify-between w-full md:w-2/3 items-center">
+                <div className="mt-4 flex justify-between w-full items-center lg:w-1/2">
                   <div className="flex-1 shadow-db text-center font-bold bg-db-french-sky p-3 border-[1px] border-black rounded-lg">
-                    Time Left
+                    Min Purchase
                   </div>
                   <div className="flex-1 text-center">
-                    <CountdownFormatted ms={(startTime + duration) * 1000} />
+                    {(100 / bnbPrice).toFixed(3)} BNB
                   </div>
                 </div>
                 <div className="mt-4 flex items-center w-full">
@@ -164,12 +183,8 @@ export default function Dbmt() {
                   <div className="w-full flex items-center p-2 justify-center bg-db-background rounded-lg shadow-db">
                     <input
                       onChange={(e) => {
-                        const val = e.target.value || 0;
-                        setBuyAmount(ethers.utils.parseEther(val.toString()));
-                        console.log(
-                          "val",
-                          ethers.utils.parseEther(val.toString())
-                        );
+                        const val = e.target.value || "0";
+                        setBuyAmount(val);
                       }}
                       type={"number"}
                       min={0}
@@ -181,20 +196,38 @@ export default function Dbmt() {
                     </div>
                   </div>
                 </div>
-                <div className="mt-4">
-                  <DBButton
-                    onClick={() => {
-                      if (buyWrite.transaction.write) {
-                        buyWrite.transaction.write();
-                      }
-                    }}
-                  >
-                    {buyWrite.confirmation.isLoading ? (
-                      <Loader text="Buying" />
-                    ) : (
-                      "Buy"
-                    )}
-                  </DBButton>
+                <div className="mt-4 flex gap-2 items-center flex-col md:flex-row justify-center">
+                  <div className="w-full md:w-2/3">
+                    <DBButton
+                      onClick={() => {
+                        console.log("a");
+                        if (buyWrite.transaction.write) {
+                          console.log("b");
+                          buyWrite.transaction.write();
+                        }
+                      }}
+                    >
+                      {buyWrite.confirmation.isLoading ? (
+                        <Loader text="Buying" />
+                      ) : (
+                        "Buy"
+                      )}
+                    </DBButton>
+                  </div>
+                  <div className="w-full md:w-1/3">
+                    <button
+                      className="w-full bg-db-background border-[1px] h-10 border-black shadow-db rounded-lg text-sm flex items-center justify-center gap-2 "
+                      onClick={() => addToWallet("DBMT")}
+                    >
+                      <img
+                        src={require("../../src/static/image/dbmt.png")}
+                        width={30}
+                        height={30}
+                        alt="dbmt logo"
+                      />
+                      Add $DBMT to wallet
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
