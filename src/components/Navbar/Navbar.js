@@ -57,8 +57,8 @@ const Navbar = () => {
               </>
             )}
             <div>
-              <Link onClick={() => setShowSideNavbar(false)} to={"/dbmt"}>
-                Dbmt
+              <Link onClick={() => setShowSideNavbar(false)} to={"/airdrop"}>
+                Airdrop
               </Link>
             </div>
             <div>
