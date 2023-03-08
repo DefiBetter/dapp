@@ -13,6 +13,48 @@ const Connect = ({ children }) => {
         <div className="relative">
           <WalletConnect />
         </div>
+        <div className="mt-4 flex gap-3 items-center">
+          <a
+            target="_blank"
+            rel="noreferrer"
+            href="https://discord.gg/DSDXSXf6Ub"
+          >
+            <img
+              className="w-10 h-10"
+              src={require("../../static/image/discord-logo.png")}
+            />
+          </a>
+          <a
+            target="_blank"
+            rel="noreferrer"
+            href="https://t.me/+2z4mDnFAnjxiMWJl"
+          >
+            <img
+              className="w-10 h-10"
+              src={require("../../static/image/telegram-logo.png")}
+            />
+          </a>
+          <a
+            target="_blank"
+            rel="noreferrer"
+            href="https://twitter.com/defi_better"
+          >
+            <img
+              className="w-10 h-10"
+              src={require("../../static/image/twitter-logo.png")}
+            />
+          </a>
+          <a
+            target="_blank"
+            rel="noreferrer"
+            href="https://medium.com/@defibetter"
+          >
+            <img
+              className="w-10 h-10"
+              src={require("../../static/image/medium-logo.png")}
+            />
+          </a>
+        </div>
       </div>
     );
   }
