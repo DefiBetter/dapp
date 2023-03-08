@@ -52,7 +52,14 @@ function Connector() {
           }
         />
 
-
+        <Route
+          path="/*"
+          element={
+            <AppContainer>
+              <Betterdrop />
+            </AppContainer>
+          }
+        />
         <Route
           path="/airdrop"
           element={
@@ -62,7 +69,7 @@ function Connector() {
           }
         />
 
-        <Route
+        {/* <Route
           path="/staking"
           element={
             <AppContainer>
@@ -86,7 +93,7 @@ function Connector() {
               <PublicSale />
             </AppContainer>
           }
-        />
+        /> */}
       </Routes>
     </>
   );
