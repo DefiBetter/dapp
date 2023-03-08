@@ -9,10 +9,6 @@ import CommunityPresale from "../pages/CommunityPresale";
 import VcPresale from "../pages/VcPresale";
 import Dbmt from "../pages/Dbmt";
 import Betterdrop from "../pages/Betterdrop";
-import { useContractRead, useNetwork } from "wagmi";
-import { contractAddresses } from "../static/contractAddresses";
-import Loader from "./common/Loader";
-import LimitedCapacityAirdropABI from "../static/ABI/LimitedCapacityAirdropABI.json";
 
 function Connector() {
   return (
@@ -28,7 +24,7 @@ function Connector() {
                 </AppContainer>
               ) : process.env.REACT_APP_PHASE === "DBMT_SALE" ? (
                 <AppContainer>
-                  <Betterdrop />
+                  <Dbmt />
                 </AppContainer>
               ) : process.env.REACT_APP_PHASE === "PUBLIC_SALE" ? (
                 <AppContainer>
@@ -56,10 +52,10 @@ function Connector() {
         />
 
         <Route
-          path="/dbmt"
+          path="/airdrop"
           element={
             <AppContainer>
-              <Dbmt />
+              <Betterdrop />
             </AppContainer>
           }
         />
