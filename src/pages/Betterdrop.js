@@ -50,6 +50,7 @@ export default function Betterdrop() {
   });
 
   const enterAidrop = useEnterBetterDrop(walletAddress, () => {
+    firework();
     setWalletAddress("");
   });
   const claimAirdrop = useClaimBetterDrop(spotsLeft, () => {
@@ -129,7 +130,7 @@ export default function Betterdrop() {
           }}
         />
         <DBButton
-          disabled={walletAddress.length === 0}
+          disabled={walletAddress.length === 0 || spotsLeft === 0}
           onClick={() => {
             if (enterAidrop.transaction.write) {
               enterAidrop.transaction.write();

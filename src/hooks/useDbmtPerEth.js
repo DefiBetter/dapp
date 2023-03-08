@@ -14,8 +14,7 @@ export default function useDbmtPerEth(buyAmount) {
     functionName: "getTokenPerEth",
   });
 
-  
-  console.log('buyAmount = ' + ethers.utils.parseEther(buyAmount))
-  console.log('useDbmtPerEth = ' + data)
+  console.log("buyAmount = " + ethers.utils.parseEther(buyAmount));
+  console.log("useDbmtPerEth = " + data);
   return data ? ethers.utils.formatEther(data) : 0;
 }
