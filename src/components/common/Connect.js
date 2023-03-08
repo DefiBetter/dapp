@@ -1,6 +1,6 @@
 import { useAccount, useNetwork } from "wagmi";
-import { DEFAULT_CHAIN_ID } from "../../static/constant";
 import { WalletConnect } from "../Navbar/web3/WalletConnect";
+import customChains from "../../static/chains";
 
 const Connect = ({ children }) => {
   const { chain } = useNetwork();
@@ -17,7 +17,7 @@ const Connect = ({ children }) => {
     );
   }
 
-  if (chain && chain.id !== DEFAULT_CHAIN_ID) {
+  if (chain && chain.id !== customChains.binanceSmartChain.id) {
     return (
       <div className="mt-32 text-3xl flex items-center flex-col gap-3 h-full">
         <div className="rounded-lg p-2">Switch to a </div>
