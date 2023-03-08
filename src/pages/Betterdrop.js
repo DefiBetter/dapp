@@ -113,6 +113,21 @@ export default function Betterdrop() {
         </div>
       </div>
 
+      <div className="absolute bottom-2 right-2 flex gap-2 items-center">
+        <a target="_blank" rel='noreferrer' href="https://discord.gg/DSDXSXf6Ub">
+          <img className='w-10 h-10' src={require("../static/image/discord-logo.png")} />
+        </a>
+        <a target="_blank" rel='noreferrer' href="https://t.me/+2z4mDnFAnjxiMWJl">
+          <img className='w-10 h-10' src={require("../static/image/telegram-logo.png")} />
+        </a>
+        <a target="_blank" rel='noreferrer' href="https://twitter.com/defi_better">
+          <img className='w-10 h-10' src={require("../static/image/twitter-logo.png")} />
+        </a>
+        <a target="_blank" rel='noreferrer' href="https://medium.com/@defibetter">
+          <img className='w-10 h-10' src={require("../static/image/medium-logo.png")} />
+        </a>
+      </div>
+
       <div className="relative z-10 flex flex-col gap-3 shadow-db m-auto w-full lg:w-1/2 mt-5 bg-white border-2 border-db-cyan-process rounded-2xl p-4">
         <div className="flex justify-between w-full items-center">
           <div className="flex-1 shadow-db text-center font-bold bg-db-french-sky p-3 border-[1px] border-black rounded-lg">
