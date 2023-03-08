@@ -46,9 +46,12 @@ export default function Dbmt() {
   // useEffect(() => {
   //   fetchBnbPrice();
   // }, []);
+
+  const isSale = basePrice - currentPrice !== 0
+
   return (
     <>
-      {basePrice - currentPrice !== 0 && (
+      {isSale && (
         <div className="z-50 fixed left-0 bottom-0 w-full bg-gradient-to-r from-red-400 to-orange-500 flex justify-center items-center">
           <div className="absolute left-2 lg:left-44">
             <MdDoubleArrow
@@ -72,7 +75,7 @@ export default function Dbmt() {
           </div>
         </div>
       )}
-      <div className="relative bg-db-background border-[3px] border-db-cyan-process mb-24 md:mb-14 lg:mb-14 min-h-[80vh]">
+      <div className={`relative bg-db-background border-[3px] border-db-cyan-process ${isSale ? 'mb-24 md:mb-12 lg:mb-14' : 'mb-0'} `}>
         <div className="pb-5 px-4">
           <div className="relative shadow-db m-auto w-full md:w-1/2 mt-5 bg-white border-2 border-db-cyan-process rounded-2xl p-4">
             <div className="flex justify-center text-5xl">
@@ -125,16 +128,16 @@ export default function Dbmt() {
                 </a>
               </div>
             </div>
-            <div className="w-full md:w-2/3 bg-white border-2 border-db-cyan-process rounded-2xl shadow-db ">
+            <div className="w-full md:w-2/3 bg-white border-2 border-db-cyan-process rounded-2xl shadow-db">
               <div className="rounded-t-xl w-full bg-db-cyan-process pb-2">
                 <div className="flex justify-center items-center gap-5 ">
-                  {basePrice - currentPrice !== 0 && (
+                  {isSale && (
                     <div className="text-2xl font-bold text-white relative pt-2">
                       ${basePrice}
                       <div className="absolute bottom-[30%] -left-[5%] w-[110%] h-1 bg-gradient-to-r from-red-400 to-orange-500"></div>
                     </div>
                   )}
-                  {basePrice - currentPrice !== 0 && (
+                  {isSale && (
                     <div className="pt-2">
                       <CgArrowLongRight size={40} className="text-white" />
                     </div>
@@ -143,7 +146,7 @@ export default function Dbmt() {
                     ${currentPrice}
                   </div>
                 </div>
-                {basePrice - currentPrice !== 0 && (
+                {isSale && (
                   <div className="text-center text-xs italic text-white">
                     Limited time offer only
                   </div>
