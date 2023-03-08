@@ -52,14 +52,14 @@ function Connector() {
           }
         />
 
-        {/* <Route
+        <Route
           path="/airdrop"
           element={
             <AppContainer>
               <Betterdrop />
             </AppContainer>
           }
-        /> */}
+        />
 
         <Route
           path="/staking"

@@ -8,6 +8,7 @@ import {
 import truncateEthAddress from "truncate-eth-address";
 import { useState } from "react";
 import customChains from "../../../static/chains";
+import { contractAddresses } from "../../../static/contractAddresses";
 
 export function WalletConnect() {
   const { connect, connectors } = useConnect();
