@@ -56,16 +56,16 @@ const Navbar = () => {
                 </div>
               </>
             )}
-            <div>
+            {/* <div>
               <Link onClick={() => setShowSideNavbar(false)} to={"/"}>
                 Dbmt Sale
               </Link>
-            </div>
-            <div>
+            </div> */}
+            {/* <div>
               <Link onClick={() => setShowSideNavbar(false)} to={"/airdrop"}>
                 Airdrop
               </Link>
-            </div>
+            </div> */}
             <div>
               <a
                 onClick={() => setShowSideNavbar(false)}
@@ -151,12 +151,12 @@ const Navbar = () => {
                 </div>
               </>
             )}
-             <div>
+             {/* <div>
               <Link to="/">Dbmt Sale</Link>
             </div>
             <div>
               <Link to="/airdrop">Airdrop</Link>
-            </div>
+            </div> */}
             <div>
               <a
                 title="Documentation"
