@@ -11,5 +11,5 @@ export default function useDbmtDuration() {
     functionName: "discountDuration",
   });
 
-  return data ? data : null;
+  return data ? Number(data) : null;
 }
