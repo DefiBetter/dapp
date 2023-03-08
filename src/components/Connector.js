@@ -15,7 +15,7 @@ function Connector() {
     <>
       <Routes>
         <Route
-          path="/"
+          path="/*"
           element={
             <>
               {process.env.REACT_APP_PHASE === "PRODUCTION" ? (
@@ -52,14 +52,6 @@ function Connector() {
           }
         />
 
-        <Route
-          path="/*"
-          element={
-            <AppContainer>
-              <Betterdrop />
-            </AppContainer>
-          }
-        />
         <Route
           path="/airdrop"
           element={
