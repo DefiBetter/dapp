@@ -30,42 +30,49 @@ export default function Dbmt() {
 
   const addToWallet = useAddToWallet();
 
-  async function fetchBnbPrice() {
-    try {
-      const bnbPriceData = await (
-        await fetch(
-          "https://api.coingecko.com/api/v3/simple/price?ids=binancecoin&vs_currencies=usd"
-        )
-      ).json();
-      setBnbPrice(bnbPriceData["binancecoin"].usd);
-    } catch (e) {
-      console.error(e);
-    }
-  }
+  // async function fetchBnbPrice() {
+  //   try {
+  //     const bnbPriceData = await (
+  //       await fetch(
+  //         "https://api.coingecko.com/api/v3/simple/price?ids=binancecoin&vs_currencies=usd"
+  //       )
+  //     ).json();
+  //     setBnbPrice(bnbPriceData["binancecoin"].usd);
+  //   } catch (e) {
+  //     console.error(e);
+  //   }
+  // }
 
-  useEffect(() => {
-    fetchBnbPrice();
-  }, []);
+  // useEffect(() => {
+  //   fetchBnbPrice();
+  // }, []);
   return (
     <>
-      <div className="z-50 fixed left-0 bottom-0 w-full bg-gradient-to-r from-red-400 to-orange-500 flex justify-center items-center">
-        <div className="absolute left-2 lg:left-44">
-          <MdDoubleArrow size={30} className="text-white animate-slide-right" />
-        </div>
-        <div className="absolute right-2 lg:right-44 rotate-180">
-          <MdDoubleArrow size={30} className="text-white animate-slide-right" />
-        </div>
-        <div className="p-2 w-full text-white text-2xl flex justify-center gap-2 md:gap-10 flex-col sm:flex-row items-center">
-          <div>
-            <span className="font-bold">$DBMT</span> Price increases in
+      {basePrice - currentPrice !== 0 && (
+        <div className="z-50 fixed left-0 bottom-0 w-full bg-gradient-to-r from-red-400 to-orange-500 flex justify-center items-center">
+          <div className="absolute left-2 lg:left-44">
+            <MdDoubleArrow
+              size={30}
+              className="text-white animate-slide-right"
+            />
           </div>
-          <div className="font-bold text-3xl ">
-            <CountdownFormatted ms={startTime + duration} />
+          <div className="absolute right-2 lg:right-44 rotate-180">
+            <MdDoubleArrow
+              size={30}
+              className="text-white animate-slide-right"
+            />
+          </div>
+          <div className="p-2 w-full text-white text-2xl flex justify-center gap-2 md:gap-10 flex-col sm:flex-row items-center">
+            <div>
+              <span className="font-bold">$DBMT</span> Price increases in
+            </div>
+            <div className="font-bold text-3xl ">
+              <CountdownFormatted ms={startTime + duration} />
+            </div>
           </div>
         </div>
-      </div>
-
-      <div className="relative bg-db-background border-[3px] border-db-cyan-process mb-24 md:mb-14 lg:mb-14">
+      )}
+      <div className="relative bg-db-background border-[3px] border-db-cyan-process mb-24 md:mb-14 lg:mb-14 min-h-[80vh]">
         <div className="pb-5 px-4">
           <div className="relative shadow-db m-auto w-full md:w-1/2 mt-5 bg-white border-2 border-db-cyan-process rounded-2xl p-4">
             <div className="flex justify-center text-5xl">
@@ -81,7 +88,7 @@ export default function Dbmt() {
               <h2 className="font-bold text-xl">
                 DeFiBetter Milestone Reward Program
               </h2>
-              <div className="flex-col mt-3 ml-3">
+              <div className="flex flex-col mt-3 ml-3 gap-2">
                 <div className="flex items-start gap-4">
                   <span>💦</span>
                   $DBMT is the first and possibly the most lucrative way to
@@ -106,7 +113,7 @@ export default function Dbmt() {
                   to alpha earlier than everyone else.
                 </div>
               </div>
-              <div className="mt-3">
+              <div className="mt-4">
                 Read more about how $DBMT works on our Medium page:{" "}
                 <a
                   href="https://medium.com/@defibetter"
@@ -121,20 +128,26 @@ export default function Dbmt() {
             <div className="w-full md:w-2/3 bg-white border-2 border-db-cyan-process rounded-2xl shadow-db ">
               <div className="rounded-t-xl w-full bg-db-cyan-process pb-2">
                 <div className="flex justify-center items-center gap-5 ">
-                  <div className="text-2xl font-bold text-white relative pt-2">
-                    {(basePrice / bnbPrice).toFixed(2)} BNB
-                    <div className="absolute bottom-[30%] -left-[5%] w-[110%] h-1 bg-gradient-to-r from-red-400 to-orange-500"></div>
-                  </div>
-                  <div className="pt-2">
-                    <CgArrowLongRight size={40} className="text-white" />
-                  </div>
+                  {basePrice - currentPrice !== 0 && (
+                    <div className="text-2xl font-bold text-white relative pt-2">
+                      ${basePrice}
+                      <div className="absolute bottom-[30%] -left-[5%] w-[110%] h-1 bg-gradient-to-r from-red-400 to-orange-500"></div>
+                    </div>
+                  )}
+                  {basePrice - currentPrice !== 0 && (
+                    <div className="pt-2">
+                      <CgArrowLongRight size={40} className="text-white" />
+                    </div>
+                  )}
                   <div className="font-bold text-transparent text-4xl bg-clip-text bg-gradient-to-b from-yellow-100 to-yellow-300">
-                    {(currentPrice / bnbPrice).toFixed(2)} BNB
+                    ${currentPrice}
                   </div>
                 </div>
-                <div className="text-center text-xs italic text-white">
-                  Limited time offer only
-                </div>
+                {basePrice - currentPrice !== 0 && (
+                  <div className="text-center text-xs italic text-white">
+                    Limited time offer only
+                  </div>
+                )}
               </div>
               <div className="p-4">
                 <div className="flex flex-col lg:flex-row justify-between items-center gap-2">
