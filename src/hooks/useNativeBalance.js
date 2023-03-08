@@ -6,5 +6,5 @@ export default function useNativeBalance() {
   const { data } = useBalance({
     address: address,
   });
-  return data ? data.formatted : 0;
+  return data ? Number(data.formatted).toFixed(4) : 0;
 }
