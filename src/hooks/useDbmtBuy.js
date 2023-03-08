@@ -16,6 +16,7 @@ export default function useDbmtBuy(buyAmount) {
   const preparation = usePrepareContractWrite({
     address: contractAddresses[chain?.network]?.dbmtSale,
     abi: DBMTSaleABI,
+    enabled: Number(buyAmount) > 0,
     functionName: "buy",
     overrides: {
       value: ethers.utils.parseEther(buyAmount).toString(),
@@ -39,14 +40,14 @@ export default function useDbmtBuy(buyAmount) {
       console.error(error);
       toastContext.addToast(
         ToastStatus.Failed,
-        "Failed to enter Airdrop",
+        "Failed to buy $DBMT",
         transaction.data?.hash
       );
     },
     onSuccess(data) {
       toastContext.addToast(
         ToastStatus.Success,
-        "Successfuly entered Airdrop",
+        "Successfuly bought $DBMT",
         transaction.data?.hash
       );
     },

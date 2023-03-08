@@ -12,7 +12,7 @@ export default function useAddToWallet() {
         address: contractAddresses[chain?.network]?.dbmtToken,
         decimals: 18,
         imageURL:
-          "https://github.com/ArchitectOfParadise/DefiBetterV1-FrontEnd-V2/blob/feature/dbmt-airdrop/src/static/image/DBMT_icon_round.png?raw=true",
+          "https://github.com/ArchitectOfParadise/DefiBetterV1-FrontEnd-V2/blob/dev/src/static/image/dbmt.png?raw=true",
       },
     };
 

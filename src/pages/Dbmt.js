@@ -15,7 +15,7 @@ import useAddToWallet from "../hooks/useAddToWallet";
 
 export default function Dbmt() {
   const [buyAmount, setBuyAmount] = useState("0");
-  const [bnbPrice, setBnbPrice] = useState(0);
+  // const [bnbPrice, setBnbPrice] = useState(0);
   // current price
   const dbmtPerEth = useDbmtPerEth(buyAmount);
   const { basePrice, currentPrice } = useDbmtPrice();
@@ -167,12 +167,12 @@ export default function Dbmt() {
                     </div>
                   </div>
                 </div>
-                <div className="mt-4 flex justify-between w-full items-center lg:w-1/2">
+                <div className="mt-2 flex justify-between w-full items-center lg:w-1/2">
                   <div className="flex-1 shadow-db text-center font-bold bg-db-french-sky p-3 border-[1px] border-black rounded-lg">
                     Min Purchase
                   </div>
                   <div className="flex-1 text-center">
-                    {(100 / bnbPrice).toFixed(3)} BNB
+                    $100
                   </div>
                 </div>
                 <div className="mt-4 flex items-center w-full">
@@ -181,7 +181,7 @@ export default function Dbmt() {
                   </div>
                   <div className="w-full flex items-center p-2 justify-center bg-db-background rounded-lg shadow-db">
                     <div className="text-black text-sm flex-1 text-center">
-                      {trimNumber(dbmtPerEth, 9, "dp")}
+                      {dbmtPerEth !== 0 ? trimNumber(dbmtPerEth, 9, "dp") : 0}
                     </div>
 
                     <div className="text-black font-bold w-12 text-center">
