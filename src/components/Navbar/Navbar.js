@@ -147,7 +147,7 @@ const Navbar = () => {
               </>
             )}
             <div>
-              <Link to="/dbmt">Dbmt</Link>
+              <Link to="/airdrop">Airdrop</Link>
             </div>
             <div>
               <a
