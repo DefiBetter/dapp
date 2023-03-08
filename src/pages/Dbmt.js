@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { CountdownFormatted, trimNumber } from "../components/common/helper";
 import { MdDoubleArrow } from "react-icons/md";
 import { CgArrowLongRight } from "react-icons/cg";
@@ -47,7 +47,10 @@ export default function Dbmt() {
   //   fetchBnbPrice();
   // }, []);
 
-  const isSale = basePrice - currentPrice !== 0
+  const isSale = useMemo(
+    () => basePrice - currentPrice !== 0,
+    [basePrice, currentPrice]
+  );
 
   return (
     <>
@@ -75,7 +78,11 @@ export default function Dbmt() {
           </div>
         </div>
       )}
-      <div className={`relative bg-db-background border-[3px] border-db-cyan-process ${isSale ? 'mb-24 md:mb-12 lg:mb-14' : 'mb-0'} `}>
+      <div
+        className={`relative bg-db-background border-[3px] border-db-cyan-process ${
+          isSale ? "mb-24 md:mb-12 lg:mb-14" : "mb-0"
+        } `}
+      >
         <div className="pb-5 px-4">
           <div className="relative shadow-db m-auto w-full md:w-1/2 mt-5 bg-white border-2 border-db-cyan-process rounded-2xl p-4">
             <div className="flex justify-center text-5xl">
@@ -174,9 +181,7 @@ export default function Dbmt() {
                   <div className="flex-1 shadow-db text-center font-bold bg-db-french-sky p-3 border-[1px] border-black rounded-lg">
                     Min Purchase
                   </div>
-                  <div className="flex-1 text-center">
-                    $100
-                  </div>
+                  <div className="flex-1 text-center">$100</div>
                 </div>
                 <div className="mt-4 flex items-center w-full">
                   <div className="font-fancy text-db-cyan-process w-24 text-center text-xl pt-1">
