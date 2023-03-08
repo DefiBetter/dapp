@@ -7,7 +7,7 @@ import {
 } from "wagmi";
 import truncateEthAddress from "truncate-eth-address";
 import { useState } from "react";
-import { DEFAULT_CHAIN_ID } from "../../../static/constant";
+import customChains from "../../../static/chains";
 
 export function WalletConnect() {
   const { connect, connectors } = useConnect();
@@ -22,10 +22,10 @@ export function WalletConnect() {
   if (address) {
     return (
       <div>
-        {chain && chain.id !== DEFAULT_CHAIN_ID ? (
+        {chain && chain.id !== customChains.binanceSmartChain.id ? (
           <button
             className="border-[1px] border-black shadow-db bg-red-100 h-10 w-36 rounded-lg text-lg text-black hover:bg-db-blue-200"
-            onClick={() => switchNetwork(DEFAULT_CHAIN_ID)}
+            onClick={() => switchNetwork(customChains.binanceSmartChain.id)}
           >
             Switch Network
           </button>
