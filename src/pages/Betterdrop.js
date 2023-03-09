@@ -111,17 +111,45 @@ export default function Betterdrop() {
       </div>
 
       <div className="absolute bottom-2 right-2 flex gap-2 items-center">
-        <a target="_blank" rel='noreferrer' href="https://discord.gg/DSDXSXf6Ub">
-          <img className='w-10 h-10' src={require("../static/image/discord-logo.png")} />
+        <a
+          target="_blank"
+          rel="noreferrer"
+          href="https://discord.gg/DSDXSXf6Ub"
+        >
+          <img
+            className="w-10 h-10"
+            src={require("../static/image/discord-logo.png")}
+          />
         </a>
-        <a target="_blank" rel='noreferrer' href="https://t.me/+2z4mDnFAnjxiMWJl">
-          <img className='w-10 h-10' src={require("../static/image/telegram-logo.png")} />
+        <a
+          target="_blank"
+          rel="noreferrer"
+          href="https://t.me/+2z4mDnFAnjxiMWJl"
+        >
+          <img
+            className="w-10 h-10"
+            src={require("../static/image/telegram-logo.png")}
+          />
         </a>
-        <a target="_blank" rel='noreferrer' href="https://twitter.com/defi_better">
-          <img className='w-10 h-10' src={require("../static/image/twitter-logo.png")} />
+        <a
+          target="_blank"
+          rel="noreferrer"
+          href="https://twitter.com/defi_better"
+        >
+          <img
+            className="w-10 h-10"
+            src={require("../static/image/twitter-logo.png")}
+          />
         </a>
-        <a target="_blank" rel='noreferrer' href="https://medium.com/@defibetter">
-          <img className='w-10 h-10' src={require("../static/image/medium-logo.png")} />
+        <a
+          target="_blank"
+          rel="noreferrer"
+          href="https://medium.com/@defibetter"
+        >
+          <img
+            className="w-10 h-10"
+            src={require("../static/image/medium-logo.png")}
+          />
         </a>
       </div>
 
@@ -132,7 +160,7 @@ export default function Betterdrop() {
           </div>
           <div className="flex-1 text-center">{spotsLeft}</div>
         </div>
-        <input
+        {/* <input
           type="text"
           className="w-full h-12 rounded-lg text-base"
           placeholder="Enter your Wallet address"
@@ -140,8 +168,8 @@ export default function Betterdrop() {
           onChange={(e) => {
             setWalletAddress(e.target.value);
           }}
-        />
-        <DBButton
+        /> */}
+        {/* <DBButton
           disabled={walletAddress.length === 0 || spotsLeft === 0}
           onClick={() => {
             if (enterAidrop.transaction.write) {
@@ -154,7 +182,57 @@ export default function Betterdrop() {
           ) : (
             "Enter Airdrop"
           )}
-        </DBButton>
+        </DBButton> */}
+        <div className="flex-1 content-center text-2xl">
+          <div className="place-content-center text-center mt-8 bg-clip-text bg-gradient-to-b from-yellow-300 to-yellow-500 text-transparent">
+            To enter the Airdrop, join our Discord and message
+          </div>
+          <div className="place-content-center text-center font-bold mb-8 bg-clip-text bg-gradient-to-b from-yellow-300 to-yellow-500 text-transparent">
+            Chance | DeFiBetter.Finance (chance#9969)
+          </div>
+          <div className="flex gap-2 items-center place-content-center">
+            <a
+              target="_blank"
+              rel="noreferrer"
+              href="https://discord.gg/DSDXSXf6Ub"
+            >
+              <img
+                className="w-10 h-10"
+                src={require("../static/image/discord-logo.png")}
+              />
+            </a>
+            <a
+              target="_blank"
+              rel="noreferrer"
+              href="https://t.me/+2z4mDnFAnjxiMWJl"
+            >
+              <img
+                className="w-10 h-10"
+                src={require("../static/image/telegram-logo.png")}
+              />
+            </a>
+            <a
+              target="_blank"
+              rel="noreferrer"
+              href="https://twitter.com/defi_better"
+            >
+              <img
+                className="w-10 h-10"
+                src={require("../static/image/twitter-logo.png")}
+              />
+            </a>
+            <a
+              target="_blank"
+              rel="noreferrer"
+              href="https://medium.com/@defibetter"
+            >
+              <img
+                className="w-10 h-10"
+                src={require("../static/image/medium-logo.png")}
+              />
+            </a>
+          </div>
+        </div>
         <div className="mt-5 w-full m-auto text-center">
           <div className="text-xs">
             You will be able to claim once all spots are filled. A wallet can
