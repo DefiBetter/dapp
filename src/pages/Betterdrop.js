@@ -160,29 +160,6 @@ export default function Betterdrop() {
           </div>
           <div className="flex-1 text-center">0</div>
         </div>
-        {/* <input
-          type="text"
-          className="w-full h-12 rounded-lg text-base"
-          placeholder="Enter your Wallet address"
-          value={walletAddress}
-          onChange={(e) => {
-            setWalletAddress(e.target.value);
-          }}
-        /> */}
-        {/* <DBButton
-          disabled={walletAddress.length === 0 || spotsLeft === 0}
-          onClick={() => {
-            if (enterAidrop.transaction.write) {
-              enterAidrop.transaction.write();
-            }
-          }}
-        >
-          {enterAidrop.confirmation.isLoading ? (
-            <Loader text="Entering Airdrop" />
-          ) : (
-            "Enter Airdrop"
-          )}
-        </DBButton> */}
         <div className="flex-1 content-center text-2xl">
           <div className="place-content-center text-center mt-8 bg-clip-text bg-gradient-to-b from-yellow-300 to-yellow-500 text-transparent">
             To enter the Airdrop, join our Discord and message
