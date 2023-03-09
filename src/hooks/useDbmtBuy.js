@@ -8,10 +8,12 @@ import { ToastStatus, useToast } from "../context/ToastContext";
 import { ethers } from "ethers";
 import { contractAddresses } from "../static/contractAddresses";
 import DBMTSaleABI from "../static/ABI/DBMTSaleABI.json";
+import useFirework from "./useFireworks";
 
 export default function useDbmtBuy(buyAmount) {
   const toastContext = useToast();
   const { chain } = useNetwork();
+  const { firework } = useFirework();
 
   const preparation = usePrepareContractWrite({
     address: contractAddresses[chain?.network]?.dbmtSale,
@@ -19,11 +21,11 @@ export default function useDbmtBuy(buyAmount) {
     enabled: Number(buyAmount) > 0,
     functionName: "buy",
     overrides: {
-      value: ethers.utils.parseEther(buyAmount).toString(),
+      value: ethers.utils.parseEther(buyAmount),
     },
     onError(err) {
-      console.error(err)
-    }
+      console.error(err);
+    },
   });
 
   const transaction = useContractWrite({
@@ -45,6 +47,7 @@ export default function useDbmtBuy(buyAmount) {
       );
     },
     onSuccess(data) {
+      firework()
       toastContext.addToast(
         ToastStatus.Success,
         "Successfuly bought $DBMT",

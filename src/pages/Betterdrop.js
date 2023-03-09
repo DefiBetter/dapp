@@ -1,18 +1,13 @@
-import {
-  useAccount,
-  useContractRead,
-  useNetwork,
-} from "wagmi";
+import { useAccount, useContractRead, useNetwork } from "wagmi";
 import DBButton from "../components/common/DBButton";
 import { contractAddresses } from "../static/contractAddresses";
 import Loader from "../components/common/Loader";
 import { useEffect, useState } from "react";
-import confetti from "canvas-confetti";
 import LimitedCapacityAirdropABI from "../static/ABI/LimitedCapacityAirdropABI.json";
 import useEnterBetterDrop from "../hooks/useEnterBetterDrop";
 import useClaimBetterDrop from "../hooks/useClaimBetterDrop";
 import useAddToWallet from "../hooks/useAddToWallet";
-
+import useFirework from "../hooks/useFireworks";
 export default function Betterdrop() {
   const { chain } = useNetwork();
   const { address } = useAccount();
@@ -20,7 +15,7 @@ export default function Betterdrop() {
   const [claimDisabled, setClaimDisabled] = useState(false);
 
   const addToWallet = useAddToWallet();
-
+  const { firework } = useFirework();
   useEffect(() => {
     if (address && walletAddress.length === 0) {
       setWalletAddress(address);
@@ -54,50 +49,6 @@ export default function Betterdrop() {
     firework();
     setClaimDisabled(true);
   });
-
-  function firework() {
-    var duration = 10 * 1000;
-    var animationEnd = Date.now() + duration;
-    var defaults = {
-      startVelocity: 30,
-      spread: 360,
-      ticks: 60,
-      zIndex: 0,
-    };
-
-    function randomInRange(min, max) {
-      return Math.random() * (max - min) + min;
-    }
-
-    var interval = setInterval(function () {
-      var timeLeft = animationEnd - Date.now();
-
-      if (timeLeft <= 0) {
-        return clearInterval(interval);
-      }
-
-      var particleCount = 50 * (timeLeft / duration);
-      // since particles fall down, start a bit higher than random
-      confetti(
-        Object.assign({}, defaults, {
-          particleCount,
-          origin: {
-            x: randomInRange(0.1, 0.3),
-            y: Math.random() - 0.2,
-          },
-        })
-      );
-      confetti(
-        Object.assign({}, defaults, {
-          particleCount,
-          origin: {
-            x: randomInRange(0.7, 0.9),
-            y: Math.random() - 0.2,
-          },
-        })
-      );
-    }, 250);
-  }
 
   return (
     <div className="relative bg-db-background border-[3px] border-db-cyan-process p-4 h-[90vh] md:h-[83vh]">
