@@ -158,7 +158,7 @@ export default function Betterdrop() {
           <div className="flex-1 shadow-db text-center font-bold bg-db-french-sky p-3 border-[1px] border-black rounded-lg">
             Spots left
           </div>
-          <div className="flex-1 text-center">{spotsLeft}</div>
+          <div className="flex-1 text-center">0</div>
         </div>
         {/* <input
           type="text"
