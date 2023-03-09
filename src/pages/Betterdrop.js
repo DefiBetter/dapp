@@ -1,8 +1,4 @@
-import {
-  useAccount,
-  useContractRead,
-  useNetwork,
-} from "wagmi";
+import { useAccount, useContractRead, useNetwork } from "wagmi";
 import DBButton from "../components/common/DBButton";
 import { contractAddresses } from "../static/contractAddresses";
 import Loader from "../components/common/Loader";
@@ -162,12 +158,11 @@ export default function Betterdrop() {
         </div>
         <div className="flex-1 content-center text-2xl">
           <div className="place-content-center text-center mt-8 bg-clip-text bg-gradient-to-b from-yellow-300 to-yellow-500 text-transparent">
-            To enter the Airdrop, join our Discord and message
+            Airdrop enrollment is over. <br />
+            If you are whitelisted, you can now claim.{" "}
           </div>
-          <div className="place-content-center text-center font-bold mb-8 bg-clip-text bg-gradient-to-b from-yellow-300 to-yellow-500 text-transparent">
-            Chance | DeFiBetter.Finance (chance#9969)
-          </div>
-          <div className="flex gap-2 items-center place-content-center">
+
+          <div className="mt-2 flex gap-2 items-center place-content-center">
             <a
               target="_blank"
               rel="noreferrer"
@@ -218,7 +213,11 @@ export default function Betterdrop() {
           <div className="flex gap-2 items-center flex-col md:flex-row justify-center">
             <div className="w-full md:w-2/3">
               <DBButton
-                disabled={spotsLeft !== 0 || claimDisabled}
+                disabled={
+                  spotsLeft !== 0 ||
+                  claimDisabled ||
+                  claimAirdrop.preparation.isError
+                }
                 onClick={() => {
                   claimAirdrop.transaction.write();
                 }}
