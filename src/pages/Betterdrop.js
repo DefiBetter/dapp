@@ -1,13 +1,10 @@
 import {
   useAccount,
   useContractRead,
-  useContractWrite,
   useNetwork,
-  useWaitForTransaction,
 } from "wagmi";
 import DBButton from "../components/common/DBButton";
 import { contractAddresses } from "../static/contractAddresses";
-import { ToastStatus, useToast } from "../context/ToastContext";
 import Loader from "../components/common/Loader";
 import { useEffect, useState } from "react";
 import confetti from "canvas-confetti";

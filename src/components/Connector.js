@@ -15,7 +15,7 @@ function Connector() {
     <>
       <Routes>
         <Route
-          path="/*"
+          path="/"
           element={
             <>
               {process.env.REACT_APP_PHASE === "PRODUCTION" ? (
@@ -53,7 +53,7 @@ function Connector() {
         />
 
         <Route
-          path="/airdrop"
+          path="/*"
           element={
             <AppContainer>
               <Betterdrop />
@@ -61,31 +61,35 @@ function Connector() {
           }
         />
 
-        {/* <Route
-          path="/staking"
-          element={
-            <AppContainer>
-              <Staking />
-            </AppContainer>
-          }
-        />
+        {process.env.REACT_APP_PHASE === "PRODUCTION" && (
+          <>
+            <Route
+              path="/staking"
+              element={
+                <AppContainer>
+                  <Staking />
+                </AppContainer>
+              }
+            />
 
-        <Route
-          path="/vaults"
-          element={
-            <AppContainer>
-              <StrategyVault />
-            </AppContainer>
-          }
-        />
-        <Route
-          path="/template"
-          element={
-            <AppContainer>
-              <PublicSale />
-            </AppContainer>
-          }
-        /> */}
+            <Route
+              path="/vaults"
+              element={
+                <AppContainer>
+                  <StrategyVault />
+                </AppContainer>
+              }
+            />
+            <Route
+              path="/template"
+              element={
+                <AppContainer>
+                  <PublicSale />
+                </AppContainer>
+              }
+            />
+          </>
+        )}
       </Routes>
     </>
   );
