@@ -1,13 +1,10 @@
 import {
   useAccount,
   useContractRead,
-  useContractWrite,
   useNetwork,
-  useWaitForTransaction,
 } from "wagmi";
 import DBButton from "../components/common/DBButton";
 import { contractAddresses } from "../static/contractAddresses";
-import { ToastStatus, useToast } from "../context/ToastContext";
 import Loader from "../components/common/Loader";
 import { useEffect, useState } from "react";
 import confetti from "canvas-confetti";
@@ -161,7 +158,7 @@ export default function Betterdrop() {
           <div className="flex-1 shadow-db text-center font-bold bg-db-french-sky p-3 border-[1px] border-black rounded-lg">
             Spots left
           </div>
-          <div className="flex-1 text-center">{spotsLeft}</div>
+          <div className="flex-1 text-center">0</div>
         </div>
         <div className="flex-1 content-center text-2xl">
           <div className="place-content-center text-center mt-8 bg-clip-text bg-gradient-to-b from-yellow-300 to-yellow-500 text-transparent">
