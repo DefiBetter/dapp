@@ -43,5 +43,5 @@ export default function useClaimBetterDrop(spotsLeft, onSuccessCallback) {
       );
     },
   });
-  return { confirmation, transaction };
+  return { preparation, confirmation, transaction };
 }
