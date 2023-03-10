@@ -27,7 +27,7 @@ const Action = (props) => {
             }
           >
             <div className="flex justify-center items-center gap-2">
-              <div className="font-fancy pt-1">
+              <div className="">
                 {depositWrite.confirmation.isLoading ? (
                   <Loader text="Depositing" />
                 ) : (
@@ -58,7 +58,7 @@ const Action = (props) => {
                 "Claim"
               )}
             </div>
-            <div className="pb-1 font-sans text-sm leading-none">
+            <div className="font-sans text-sm leading-none">
               {Math.round(+props.pendingBetterBalance * 10_000) / 10_000}{" "}
               {props.nativeGas}
             </div>

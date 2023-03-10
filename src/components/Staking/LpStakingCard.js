@@ -209,7 +209,7 @@ const LpStakingCard = (props) => {
                   "Claim"
                 )}
               </div>
-              <div className="pb-1 font-sans text-sm leading-none">
+              <div className="font-sans text-sm leading-none">
                 {trimNumber(pendingRewards, 4, "dp")} {props.nativeGas}
               </div>
             </div>

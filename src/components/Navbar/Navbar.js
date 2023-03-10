@@ -16,7 +16,7 @@ const Navbar = () => {
             showSideNavbar ? "translate-x-0" : "-translate-x-full"
           } transition-transform left-0 z-40 fixed h-full top-24 w-full bg-white border-2 border-db-cyan-process`}
         >
-          <div className="z-40 p-10 flex flex-col gap-5 font-fancy text-db-blue text-lg text-db-cyan-process underline font-bold">
+          <div className="z-40 p-10 flex flex-col gap-5 text-db-blue text-lg text-db-cyan-process underline font-bold">
             {process.env.REACT_APP_PHASE === "PRODUCTION" && (
               <>
                 <div>
@@ -115,7 +115,7 @@ const Navbar = () => {
               ></img>
             </Link>
           </div>
-          <div className="hidden md:flex pt-1.5 gap-10 items-center font-fancy text-db-blue text-lg text-db-cyan-process underline font-bold">
+          <div className="hidden md:flex gap-10 items-center text-db-blue text-lg text-db-cyan-process underline font-bold">
             {process.env.REACT_APP_PHASE === "PRODUCTION" && (
               <>
                 <div>
