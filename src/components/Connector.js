@@ -24,8 +24,8 @@ function Connector() {
                 </AppContainer>
               ) : process.env.REACT_APP_PHASE === "DBMT_SALE" ? (
                 <AppContainer>
-                  {/* <Dbmt /> */}
-                  <Betterdrop />
+                  <Dbmt />
+                  {/* <Betterdrop /> */}
                 </AppContainer>
               ) : process.env.REACT_APP_PHASE === "PUBLIC_SALE" ? (
                 <AppContainer>

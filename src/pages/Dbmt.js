@@ -15,7 +15,7 @@ import useAddToWallet from "../hooks/useAddToWallet";
 
 export default function Dbmt() {
   const [buyAmount, setBuyAmount] = useState("0");
-  // const [bnbPrice, setBnbPrice] = useState(0);
+  const [bnbPrice, setBnbPrice] = useState(0);
   // current price
   const dbmtPerEth = useDbmtPerEth(buyAmount);
   const { basePrice, currentPrice } = useDbmtPrice();
@@ -30,22 +30,22 @@ export default function Dbmt() {
 
   const addToWallet = useAddToWallet();
 
-  // async function fetchBnbPrice() {
-  //   try {
-  //     const bnbPriceData = await (
-  //       await fetch(
-  //         "https://api.coingecko.com/api/v3/simple/price?ids=binancecoin&vs_currencies=usd"
-  //       )
-  //     ).json();
-  //     setBnbPrice(bnbPriceData["binancecoin"].usd);
-  //   } catch (e) {
-  //     console.error(e);
-  //   }
-  // }
+  async function fetchBnbPrice() {
+    try {
+      const bnbPriceData = await (
+        await fetch(
+          "https://api.coingecko.com/api/v3/simple/price?ids=binancecoin&vs_currencies=usd"
+        )
+      ).json();
+      setBnbPrice(bnbPriceData["binancecoin"].usd);
+    } catch (e) {
+      console.error(e);
+    }
+  }
 
-  // useEffect(() => {
-  //   fetchBnbPrice();
-  // }, []);
+  useEffect(() => {
+    fetchBnbPrice();
+  }, []);
 
   const isSale = useMemo(
     () => basePrice - currentPrice !== 0,
@@ -181,7 +181,12 @@ export default function Dbmt() {
                   <div className="flex-1 shadow-db text-center font-bold bg-db-french-sky p-3 border-[1px] border-black rounded-lg">
                     Min Purchase
                   </div>
-                  <div className="flex-1 text-center">$100</div>
+                  <div className="flex-1 text-center">
+                    $100{" "}
+                    <span className="text-xs">
+                      ({(100 / bnbPrice).toFixed(3)} BNB)
+                    </span>
+                  </div>
                 </div>
                 <div className="mt-4 flex items-center w-full">
                   <div className="font-fancy text-db-cyan-process w-24 text-center text-xl pt-1">
@@ -221,9 +226,7 @@ export default function Dbmt() {
                   <div className="w-full md:w-2/3">
                     <DBButton
                       onClick={() => {
-                        console.log("a");
                         if (buyWrite.transaction.write) {
-                          console.log("b");
                           buyWrite.transaction.write();
                         }
                       }}
