@@ -70,7 +70,7 @@ const Navbar = () => {
               <a
                 onClick={() => setShowSideNavbar(false)}
                 title="Documentation"
-                href="https://medium.com/@defibetter"
+                href="https://github.com/DefiBetter/BetterDocs/blob/main/DeFiBetter%20Litepaper.pdf"
                 target="_blank"
                 rel="noreferrer"
               >
@@ -160,7 +160,7 @@ const Navbar = () => {
             <div>
               <a
                 title="Documentation"
-                href="https://medium.com/@defibetter"
+                href="https://github.com/DefiBetter/BetterDocs/blob/main/DeFiBetter%20Litepaper.pdf"
                 target="_blank"
                 rel="noreferrer"
               >
