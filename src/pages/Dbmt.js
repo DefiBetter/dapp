@@ -11,7 +11,9 @@ import useDbmtBuy from "../hooks/useDbmtBuy";
 import DBButton from "../components/common/DBButton";
 import Loader from "../components/common/Loader";
 import useNativeBalance from "../hooks/useNativeBalance";
-import useAddToWallet from "../hooks/useAddToWallet";
+import { BsCoin } from "react-icons/bs";
+import { GiSandsOfTime, GiCoins } from "react-icons/gi";
+import AddToWallet from "../components/common/AddToWallet";
 
 export default function Dbmt() {
   const [buyAmount, setBuyAmount] = useState("0");
@@ -27,8 +29,6 @@ export default function Dbmt() {
 
   const buyWrite = useDbmtBuy(buyAmount);
   const userGasBalance = useNativeBalance();
-
-  const addToWallet = useAddToWallet();
 
   async function fetchBnbPrice() {
     try {
@@ -79,12 +79,12 @@ export default function Dbmt() {
         </div>
       )}
       <div
-        className={`relative bg-db-background border-[3px] border-db-cyan-process ${
+        className={`bg-db-light dark:bg-db-dark-nav transition-colors rounded-md p-4 ${
           isSale ? "mb-24 md:mb-12 lg:mb-14" : "mb-0"
         } `}
       >
-        <div className="pb-5 px-4">
-          <div className="relative shadow-db m-auto w-full md:w-1/2 mt-5 bg-white border-2 border-db-cyan-process rounded-2xl p-4">
+        <div className="z-10 text-4xl flex justify-center">
+          <div className="w-full md:w-1/3 bg-white dark:bg-db-dark p-4 rounded-lg flex justify-center gap-1 shadow-sm shadow-db-cyan-process">
             <div className="flex justify-center text-5xl">
               $DBMT
               <span className="font-bold mt-7 font-fancy text-5xl text-db-cyan-process">
@@ -92,9 +92,10 @@ export default function Dbmt() {
               </span>
             </div>
           </div>
-
-          <div className="relative z-10 flex flex-col gap-5 md:flex-row m-auto w-full mt-5 p-4 bg-white border-2 border-db-cyan-process shadow-db rounded-2xl">
-            <div className="p-2 bg-white w-full md:w-1/2">
+        </div>
+        <div className="mt-4 flex justify-center">
+          <div className="z-10 w-full p-4 rounded-lg shadow-sm shadow-db-cyan-process bg-white dark:bg-db-dark flex gap-4 flex-col lg:flex-row">
+            <div className="p-2 w-full lg:w-1/2">
               <h2 className="font-bold text-xl">
                 DeFiBetter Milestone Reward Program
               </h2>
@@ -135,8 +136,8 @@ export default function Dbmt() {
                 </a>
               </div>
             </div>
-            <div className="w-full md:w-2/3 bg-white border-2 border-db-cyan-process rounded-2xl shadow-db">
-              <div className="rounded-t-xl w-full bg-db-cyan-process pb-2">
+            <div className="w-full lg:w-2/3 bg-db-light dark:bg-db-dark-nav rounded-lg shadow-sm shadow-db-cyan-process overflow-hidden">
+              <div className="w-full bg-db-cyan-process pb-2">
                 <div className="flex justify-center items-center gap-5 ">
                   {isSale && (
                     <div className="text-2xl font-bold text-white relative pt-2">
@@ -160,69 +161,80 @@ export default function Dbmt() {
                 )}
               </div>
               <div className="p-4">
-                <div className="flex flex-col lg:flex-row justify-between items-center gap-2">
-                  <div className="flex justify-between w-full items-center">
-                    <div className="flex-1 shadow-db text-center font-bold bg-db-french-sky p-3 border-[1px] border-black rounded-lg">
-                      BNB Balance
-                    </div>
-                    <div className="flex-1 text-center">{userGasBalance}</div>
+                <div className="flex justify-between gap-4">
+                  <div className="h-14 flex items-center gap-2 p-2 bg-white dark:bg-db-dark justify-center shadow-sm shadow-db-cyan-process rounded-lg">
+                    <BsCoin size={20} />
+                    <div>Balance</div>
+                    <div className="font-bold">{userGasBalance} BNB</div>
                   </div>
-
-                  <div className="flex justify-between w-full items-center">
-                    <div className="flex-1 shadow-db text-center font-bold bg-db-french-sky p-3 border-[1px] border-black rounded-lg">
-                      Supply Left
-                    </div>
-                    <div className="flex-1 text-center">
+                  <div className="h-14 flex items-center gap-2 p-2 bg-white dark:bg-db-dark justify-center shadow-sm shadow-db-cyan-process rounded-lg">
+                    <GiCoins size={20} />
+                    <div>Supply left</div>
+                    <div className="font-bold">
                       {trimNumber(+supplyLeft, 4, "dp")}
                     </div>
                   </div>
+                  <div className="h-14 flex items-center gap-2 p-2 bg-white dark:bg-db-dark justify-center shadow-sm shadow-db-cyan-process rounded-lg">
+                    <GiCoins size={20} />
+                    <div>Min. Purchase</div>
+                    <div className="font-bold">
+                      $100{" "}
+                      <span className="text-xs">
+                        ({(100 / bnbPrice).toFixed(3)} BNB)
+                      </span>
+                    </div>
+                  </div>
                 </div>
-                <div className="mt-2 flex justify-between w-full items-center lg:w-1/2">
-                  <div className="flex-1 shadow-db text-center font-bold bg-db-french-sky p-3 border-[1px] border-black rounded-lg">
-                    Min Purchase
-                  </div>
-                  <div className="flex-1 text-center">
-                    $100{" "}
-                    <span className="text-xs">
-                      ({(100 / bnbPrice).toFixed(3)} BNB)
-                    </span>
+                <div className="mt-4 flex justify-center w-full h-14">
+                  <div className="w-full gap-2 flex">
+                    <div className="w-[7rem] flex justify-center items-center">
+                      <span className="font-fancy text-xl pt-2">Spend</span>
+                    </div>
+                    <div className="w-full shadow-sm shadow-db-cyan-process bg-white dark:bg-db-dark rounded-lg flex items-center px-4">
+                      <div
+                        onClick={() => {
+                          setBuyAmount(userGasBalance.toString());
+                        }}
+                        className="cursor-pointer rounded-md flex gap-2 justify-center items-center h-9 pb-0.5 px-3 border-[1px] border-db-cyan-process text-db-cyan-process hover:bg-db-cyan-process hover:text-white transition-colors shadow-sm shadow-db-cyan-process hover:shadow-white"
+                      >
+                        MAX
+                      </div>
+                      <input
+                        value={Number(buyAmount) !== 0 ? buyAmount : ""}
+                        onChange={(e) => {
+                          const val = e.target.value || "0";
+                          setBuyAmount(val);
+                        }}
+                        type={"number"}
+                        min={0}
+                        className="px-4 text-center h-10 w-full focus:ring-0 focus:outline-none rounded-lg bg-white dark:bg-db-dark"
+                        placeholder="BNB amount"
+                      />
+                      <div className="">BNB</div>
+                    </div>
                   </div>
                 </div>
-                <div className="mt-4 flex items-center w-full">
-                  <div className="font-fancy text-db-cyan-process w-24 text-center text-xl pt-1">
-                    buy
-                  </div>
-                  <div className="w-full flex items-center p-2 justify-center bg-db-background rounded-lg shadow-db">
-                    <div className="text-black text-sm flex-1 text-center">
-                      {dbmtPerEth !== 0 ? trimNumber(dbmtPerEth, 9, "dp") : 0}
+                <div className="mt-4 flex justify-center w-full h-14">
+                  <div className="w-full gap-2 flex">
+                    <div className="w-60 flex justify-center items-center">
+                      <span className="font-fancy text-xl pt-2">to get</span>
                     </div>
 
-                    <div className="text-black font-bold w-12 text-center">
-                      DBMT
+                    <div className="w-full shadow-sm shadow-db-cyan-process bg-db-light dark:bg-db-dark-nav rounded-lg flex items-center px-4">
+                      <input
+                        disabled
+                        className="px-4 text-center h-10 w-full rounded-lg bg-db-light dark:bg-db-dark-nav"
+                        placeholder="Enter Amount"
+                        value={
+                          dbmtPerEth !== 0 ? trimNumber(dbmtPerEth, 9, "dp") : 0
+                        }
+                      />
+                      <div className="">DBMT</div>
                     </div>
                   </div>
                 </div>
-                <div className="mt-4 flex items-center w-full">
-                  <div className="font-fancy text-db-cyan-process w-24 text-center text-xl pt-1">
-                    for
-                  </div>
-                  <div className="w-full flex items-center p-2 justify-center bg-db-background rounded-lg shadow-db">
-                    <input
-                      onChange={(e) => {
-                        const val = e.target.value || "0";
-                        setBuyAmount(val);
-                      }}
-                      type={"number"}
-                      min={0}
-                      placeholder="Amount"
-                      className="text-black text-sm flex-1"
-                    />
-                    <div className="relative text-black font-bold w-12 text-center">
-                      <div>BNB</div>
-                    </div>
-                  </div>
-                </div>
-                <div className="mt-4 flex gap-2 items-center flex-col md:flex-row justify-center">
+
+                <div className="mt-4 flex gap-4 items-center flex-col md:flex-row justify-center h-14">
                   <div className="w-full md:w-2/3">
                     <DBButton
                       onClick={() => {
@@ -239,31 +251,12 @@ export default function Dbmt() {
                     </DBButton>
                   </div>
                   <div className="w-full md:w-1/3">
-                    <button
-                      className="w-full bg-db-background border-[1px] h-10 border-black shadow-db rounded-lg text-sm flex items-center justify-center gap-2 "
-                      onClick={() => addToWallet("DBMT")}
-                    >
-                      <img
-                        src={require("../../src/static/image/dbmt.png")}
-                        width={30}
-                        height={30}
-                        alt="dbmt logo"
-                      />
-                      Add $DBMT to wallet
-                    </button>
+                    <AddToWallet asset="DBMT" />
                   </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
-
-        <div className="z-0 absolute h-60 top-10 left-[2%] hidden md:block">
-          <img
-            alt="faucet"
-            className="h-full z-0"
-            src={require("../static/image/open-vault-clipart.svg").default}
-          ></img>
         </div>
       </div>
     </>

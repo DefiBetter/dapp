@@ -59,15 +59,15 @@ const Connect = ({ children }) => {
   }
   if (chain && chain.id !== Number(process.env.REACT_APP_DEFAULT_CHAIN)) {
     return (
-      <div className="mt-32 text-3xl flex items-center flex-col gap-3 h-full">
-        <div className="rounded-lg p-2">Switch to a </div>
-        <div>
+      <div className="mt-32 flex items-center flex-col h-full">
+        <div className="p-2 text-3xl">Switch to a </div>
+        <div className='mt-3'>  
           <span className="pl-4 pr-2 text-db-cyan-process font-fancy font-bold text-4xl">
             Better
           </span>
         </div>
-        <div>chain</div>
-        <div className="relative">
+        <div className="text-3xl">chain</div>
+        <div className="relative mt-3">
           <WalletConnect />
         </div>
       </div>
