@@ -7,8 +7,8 @@ const Connect = ({ children }) => {
 
   if (!isConnected) {
     return (
-      <div className="relative mt-32 text-3xl flex items-center flex-col gap-3 h-full">
-        <div className="rounded-lg p-2">Connect your wallet</div>
+      <div className="relative mt-32 flex items-center flex-col gap-3 h-full">
+        <div className="rounded-lg p-2 text-3xl">Connect your wallet</div>
         <div className="relative">
           <WalletConnect />
         </div>

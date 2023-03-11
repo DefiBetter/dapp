@@ -8,7 +8,6 @@ import AppContainer from "./common/container/AppContainer";
 import CommunityPresale from "../pages/CommunityPresale";
 import VcPresale from "../pages/VcPresale";
 import Dbmt from "../pages/Dbmt";
-import Betterdrop from "../pages/Betterdrop";
 
 function Connector() {
   return (
@@ -25,7 +24,6 @@ function Connector() {
               ) : process.env.REACT_APP_PHASE === "DBMT_SALE" ? (
                 <AppContainer>
                   <Dbmt />
-                  {/* <Betterdrop /> */}
                 </AppContainer>
               ) : process.env.REACT_APP_PHASE === "PUBLIC_SALE" ? (
                 <AppContainer>
@@ -53,10 +51,10 @@ function Connector() {
         />
 
         <Route
-          path="/*"
+          path="/dbmt"
           element={
             <AppContainer>
-              <Betterdrop />
+              <Dbmt />
             </AppContainer>
           }
         />

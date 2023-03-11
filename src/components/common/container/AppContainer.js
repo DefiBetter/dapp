@@ -1,17 +1,25 @@
+import { useTheme } from "../../../context/ThemeContext";
 import { ToastProvider } from "../../../context/ToastContext";
 import Navbar from "../../Navbar/Navbar";
 import Connect from "../Connect";
 
 const AppContainer = ({ children }) => {
+  const themeProvider = useTheme();
+
   return (
-    <ToastProvider>
-      <div className="p-4 flex flex-col">
+    <main className={`${themeProvider?.theme === "dark" ? "dark" : "light"}`}>
+      <div className="dark:bg-db-dark bg-white w-full h-screen dark:text-white text-black transition-colors">
         <Navbar />
-        <Connect>
-          <div className="pt-4 flex-1">{children}</div>
-        </Connect>
+
+        <ToastProvider>
+          <div className="p-4">
+            <Connect>
+              {children}
+            </Connect>
+          </div>
+        </ToastProvider>
       </div>
-    </ToastProvider>
+    </main>
   );
 };
 
