@@ -8,7 +8,7 @@ const AppContainer = ({ children }) => {
 
   return (
     <main className={`${themeProvider?.theme === "dark" ? "dark" : "light"}`}>
-      <div className="dark:bg-db-dark bg-white w-full h-screen dark:text-white text-black transition-colors">
+      <div className="dark:bg-db-dark bg-white w-full dark:text-white text-black transition-colors">
         <Navbar />
 
         <ToastProvider>
