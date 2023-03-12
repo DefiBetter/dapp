@@ -15,8 +15,10 @@ const Navbar = () => {
   const themeProvider = useTheme();
 
   function menuItems() {
-    let menuItems = [
-      {
+    let menuItems = [];
+
+    if (process.env.REACT_APP_PHASE === "PRODUCTION") {
+      menuItems.push({
         label: "Home",
         path: "/",
         icon: (
@@ -27,8 +29,8 @@ const Navbar = () => {
             } group-hover:text-[#2aaee6] transition-all`}
           />
         ),
-      },
-    ];
+      });
+    }
 
     if (process.env.REACT_APP_PHASE === "PRODUCTION") {
       menuItems.push(
