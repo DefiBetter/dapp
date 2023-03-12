@@ -14,6 +14,8 @@ import useNativeBalance from "../../hooks/useNativeBalance";
 import Loader from "../common/Loader";
 import useUserLPStake from "../../hooks/useUserLPStake";
 import DBButton from "../../components/common/DBButton";
+import { BsCoin, BsWallet2, BsPiggyBank, BsBank } from "react-icons/bs";
+import { GiSandsOfTime, GiCoins } from "react-icons/gi";
 
 const LpStakingCard = (props) => {
   const { chain: activeChain } = useNetwork();
@@ -40,7 +42,7 @@ const LpStakingCard = (props) => {
     setLpAmount(0);
   });
 
-  const claimLpWrite = useClaimLP(0)
+  const claimLpWrite = useClaimLP(0);
 
   const userStaked = useUserLPStake(0);
 
@@ -69,53 +71,48 @@ const LpStakingCard = (props) => {
 
   return (
     <div className="w-full">
-      <div className="p-4 flex flex-col gap-2">
-        <div className="flex gap-2 md:gap-4 flex-col md:flex-row">
-          {/* Left */}
-          <div className="w-full md:w-1/2 flex flex-col gap-2">
-            <div className="flex justify-between items-center gap-2">
-              <div className="shadow-db w-36 text-center font-bold bg-db-french-sky p-3 border-[1px] border-black rounded-lg">
-                Total Staked
-              </div>
-              <div className="flex-1 text-sm text-center font-bold">
-                {trimNumber(vaultBalance, 4, "dp")}{" "}
-                {`BT-${contractAddresses[activeChain?.network]?.nativeGas} LP`}
-              </div>
+      <div className="mt-4 flex flex-col gap-4">
+        <div className="w-full flex flex-wrap justify-between gap-4">
+          <div className="h-14 flex flex-col w-full md:w-[calc(50%-8px)] items-center p-2 bg-db-light dark:bg-db-dark-lighter justify-center shadow-sm shadow-db-cyan-process dark:shadow-black rounded-lg">
+            <div className="flex items-center gap-2">
+              <BsBank size={20} />
+              <div>Total Staked</div>
             </div>
-            <div className="flex justify-between items-center gap-2">
-              <div className="shadow-db w-36 text-center font-bold bg-db-french-sky p-3 border-[1px] border-black rounded-lg">
-                Your Stake
-              </div>
-              <div className="flex-1 text-sm text-center  font-bold">
-                {userStaked}{" "}
-                {`BT-${contractAddresses[activeChain?.network]?.nativeGas} LP`}
-              </div>
+            <div className="font-bold">
+              {trimNumber(vaultBalance, 4, "dp")}{" "}
+              {`BT-${contractAddresses[activeChain?.network]?.nativeGas} LP`}
             </div>
           </div>
-
-          {/* Right */}
-          <div className="w-full md:w-1/2 flex flex-col gap-2">
-            <div className="flex justify-between items-center gap-2">
-              <div className="shadow-db w-36 text-center font-bold bg-db-french-sky p-3 border-[1px] border-black rounded-lg">
-                Current APR
-              </div>
-              <div className="flex-1 text-sm text-center text-lime-500 font-bold">
-                {trimNumber(69, 4, "dp")}%
-              </div>
-            </div>
+          <div className="h-14 flex flex-col w-full md:w-[calc(50%-8px)] items-center p-2 bg-db-light dark:bg-db-dark-lighter justify-center shadow-sm shadow-db-cyan-process dark:shadow-black rounded-lg">
             <div className="flex items-center gap-2">
-              <div className="shadow-db w-36 text-center font-bold bg-db-french-sky p-3 border-[1px] border-black rounded-lg">
-                Your Balance
-              </div>
-              <div className="flex-1 text-sm text-center font-bold">
-                {trimNumber(userLPBalance, 4, "dp")}{" "}
-                {`BT-${contractAddresses[activeChain?.network]?.nativeGas} LP`}
-              </div>
+              <BsPiggyBank size={20} />
+              <div>Your Stake</div>
+            </div>
+            <div className="font-bold">
+              {userStaked}{" "}
+              {`BT-${contractAddresses[activeChain?.network]?.nativeGas} LP`}
+            </div>
+          </div>
+          <div className="h-14 flex flex-col w-full md:w-[calc(50%-8px)] items-center p-2 bg-db-light dark:bg-db-dark-lighter justify-center shadow-sm shadow-db-cyan-process dark:shadow-black rounded-lg">
+            <div className="flex items-center gap-2">
+              <GiCoins size={20} />
+              <div>Current APR</div>
+            </div>
+            <div className="font-bold">{trimNumber(69, 4, "dp")}%</div>
+          </div>
+          <div className="h-14 flex flex-col w-full md:w-[calc(50%-8px)] items-center p-2 bg-db-light dark:bg-db-dark-lighter justify-center shadow-sm shadow-db-cyan-process dark:shadow-black rounded-lg">
+            <div className="flex items-center gap-2">
+              <BsWallet2 size={20} />
+              <div>Your Balance</div>
+            </div>
+            <div className="font-bold">
+              {trimNumber(userLPBalance, 4, "dp")}{" "}
+              {`BT-${contractAddresses[activeChain?.network]?.nativeGas} LP`}
             </div>
           </div>
         </div>
 
-        <div className="flex gap-2">
+        <div className="flex gap-4">
           <div className="w-2/3">
             <InputNumber
               onChange={handleLpAmount}
@@ -138,8 +135,8 @@ const LpStakingCard = (props) => {
           </div>
         </div>
 
-        <div className="flex gap-2">
-          <div className="w-2/3 flex gap-2">
+        <div className="flex gap-4">
+          <div className="w-2/3 flex gap-4">
             {!lpAllowance ? (
               <DBButton
                 onClick={() => {
@@ -187,7 +184,7 @@ const LpStakingCard = (props) => {
           </div>
           <div className="w-1/3">
             <DBButton disabled onClick={() => {}}>
-              Zap In
+              Zap In {contractAddresses[activeChain?.network]?.nativeGas}
             </DBButton>
           </div>
         </div>

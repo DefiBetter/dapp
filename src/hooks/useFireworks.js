@@ -42,7 +42,7 @@ export default function useFirework() {
           },
         })
       );
-    }, 250);
+    }, 500);
   }
 
   return { firework };

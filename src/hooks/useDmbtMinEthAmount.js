@@ -11,5 +11,5 @@ export default function useDmbtMinEthAmount() {
     functionName: "getEthForMinDollarAmount",
   });
 
-  return data ? Number(data) / 1e12 : 0;
+  return data ? Number(data) / 1e18 : 0;
 }

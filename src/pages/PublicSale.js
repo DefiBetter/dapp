@@ -171,14 +171,14 @@ export default function PublicSale() {
       <div className="mt-4 flex justify-center">
         <div className="z-10 w-full md:w-3/4 p-4 rounded-lg dark:shadow-inner shadow-sm shadow-db-cyan-process dark:shadow-black bg-white dark:bg-db-dark flex gap-4 flex-col justify-between">
           <div className="w-full flex flex-wrap justify-between gap-2">
-            <div className="h-14 flex flex-col w-full md:w-[49%] lg:w-[24%] items-center p-2 bg-white dark:bg-db-dark-lighter justify-center shadow-sm shadow-db-cyan-process dark:shadow-black rounded-lg">
+            <div className="h-14 flex flex-col w-full md:w-[49%] lg:w-[24%] items-center p-2 bg-white dark:bg-db-dark-info justify-center shadow-sm shadow-db-cyan-process dark:shadow-black rounded-lg">
               <div className="flex items-center gap-2">
                 <BsWallet2 size={20} />
                 <div>Balance</div>
               </div>
               <div className="font-bold">{userWethBalance} wETH</div>
             </div>
-            <div className="h-14 flex flex-col w-full md:w-[49%] lg:w-[24%] items-center p-2 bg-white dark:bg-db-dark-lighter justify-center shadow-sm shadow-db-cyan-process dark:shadow-black rounded-lg">
+            <div className="h-14 flex flex-col w-full md:w-[49%] lg:w-[24%] items-center p-2 bg-white dark:bg-db-dark-info justify-center shadow-sm shadow-db-cyan-process dark:shadow-black rounded-lg">
               <div className="flex items-center gap-2">
                 <BsCoin size={20} />
                 <div>Current Price</div>
@@ -191,7 +191,7 @@ export default function PublicSale() {
                 </span>
               </div>
             </div>
-            <div className="h-14 flex flex-col w-full md:w-[49%] lg:w-[24%] items-center p-2 bg-white dark:bg-db-dark-lighter justify-center shadow-sm shadow-db-cyan-process dark:shadow-black rounded-lg">
+            <div className="h-14 flex flex-col w-full md:w-[49%] lg:w-[24%] items-center p-2 bg-white dark:bg-db-dark-info justify-center shadow-sm shadow-db-cyan-process dark:shadow-black rounded-lg">
               <div className="flex items-center gap-2">
                 <GiCoins size={20} />
                 <div>Supply left</div>
@@ -200,7 +200,7 @@ export default function PublicSale() {
                 {trimNumber(+supplyLeft, 4, "dp")}
               </div>
             </div>
-            <div className="h-14 flex flex-col w-full md:w-[49%] lg:w-[24%] items-center p-2 bg-white dark:bg-db-dark-lighter justify-center shadow-sm shadow-db-cyan-process dark:shadow-black rounded-lg">
+            <div className="h-14 flex flex-col w-full md:w-[49%] lg:w-[24%] items-center p-2 bg-white dark:bg-db-dark-info justify-center shadow-sm shadow-db-cyan-process dark:shadow-black rounded-lg">
               <div className="flex items-center gap-2">
                 <GiSandsOfTime size={20} />
                 <div>Time Left</div>
@@ -216,7 +216,7 @@ export default function PublicSale() {
               <div className="w-32 flex justify-center items-center">
                 <span className="font-fancy text-xl pt-2">Spend</span>
               </div>
-              <div className="h-14 w-full shadow-inner shadow-db-cyan-process dark:shadow-black bg-white dark:bg-db-dark-lighter rounded-lg flex items-center px-4">
+              <div className="h-14 w-full shadow-inner shadow-db-cyan-process dark:shadow-black bg-white dark:bg-db-dark-input rounded-lg flex items-center px-4">
                 <div
                   onClick={() => {
                     setBuyAmount(userWethBalance.toString());
@@ -233,7 +233,7 @@ export default function PublicSale() {
                   }}
                   type={"number"}
                   min={0}
-                  className="px-4 text-center h-10 w-full focus:ring-0 focus:outline-none rounded-lg bg-white dark:bg-db-dark-lighter"
+                  className="px-4 text-center h-10 w-full focus:ring-0 focus:outline-none rounded-lg bg-white dark:bg-db-dark-input"
                   placeholder="wETH amount"
                 />
                 <div className="">wETH</div>

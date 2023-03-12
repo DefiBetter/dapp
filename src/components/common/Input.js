@@ -4,7 +4,7 @@ const InputNumber = (props) => {
   };
 
   return (
-    <div className="w-full flex items-center p-2 justify-center bg-db-background rounded-lg shadow-db">
+    <div className="h-14 w-full shadow-inner shadow-db-cyan-process dark:shadow-black bg-white dark:bg-db-dark-input rounded-lg flex items-center px-4">
       <input
         onChange={props.onChange}
         type={"number"}
@@ -12,12 +12,12 @@ const InputNumber = (props) => {
         placeholder={props.placeholder}
         value={props.value}
         max={props.max}
-        className="text-black text-sm"
+        className="px-4 text-center h-10 w-full focus:ring-0 focus:outline-none rounded-lg bg-white dark:bg-db-dark-input"
       />
 
       <button
         onClick={setMax}
-        className="bg-db-cyan-process text-white border-[1px] border-black rounded-md w-12 shadow-db px-2 h-8 flex justify-center items-center"
+        className="cursor-pointer rounded-md flex gap-2 justify-center items-center h-9 pb-0.5 px-3 border-[1px] border-db-cyan-process text-db-cyan-process hover:bg-db-cyan-process hover:text-white transition-colors"
       >
         MAX
       </button>

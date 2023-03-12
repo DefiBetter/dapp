@@ -33,11 +33,9 @@ function Staking() {
                   rewardName={"Better Token"}
                 />
               </div>
-              <div className="mt-5">
-                <LpStakingCard
-                  nativeGas={contractAddresses[activeChain?.network]?.nativeGas}
-                />
-              </div>
+              <LpStakingCard
+                nativeGas={contractAddresses[activeChain?.network]?.nativeGas}
+              />
             </div>
           </div>
           <div className="z-10 w-full p-4 rounded-lg dark:shadow-inner shadow-sm shadow-db-cyan-process dark:shadow-black bg-white dark:bg-db-dark flex gap-4 flex-col lg:flex-row justify-between">
@@ -50,11 +48,9 @@ function Staking() {
                 stakeName={"Better Token"}
                 rewardName={contractAddresses[activeChain?.network]?.nativeGas}
               />
-              <div className="mt-5">
-                <BtStakingCard
+              <BtStakingCard
                   nativeGas={contractAddresses[activeChain?.network]?.nativeGas}
                 />
-              </div>
             </div>
           </div>
         </div>

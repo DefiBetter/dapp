@@ -95,7 +95,7 @@ export default function Dbmt() {
       >
         <PageTitle title={"$DBMT"} fancyTitle={"Sale"} />
         <div className="mt-4 flex justify-center">
-          <div className="z-10 w-full p-4 rounded-lg dark:shadow-inner shadow-sm shadow-db-cyan-process dark:shadow-black bg-white dark:bg-db-dark flex gap-4 flex-col lg:flex-row">
+          <div className="w-full p-4 rounded-lg dark:shadow-inner shadow-sm shadow-db-cyan-process dark:shadow-black bg-white dark:bg-db-dark flex gap-4 flex-col lg:flex-row">
             <div className="p-2 w-full lg:w-1/2">
               <h2 className="font-bold text-xl">
                 DeFiBetter Milestone Reward Program
@@ -163,21 +163,21 @@ export default function Dbmt() {
               </div>
               <div className="p-4">
                 <div className="flex justify-between gap-4 flex-wrap">
-                  <div className="h-14 flex w-full flex-1 items-center gap-2 p-2 bg-white dark:bg-db-dark-lighter justify-center shadow-sm shadow-db-cyan-process dark:shadow-black rounded-lg">
+                  <div className="h-14 flex w-full flex-1 items-center gap-2 p-2 bg-white dark:bg-db-dark-info justify-center shadow-sm shadow-db-cyan-process dark:shadow-black rounded-lg">
                     <BsWallet2 size={20} />
                     <div>Balance</div>
                     <div className="font-bold">
                       {userGasBalance} {nativeGasToken}
                     </div>
                   </div>
-                  <div className="h-14 flex w-full flex-1 items-center gap-2 p-2 bg-white dark:bg-db-dark-lighter justify-center shadow-sm shadow-db-cyan-process dark:shadow-black rounded-lg">
+                  <div className="h-14 flex w-full flex-1 items-center gap-2 p-2 bg-white dark:bg-db-dark-info justify-center shadow-sm shadow-db-cyan-process dark:shadow-black rounded-lg">
                     <GiCoins size={20} />
                     <div>Supply left</div>
                     <div className="font-bold">
                       {trimNumber(+supplyLeft, 4, "dp")}
                     </div>
                   </div>
-                  <div className="h-14 flex w-full flex-1 items-center gap-2 p-2 bg-white dark:bg-db-dark-lighter justify-center shadow-sm shadow-db-cyan-process dark:shadow-black rounded-lg">
+                  <div className="h-14 flex w-full flex-1 items-center gap-2 p-2 bg-white dark:bg-db-dark-info justify-center shadow-sm shadow-db-cyan-process dark:shadow-black rounded-lg">
                     <GiCoins size={20} />
                     <div>Mininum</div>
                     <div className="font-bold">
@@ -193,7 +193,7 @@ export default function Dbmt() {
                     <div className="w-32 flex justify-center items-center">
                       <span className="font-fancy text-xl pt-2">Spend</span>
                     </div>
-                    <div className="h-14 w-full shadow-inner shadow-db-cyan-process dark:shadow-black bg-white dark:bg-db-dark-lighter rounded-lg flex items-center px-4">
+                    <div className="h-14 w-full shadow-inner shadow-db-cyan-process dark:shadow-black bg-white dark:bg-db-dark-input rounded-lg flex items-center px-4">
                       <div
                         onClick={() => {
                           setBuyAmount(userGasBalance.toString());
@@ -210,7 +210,7 @@ export default function Dbmt() {
                         }}
                         type={"number"}
                         min={0}
-                        className="px-4 text-center h-10 w-full focus:ring-0 focus:outline-none rounded-lg bg-white dark:bg-db-dark-lighter"
+                        className="px-4 text-center h-10 w-full focus:ring-0 focus:outline-none rounded-lg bg-white dark:bg-db-dark-input"
                         placeholder={`${nativeGasToken} amount`}
                       />
                       <div className="">{nativeGasToken}</div>
