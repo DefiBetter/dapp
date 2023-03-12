@@ -28,34 +28,53 @@ function Connector() {
         )}
 
         {process.env.REACT_APP_PHASE === "VC_PRESALE" && (
-          <Route
-            path="/presale"
-            element={
-              <AppContainer>
-                <VcPresale />
-              </AppContainer>
-            }
-          />
+          <>
+            <Route
+              path="/"
+              element={<Navigate to="/presale" replace={true} />}
+            />
+
+            <Route
+              path="/presale"
+              element={
+                <AppContainer>
+                  <VcPresale />
+                </AppContainer>
+              }
+            />
+          </>
         )}
         {process.env.REACT_APP_PHASE === "COMMUNITY_PRESALE" && (
-          <Route
-            path="/presale"
-            element={
-              <AppContainer>
-                <CommunityPresale />
-              </AppContainer>
-            }
-          />
+          <>
+            <Route
+              path="/"
+              element={<Navigate to="/presale" replace={true} />}
+            />
+            <Route
+              path="/presale"
+              element={
+                <AppContainer>
+                  <CommunityPresale />
+                </AppContainer>
+              }
+            />
+          </>
         )}
         {process.env.REACT_APP_PHASE === "PUBLIC_SALE" && (
-          <Route
-            path="/presale"
-            element={
-              <AppContainer>
-                <PublicSale />
-              </AppContainer>
-            }
-          />
+          <>
+            <Route
+              path="/"
+              element={<Navigate to="/presale" replace={true} />}
+            />
+            <Route
+              path="/presale"
+              element={
+                <AppContainer>
+                  <PublicSale />
+                </AppContainer>
+              }
+            />
+          </>
         )}
 
         {process.env.REACT_APP_PHASE === "PRODUCTION" && (

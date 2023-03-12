@@ -6,6 +6,7 @@ module.exports = {
     extend: {
       colors: {
         "db-dark": "#131B2A",
+        "db-dark-lighter": '#2a374d',
         "db-dark-nav": '#1D2738',
         "db-light": "#F4FBFE",
         "db-cyan-process": "#2aaee6",
