@@ -11,6 +11,7 @@ import { WalletConnectConnector } from "wagmi/connectors/walletConnect";
 import Connector from "./components/Connector";
 
 import customChains from "./static/chains";
+import { ThemeProvider } from "./context/ThemeContext";
 
 // Configure chains & providers with the Alchemy provider.
 // Two popular providers are Alchemy (alchemy.com) and Infura (infura.io)
@@ -75,7 +76,9 @@ const client = createClient({
 function App() {
   return (
     <WagmiConfig client={client}>
-      <Connector />
+      <ThemeProvider>
+        <Connector />
+      </ThemeProvider>
     </WagmiConfig>
   );
 }

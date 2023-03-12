@@ -7,6 +7,8 @@ import {
 } from "wagmi";
 import truncateEthAddress from "truncate-eth-address";
 import { useState } from "react";
+import { BsWallet2 } from "react-icons/bs";
+import { MdClose } from "react-icons/md";
 
 export function WalletConnect() {
   const { connect, connectors } = useConnect();
@@ -18,12 +20,15 @@ export function WalletConnect() {
   const [showNetworks, setShowNetworks] = useState(false);
   const [showDisconnect, setShowDisconnect] = useState(false);
 
+  const buttonClasses =
+    "backdrop-blur-sm z-10 rounded-md relative flex gap-2 justify-center items-center h-9 pb-0.5 w-36 border-[1px] border-db-cyan-process text-db-cyan-process hover:bg-db-cyan-process hover:text-white transition-colors shadow-sm shadow-db-cyan-process hover:shadow-white";
+
   if (address) {
     return (
       <div>
         {chain && chain.id !== Number(process.env.REACT_APP_DEFAULT_CHAIN) ? (
           <button
-            className="border-[1px] border-black shadow-db bg-red-100 h-10 w-36 rounded-lg text-lg text-black hover:bg-db-blue-200"
+            className={`${buttonClasses} bg-red-50`}
             onClick={() =>
               switchNetwork(Number(process.env.REACT_APP_DEFAULT_CHAIN))
             }
@@ -32,7 +37,7 @@ export function WalletConnect() {
           </button>
         ) : (
           <button
-            className="border-[1px] border-black shadow-db bg-db-cyan-process h-10 w-36 rounded-lg text-lg text-white hover:bg-db-blue-200"
+            className={buttonClasses}
             onClick={() => setShowDisconnect(!showDisconnect)}
           >
             {truncateEthAddress(address)}
@@ -40,9 +45,9 @@ export function WalletConnect() {
         )}
 
         {showDisconnect ? (
-          <div className="absolute top-16 right-0 z-50">
+          <div className="z-50 absolute top-12 right-0">
             <button
-              className="border-[1px] border-black shadow-db flex justify-center items-center bg-db-cyan-process h-10 w-36 rounded-lg text-lg px-10 text-white hover:bg-db-blue-200"
+              className={buttonClasses}
               onClick={() => {
                 setShowDisconnect(!showDisconnect);
                 disconnect(address);
@@ -60,25 +65,47 @@ export function WalletConnect() {
   return (
     <div>
       <button
-        className="border-[1px] border-black bg-db-cyan-process h-10 rounded-lg w-36 text-lg text-white hover:bg-db-blue-200"
+        className={buttonClasses}
         onClick={() => setShowNetworks(!showNetworks)}
       >
+        <div>
+          <BsWallet2 />
+        </div>
         Connect
       </button>
 
       {showNetworks ? (
-        <div className="z-50 absolute top-16 right-0">
-          {connectors.map((connector) => (
-            <button
-              className="text-base mt-1 z-50 border-[1px] border-black  flex justify-center items-center bg-db-cyan-process h-10 rounded-lg w-36 text-white hover:bg-db-blue-200"
-              onClick={() => {
-                setShowNetworks(!showNetworks);
-                connect({ connector });
-              }}
-            >
-              {connector.name}
-            </button>
-          ))}
+        <div
+          onClick={() => setShowNetworks(false)}
+          className="z-50 fixed w-screen h-screen top-0 right-0 backdrop-blur-sm flex items-center justify-center"
+        >
+          <div className="dark:bg-db-dark-nav bg-white dark:text-white text-black p-10 rounded-lg shadow-sm shadow-[#2aaee6] relative">
+            <div className="absolute right-2 top-2">
+              <MdClose
+                onClick={() => {
+                  setShowNetworks(false);
+                }}
+                size={25}
+                className="cursor-pointer  dark:fill-white fill-black mt-1 hover:scale-110 transition-transform"
+              />
+            </div>
+            <h2 className="text-center text-2xl flex gap-4 items-center justify-between">
+              Select connector
+            </h2>
+            <div className="mt-4 flex flex-col gap-2 items-center">
+              {connectors.map((connector) => (
+                <button
+                  className={buttonClasses}
+                  onClick={() => {
+                    setShowNetworks(!showNetworks);
+                    connect({ connector });
+                  }}
+                >
+                  {connector.name}
+                </button>
+              ))}
+            </div>
+          </div>
         </div>
       ) : null}
     </div>
