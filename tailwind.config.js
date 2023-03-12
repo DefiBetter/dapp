@@ -36,6 +36,17 @@ module.exports = {
             transform: "scale(1)",
           },
         },
+        "slide-left-to-right": {
+          "0%": {
+            transform: "translate(-50px)",
+          },
+          "50%": {
+            transform: "translate(50px)",
+          },
+          "100%": {
+            transform: "translate(-50px)",
+          },
+        },
         "slide-right": {
           "0%": {
             transform: "translate(0)",
@@ -86,6 +97,7 @@ module.exports = {
         },
       },
       animation: {
+        "slide-left-to-right": "slide-left-to-right 1500ms linear count(3)",
         "slide-right": "slide-right 1000ms linear infinite",
         "slide-left": "slide-left 1000ms linear infinite",
         toast: "toast 5500ms linear",

@@ -19,7 +19,7 @@ export default function useAddToWallet() {
     await ethereum.request({
       method: "wallet_watchAsset",
       params: {
-        type: "ERC20", // Initially only supports ERC20, but eventually more!
+        type: "ERC20",
         options: {
           address: map[tokenName].address,
           symbol: tokenName,

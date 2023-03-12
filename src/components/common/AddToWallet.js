@@ -5,7 +5,7 @@ export default function AddToWallet({ asset }) {
 
   return (
     <button
-      className="h-14 w-full bg-db-background dark:bg-db-blue-gray shadow-sm shadow-db-cyan-process rounded-lg text-sm flex items-center justify-center gap-2 transition-colors"
+      className="h-14 px-2 w-full bg-db-background dark:bg-db-blue-gray shadow-sm shadow-db-cyan-process rounded-lg text-sm flex items-center justify-center gap-2 transition-colors"
       onClick={() => addToWallet(asset)}
     >
       <img

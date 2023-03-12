@@ -68,7 +68,7 @@ const LpStakingCard = (props) => {
   };
 
   return (
-    <div className="w-full border-[3px] border-db-cyan-process bg-white rounded-2xl">
+    <div className="w-full">
       <div className="p-4 flex flex-col gap-2">
         <div className="flex gap-2 md:gap-4 flex-col md:flex-row">
           {/* Left */}

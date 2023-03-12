@@ -15,6 +15,10 @@ import { BsCoin, BsWallet2 } from "react-icons/bs";
 import { GiCoins } from "react-icons/gi";
 import AddToWallet from "../components/common/AddToWallet";
 import PageTitle from "../components/common/PageTitle";
+import { contractAddresses } from "../static/contractAddresses";
+import { useNetwork } from "wagmi";
+import useDbmtMinDollarAmount from "../hooks/useDbmtMinDollarAmount";
+import useDmbtMinEthAmount from "../hooks/useDmbtMinEthAmount";
 
 export default function Dbmt() {
   const [buyAmount, setBuyAmount] = useState("0");
@@ -27,7 +31,9 @@ export default function Dbmt() {
   const supplyLeft = useDbmtSupplyLeft();
   const startTime = useDbmtStartTime();
   const duration = useDbmtDuration();
-
+  const { chain } = useNetwork();
+  const minDollarAmount = useDbmtMinDollarAmount()
+  const minEthAmount = useDmbtMinEthAmount()
   const buyWrite = useDbmtBuy(buyAmount);
   const userGasBalance = useNativeBalance();
 
@@ -52,6 +58,8 @@ export default function Dbmt() {
     () => basePrice - currentPrice !== 0,
     [basePrice, currentPrice]
   );
+
+  const nativeGasToken = contractAddresses[chain?.network]?.nativeGas;
 
   return (
     <>
@@ -85,7 +93,7 @@ export default function Dbmt() {
           isSale ? "mb-16 md:mb-12 lg:mb-12" : "mb-0"
         } `}
       >
-        <PageTitle title={'$DBMT'} fancyTitle={'Sale'} />
+        <PageTitle title={"$DBMT"} fancyTitle={"Sale"} />
         <div className="mt-4 flex justify-center">
           <div className="z-10 w-full p-4 rounded-lg dark:shadow-inner shadow-sm shadow-db-cyan-process dark:shadow-black bg-white dark:bg-db-dark flex gap-4 flex-col lg:flex-row">
             <div className="p-2 w-full lg:w-1/2">
@@ -158,7 +166,9 @@ export default function Dbmt() {
                   <div className="h-14 flex w-full flex-1 items-center gap-2 p-2 bg-white dark:bg-db-dark-lighter justify-center shadow-sm shadow-db-cyan-process dark:shadow-black rounded-lg">
                     <BsWallet2 size={20} />
                     <div>Balance</div>
-                    <div className="font-bold">{userGasBalance} BNB</div>
+                    <div className="font-bold">
+                      {userGasBalance} {nativeGasToken}
+                    </div>
                   </div>
                   <div className="h-14 flex w-full flex-1 items-center gap-2 p-2 bg-white dark:bg-db-dark-lighter justify-center shadow-sm shadow-db-cyan-process dark:shadow-black rounded-lg">
                     <GiCoins size={20} />
@@ -171,9 +181,9 @@ export default function Dbmt() {
                     <GiCoins size={20} />
                     <div>Mininum</div>
                     <div className="font-bold">
-                      $100{" "}
+                      ${minDollarAmount}{" "}
                       <span className="text-xs">
-                        ({(100 / bnbPrice).toFixed(3)} BNB)
+                        ({minEthAmount.toFixed(3)} {nativeGasToken})
                       </span>
                     </div>
                   </div>
@@ -201,9 +211,9 @@ export default function Dbmt() {
                         type={"number"}
                         min={0}
                         className="px-4 text-center h-10 w-full focus:ring-0 focus:outline-none rounded-lg bg-white dark:bg-db-dark-lighter"
-                        placeholder="BNB amount"
+                        placeholder={`${nativeGasToken} amount`}
                       />
-                      <div className="">BNB</div>
+                      <div className="">{nativeGasToken}</div>
                     </div>
                   </div>
                 </div>
