@@ -7,6 +7,7 @@ import { useTheme } from "../../context/ThemeContext";
 import { BiHomeAlt2 } from "react-icons/bi";
 import { BsSun, BsMoon, BsPiggyBank, BsBook, BsCoin } from "react-icons/bs";
 import { CiVault } from "react-icons/ci";
+import { FaThinkPeaks } from "react-icons/fa";
 
 const Navbar = () => {
   const [showSideNavbar, setShowSideNavbar] = useState(false);
@@ -15,22 +16,36 @@ const Navbar = () => {
 
   function menuItems() {
     let menuItems = [
-      // {
-      //   label: "Dbmt",
-      //   path: "/",
-      //   icon: (
-      //     <BiHomeAlt2
-      //       size={30}
-      //       className={`${
-      //         location.pathname === "/" ? "text-[#2aaee6] " : "text-[#3A4D69]"
-      //       } group-hover:text-[#2aaee6] transition-all`}
-      //     />
-      //   ),
-      // },
+      {
+        label: "Home",
+        path: "/",
+        icon: (
+          <BiHomeAlt2
+            size={30}
+            className={`${
+              location.pathname === "/" ? "text-[#2aaee6] " : "text-[#3A4D69]"
+            } group-hover:text-[#2aaee6] transition-all`}
+          />
+        ),
+      },
     ];
 
     if (process.env.REACT_APP_PHASE === "PRODUCTION") {
       menuItems.push(
+        {
+          label: "Better",
+          path: "/better",
+          icon: (
+            <FaThinkPeaks
+              size={30}
+              className={`${
+                location.pathname === "/better"
+                  ? "text-[#2aaee6] "
+                  : "text-[#3A4D69]"
+              } group-hover:text-[#2aaee6] transition-all`}
+            />
+          ),
+        },
         {
           label: "Staking",
           path: "/staking",

@@ -80,6 +80,22 @@ function Connector() {
         {process.env.REACT_APP_PHASE === "PRODUCTION" && (
           <>
             <Route
+              path="/"
+              element={
+                <AppContainer>
+                  <Landing />
+                </AppContainer>
+              }
+            />
+             <Route
+              path="/better"
+              element={
+                <AppContainer>
+                  <Better />
+                </AppContainer>
+              }
+            />
+            <Route
               path="/staking"
               element={
                 <AppContainer>
@@ -93,14 +109,6 @@ function Connector() {
               element={
                 <AppContainer>
                   <StrategyVault />
-                </AppContainer>
-              }
-            />
-            <Route
-              path="/template"
-              element={
-                <AppContainer>
-                  <PublicSale />
                 </AppContainer>
               }
             />
