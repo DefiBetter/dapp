@@ -28,7 +28,7 @@ export function WalletConnect() {
       <div>
         {chain && chain.id !== Number(process.env.REACT_APP_DEFAULT_CHAIN) ? (
           <button
-            className={`${buttonClasses} bg-red-100`}
+            className={`${buttonClasses} bg-red-50`}
             onClick={() =>
               switchNetwork(Number(process.env.REACT_APP_DEFAULT_CHAIN))
             }
@@ -45,7 +45,7 @@ export function WalletConnect() {
         )}
 
         {showDisconnect ? (
-          <div className="z-50 absolute top-10 right-0">
+          <div className="z-50 absolute top-12 right-0">
             <button
               className={buttonClasses}
               onClick={() => {
@@ -75,7 +75,10 @@ export function WalletConnect() {
       </button>
 
       {showNetworks ? (
-        <div onClick={() => setShowNetworks(false)} className="z-50 fixed w-screen h-screen top-0 right-0 backdrop-blur-sm flex items-center justify-center">
+        <div
+          onClick={() => setShowNetworks(false)}
+          className="z-50 fixed w-screen h-screen top-0 right-0 backdrop-blur-sm flex items-center justify-center"
+        >
           <div className="dark:bg-db-dark-nav bg-white dark:text-white text-black p-10 rounded-lg shadow-sm shadow-[#2aaee6] relative">
             <div className="absolute right-2 top-2">
               <MdClose

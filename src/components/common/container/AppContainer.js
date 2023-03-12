@@ -12,7 +12,7 @@ const AppContainer = ({ children }) => {
         <Navbar />
 
         <ToastProvider>
-          <div className="p-4">
+          <div className="p-2 md:p-4">
             <Connect>
               {children}
             </Connect>

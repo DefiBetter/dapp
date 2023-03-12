@@ -14,32 +14,23 @@ const Navbar = () => {
   const themeProvider = useTheme();
 
   function menuItems() {
+    let menuItems = [
+      // {
+      //   label: "Dbmt",
+      //   path: "/",
+      //   icon: (
+      //     <BiHomeAlt2
+      //       size={30}
+      //       className={`${
+      //         location.pathname === "/" ? "text-[#2aaee6] " : "text-[#3A4D69]"
+      //       } group-hover:text-[#2aaee6] transition-all`}
+      //     />
+      //   ),
+      // },
+    ];
+
     if (process.env.REACT_APP_PHASE === "PRODUCTION") {
-      return [
-        {
-          label: "Home",
-          path: "/",
-          icon: (
-            <BiHomeAlt2
-              size={30}
-              className={`${
-                location.pathname === "/" ? "text-[#2aaee6] " : "text-[#3A4D69]"
-              } group-hover:text-[#2aaee6] transition-all`}
-            />
-          ),
-        },
-        {
-          label: "$DBMT",
-          path: "/dbmt",
-          icon: (
-            <BsCoin
-              size={30}
-              className={`${
-                location.pathname === "/" ? "text-[#2aaee6] " : "text-[#3A4D69]"
-              } group-hover:text-[#2aaee6] transition-all`}
-            />
-          ),
-        },
+      menuItems.push(
         {
           label: "Staking",
           path: "/staking",
@@ -47,7 +38,9 @@ const Navbar = () => {
             <BsPiggyBank
               size={30}
               className={`${
-                location.pathname === "/" ? "text-[#2aaee6] " : "text-[#3A4D69]"
+                location.pathname === "/staking"
+                  ? "text-[#2aaee6] "
+                  : "text-[#3A4D69]"
               } group-hover:text-[#2aaee6] transition-all`}
             />
           ),
@@ -59,61 +52,74 @@ const Navbar = () => {
             <CiVault
               size={30}
               className={`${
-                location.pathname === "/" ? "text-[#2aaee6] " : "text-[#3A4D69]"
+                location.pathname === "/vaults"
+                  ? "text-[#2aaee6] "
+                  : "text-[#3A4D69]"
               } group-hover:text-[#2aaee6] transition-all`}
             />
           ),
-        },
-      ];
+        }
+      );
     } else if (process.env.REACT_APP_PHASE === "DBMT_SALE") {
-      return [
-        {
-          label: "Home",
-          path: "/",
-          icon: (
-            <BiHomeAlt2
-              size={30}
-              className={`${
-                location.pathname === "/" ? "text-[#2aaee6] " : "text-[#3A4D69]"
-              } group-hover:text-[#2aaee6] transition-all`}
-            />
-          ),
-        },
-        {
-          label: "$DBMT",
-          path: "/dbmt",
-          icon: (
-            <BsCoin
-              size={30}
-              className={`${
-                location.pathname === "/" ? "text-[#2aaee6] " : "text-[#3A4D69]"
-              } group-hover:text-[#2aaee6] transition-all`}
-            />
-          ),
-        },
-      ];
+      menuItems.push({
+        label: "$DBMT",
+        path: "/dbmt",
+        icon: (
+          <BsCoin
+            size={30}
+            className={`${
+              location.pathname === "/dbmt"
+                ? "text-[#2aaee6] "
+                : "text-[#3A4D69]"
+            } group-hover:text-[#2aaee6] transition-all`}
+          />
+        ),
+      });
+    } else if (
+      process.env.REACT_APP_PHASE === "VC_PRESALE" ||
+      process.env.REACT_APP_PHASE === "COMMUNITY_PRESALE" ||
+      process.env.REACT_APP_PHASE === "PUBLIC_SALE"
+    ) {
+      menuItems.push({
+        label: "Presale",
+        path: "/presale",
+        icon: (
+          <BsCoin
+            size={30}
+            className={`${
+              location.pathname === "/presale"
+                ? "text-[#2aaee6] "
+                : "text-[#3A4D69]"
+            } group-hover:text-[#2aaee6] transition-all`}
+          />
+        ),
+      });
     }
+    return menuItems;
   }
+
   return (
     <div className="w-full dark:bg-db-dark-nav bg-db-light transition-colors">
-      <div className="h-8 w-full flex justify-end gap-5 text-xs px-4 items-center text-db-cyan-process">
-        <div>
-          Daily Volume Avg: <span className="font-bold">69k</span> BNB
+      {process.env.REACT_APP_PHASE === "PRODUCTION" && (
+        <div className="h-8 w-full flex justify-end gap-5 text-xs px-2 md:px-4 items-center text-db-cyan-process">
+          <div>
+            Daily Volume Avg: <span className="font-bold">69k</span> BNB
+          </div>
+          <div>
+            Volume Today: <span className="font-bold">1,425</span> BNB
+          </div>
+          <div>
+            Daily Fees Avg: <span className="font-bold">3,169</span> BNB
+          </div>
+          <div>
+            Fees Today: <span className="font-bold">1,425</span> BNB
+          </div>
+          <div>
+            Paid to $BETR: <span className="font-bold">921</span> BNB
+          </div>
         </div>
-        <div>
-          Volume Today: <span className="font-bold">1,425</span> BNB
-        </div>
-        <div>
-          Daily Fees Avg: <span className="font-bold">3,169</span> BNB
-        </div>
-        <div>
-          Fees Today: <span className="font-bold">1,425</span> BNB
-        </div>
-        <div>
-          Paid to $BETR: <span className="font-bold">921</span> BNB
-        </div>
-      </div>
-      <div className="h-16 flex justify-between items-center px-4">
+      )}
+      <div className="h-16 flex justify-between items-center px-2 md:px-4">
         <div className="md:hidden">
           {showSideNavbar ? (
             <IoMdClose
@@ -136,146 +142,42 @@ const Navbar = () => {
         <Link to="/">
           <img
             src={
-              themeProvider.theme === "light"
-                ? require("../../static/image/better-logo.png")
-                : require("../../static/image/better-logo-light.png")
+              themeProvider.theme === "dark"
+                ? require("../../static/image/better-logo-light.png")
+                : require("../../static/image/better-logo.png")
             }
             className="w-[160px]"
             alt="logo"
           />
         </Link>
         <nav className="gap-4 items-center justify-center h-full hidden md:flex">
-          <Link
-            to="/"
-            className="w-16 group h-full flex flex-col items-center justify-center relative"
-          >
-            <BiHomeAlt2
-              size={30}
-              className={`${
-                location.pathname === "/" ? "text-[#2aaee6] " : "text-[#3A4D69]"
-              } group-hover:text-[#2aaee6] transition-all`}
-            />
-            <span
-              className={`${
-                location.pathname === "/" ? "text-[#2aaee6] " : "text-[#3A4D69]"
-              } text-xs group-hover:text-[#2aaee6] transition-colors`}
+          {menuItems().map((item) => (
+            <Link
+              to={item.path}
+              className="w-16 group h-full flex flex-col items-center justify-center relative"
             >
-              Home
-            </span>
-            <div
-              className={`${
-                location.pathname === "/" ? "scale-100" : "scale-0"
-              } dark:block hidden group-hover:scale-100 bg-[#2aaee6] absolute w-5 h-5 opacity-90 rounded-full blur-lg transition-transform`}
-            />
-            <div
-              className={`${
-                location.pathname === "/" ? "w-full" : "w-0"
-              } absolute bottom-0 h-0.5 bg-[#2aaee6] group-hover:w-full transition-all duration-300`}
-            ></div>
-          </Link>
-
-          <Link
-            to="/dbmt"
-            className="w-16 group h-full flex flex-col items-center justify-center relative"
-          >
-            <BsCoin
-              size={30}
-              className={`${
-                location.pathname === "/dbmt"
-                  ? "text-[#2aaee6] "
-                  : "text-[#3A4D69]"
-              } group-hover:text-[#2aaee6] transition-all`}
-            />
-            <span
-              className={`${
-                location.pathname === "/dbmt"
-                  ? "text-[#2aaee6] "
-                  : "text-[#3A4D69]"
-              } text-xs  group-hover:text-[#2aaee6] transition-colors`}
-            >
-              $DBMT
-            </span>
-            <div
-              className={`${
-                location.pathname === "/dbmt" ? "scale-100" : "scale-0"
-              } dark:block hidden group-hover:scale-100 bg-[#2aaee6] absolute w-5 h-5 opacity-90 rounded-full blur-lg transition-transform`}
-            />
-            <div
-              className={`${
-                location.pathname === "/dbmt" ? "w-full" : "w-0"
-              } absolute bottom-0 h-0.5 bg-[#2aaee6] group-hover:w-full transition-all duration-300`}
-            ></div>
-          </Link>
-
-          {process.env.REACT_APP_PHASE === "PRODUCTION" && (
-            <>
-              <Link
-                to="/staking"
-                className="w-16 group h-full flex flex-col items-center justify-center relative"
+              {item.icon}
+              <span
+                className={`${
+                  location.pathname === item.path
+                    ? "text-[#2aaee6] "
+                    : "text-[#3A4D69]"
+                } text-xs group-hover:text-[#2aaee6] transition-colors`}
               >
-                <BsPiggyBank
-                  size={30}
-                  className={`${
-                    location.pathname === "/staking"
-                      ? "text-[#2aaee6] "
-                      : "text-[#3A4D69]"
-                  } group-hover:text-[#2aaee6] transition-all`}
-                />
-                <span
-                  className={`${
-                    location.pathname === "/staking"
-                      ? "text-[#2aaee6] "
-                      : "text-[#3A4D69]"
-                  } text-xs  group-hover:text-[#2aaee6] transition-colors`}
-                >
-                  Staking
-                </span>
-                <div
-                  className={`${
-                    location.pathname === "/staking" ? "scale-100" : "scale-0"
-                  } dark:block hidden group-hover:scale-100 bg-[#2aaee6] absolute w-5 h-5 opacity-90 rounded-full blur-lg transition-transform`}
-                />
-                <div
-                  className={`${
-                    location.pathname === "/staking" ? "w-full" : "w-0"
-                  } absolute bottom-0 h-0.5 bg-[#2aaee6] group-hover:w-full transition-all duration-300`}
-                ></div>
-              </Link>
-
-              <Link
-                to="/vaults"
-                className="w-16 group h-full flex flex-col items-center justify-center relative"
-              >
-                <CiVault
-                  size={30}
-                  className={`${
-                    location.pathname === "/vaults"
-                      ? "text-[#2aaee6] "
-                      : "text-[#3A4D69]"
-                  } group-hover:text-[#2aaee6] transition-all`}
-                />
-                <span
-                  className={`${
-                    location.pathname === "/vaults"
-                      ? "text-[#2aaee6] "
-                      : "text-[#3A4D69]"
-                  } text-xs  group-hover:text-[#2aaee6] transition-colors`}
-                >
-                  Vaults
-                </span>
-                <div
-                  className={`${
-                    location.pathname === "/vaults" ? "scale-100" : "scale-0"
-                  } dark:block hidden group-hover:scale-100 bg-[#2aaee6] absolute w-5 h-5 opacity-90 rounded-full blur-lg transition-transform`}
-                />
-                <div
-                  className={`${
-                    location.pathname === "/vaults" ? "w-full" : "w-0"
-                  } absolute bottom-0 h-0.5 bg-[#2aaee6] group-hover:w-full transition-all duration-300`}
-                ></div>
-              </Link>
-            </>
-          )}
+                {item.label}
+              </span>
+              <div
+                className={`${
+                  location.pathname === item.path ? "scale-100" : "scale-0"
+                } dark:block hidden group-hover:scale-100 bg-[#2aaee6] absolute w-5 h-5 opacity-90 rounded-full blur-lg transition-transform`}
+              />
+              <div
+                className={`${
+                  location.pathname === item.path ? "w-full" : "w-0"
+                } absolute bottom-0 h-0.5 bg-[#2aaee6] group-hover:w-full transition-all duration-300`}
+              ></div>
+            </Link>
+          ))}
 
           <a
             target="_blank"

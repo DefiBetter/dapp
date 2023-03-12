@@ -11,7 +11,6 @@ import { WalletConnectConnector } from "wagmi/connectors/walletConnect";
 import Connector from "./components/Connector";
 
 import customChains from "./static/chains";
-import { ThemeContext } from "styled-components";
 import { ThemeProvider } from "./context/ThemeContext";
 
 // Configure chains & providers with the Alchemy provider.

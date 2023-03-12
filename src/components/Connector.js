@@ -1,4 +1,4 @@
-import { Route, Routes } from "react-router-dom";
+import { Route, Routes, Redirect, Navigate } from "react-router-dom";
 import Better from "./../pages/Better";
 import Staking from "./../pages/Staking";
 import PublicSale from "../pages/PublicSale";
@@ -13,51 +13,50 @@ function Connector() {
   return (
     <>
       <Routes>
-        <Route
-          path="/"
-          element={
-            <>
-              {process.env.REACT_APP_PHASE === "PRODUCTION" ? (
-                <AppContainer>
-                  <Better />
-                </AppContainer>
-              ) : process.env.REACT_APP_PHASE === "DBMT_SALE" ? (
+        {process.env.REACT_APP_PHASE === "DBMT_SALE" && (
+          <>
+            <Route path="/" element={<Navigate to="/dbmt" replace={true} />} />
+            <Route
+              path="/dbmt"
+              element={
                 <AppContainer>
                   <Dbmt />
                 </AppContainer>
-              ) : process.env.REACT_APP_PHASE === "PUBLIC_SALE" ? (
-                <AppContainer>
-                  <PublicSale />
-                </AppContainer>
-              ) : process.env.REACT_APP_PHASE === "COMMUNITY_PRESALE" ? (
-                <AppContainer>
-                  <CommunityPresale />
-                </AppContainer>
-              ) : process.env.REACT_APP_PHASE === "VC_PRESALE" ? (
-                <AppContainer>
-                  <VcPresale />
-                </AppContainer>
-              ) : process.env.REACT_APP_PHASE === "LANDING" ? (
-                <AppContainer>
-                  <Landing />
-                </AppContainer>
-              ) : (
-                <AppContainer>
-                  <Landing />
-                </AppContainer>
-              )}
-            </>
-          }
-        />
+              }
+            />
+          </>
+        )}
 
-        <Route
-          path="/dbmt"
-          element={
-            <AppContainer>
-              <Dbmt />
-            </AppContainer>
-          }
-        />
+        {process.env.REACT_APP_PHASE === "VC_PRESALE" && (
+          <Route
+            path="/presale"
+            element={
+              <AppContainer>
+                <VcPresale />
+              </AppContainer>
+            }
+          />
+        )}
+        {process.env.REACT_APP_PHASE === "COMMUNITY_PRESALE" && (
+          <Route
+            path="/presale"
+            element={
+              <AppContainer>
+                <CommunityPresale />
+              </AppContainer>
+            }
+          />
+        )}
+        {process.env.REACT_APP_PHASE === "PUBLIC_SALE" && (
+          <Route
+            path="/presale"
+            element={
+              <AppContainer>
+                <PublicSale />
+              </AppContainer>
+            }
+          />
+        )}
 
         {process.env.REACT_APP_PHASE === "PRODUCTION" && (
           <>

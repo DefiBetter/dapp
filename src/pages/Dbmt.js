@@ -11,8 +11,8 @@ import useDbmtBuy from "../hooks/useDbmtBuy";
 import DBButton from "../components/common/DBButton";
 import Loader from "../components/common/Loader";
 import useNativeBalance from "../hooks/useNativeBalance";
-import { BsCoin } from "react-icons/bs";
-import { GiSandsOfTime, GiCoins } from "react-icons/gi";
+import { BsCoin, BsWallet2 } from "react-icons/bs";
+import { GiCoins } from "react-icons/gi";
 import AddToWallet from "../components/common/AddToWallet";
 
 export default function Dbmt() {
@@ -79,12 +79,12 @@ export default function Dbmt() {
         </div>
       )}
       <div
-        className={`bg-db-light dark:bg-db-dark-nav transition-colors rounded-md p-4 ${
-          isSale ? "mb-24 md:mb-12 lg:mb-14" : "mb-0"
+        className={`bg-db-light dark:bg-db-dark-nav transition-colors rounded-md p-2 md:p-4 ${
+          isSale ? "mb-16 md:mb-12 lg:mb-12" : "mb-0"
         } `}
       >
         <div className="z-10 text-4xl flex justify-center">
-          <div className="w-full md:w-1/3 bg-white dark:bg-db-dark p-4 rounded-lg flex justify-center gap-1 shadow-sm shadow-db-cyan-process">
+          <div className="w-full md:w-2/3 bg-white dark:bg-db-dark p-4 rounded-lg flex justify-center gap-1 shadow-sm shadow-db-cyan-process">
             <div className="flex justify-center text-5xl">
               $DBMT
               <span className="font-bold mt-7 font-fancy text-5xl text-db-cyan-process">
@@ -161,22 +161,22 @@ export default function Dbmt() {
                 )}
               </div>
               <div className="p-4">
-                <div className="flex justify-between gap-4">
-                  <div className="h-14 flex items-center gap-2 p-2 bg-white dark:bg-db-dark justify-center shadow-sm shadow-db-cyan-process rounded-lg">
-                    <BsCoin size={20} />
+                <div className="flex justify-between gap-4 flex-wrap">
+                  <div className="h-14 flex w-full flex-1 items-center gap-2 p-2 bg-white dark:bg-db-dark justify-center shadow-sm shadow-db-cyan-process rounded-lg">
+                    <BsWallet2 size={20} />
                     <div>Balance</div>
                     <div className="font-bold">{userGasBalance} BNB</div>
                   </div>
-                  <div className="h-14 flex items-center gap-2 p-2 bg-white dark:bg-db-dark justify-center shadow-sm shadow-db-cyan-process rounded-lg">
+                  <div className="h-14 flex w-full flex-1 items-center gap-2 p-2 bg-white dark:bg-db-dark justify-center shadow-sm shadow-db-cyan-process rounded-lg">
                     <GiCoins size={20} />
                     <div>Supply left</div>
                     <div className="font-bold">
                       {trimNumber(+supplyLeft, 4, "dp")}
                     </div>
                   </div>
-                  <div className="h-14 flex items-center gap-2 p-2 bg-white dark:bg-db-dark justify-center shadow-sm shadow-db-cyan-process rounded-lg">
+                  <div className="h-14 flex w-full flex-1 items-center gap-2 p-2 bg-white dark:bg-db-dark justify-center shadow-sm shadow-db-cyan-process rounded-lg">
                     <GiCoins size={20} />
-                    <div>Min. Purchase</div>
+                    <div>Mininum</div>
                     <div className="font-bold">
                       $100{" "}
                       <span className="text-xs">
@@ -185,12 +185,12 @@ export default function Dbmt() {
                     </div>
                   </div>
                 </div>
-                <div className="mt-4 flex justify-center w-full h-14">
+                <div className="mt-4 flex justify-center w-full">
                   <div className="w-full gap-2 flex">
-                    <div className="w-[7rem] flex justify-center items-center">
+                    <div className="w-32 flex justify-center items-center">
                       <span className="font-fancy text-xl pt-2">Spend</span>
                     </div>
-                    <div className="w-full shadow-sm shadow-db-cyan-process bg-white dark:bg-db-dark rounded-lg flex items-center px-4">
+                    <div className="h-14 w-full shadow-inner shadow-db-cyan-process bg-white dark:bg-db-dark rounded-lg flex items-center px-4">
                       <div
                         onClick={() => {
                           setBuyAmount(userGasBalance.toString());
@@ -214,16 +214,16 @@ export default function Dbmt() {
                     </div>
                   </div>
                 </div>
-                <div className="mt-4 flex justify-center w-full h-14">
+                <div className="mt-4 flex justify-center w-full">
                   <div className="w-full gap-2 flex">
-                    <div className="w-60 flex justify-center items-center">
+                    <div className="w-32 flex justify-center items-center">
                       <span className="font-fancy text-xl pt-2">to get</span>
                     </div>
 
-                    <div className="w-full shadow-sm shadow-db-cyan-process bg-db-light dark:bg-db-dark-nav rounded-lg flex items-center px-4">
+                    <div className="h-14 w-full shadow-sm shadow-db-cyan-process bg-db-light dark:bg-db-dark-nav rounded-lg flex items-center px-4">
                       <input
                         disabled
-                        className="px-4 text-center h-10 w-full rounded-lg bg-db-light dark:bg-db-dark-nav"
+                        className="pl-24 px-4 text-center h-10 w-full rounded-lg bg-db-light dark:bg-db-dark-nav"
                         placeholder="Enter Amount"
                         value={
                           dbmtPerEth !== 0 ? trimNumber(dbmtPerEth, 9, "dp") : 0
@@ -234,7 +234,7 @@ export default function Dbmt() {
                   </div>
                 </div>
 
-                <div className="mt-4 flex gap-4 items-center flex-col md:flex-row justify-center h-14">
+                <div className="mt-4 flex gap-4 items-center flex-col md:flex-row justify-center">
                   <div className="w-full md:w-2/3">
                     <DBButton
                       onClick={() => {
