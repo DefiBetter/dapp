@@ -135,7 +135,7 @@ export default function Dbmt() {
             </div>
             <div className="w-full lg:w-2/3 bg-db-light dark:bg-db-dark-nav rounded-lg overflow-hidden">
               <div className="w-full bg-db-cyan-process pb-2">
-                <div className="flex justify-center items-center gap-5 ">
+                <div className="flex justify-center items-center gap-5 py-1">
                   {isSale && (
                     <div className="text-2xl font-bold text-white relative pt-2">
                       {basePrice.toFixed(3)} {nativeGasToken}
