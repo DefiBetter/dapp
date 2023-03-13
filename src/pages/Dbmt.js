@@ -50,8 +50,8 @@ export default function Dbmt() {
   const userGasBalance = useNativeBalance();
   const tokenSymbol = useSymbol(contractAddresses[chain?.network]?.dbmtToken);
 
-  console.log('duration = ' + duration)
-  console.log('startTime = ' + startTime)
+  console.log("duration = " + duration);
+  console.log("startTime = " + startTime);
   const isSale = useMemo(
     () => basePrice - currentPrice !== 0,
     [basePrice, currentPrice]
@@ -150,7 +150,8 @@ export default function Dbmt() {
                     </div>
                   )}
                   <div className="font-bold text-transparent text-4xl bg-clip-text bg-gradient-to-b from-yellow-100 to-yellow-300">
-                    {currentPrice ? currentPrice.toFixed(3) : 0} {nativeGasToken}
+                    {currentPrice ? currentPrice.toFixed(3) : 0}{" "}
+                    {nativeGasToken}
                   </div>
                 </div>
                 {isSale && (
@@ -194,14 +195,14 @@ export default function Dbmt() {
                           let val = e.target.value || "0";
                           console.log(" val = " + val);
                           if (Number(val) > supplyLeft) {
-                            val = supplyLeft.toString()
+                            val = supplyLeft.toString();
                           }
                           setDbmtBuyAmount(val);
                         }}
                         type={"number"}
                         min={0}
                         max={Number(supplyLeft)}
-                        className="pl-20 px-4 text-center h-10 w-full focus:ring-0 focus:outline-none rounded-lg bg-white dark:bg-db-dark-input"
+                        className="text-left px-4 h-10 w-full focus:ring-0 focus:outline-none rounded-lg bg-white dark:bg-db-dark-input"
                         placeholder={`${tokenSymbol} amount`}
                       />
                       <div className="">{tokenSymbol}</div>
@@ -213,16 +214,7 @@ export default function Dbmt() {
                     <div className="w-32 flex justify-center items-center">
                       <span className="font-fancy text-xl pt-2">for</span>
                     </div>
-                    <div className="h-14 w-full bg-white dark:bg-db-dark-input rounded-lg flex gap-2 items-center px-4 shadow-inner shadow-db-cyan-process dark:shadow-black">
-                      <div
-                        onClick={() => {
-                          console.log(' userGasBalance.toString() = ' + userGasBalance.toString())
-                          setBuyAmount((Number(userGasBalance) - 0.0001).toString());
-                        }}
-                        className="cursor-pointer rounded-lg flex justify-center items-center h-9 pb-0.5 px-2  border-[1px] border-db-cyan-process text-db-cyan-process hover:bg-db-cyan-process hover:text-white transition-colors"
-                      >
-                        MAX
-                      </div>
+                    <div className="h-14 w-full bg-white dark:bg-db-dark-input rounded-lg flex gap-4 items-center px-4 shadow-inner shadow-db-cyan-process dark:shadow-black">
                       <input
                         value={Number(buyAmount) !== 0 ? buyAmount : ""}
                         onChange={(e) => {
@@ -232,9 +224,23 @@ export default function Dbmt() {
                         }}
                         type={"number"}
                         min={0}
-                        className="px-4 text-center h-10 w-full focus:ring-0 focus:outline-none rounded-lg bg-white dark:bg-db-dark-input"
+                        className="text-left px-4 h-10 w-full focus:ring-0 focus:outline-none rounded-lg bg-white dark:bg-db-dark-input"
                         placeholder={`${nativeGasToken} amount`}
                       />
+                      <div
+                        onClick={() => {
+                          console.log(
+                            " userGasBalance.toString() = " +
+                              userGasBalance.toString()
+                          );
+                          setBuyAmount(
+                            (Number(userGasBalance) - 0.0001).toString()
+                          );
+                        }}
+                        className="cursor-pointer rounded-lg flex justify-center items-center h-9 pb-0.5 px-2  border-[1px] border-db-cyan-process text-db-cyan-process hover:bg-db-cyan-process hover:text-white transition-colors"
+                      >
+                        MAX
+                      </div>
                       <div className="">{nativeGasToken}</div>
                     </div>
                   </div>
