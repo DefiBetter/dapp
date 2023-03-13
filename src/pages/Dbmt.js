@@ -95,7 +95,7 @@ export default function Dbmt() {
         } `}
       >
         <PageTitle title={"$DBMT"} fancyTitle={"Sale"} />
-        <div className="mt-4 flex justify-center">
+        <div className="mt-2 md:mt-4 flex justify-center">
           <div className="w-full p-4 rounded-lg shadow-sm dark:shadow-none shadow-db-cyan-process bg-white dark:bg-db-dark flex gap-4 flex-col lg:flex-row">
             <div className="p-2 w-full lg:w-1/2">
               <h2 className="font-bold text-xl">

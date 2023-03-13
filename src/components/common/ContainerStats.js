@@ -1,7 +1,7 @@
 export default function ContainerStats({ stats }) {
-  const statClass = `h-14 w-full md:w-1/${stats.length} flex flex-col items-center gap-2 justify-center px-2`
+  const statClass = `h-8 md:h-14 w-full md:w-1/${stats.length} flex flex-row md:flex-col items-center gap-2 justify-between md:justify-center px-2`
   return (
-    <div className="flex justify-between flex-wrap gap-4 md:gap-0">
+    <div className="flex justify-between flex-wrap">
       {stats.map((stat, index) => (
         <div
           key={`${stat.label}-${index}`}
