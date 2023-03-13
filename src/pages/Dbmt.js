@@ -184,18 +184,21 @@ export default function Dbmt() {
                     <div className="w-32 flex justify-center items-center">
                       <span className="font-fancy text-xl pt-2">buy</span>
                     </div>
-
-                    <div className="h-14 w-full bg-white dark:bg-db-dark-input rounded-lg flex gap-2 items-center px-4">
+                    <div className="h-14 w-full bg-white dark:bg-db-dark-input shadow-inner shadow-db-cyan-process dark:shadow-black rounded-lg flex gap-2 items-center px-4">
                       <input
                         value={Number(dbmtBuyAmount) !== 0 ? dbmtBuyAmount : ""}
                         onChange={(e) => {
                           setInput(0);
-                          const val = e.target.value || "0";
+                          let val = e.target.value || "0";
                           console.log(" val = " + val);
+                          if (Number(val) > supplyLeft) {
+                            val = supplyLeft.toString()
+                          }
                           setDbmtBuyAmount(val);
                         }}
                         type={"number"}
                         min={0}
+                        max={Number(supplyLeft)}
                         className="pl-20 px-4 text-center h-10 w-full focus:ring-0 focus:outline-none rounded-lg bg-white dark:bg-db-dark-input"
                         placeholder={`${tokenSymbol} amount`}
                       />
@@ -208,7 +211,7 @@ export default function Dbmt() {
                     <div className="w-32 flex justify-center items-center">
                       <span className="font-fancy text-xl pt-2">for</span>
                     </div>
-                    <div className="h-14 w-full bg-white dark:bg-db-dark-input rounded-lg flex gap-2 items-center px-4">
+                    <div className="h-14 w-full bg-white dark:bg-db-dark-input rounded-lg flex gap-2 items-center px-4 shadow-inner shadow-db-cyan-process dark:shadow-black">
                       <div
                         onClick={() => {
                           console.log(' userGasBalance.toString() = ' + userGasBalance.toString())
