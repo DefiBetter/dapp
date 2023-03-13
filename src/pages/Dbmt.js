@@ -50,6 +50,8 @@ export default function Dbmt() {
   const userGasBalance = useNativeBalance();
   const tokenSymbol = useSymbol(contractAddresses[chain?.network]?.dbmtToken);
 
+  console.log('duration = ' + duration)
+  console.log('startTime = ' + startTime)
   const isSale = useMemo(
     () => basePrice - currentPrice !== 0,
     [basePrice, currentPrice]
@@ -78,7 +80,7 @@ export default function Dbmt() {
               <span className="font-bold">$DBMT</span> Price increases in
             </div>
             <div className="font-bold text-3xl ">
-              <CountdownFormatted ms={startTime + duration} />
+              <CountdownFormatted ms={(startTime + duration) * 1000} />
             </div>
           </div>
         </div>
