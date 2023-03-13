@@ -138,7 +138,7 @@ export default function Dbmt() {
                 <div className="flex justify-center items-center gap-5 py-1">
                   {isSale && (
                     <div className="text-2xl font-bold text-white relative pt-2">
-                      {basePrice.toFixed(3)} {nativeGasToken}
+                      {basePrice ? basePrice.toFixed(3) : 0} {nativeGasToken}
                       <div className="absolute bottom-[30%] -left-[5%] w-[110%] h-1 bg-gradient-to-r from-red-400 to-orange-500"></div>
                     </div>
                   )}
@@ -148,7 +148,7 @@ export default function Dbmt() {
                     </div>
                   )}
                   <div className="font-bold text-transparent text-4xl bg-clip-text bg-gradient-to-b from-yellow-100 to-yellow-300">
-                    {currentPrice.toFixed(3)} {nativeGasToken}
+                    {currentPrice ? currentPrice.toFixed(3) : 0} {nativeGasToken}
                   </div>
                 </div>
                 {isSale && (
