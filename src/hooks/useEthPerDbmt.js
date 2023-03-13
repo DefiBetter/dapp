@@ -3,7 +3,7 @@ import { contractAddresses } from "../static/contractAddresses";
 import DBMTSaleABI from "../static/ABI/DBMTSaleABI.json";
 import { ethers } from "ethers";
 
-export default function useDbmtPerEth(buyAmount, onSuccessCallback) {
+export default function useEthPerDbmt(buyAmount, onSuccessCallback) {
   const { chain } = useNetwork();
 
   useContractRead({
@@ -11,7 +11,7 @@ export default function useDbmtPerEth(buyAmount, onSuccessCallback) {
     abi: DBMTSaleABI,
     enabled: Number(buyAmount) > 0,
     args: [ethers.utils.parseEther(buyAmount)],
-    functionName: "getTokenPerEth",
+    functionName: "getETHperToken",
     onSuccess(data) {
       onSuccessCallback(ethers.utils.formatEther(data));
     },

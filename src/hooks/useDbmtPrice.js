@@ -10,7 +10,7 @@ export default function useDbmtPrice() {
     address: contractAddresses[chain?.network]?.dbmtSale,
     abi: DBMTSaleABI,
     functionName: "BASE_PRICE_IN_DOLLAR",
-    select: (data) => Number(ethers.utils.formatEther(data)),
+    select: (data) => Number(data),
   });
 
   const { data: priceMulti } = useContractRead({

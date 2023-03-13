@@ -3,6 +3,7 @@ import { CountdownFormatted, trimNumber } from "../components/common/helper";
 import { MdDoubleArrow } from "react-icons/md";
 import { CgArrowLongRight } from "react-icons/cg";
 import useDbmtPerEth from "../hooks/useDbmtPerEth";
+import useEthPerDbmt from "../hooks/useEthPerDbmt";
 import useDbmtPrice from "../hooks/useDbmtPrice";
 import useDbmtSupplyLeft from "../hooks/useDbmtSupplyLeft";
 import useDbmtStartTime from "../hooks/useDbmtStartTime";
@@ -23,9 +24,21 @@ import ContainerStats from "../components/common/ContainerStats.js";
 
 export default function Dbmt() {
   const [buyAmount, setBuyAmount] = useState("0");
-  const [bnbPrice, setBnbPrice] = useState(0);
+  const [dbmtBuyAmount, setDbmtBuyAmount] = useState("0");
+  // const [bnbPrice, setBnbPrice] = useState(0);
   // current price
-  const dbmtPerEth = useDbmtPerEth(buyAmount);
+
+  useDbmtPerEth(buyAmount, (data) => {
+    console.log('useDbmtPerEth data = ' + data)
+    setDbmtBuyAmount(data);
+  });
+
+  useEthPerDbmt(dbmtBuyAmount, (data) => {
+    console.log('useEthPerDbmt data = ' + data)
+
+    setBuyAmount(data);
+  });
+
   const { basePrice, currentPrice } = useDbmtPrice();
 
   // supply left
@@ -38,22 +51,22 @@ export default function Dbmt() {
   const buyWrite = useDbmtBuy(buyAmount);
   const userGasBalance = useNativeBalance();
 
-  async function fetchBnbPrice() {
-    try {
-      const bnbPriceData = await (
-        await fetch(
-          "https://api.coingecko.com/api/v3/simple/price?ids=binancecoin&vs_currencies=usd"
-        )
-      ).json();
-      setBnbPrice(bnbPriceData["binancecoin"].usd);
-    } catch (e) {
-      console.error(e);
-    }
-  }
+  // async function fetchBnbPrice() {
+  //   try {
+  //     const bnbPriceData = await (
+  //       await fetch(
+  //         "https://api.coingecko.com/api/v3/simple/price?ids=binancecoin&vs_currencies=usd"
+  //       )
+  //     ).json();
+  //     setBnbPrice(bnbPriceData["binancecoin"].usd);
+  //   } catch (e) {
+  //     console.error(e);
+  //   }
+  // }
 
-  useEffect(() => {
-    fetchBnbPrice();
-  }, []);
+  // useEffect(() => {
+  //   fetchBnbPrice();
+  // }, []);
 
   const isSale = useMemo(
     () => basePrice - currentPrice !== 0,
@@ -191,14 +204,17 @@ export default function Dbmt() {
                       <span className="font-fancy text-xl pt-2">buy</span>
                     </div>
 
-                    <div className="h-14 w-full shadow-sm shadow-db-cyan-process dark:shadow-black bg-db-light dark:bg-db-dark-nav rounded-lg flex items-center px-4">
+                    <div className="h-14 w-full bg-white dark:bg-db-dark-input rounded-lg flex gap-2 items-center px-4">
                       <input
-                        disabled
-                        className="pl-24 px-4 text-center h-10 w-full rounded-lg bg-db-light dark:bg-db-dark-nav"
-                        placeholder="Enter Amount"
-                        value={
-                          dbmtPerEth !== 0 ? trimNumber(dbmtPerEth, 9, "dp") : 0
-                        }
+                        value={Number(dbmtBuyAmount) !== 0 ? dbmtBuyAmount : ""}
+                        onChange={(e) => {
+                          const val = e.target.value || "0";
+                          setDbmtBuyAmount(val);
+                        }}
+                        type={"number"}
+                        min={0}
+                        className="pl-20 px-4 text-center h-10 w-full focus:ring-0 focus:outline-none rounded-lg bg-white dark:bg-db-dark-input"
+                        placeholder="DBMT amount"
                       />
                       <div className="">DBMT</div>
                     </div>
@@ -214,7 +230,7 @@ export default function Dbmt() {
                         onClick={() => {
                           setBuyAmount(userGasBalance.toString());
                         }}
-                        className="cursor-pointer rounded-lg flex justify-center items-center h-9 pb-0.5 px-3 border-[1px] border-db-cyan-process text-db-cyan-process hover:bg-db-cyan-process hover:text-white transition-colors"
+                        className="cursor-pointer rounded-lg flex justify-center items-center h-9 pb-0.5 px-2  border-[1px] border-db-cyan-process text-db-cyan-process hover:bg-db-cyan-process hover:text-white transition-colors"
                       >
                         MAX
                       </div>

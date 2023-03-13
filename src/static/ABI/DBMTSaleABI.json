@@ -117,6 +117,25 @@
     "type": "function"
   },
   {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "tokenAmount",
+        "type": "uint256"
+      }
+    ],
+    "name": "getETHperToken",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
     "inputs": [],
     "name": "getEthForMinDollarAmount",
     "outputs": [
@@ -285,6 +304,13 @@
   {
     "inputs": [],
     "name": "withdrawRaisedFunds",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "withdrawTokenRemainder",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
