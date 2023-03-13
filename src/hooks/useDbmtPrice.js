@@ -8,9 +8,9 @@ export default function useDbmtPrice() {
 
   const { data: basePrice } = useContractRead({
     address: contractAddresses[chain?.network]?.dbmtSale,
-    abi: DBMTSaleABI,
-    functionName: "BASE_PRICE_IN_DOLLAR",
-    select: (data) => Number(data),
+    abi: DBMTSaleABI  ,
+    functionName: "BASE_PRICE_IN_WEI",
+    select: (data) => ethers.utils.formatEther(data),
   });
 
   const { data: priceMulti } = useContractRead({

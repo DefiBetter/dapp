@@ -18,8 +18,7 @@ import AddToWallet from "../components/common/AddToWallet";
 import PageTitle from "../components/common/PageTitle";
 import { contractAddresses } from "../static/contractAddresses";
 import { useNetwork } from "wagmi";
-import useDbmtMinDollarAmount from "../hooks/useDbmtMinDollarAmount";
-import useDmbtMinEthAmount from "../hooks/useDmbtMinEthAmount";
+import useDmbtMinPayment from "../hooks/useDmbtMinPayment";
 import ContainerStats from "../components/common/ContainerStats.js";
 import useSymbol from "../hooks/useSymbol";
 
@@ -46,8 +45,7 @@ export default function Dbmt() {
   const startTime = useDbmtStartTime();
   const duration = useDbmtDuration();
   const { chain } = useNetwork();
-  const minDollarAmount = useDbmtMinDollarAmount();
-  const minEthAmount = useDmbtMinEthAmount();
+  const minAmount = useDmbtMinPayment();
   const buyWrite = useDbmtBuy(buyAmount);
   const userGasBalance = useNativeBalance();
   const tokenSymbol = useSymbol(contractAddresses[chain?.network]?.dbmtToken);
@@ -140,7 +138,7 @@ export default function Dbmt() {
                 <div className="flex justify-center items-center gap-5 ">
                   {isSale && (
                     <div className="text-2xl font-bold text-white relative pt-2">
-                      ${basePrice}
+                      {basePrice.toFixed(3)} {nativeGasToken}
                       <div className="absolute bottom-[30%] -left-[5%] w-[110%] h-1 bg-gradient-to-r from-red-400 to-orange-500"></div>
                     </div>
                   )}
@@ -150,7 +148,7 @@ export default function Dbmt() {
                     </div>
                   )}
                   <div className="font-bold text-transparent text-4xl bg-clip-text bg-gradient-to-b from-yellow-100 to-yellow-300">
-                    ${currentPrice}
+                    {currentPrice.toFixed(3)} {nativeGasToken}
                   </div>
                 </div>
                 {isSale && (
@@ -176,8 +174,7 @@ export default function Dbmt() {
                     {
                       label: "Min. Purchase",
                       icon: <GiPriceTag size={20} />,
-                      value1: `$${minDollarAmount}`,
-                      value2: `(${minEthAmount.toFixed(3)} ${nativeGasToken})`,
+                      value1: `${minAmount.toFixed(2)} ${nativeGasToken}`,
                     },
                   ]}
                 />
@@ -239,6 +236,7 @@ export default function Dbmt() {
                 <div className="mt-4 flex gap-4 items-center flex-col md:flex-row justify-center">
                   <div className="w-full md:w-2/3">
                     <DBButton
+                      disabled={!buyWrite.transaction.write}
                       onClick={() => {
                         if (buyWrite.transaction.write) {
                           buyWrite.transaction.write();

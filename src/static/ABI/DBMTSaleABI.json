@@ -10,16 +10,6 @@
         "internalType": "address",
         "name": "newToken",
         "type": "address"
-      },
-      {
-        "internalType": "address",
-        "name": "newRouter",
-        "type": "address"
-      },
-      {
-        "internalType": "address",
-        "name": "newStableAddress",
-        "type": "address"
       }
     ],
     "stateMutability": "nonpayable",
@@ -72,7 +62,7 @@
   },
   {
     "inputs": [],
-    "name": "BASE_PRICE_IN_DOLLAR",
+    "name": "BASE_PRICE_IN_WEI",
     "outputs": [
       {
         "internalType": "uint256",
@@ -136,19 +126,6 @@
     "type": "function"
   },
   {
-    "inputs": [],
-    "name": "getEthForMinDollarAmount",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
     "inputs": [
       {
         "internalType": "uint256",
@@ -169,7 +146,7 @@
   },
   {
     "inputs": [],
-    "name": "minDollarAmount",
+    "name": "minPayment",
     "outputs": [
       {
         "internalType": "uint256",
@@ -214,19 +191,6 @@
     "type": "function"
   },
   {
-    "inputs": [],
-    "name": "router",
-    "outputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
     "inputs": [
       {
         "internalType": "uint256",
@@ -253,26 +217,13 @@
     "inputs": [
       {
         "internalType": "uint256",
-        "name": "newMinDollarAmount",
+        "name": "newMinPayment",
         "type": "uint256"
       }
     ],
-    "name": "setMinDollarAmount",
+    "name": "setMinPayment",
     "outputs": [],
     "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "stableAddress",
-    "outputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
     "type": "function"
   },
   {
@@ -314,5 +265,9 @@
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
+  },
+  {
+    "stateMutability": "payable",
+    "type": "receive"
   }
 ]
