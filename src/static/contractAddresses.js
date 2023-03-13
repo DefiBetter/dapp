@@ -26,7 +26,7 @@ const contractAddresses = {
     nativeGas: "bBNB",
   },
   bsc: {
-    dbmtToken: '0x5a101a20170656a5377f7d24ac43c97a1d7b274d',
+    dbmtToken: '0xe7cd3d6967930a3973d67d57bc737753d4efc58a',
     dbmtAirdrop: '0xab0ac050dca35be5025780bddf4fe4a88ca0e4fc',
     dbmtSale: '0xDf964F5D6ac3b130B0479A654052C40AB91ec3e2',
     better: "0xdb01265Db404b2474C8Fa2406987D9eB6bCa5db3",

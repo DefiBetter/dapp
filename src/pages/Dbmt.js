@@ -21,25 +21,25 @@ import { useNetwork } from "wagmi";
 import useDbmtMinDollarAmount from "../hooks/useDbmtMinDollarAmount";
 import useDmbtMinEthAmount from "../hooks/useDmbtMinEthAmount";
 import ContainerStats from "../components/common/ContainerStats.js";
+import useSymbol from "../hooks/useSymbol";
 
 export default function Dbmt() {
+  const [input, setInput] = useState();
   const [buyAmount, setBuyAmount] = useState("0");
   const [dbmtBuyAmount, setDbmtBuyAmount] = useState("0");
-  // const [bnbPrice, setBnbPrice] = useState(0);
-  // current price
 
-  useDbmtPerEth(buyAmount, (data) => {
-    console.log('useDbmtPerEth data = ' + data)
-    setDbmtBuyAmount(data);
-  });
-
-  useEthPerDbmt(dbmtBuyAmount, (data) => {
-    console.log('useEthPerDbmt data = ' + data)
-
-    setBuyAmount(data);
-  });
+  const dbmtPerEth = useDbmtPerEth(buyAmount);
+  const ethPerDbmt = useEthPerDbmt(dbmtBuyAmount);
 
   const { basePrice, currentPrice } = useDbmtPrice();
+
+  useEffect(() => {
+    if (input === 0 && ethPerDbmt) {
+      setBuyAmount(ethPerDbmt);
+    } else if (input === 1 && dbmtPerEth) {
+      setDbmtBuyAmount(dbmtPerEth);
+    }
+  }, [dbmtPerEth, ethPerDbmt]);
 
   // supply left
   const supplyLeft = useDbmtSupplyLeft();
@@ -50,23 +50,7 @@ export default function Dbmt() {
   const minEthAmount = useDmbtMinEthAmount();
   const buyWrite = useDbmtBuy(buyAmount);
   const userGasBalance = useNativeBalance();
-
-  // async function fetchBnbPrice() {
-  //   try {
-  //     const bnbPriceData = await (
-  //       await fetch(
-  //         "https://api.coingecko.com/api/v3/simple/price?ids=binancecoin&vs_currencies=usd"
-  //       )
-  //     ).json();
-  //     setBnbPrice(bnbPriceData["binancecoin"].usd);
-  //   } catch (e) {
-  //     console.error(e);
-  //   }
-  // }
-
-  // useEffect(() => {
-  //   fetchBnbPrice();
-  // }, []);
+  const tokenSymbol = useSymbol(contractAddresses[chain?.network]?.dbmtToken);
 
   const isSale = useMemo(
     () => basePrice - currentPrice !== 0,
@@ -107,7 +91,7 @@ export default function Dbmt() {
           isSale ? "mb-16 md:mb-12 lg:mb-12" : "mb-0"
         } `}
       >
-        <PageTitle title={"$DBMT"} fancyTitle={"Sale"} />
+        <PageTitle title={tokenSymbol} fancyTitle={"Sale"} />
         <div className="mt-2 md:mt-4 flex justify-center">
           <div className="w-full p-4 rounded-lg shadow-sm dark:shadow-none shadow-db-cyan-process bg-white dark:bg-db-dark flex gap-4 flex-col lg:flex-row">
             <div className="p-2 w-full lg:w-1/2">
@@ -208,15 +192,17 @@ export default function Dbmt() {
                       <input
                         value={Number(dbmtBuyAmount) !== 0 ? dbmtBuyAmount : ""}
                         onChange={(e) => {
+                          setInput(0);
                           const val = e.target.value || "0";
+                          console.log(" val = " + val);
                           setDbmtBuyAmount(val);
                         }}
                         type={"number"}
                         min={0}
                         className="pl-20 px-4 text-center h-10 w-full focus:ring-0 focus:outline-none rounded-lg bg-white dark:bg-db-dark-input"
-                        placeholder="DBMT amount"
+                        placeholder={`${tokenSymbol} amount`}
                       />
-                      <div className="">DBMT</div>
+                      <div className="">{tokenSymbol}</div>
                     </div>
                   </div>
                 </div>
@@ -237,6 +223,7 @@ export default function Dbmt() {
                       <input
                         value={Number(buyAmount) !== 0 ? buyAmount : ""}
                         onChange={(e) => {
+                          setInput(1);
                           const val = e.target.value || "0";
                           setBuyAmount(val);
                         }}

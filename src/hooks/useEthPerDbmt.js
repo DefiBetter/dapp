@@ -3,17 +3,21 @@ import { contractAddresses } from "../static/contractAddresses";
 import DBMTSaleABI from "../static/ABI/DBMTSaleABI.json";
 import { ethers } from "ethers";
 
-export default function useEthPerDbmt(buyAmount, onSuccessCallback) {
+export default function useEthPerDbmt(buyAmount) {
   const { chain } = useNetwork();
 
-  useContractRead({
+  const { data } = useContractRead({
     address: contractAddresses[chain?.network]?.dbmtSale,
     abi: DBMTSaleABI,
-    enabled: Number(buyAmount) > 0,
-    args: [ethers.utils.parseEther(buyAmount)],
+    enabled: buyAmount && Number(buyAmount) > 0,
+    args: [
+      buyAmount && Number(buyAmount) > 0
+        ? ethers.utils.parseEther(buyAmount)
+        : "0",
+    ],
     functionName: "getETHperToken",
-    onSuccess(data) {
-      onSuccessCallback(ethers.utils.formatEther(data));
-    },
+    select: (data) => ethers.utils.formatEther(data),
   });
+
+  return data;
 }
