@@ -11,8 +11,8 @@ import useDbmtBuy from "../hooks/useDbmtBuy";
 import DBButton from "../components/common/DBButton";
 import Loader from "../components/common/Loader";
 import useNativeBalance from "../hooks/useNativeBalance";
-import { BsCoin, BsWallet2 } from "react-icons/bs";
-import { GiTwoCoins } from "react-icons/gi";
+
+import { GiTwoCoins, GiWallet, GiPriceTag } from "react-icons/gi";
 import AddToWallet from "../components/common/AddToWallet";
 import PageTitle from "../components/common/PageTitle";
 import { contractAddresses } from "../static/contractAddresses";
@@ -167,7 +167,7 @@ export default function Dbmt() {
                   stats={[
                     {
                       label: "Balance",
-                      icon: <BsWallet2 size={20} />,
+                      icon: <GiWallet size={20} />,
                       value1: `${userGasBalance}`,
                       value2: `${nativeGasToken}`,
                     },
@@ -178,7 +178,7 @@ export default function Dbmt() {
                     },
                     {
                       label: "Min. Purchase",
-                      icon: <GiTwoCoins size={20} />,
+                      icon: <GiPriceTag size={20} />,
                       value1: `$${minDollarAmount}`,
                       value2: `(${minEthAmount.toFixed(3)} ${nativeGasToken})`,
                     },
