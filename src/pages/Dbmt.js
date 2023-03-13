@@ -50,10 +50,8 @@ export default function Dbmt() {
   const userGasBalance = useNativeBalance();
   const tokenSymbol = useSymbol(contractAddresses[chain?.network]?.dbmtToken);
 
-  console.log("duration = " + duration);
-  console.log("startTime = " + startTime);
   const isSale = useMemo(
-    () => basePrice - currentPrice !== 0,
+    () => basePrice !== currentPrice,
     [basePrice, currentPrice]
   );
 
@@ -193,16 +191,18 @@ export default function Dbmt() {
                         onChange={(e) => {
                           setInput(0);
                           let val = e.target.value || "0";
-                          console.log(" val = " + val);
                           if (Number(val) > supplyLeft) {
                             val = supplyLeft.toString();
                           }
                           setDbmtBuyAmount(val);
+                          if (val === "0") {
+                            setBuyAmount("0");
+                          }
                         }}
                         type={"number"}
                         min={0}
                         max={Number(supplyLeft)}
-                        className="text-left px-4 h-10 w-full focus:ring-0 focus:outline-none rounded-lg bg-white dark:bg-db-dark-input"
+                        className="text-center px-4 h-10 w-full focus:ring-0 focus:outline-none rounded-lg bg-white dark:bg-db-dark-input"
                         placeholder={`${tokenSymbol} amount`}
                       />
                       <div className="">{tokenSymbol}</div>
@@ -221,18 +221,17 @@ export default function Dbmt() {
                           setInput(1);
                           const val = e.target.value || "0";
                           setBuyAmount(val);
+                          if (val === "0") {
+                            setDbmtBuyAmount("0");
+                          }
                         }}
                         type={"number"}
                         min={0}
-                        className="text-left px-4 h-10 w-full focus:ring-0 focus:outline-none rounded-lg bg-white dark:bg-db-dark-input"
+                        className="text-center pl-20 px-4 h-10 w-full focus:ring-0 focus:outline-none rounded-lg bg-white dark:bg-db-dark-input"
                         placeholder={`${nativeGasToken} amount`}
                       />
                       <div
                         onClick={() => {
-                          console.log(
-                            " userGasBalance.toString() = " +
-                              userGasBalance.toString()
-                          );
                           setBuyAmount(
                             (Number(userGasBalance) - 0.0001).toString()
                           );
