@@ -25,8 +25,8 @@ const Navbar = () => {
           <BiHomeAlt2
             size={30}
             className={`${
-              location.pathname === "/" ? "text-[#2aaee6] " : "text-[#3A4D69]"
-            } group-hover:text-[#2aaee6] transition-all`}
+              location.pathname === "/" ? "text-db-cyan-process " : "text-[#3A4D69]"
+            } group-hover:text-db-cyan-process transition-all`}
           />
         ),
       });
@@ -42,9 +42,9 @@ const Navbar = () => {
               size={30}
               className={`${
                 location.pathname === "/better"
-                  ? "text-[#2aaee6] "
+                  ? "text-db-cyan-process "
                   : "text-[#3A4D69]"
-              } group-hover:text-[#2aaee6] transition-all`}
+              } group-hover:text-db-cyan-process transition-all`}
             />
           ),
         },
@@ -56,9 +56,9 @@ const Navbar = () => {
               size={30}
               className={`${
                 location.pathname === "/staking"
-                  ? "text-[#2aaee6] "
+                  ? "text-db-cyan-process "
                   : "text-[#3A4D69]"
-              } group-hover:text-[#2aaee6] transition-all`}
+              } group-hover:text-db-cyan-process transition-all`}
             />
           ),
         },
@@ -70,25 +70,25 @@ const Navbar = () => {
               size={30}
               className={`${
                 location.pathname === "/vaults"
-                  ? "text-[#2aaee6] "
+                  ? "text-db-cyan-process "
                   : "text-[#3A4D69]"
-              } group-hover:text-[#2aaee6] transition-all`}
+              } group-hover:text-db-cyan-process transition-all`}
             />
           ),
         }
       );
     } else if (process.env.REACT_APP_PHASE === "DBMT_SALE") {
       menuItems.push({
-        label: "$DBMT",
+        label: "DBMT",
         path: "/dbmt",
         icon: (
           <BsCoin
             size={30}
             className={`${
               location.pathname === "/dbmt"
-                ? "text-[#2aaee6] "
+                ? "text-db-cyan-process "
                 : "text-[#3A4D69]"
-            } group-hover:text-[#2aaee6] transition-all`}
+            } group-hover:text-db-cyan-process transition-all`}
           />
         ),
       });
@@ -105,9 +105,9 @@ const Navbar = () => {
             size={30}
             className={`${
               location.pathname === "/presale"
-                ? "text-[#2aaee6] "
+                ? "text-db-cyan-process "
                 : "text-[#3A4D69]"
-            } group-hover:text-[#2aaee6] transition-all`}
+            } group-hover:text-db-cyan-process transition-all`}
           />
         ),
       });
@@ -177,21 +177,21 @@ const Navbar = () => {
               <span
                 className={`${
                   location.pathname === item.path
-                    ? "text-[#2aaee6] "
+                    ? "text-db-cyan-process "
                     : "text-[#3A4D69]"
-                } text-xs group-hover:text-[#2aaee6] transition-colors`}
+                } text-xs group-hover:text-db-cyan-process transition-colors`}
               >
                 {item.label}
               </span>
               <div
                 className={`${
                   location.pathname === item.path ? "scale-100" : "scale-0"
-                } dark:block hidden group-hover:scale-100 bg-[#2aaee6] absolute w-5 h-5 opacity-90 rounded-full blur-lg transition-transform`}
+                } dark:block hidden group-hover:scale-100 bg-db-cyan-process absolute w-5 h-5 opacity-90 rounded-full blur-lg transition-transform`}
               />
               <div
                 className={`${
                   location.pathname === item.path ? "w-full" : "w-0"
-                } absolute bottom-0 h-0.5 bg-[#2aaee6] group-hover:w-full transition-all duration-300`}
+                } absolute bottom-0 h-0.5 bg-db-cyan-process group-hover:w-full transition-all duration-300`}
               ></div>
             </Link>
           ))}
@@ -204,13 +204,13 @@ const Navbar = () => {
           >
             <BsBook
               size={27}
-              className="text-[#3A4D69] mt-1 group-hover:text-[#2aaee6] transition-all"
+              className="text-[#3A4D69] mt-1 group-hover:text-db-cyan-process transition-all"
             />
-            <span className="text-[#3A4D69] text-xs group-hover:text-[#2aaee6] transition-colors">
+            <span className="text-[#3A4D69] text-xs group-hover:text-db-cyan-process transition-colors">
               Docs
             </span>
-            <div className="scale-0 dark:block hidden group-hover:scale-100 bg-[#2aaee6] absolute w-5 h-5 opacity-90 rounded-full blur-lg transition-transform" />
-            <div className="w-0 absolute bottom-0 h-0.5 bg-[#2aaee6] group-hover:w-full transition-all duration-300"></div>
+            <div className="scale-0 dark:block hidden group-hover:scale-100 bg-db-cyan-process absolute w-5 h-5 opacity-90 rounded-full blur-lg transition-transform" />
+            <div className="w-0 absolute bottom-0 h-0.5 bg-db-cyan-process group-hover:w-full transition-all duration-300"></div>
           </a>
         </nav>
         <div className="flex gap-4 items-center">
@@ -218,12 +218,12 @@ const Navbar = () => {
             {themeProvider?.theme === "dark" ? (
               <BsSun
                 size={25}
-                className="text-[#3A4D69] hover:text-[#2aaee6] cursor-pointer transition-colors"
+                className="text-[#3A4D69] hover:text-db-cyan-process cursor-pointer transition-colors"
               />
             ) : (
               <BsMoon
                 size={25}
-                className="text-[#3A4D69] hover:text-[#2aaee6] cursor-pointer transition-colors"
+                className="text-[#3A4D69] hover:text-db-cyan-process cursor-pointer transition-colors"
               />
             )}
           </div>
@@ -252,21 +252,21 @@ const Navbar = () => {
                 <span
                   className={`${
                     location.pathname === item.path
-                      ? "text-[#2aaee6] "
+                      ? "text-db-cyan-process "
                       : "text-[#3A4D69]"
-                  } group-hover:text-[#2aaee6] transition-colors`}
+                  } group-hover:text-db-cyan-process transition-colors`}
                 >
                   {item.label}
                 </span>
                 <div
                   className={`${
                     location.pathname === item.path ? "scale-100" : "scale-0"
-                  } dark:block left-1 hidden group-hover:scale-100 bg-[#2aaee6] absolute w-5 h-5 opacity-90 blur-lg transition-transform`}
+                  } dark:block left-1 hidden group-hover:scale-100 bg-db-cyan-process absolute w-5 h-5 opacity-90 blur-lg transition-transform`}
                 />
                 <div
                   className={`${
                     location.pathname === item.path ? "w-full" : "w-0"
-                  } absolute bottom-0 h-0.5 bg-[#2aaee6] group-hover:w-full transition-all duration-300`}
+                  } absolute bottom-0 h-0.5 bg-db-cyan-process group-hover:w-full transition-all duration-300`}
                 ></div>
               </Link>
             ))}
@@ -279,13 +279,13 @@ const Navbar = () => {
             >
               <BsBook
                 size={30}
-                className="text-[#3A4D69] group-hover:text-[#2aaee6] transition-all"
+                className="text-[#3A4D69] group-hover:text-db-cyan-process transition-all"
               />
-              <span className="text-[#3A4D69] group-hover:text-[#2aaee6] transition-colors">
+              <span className="text-[#3A4D69] group-hover:text-db-cyan-process transition-colors">
                 Docs
               </span>
-              <div className="scale-0 dark:block left-1 hidden group-hover:scale-100 bg-[#2aaee6] absolute w-5 h-5 opacity-90 blur-lg transition-transform" />
-              <div className="w-0 absolute bottom-0 h-0.5 bg-[#2aaee6] group-hover:w-full transition-all duration-300"></div>
+              <div className="scale-0 dark:block left-1 hidden group-hover:scale-100 bg-db-cyan-process absolute w-5 h-5 opacity-90 blur-lg transition-transform" />
+              <div className="w-0 absolute bottom-0 h-0.5 bg-db-cyan-process group-hover:w-full transition-all duration-300"></div>
             </a>
           </div>
         </nav>

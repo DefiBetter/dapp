@@ -55,18 +55,6 @@ const client = createClient({
         shimDisconnect: true,
       },
     }),
-    new CoinbaseWalletConnector({
-      chains,
-      options: {
-        shimDisconnect: true,
-      },
-    }),
-    new WalletConnectConnector({
-      chains,
-      options: {
-        qrcode: true,
-      },
-    }),
   ],
   provider,
   webSocketProvider,
