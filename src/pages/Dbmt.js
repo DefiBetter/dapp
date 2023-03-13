@@ -209,12 +209,12 @@ export default function Dbmt() {
                     <div className="w-32 flex justify-center items-center">
                       <span className="font-fancy text-xl pt-2">for</span>
                     </div>
-                    <div className="h-14 w-full bg-white dark:bg-db-dark-input rounded-lg flex items-center px-4">
+                    <div className="h-14 w-full bg-white dark:bg-db-dark-input rounded-lg flex gap-2 items-center px-4">
                       <div
                         onClick={() => {
                           setBuyAmount(userGasBalance.toString());
                         }}
-                        className="cursor-pointer rounded-lg flex gap-2 justify-center items-center h-9 pb-0.5 px-3 border-[1px] border-db-cyan-process text-db-cyan-process hover:bg-db-cyan-process hover:text-white transition-colors"
+                        className="cursor-pointer rounded-lg flex justify-center items-center h-9 pb-0.5 px-3 border-[1px] border-db-cyan-process text-db-cyan-process hover:bg-db-cyan-process hover:text-white transition-colors"
                       >
                         MAX
                       </div>
