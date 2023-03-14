@@ -28,7 +28,7 @@ const contractAddresses = {
   bsc: {
     dbmtToken: '0x5a101a20170656a5377f7d24ac43c97a1d7b274d',
     dbmtAirdrop: '0xab0ac050dca35be5025780bddf4fe4a88ca0e4fc',
-    dbmtSale: '0xDf964F5D6ac3b130B0479A654052C40AB91ec3e2',
+    dbmtSale: '0x69df551a3deFcfB227631986FfEf53B49AebBB6F',
     better: "0xdb01265Db404b2474C8Fa2406987D9eB6bCa5db3",
     presale: "0xC6C5A911d6960F5175CE049399E9e9859401969e",
     btToken: "0x9300EaF843c00267037358f397437574A1c17daC",
