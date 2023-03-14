@@ -25,7 +25,9 @@ const Navbar = () => {
           <BiHomeAlt2
             size={30}
             className={`${
-              location.pathname === "/" ? "text-db-cyan-process " : "text-[#3A4D69]"
+              location.pathname === "/"
+                ? "text-db-cyan-process "
+                : "text-[#3A4D69]"
             } group-hover:text-db-cyan-process transition-all`}
           />
         ),
@@ -159,9 +161,9 @@ const Navbar = () => {
         <Link to="/">
           <img
             src={
-              themeProvider.theme === "dark"
-                ? require("../../static/image/better-logo-light.png")
-                : require("../../static/image/better-logo.png")
+              themeProvider.theme && themeProvider.theme === "light"
+                ? require("../../static/image/better-logo.png")
+                : require("../../static/image/better-logo-light.png")
             }
             className="w-[160px]"
             alt="logo"
