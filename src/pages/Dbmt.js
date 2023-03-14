@@ -59,31 +59,31 @@ export default function Dbmt() {
   const nativeGasToken = contractAddresses[chain?.network]?.nativeGas;
 
   //1678802400
-  const timeStop = 1678802400;
-  const timeLeft = new Date(timeStop * 1000) - new Date();
+  // const timeStop = 1678802400;
+  // const timeLeft = new Date(timeStop * 1000) - new Date();
 
-  const fireworks = useFirework();
+  // const fireworks = useFirework();
 
-  const [playedConfetti, setPlayedConfetti] = useState(false);
-  
-  const [shouldPlayConfettis, setShouldPlayConfettis] = useState(false)
+  // const [playedConfetti, setPlayedConfetti] = useState(false);
 
-  useEffect(() => {
-    if (timeLeft < 0 && playedConfetti === false && shouldPlayConfettis === true) {
-      setPlayedConfetti(true);
-      fireworks.firework();
-    }
-  }, [timeLeft]);
+  // const [shouldPlayConfettis, setShouldPlayConfettis] = useState(false)
 
-  useEffect(() => {
-    if (timeLeft > 0) {
-      setShouldPlayConfettis(true)
-    }
-  }, [])
+  // useEffect(() => {
+  //   if (timeLeft < 0 && playedConfetti === false && shouldPlayConfettis === true) {
+  //     setPlayedConfetti(true);
+  //     fireworks.firework();
+  //   }
+  // }, [timeLeft]);
+
+  // useEffect(() => {
+  //   if (timeLeft > 0) {
+  //     setShouldPlayConfettis(true)
+  //   }
+  // }, [])
 
   return (
     <>
-      {timeLeft > 0 && (
+      {/* {timeLeft > 0 && (
         <div className="frosted z-50 fixed top-0 left-0 h-screen w-screen">
           <div className="gap-4 mt-24 flex flex-col justify-center items-center font-bold text-yellow-300 text-[5rem] md:text-[8rem] lg:text-[12rem]">
             <div>
@@ -135,7 +135,7 @@ export default function Dbmt() {
             </div>
           </div>
         </div>
-      )}
+      )} */}
 
       {isSale && (
         <div className="z-40 fixed left-0 bottom-0 w-full bg-gradient-to-r from-red-400 to-orange-500 flex justify-center items-center">
@@ -260,7 +260,7 @@ export default function Dbmt() {
 
                 <div className="mt-4 flex justify-center w-full">
                   <div className="w-full gap-2 flex">
-                    <div className="w-32 flex justify-center items-center">
+                    <div className="w-16 md:w-32 flex justify-center items-center">
                       <span className="font-fancy text-xl pt-2">buy</span>
                     </div>
                     <div className="h-14 w-full bg-white dark:bg-db-dark-input shadow-inner shadow-db-cyan-process dark:shadow-black rounded-lg flex gap-2 items-center px-4">
@@ -280,7 +280,7 @@ export default function Dbmt() {
                         type={"number"}
                         min={0}
                         max={Number(supplyLeft)}
-                        className="text-center px-4 h-10 w-full focus:ring-0 focus:outline-none rounded-lg bg-white dark:bg-db-dark-input"
+                        className="text-left md:text-center px-0 md:px-4 h-10 w-full focus:ring-0 focus:outline-none rounded-lg bg-white dark:bg-db-dark-input"
                         placeholder={`${tokenSymbol} amount`}
                       />
                       <div className="">{tokenSymbol}</div>
@@ -289,7 +289,7 @@ export default function Dbmt() {
                 </div>
                 <div className="mt-4 flex justify-center w-full">
                   <div className="w-full gap-2 flex">
-                    <div className="w-32 flex justify-center items-center">
+                    <div className="w-16 md:w-32 flex justify-center items-center">
                       <span className="font-fancy text-xl pt-2">for</span>
                     </div>
                     <div className="h-14 w-full bg-white dark:bg-db-dark-input rounded-lg flex gap-4 items-center px-4 shadow-inner shadow-db-cyan-process dark:shadow-black">
@@ -305,7 +305,7 @@ export default function Dbmt() {
                         }}
                         type={"number"}
                         min={0}
-                        className="text-center pl-20 px-4 h-10 w-full focus:ring-0 focus:outline-none rounded-lg bg-white dark:bg-db-dark-input"
+                        className="text-left md:text-center md:pl-20 px-0 md:px-4 h-10 w-full focus:ring-0 focus:outline-none rounded-lg bg-white dark:bg-db-dark-input"
                         placeholder={`${nativeGasToken} amount`}
                       />
                       <div
