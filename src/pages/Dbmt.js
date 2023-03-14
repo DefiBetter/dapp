@@ -59,16 +59,16 @@ export default function Dbmt() {
 
   //1678802400
   const timeStop = 1678802400;
+  const timeLeft = new Date(timeStop * 1000) - new Date();
 
   var left = Math.ceil(
     Math.abs(new Date() - new Date(timeStop * 1000)) / 3600000
   );
-  const timeLeft = new Date(timeStop * 1000) - new Date();
   return (
     <>
       {timeLeft > 0 && (
         <div className="frosted z-50 fixed top-0 left-0 h-screen w-screen">
-          <div className="gap-4 mt-24 flex flex-col justify-center items-center font-bold text-transparent text-[5rem] md:text-[8rem] lg:text-[12rem] bg-clip-text bg-gradient-to-b from-yellow-200 to-yellow-500">
+          <div className="gap-4 mt-24 flex flex-col justify-center items-center font-bold text-yellow-300 text-[5rem] md:text-[8rem] lg:text-[12rem]">
             <div>
               <CountdownFormatted
                 ms={(Date.now() + (timeStop - Date.now())) * 1000}

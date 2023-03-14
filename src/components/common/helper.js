@@ -14,7 +14,6 @@ const trimNumber = (number = 0, count = 0, type = "dp") => {
 const timeFormat = (seconds) => {
   const timeFormattedList = [];
   const timeList = [60 * 60 * 24, 60 * 60, 60, 1];
-
   timeList.map((e) => {
     if (seconds >= e) {
       const numbr = Math.floor(seconds / e);
@@ -31,11 +30,18 @@ const CountdownFormatted = ({ ms }) => {
       key={ms}
       date={ms}
       renderer={({ days, hours, minutes, seconds }) => {
-        let s = seconds;
-        s += days * 60 * 60 * 24;
-        s += hours * 60 * 60;
-        s += minutes * 60;
-        return timeFormat(s);
+        let display = "";
+        if (days) {
+          display += `${days < 10 ? `0${days}` : days}:`;
+        }
+        if (hours || (hours === 0 && minutes > 0)) {
+          display += `${hours < 10 ? `0${hours}` : hours}:`;
+        }
+        if (minutes || (minutes === 0 && minutes > 0)) {
+          display += `${minutes < 10 ? `0${minutes}` : minutes}:`;
+        }
+        display += `${seconds < 10 ? `0${seconds}` : seconds}`;
+        return display;
       }}
     />
   );
