@@ -59,7 +59,7 @@ export default function Dbmt() {
   const nativeGasToken = contractAddresses[chain?.network]?.nativeGas;
 
   //1678802400
-  const timeStop = 1678801580;
+  const timeStop = 1678802400;
   const timeLeft = new Date(timeStop * 1000) - new Date();
 
   const fireworks = useFirework();
