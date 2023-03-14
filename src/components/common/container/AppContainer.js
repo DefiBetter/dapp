@@ -7,15 +7,13 @@ const AppContainer = ({ children }) => {
   const themeProvider = useTheme();
 
   return (
-    <main className={`${themeProvider?.theme === "dark" ? "dark" : "light"}`}>
+    <main className={`${themeProvider?.theme ? themeProvider?.theme : "dark"}`}>
       <div className="dark:bg-db-dark bg-white w-full min-h-screen dark:text-white text-black transition-colors">
         <Navbar />
 
         <ToastProvider>
           <div className="p-2 md:p-4">
-            <Connect>
-              {children}
-            </Connect>
+            <Connect>{children}</Connect>
           </div>
         </ToastProvider>
       </div>
