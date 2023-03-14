@@ -42,6 +42,11 @@
     "type": "error"
   },
   {
+    "inputs": [],
+    "name": "NotAllowed",
+    "type": "error"
+  },
+  {
     "anonymous": false,
     "inputs": [
       {
@@ -133,7 +138,7 @@
         "type": "uint256"
       }
     ],
-    "name": "getTokenPerEth",
+    "name": "getTokenPerETH",
     "outputs": [
       {
         "internalType": "uint256",
@@ -186,6 +191,24 @@
   {
     "inputs": [],
     "name": "renounceOwnership",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "target",
+        "type": "address"
+      },
+      {
+        "internalType": "bool",
+        "name": "state",
+        "type": "bool"
+      }
+    ],
+    "name": "setAllowedState",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"

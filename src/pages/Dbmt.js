@@ -21,6 +21,7 @@ import { useNetwork } from "wagmi";
 import useDmbtMinPayment from "../hooks/useDmbtMinPayment";
 import ContainerStats from "../components/common/ContainerStats.js";
 import useSymbol from "../hooks/useSymbol";
+import useFirework from "../hooks/useFireworks";
 
 export default function Dbmt() {
   const [input, setInput] = useState();
@@ -61,9 +62,15 @@ export default function Dbmt() {
   const timeStop = 1678802400;
   const timeLeft = new Date(timeStop * 1000) - new Date();
 
-  var left = Math.ceil(
-    Math.abs(new Date() - new Date(timeStop * 1000)) / 3600000
-  );
+  const fireworks = useFirework();
+
+  const [playedConfetti, setPlayedConfetti] = useState(false);
+  useEffect(() => {
+    if (timeLeft < 0 && playedConfetti === false) {
+      setPlayedConfetti(true);
+      fireworks.firework();
+    }
+  }, [timeLeft]);
   return (
     <>
       {timeLeft > 0 && (
@@ -209,9 +216,8 @@ export default function Dbmt() {
                     </div>
                   )}
                   <div className="font-bold text-transparent text-4xl bg-clip-text bg-gradient-to-b from-yellow-100 to-yellow-300">
-                    {/* {currentPrice ? currentPrice.toFixed(3) : 0}{" "}
-                    {nativeGasToken} */}
-                    Released Soon
+                    {currentPrice ? currentPrice.toFixed(3) : 0}{" "}
+                    {nativeGasToken}
                   </div>
                 </div>
                 {isSale && (

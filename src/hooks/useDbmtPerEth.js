@@ -11,7 +11,7 @@ export default function useDbmtPerEth(buyAmount) {
     abi: DBMTSaleABI,
     enabled: buyAmount && Number(buyAmount) > 0,
     args: [buyAmount && Number(buyAmount) > 0 ? ethers.utils.parseEther(buyAmount) : '0'],
-    functionName: "getTokenPerEth",
+    functionName: "getTokenPerETH",
     select: (data) => ethers.utils.formatEther(data),
   });
 
