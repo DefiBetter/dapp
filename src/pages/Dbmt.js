@@ -60,16 +60,65 @@ export default function Dbmt() {
   //1678802400
   const timeStop = 1678802400;
 
-  var left = Math.ceil(Math.abs(new Date() - new Date(timeStop * 1000)) / 3600000);
+  var left = Math.ceil(
+    Math.abs(new Date() - new Date(timeStop * 1000)) / 3600000
+  );
   const timeLeft = new Date(timeStop * 1000) - new Date();
   return (
     <>
       {timeLeft > 0 && (
-        <div style={{backdropFilter: `blur(${left * 10}px)`}} className='z-50 fixed top-0 left-0 h-screen w-screen'>
-          <div className="w-full h-full flex justify-center backdrop items-center font-bold text-transparent text-4xl bg-clip-text bg-gradient-to-b from-yellow-200 to-yellow-500 text-[12rem]">
-            <CountdownFormatted
-              ms={(Date.now() + (timeStop - Date.now())) * 1000}
-            />
+        <div
+          style={{ backdropFilter: `blur(${left * 10}px)` }}
+          className="z-50 fixed top-0 left-0 h-screen w-screen"
+        >
+          <div className="gap-24 w-full h-full flex flex-col justify-center backdrop items-center font-bold text-transparent text-[5rem] md:text-[8rem] lg:text-[12rem] bg-clip-text bg-gradient-to-b from-yellow-200 to-yellow-500">
+            <div>
+              <CountdownFormatted
+                ms={(Date.now() + (timeStop - Date.now())) * 1000}
+              />
+            </div>
+            <div className="flex gap-3 items-center">
+              <a
+                target="_blank"
+                rel="noreferrer"
+                href="https://discord.gg/DSDXSXf6Ub"
+              >
+                <img
+                  className="w-10 h-10"
+                  src={require("../static/image/discord-logo.png")}
+                />
+              </a>
+              <a
+                target="_blank"
+                rel="noreferrer"
+                href="https://t.me/+2z4mDnFAnjxiMWJl"
+              >
+                <img
+                  className="w-10 h-10"
+                  src={require("../static/image/telegram-logo.png")}
+                />
+              </a>
+              <a
+                target="_blank"
+                rel="noreferrer"
+                href="https://twitter.com/defi_better"
+              >
+                <img
+                  className="w-10 h-10"
+                  src={require("../static/image/twitter-logo.png")}
+                />
+              </a>
+              <a
+                target="_blank"
+                rel="noreferrer"
+                href="https://medium.com/@defibetter"
+              >
+                <img
+                  className="w-10 h-10"
+                  src={require("../static/image/medium-logo.png")}
+                />
+              </a>
+            </div>
           </div>
         </div>
       )}
