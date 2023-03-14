@@ -3,6 +3,18 @@
 @tailwind utilities;
 
 @font-face {
-    font-family: "marguerite";
-    src: url("./static/font/marguerite.ttf");
+  font-family: "marguerite";
+  src: url("./static/font/marguerite.ttf");
+}
+
+.frosted {
+  background: #131b2adf;
+}
+
+/* applies semi-transparent background for browsers that support backdrop-filter */
+@supports (backdrop-filter: none) {
+  .frosted {
+    background: #131b2a73;
+    backdrop-filter: blur(30px);
   }
+}

@@ -67,13 +67,8 @@ export default function Dbmt() {
   return (
     <>
       {timeLeft > 0 && (
-        <div
-          style={{
-            backdropFilter: `blur(${left * 5}px)`,
-          }}
-          className="z-50 fixed top-0 left-0 h-screen w-screen"
-        >
-          <div className="gap-24 w-full h-full flex flex-col justify-center items-center font-bold text-transparent text-[5rem] md:text-[8rem] lg:text-[12rem] bg-clip-text bg-gradient-to-b from-yellow-200 to-yellow-500">
+        <div className="frosted z-50 fixed top-0 left-0 h-screen w-screen">
+          <div className="gap-4 mt-24 flex flex-col justify-center items-center font-bold text-transparent text-[5rem] md:text-[8rem] lg:text-[12rem] bg-clip-text bg-gradient-to-b from-yellow-200 to-yellow-500">
             <div>
               <CountdownFormatted
                 ms={(Date.now() + (timeStop - Date.now())) * 1000}
