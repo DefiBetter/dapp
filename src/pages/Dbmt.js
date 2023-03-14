@@ -75,7 +75,7 @@ export default function Dbmt() {
       )}
 
       {isSale && (
-        <div className="z-50 fixed left-0 bottom-0 w-full bg-gradient-to-r from-red-400 to-orange-500 flex justify-center items-center">
+        <div className="z-40 fixed left-0 bottom-0 w-full bg-gradient-to-r from-red-400 to-orange-500 flex justify-center items-center">
           <div className="absolute left-2 lg:left-44">
             <MdDoubleArrow
               size={30}
