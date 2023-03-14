@@ -1,9 +1,16 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   content: ["./src/**/*.{js,jsx,ts,tsx}"],
+  darkMode: 'class',
   theme: {
     extend: {
+  
       colors: {
+        "db-dark": "#131B2A",
+        "db-dark-info": '#586b8c',
+        "db-dark-input": '#2a374d',
+        "db-dark-nav": '#1D2738',
+        "db-light": "#F4FBFE",
         "db-cyan-process": "#2aaee6",
         "db-background": "#cce5ff",
         "db-blue-gray": "#6D90C2",
@@ -20,17 +27,28 @@ module.exports = {
         db: "2px 2px 0px 0px rgba(0,0,0,0.25)",
       },
       keyframes: {
-        'zoom': {
-          '0%': {
-            transform: 'scale(1)'
-          }, 
-          '50%': {
-            transform: 'scale(1.05)'
-          }, 
-          '100%': {
-            transform: 'scale(1)'
-          }, 
-        }, 
+        zoom: {
+          "0%": {
+            transform: "scale(1)",
+          },
+          "50%": {
+            transform: "scale(1.05)",
+          },
+          "100%": {
+            transform: "scale(1)",
+          },
+        },
+        "slide-left-to-right": {
+          "0%": {
+            transform: "translate(-50px)",
+          },
+          "50%": {
+            transform: "translate(50px)",
+          },
+          "100%": {
+            transform: "translate(-50px)",
+          },
+        },
         "slide-right": {
           "0%": {
             transform: "translate(0)",
@@ -81,6 +99,7 @@ module.exports = {
         },
       },
       animation: {
+        "slide-left-to-right": "slide-left-to-right 1500ms linear count(3)",
         "slide-right": "slide-right 1000ms linear infinite",
         "slide-left": "slide-left 1000ms linear infinite",
         toast: "toast 5500ms linear",

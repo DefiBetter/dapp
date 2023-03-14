@@ -264,7 +264,7 @@ const Bins = (props) => {
           <div className="flex justify-between gap-2">
             <DBButton onClick={handleOnClickNormal}>
               <div className="flex justify-center items-center gap-2">
-                <div className="font-fancy pt-1 text-base">Normal</div>
+                <div className="text-base">Normal</div>
                 <div className="font-sans text-sm pb-0.5 border-[1px] border-white rounded-full w-4 h-4 flex justify-center items-center">
                   i
                 </div>
@@ -273,7 +273,7 @@ const Bins = (props) => {
 
             <DBButton onClick={handleOnClickNormal} disabled>
               <div className="flex justify-center items-center gap-2">
-                <div className="font-fancy pt-1 text-base">Implied</div>
+                <div className="text-base">Implied</div>
                 <div className="font-sans text-sm pb-0.5 border-[1px] border-white rounded-full w-4 h-4 flex justify-center items-center">
                   i
                 </div>

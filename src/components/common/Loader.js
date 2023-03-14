@@ -5,7 +5,7 @@ export default function Loader({text}) {
     <div className="w-full flex items-center justify-center gap-2">
       <div>{text}</div>
       <div>
-        <AiOutlineLoading size={20} className="animate-spin mb-1.5" />
+        <AiOutlineLoading size={20} className="animate-spin" />
       </div>
     </div>
   );

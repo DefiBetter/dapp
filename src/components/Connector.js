@@ -1,4 +1,4 @@
-import { Route, Routes } from "react-router-dom";
+import { Route, Routes, Redirect, Navigate } from "react-router-dom";
 import Better from "./../pages/Better";
 import Staking from "./../pages/Staking";
 import PublicSale from "../pages/PublicSale";
@@ -8,61 +8,93 @@ import AppContainer from "./common/container/AppContainer";
 import CommunityPresale from "../pages/CommunityPresale";
 import VcPresale from "../pages/VcPresale";
 import Dbmt from "../pages/Dbmt";
-import Betterdrop from "../pages/Betterdrop";
 
 function Connector() {
   return (
     <>
       <Routes>
-        <Route
-          path="/"
-          element={
-            <>
-              {process.env.REACT_APP_PHASE === "PRODUCTION" ? (
+        {process.env.REACT_APP_PHASE === "DBMT_SALE" && (
+          <>
+            <Route path="/" element={<Navigate to="/dbmt" replace={true} />} />
+            <Route
+              path="/dbmt"
+              element={
                 <AppContainer>
-                  <Better />
+                  <Dbmt />
                 </AppContainer>
-              ) : process.env.REACT_APP_PHASE === "DBMT_SALE" ? (
-                <AppContainer>
-                  {/* <Dbmt /> */}
-                  <Betterdrop />
-                </AppContainer>
-              ) : process.env.REACT_APP_PHASE === "PUBLIC_SALE" ? (
-                <AppContainer>
-                  <PublicSale />
-                </AppContainer>
-              ) : process.env.REACT_APP_PHASE === "COMMUNITY_PRESALE" ? (
-                <AppContainer>
-                  <CommunityPresale />
-                </AppContainer>
-              ) : process.env.REACT_APP_PHASE === "VC_PRESALE" ? (
+              }
+            />
+          </>
+        )}
+
+        {process.env.REACT_APP_PHASE === "VC_PRESALE" && (
+          <>
+            <Route
+              path="/"
+              element={<Navigate to="/presale" replace={true} />}
+            />
+
+            <Route
+              path="/presale"
+              element={
                 <AppContainer>
                   <VcPresale />
                 </AppContainer>
-              ) : process.env.REACT_APP_PHASE === "LANDING" ? (
+              }
+            />
+          </>
+        )}
+        {process.env.REACT_APP_PHASE === "COMMUNITY_PRESALE" && (
+          <>
+            <Route
+              path="/"
+              element={<Navigate to="/presale" replace={true} />}
+            />
+            <Route
+              path="/presale"
+              element={
                 <AppContainer>
-                  <Landing />
+                  <CommunityPresale />
                 </AppContainer>
-              ) : (
+              }
+            />
+          </>
+        )}
+        {process.env.REACT_APP_PHASE === "PUBLIC_SALE" && (
+          <>
+            <Route
+              path="/"
+              element={<Navigate to="/presale" replace={true} />}
+            />
+            <Route
+              path="/presale"
+              element={
                 <AppContainer>
-                  <Landing />
+                  <PublicSale />
                 </AppContainer>
-              )}
-            </>
-          }
-        />
-
-        <Route
-          path="/*"
-          element={
-            <AppContainer>
-              <Betterdrop />
-            </AppContainer>
-          }
-        />
+              }
+            />
+          </>
+        )}
 
         {process.env.REACT_APP_PHASE === "PRODUCTION" && (
           <>
+            <Route
+              path="/"
+              element={
+                <AppContainer>
+                  <Landing />
+                </AppContainer>
+              }
+            />
+             <Route
+              path="/better"
+              element={
+                <AppContainer>
+                  <Better />
+                </AppContainer>
+              }
+            />
             <Route
               path="/staking"
               element={
@@ -77,14 +109,6 @@ function Connector() {
               element={
                 <AppContainer>
                   <StrategyVault />
-                </AppContainer>
-              }
-            />
-            <Route
-              path="/template"
-              element={
-                <AppContainer>
-                  <PublicSale />
                 </AppContainer>
               }
             />

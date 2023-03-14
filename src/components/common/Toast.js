@@ -97,7 +97,7 @@ const Toast = ({ toast }) => {
                 className=" flex items-center gap-1 align-middle text-xs"
                 target="_blank"
                 rel="noreferrer"
-                href={`https://testnet.snowtrace.io/tx/${toast.hash}`}
+                href={`https://bscscan.com/tx/${toast.hash}`}
               >
                 <span className="text-xs text-white">View</span>
                 <svg

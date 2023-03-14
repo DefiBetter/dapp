@@ -2,7 +2,7 @@ export default function DBButton({ children, disabled, onClick }) {
   return (
     <button
       disabled={disabled}
-      className="disabled:bg-gray-400  border-[1px] border-black shadow-db pt-1 font-fancy bg-db-cyan-process h-10 w-full rounded-lg text-lg text-white hover:bg-db-blue-200"
+      className="h-14 disabled:bg-gray-400 shadow-sm shadow-db-cyan-process dark:shadow-black pb-0.5 bg-db-cyan-process dark:text-white w-full rounded-lg text-lg transition-colors"
       onClick={onClick}
     >
       {children}

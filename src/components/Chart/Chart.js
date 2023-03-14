@@ -253,7 +253,6 @@ const Chart = (props) => {
         )
       ],
     ];
-    console.log("epochStartPoint", epochStartPoint);
 
     /* both x and y range info vars */
     let n = chartConfig.epochCount;

@@ -14,6 +14,12 @@ import { ethers } from "ethers";
 import { CountdownFormatted, trimNumber } from "../components/common/helper";
 import useWethPrice from "../hooks/useWethPrice";
 import { ToastStatus, useToast } from "../context/ToastContext";
+import { BsCoin, BsWallet2 } from "react-icons/bs";
+import { GiSandsOfTime, GiCoins } from "react-icons/gi";
+import useBalanceOf from "../hooks/useBalanceOf";
+import DBButton from "../components/common/DBButton";
+import AddToWallet from "../components/common/AddToWallet";
+import PageTitle from "../components/common/PageTitle";
 
 function VcPresale() {
   const { address: connectedAddress } = useAccount();
@@ -91,7 +97,9 @@ function VcPresale() {
   });
 
   // approve
-  console.log('vcPresaleContractConfig.address = ' + vcPresaleContractConfig.address)
+  console.log(
+    "vcPresaleContractConfig.address = " + vcPresaleContractConfig.address
+  );
   const { write: approvePaymentTokenWrite } = useContractWrite({
     address: paymentToken,
     abi: IERC20MetadataABI,
@@ -160,98 +168,122 @@ function VcPresale() {
     },
   });
 
+  const userWethBalance = useBalanceOf(contractAddresses[chain?.network]?.WETH);
+
   return (
-    <div className="relative bg-db-background border-[3px] border-db-cyan-process p-4 h-[80vh]">
-      <div className="shadow-db m-auto w-full md:w-1/2 mt-5 bg-white border-2 border-db-cyan-process rounded-2xl p-4">
-        <div className="flex justify-center text-5xl">
-          VC Pre
-          <span className="font-bold mt-7 font-fancy text-5xl text-db-cyan-process">
-            Sale
-          </span>
+    <div className="relative bg-db-light dark:bg-db-dark-nav transition-colors rounded-md p-2 md:p-4 min-h-[86vh]">
+      <PageTitle title={"VC Pre"} fancyTitle={"Sale"} />
+
+      <div className="mt-4 flex justify-center">
+        <div className="z-10 w-full md:w-3/4 p-4 rounded-lg dark:shadow-inner shadow-sm shadow-db-cyan-process dark:shadow-black bg-white dark:bg-db-dark flex gap-4 flex-col justify-between">
+          <div className="w-full flex flex-wrap justify-between gap-2">
+            <div className="h-14 flex flex-col w-full md:w-[49%] lg:w-[24%] items-center p-2 bg-white dark:bg-db-dark-info justify-center shadow-sm shadow-db-cyan-process dark:shadow-black rounded-lg">
+              <div className="flex items-center gap-2">
+                <BsWallet2 size={20} />
+                <div>Balance</div>
+              </div>
+              <div className="font-bold">{userWethBalance} wETH</div>
+            </div>
+            <div className="h-14 flex flex-col w-full md:w-[49%] lg:w-[24%] items-center p-2 bg-white dark:bg-db-dark-info justify-center shadow-sm shadow-db-cyan-process dark:shadow-black rounded-lg">
+              <div className="flex items-center gap-2">
+                <BsCoin size={20} />
+                <div>Current Price</div>
+              </div>
+              <div className="font-bold">
+                {trimNumber(currentPrice, 4, "dp")} wETH{" "}
+                <span className="text-xs">
+                  (≈$
+                  {trimNumber(currentPrice * wethPrice, 4, "dp")})
+                </span>
+              </div>
+            </div>
+            <div className="h-14 flex flex-col w-full md:w-[49%] lg:w-[24%] items-center p-2 bg-white dark:bg-db-dark-info justify-center shadow-sm shadow-db-cyan-process dark:shadow-black rounded-lg">
+              <div className="flex items-center gap-2">
+                <GiCoins size={20} />
+                <div>Supply left</div>
+              </div>
+              <div className="font-bold">
+                {trimNumber(+supplyLeft, 4, "dp")}
+              </div>
+            </div>
+            <div className="h-14 flex flex-col w-full md:w-[49%] lg:w-[24%] items-center p-2 bg-white dark:bg-db-dark-info justify-center shadow-sm shadow-db-cyan-process dark:shadow-black rounded-lg">
+              <div className="flex items-center gap-2">
+                <GiSandsOfTime size={20} />
+                <div>Time Left</div>
+              </div>
+              <div className="font-bold">
+                <CountdownFormatted ms={(startTime + duration) * 1000} />
+              </div>
+            </div>
+          </div>
+
+          <div className="flex flex-col justify-center w-full">
+            <div className="w-full gap-2 flex">
+              <div className="w-32 flex justify-center items-center">
+                <span className="font-fancy text-xl pt-2">Spend</span>
+              </div>
+              <div className="h-14 w-full shadow-inner shadow-db-cyan-process dark:shadow-black bg-white dark:bg-db-dark-input rounded-lg flex items-center px-4">
+                <div
+                  onClick={() => {
+                    setBuyAmount(userWethBalance.toString());
+                  }}
+                  className="cursor-pointer rounded-md flex gap-2 justify-center items-center h-9 pb-0.5 px-3 border-[1px] border-db-cyan-process text-db-cyan-process hover:bg-db-cyan-process hover:text-white transition-colors"
+                  >
+                  MAX
+                </div>
+                <input
+                  value={Number(buyAmount) !== 0 ? buyAmount : ""}
+                  onChange={(e) => {
+                    const val = e.target.value || "0";
+                    setBuyAmount(val);
+                  }}
+                  type={"number"}
+                  min={0}
+                  className="px-4 text-center h-10 w-full focus:ring-0 focus:outline-none rounded-lg bg-white dark:bg-db-dark-input"
+                  placeholder="wETH amount"
+                />
+                <div className="">wETH</div>
+              </div>
+            </div>
+            <div className="mt-4 flex justify-center w-full">
+              <div className="w-full gap-2 flex">
+                <div className="w-32 flex justify-center items-center">
+                  <span className="font-fancy text-xl pt-2">to get</span>
+                </div>
+
+                <div className="h-14 w-full shadow-sm shadow-db-cyan-process dark:shadow-black bg-db-light dark:bg-db-dark-nav rounded-lg flex items-center px-4">
+                  <input
+                    disabled
+                    className="pl-24 px-4 text-center h-10 w-full rounded-lg bg-db-light dark:bg-db-dark-nav"
+                    placeholder="Enter Amount"
+                    value={trimNumber(estimateOutput, 9, "dp")}
+                  />
+                  <div className="">BETR</div>
+                </div>
+              </div>
+            </div>
+
+            <div className="mt-4 flex gap-4 items-center flex-col md:flex-row justify-center">
+              <div className="w-full md:w-2/3">
+                {ethers.BigNumber.from(allowance.toString()).lte(
+                  ethers.BigNumber.from("0")
+                ) ? (
+                  <DBButton onClick={approvePaymentTokenWrite}>
+                    Approve
+                  </DBButton>
+                ) : (
+                  <DBButton onClick={buyWrite}>Buy</DBButton>
+                )}
+              </div>
+              <div className="w-full md:w-1/3">
+                <AddToWallet asset="BETR" />
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
-      <div className="relative z-10 flex flex-col shadow-db m-auto w-full md:w-1/2 mt-5 bg-white border-2 border-db-cyan-process rounded-2xl p-4">
-        <div className="flex justify-center gap-10 items-center">
-          <div className="shadow-db px-10 text-center bg-db-french-sky p-3 border-[1px] border-black rounded-lg">
-            <span className="font-bold">Current Price</span>
-          </div>
-          <div>
-            {trimNumber(currentPrice, 4, "dp")} WETH (≈$
-            {trimNumber(currentPrice * wethPrice, 4, "dp")})
-          </div>
-        </div>
-
-        <div className="mt-4 flex flex-col lg:flex-row justify-between items-center gap-2">
-          <div className="flex justify-between w-full items-center">
-            <div className="flex-1 shadow-db text-center font-bold bg-db-french-sky p-3 border-[1px] border-black rounded-lg">
-              Time Left
-            </div>
-            <div className="flex-1 text-center">
-              <CountdownFormatted ms={(startTime + duration) * 1000} />
-            </div>
-          </div>
-
-          <div className="flex justify-between w-full items-center">
-            <div className="flex-1 shadow-db text-center font-bold bg-db-french-sky p-3 border-[1px] border-black rounded-lg">
-              Supply Left
-            </div>
-            <div className="flex-1 text-center">
-              {trimNumber(+supplyLeft, 4, "dp")}
-            </div>
-          </div>
-        </div>
-
-        <div className="mt-3 flex items-center w-full">
-          <div className="font-fancy text-db-cyan-process w-24 text-center text-xl pt-1">
-            buy
-          </div>
-          <div className="w-full flex items-center p-2 justify-center bg-db-background rounded-lg shadow-db">
-            <div className="text-black text-sm flex-1 text-center">
-              {trimNumber(estimateOutput, 9, "dp")}
-            </div>
-
-            <div className="text-black font-bold w-12 text-center">BT</div>
-          </div>
-        </div>
-        <div className="mt-3 flex items-center w-full">
-          <div className="font-fancy text-db-cyan-process w-24 text-center text-xl pt-1">
-            for
-          </div>
-          <div className="w-full flex items-center p-2 justify-center bg-db-background rounded-lg shadow-db">
-            <input
-              onChange={(e) => {
-                const val = e.target.value || 0;
-                setBuyAmount(ethers.utils.parseEther(val.toString()));
-                console.log("val", ethers.utils.parseEther(val.toString()));
-              }}
-              type={"number"}
-              min={0}
-              placeholder="Amount"
-              className="text-black text-sm flex-1"
-            />
-            <div className="text-black font-bold w-12 text-center">WETH</div>
-          </div>
-        </div>
-        {ethers.BigNumber.from(allowance.toString()).lte(
-          ethers.BigNumber.from("0")
-        ) ? (
-          <button
-            onClick={approvePaymentTokenWrite}
-            className="mt-3 border-[1px] border-black shadow-db pt-1 font-fancy bg-db-cyan-process h-10 w-full rounded-lg text-lg text-white hover:bg-db-blue-200"
-          >
-            Approve
-          </button>
-        ) : (
-          <button
-            onClick={buyWrite}
-            className="mt-3 border-[1px] border-black shadow-db pt-1 font-fancy bg-db-cyan-process h-10 w-full rounded-lg text-lg text-white hover:bg-db-blue-200"
-          >
-            Buy
-          </button>
-        )}
-      </div>
-      <div className="z-0 absolute h-60 bottom-10 left-[13%]">
+      <div className="z-0 absolute h-60 bottom-10 left-8">
         <img
           alt="faucet"
           className="h-full z-0"

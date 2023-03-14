@@ -10,16 +10,6 @@
         "internalType": "address",
         "name": "newToken",
         "type": "address"
-      },
-      {
-        "internalType": "address",
-        "name": "newRouter",
-        "type": "address"
-      },
-      {
-        "internalType": "address",
-        "name": "newStableAddress",
-        "type": "address"
       }
     ],
     "stateMutability": "nonpayable",
@@ -72,7 +62,7 @@
   },
   {
     "inputs": [],
-    "name": "BASE_PRICE_IN_DOLLAR",
+    "name": "BASE_PRICE_IN_WEI",
     "outputs": [
       {
         "internalType": "uint256",
@@ -120,6 +110,25 @@
     "inputs": [
       {
         "internalType": "uint256",
+        "name": "tokenAmount",
+        "type": "uint256"
+      }
+    ],
+    "name": "getETHperToken",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
         "name": "ethAmount",
         "type": "uint256"
       }
@@ -137,7 +146,7 @@
   },
   {
     "inputs": [],
-    "name": "minDollarAmount",
+    "name": "minPayment",
     "outputs": [
       {
         "internalType": "uint256",
@@ -182,19 +191,6 @@
     "type": "function"
   },
   {
-    "inputs": [],
-    "name": "router",
-    "outputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
     "inputs": [
       {
         "internalType": "uint256",
@@ -218,16 +214,16 @@
     "type": "function"
   },
   {
-    "inputs": [],
-    "name": "stableAddress",
-    "outputs": [
+    "inputs": [
       {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
+        "internalType": "uint256",
+        "name": "newMinPayment",
+        "type": "uint256"
       }
     ],
-    "stateMutability": "view",
+    "name": "setMinPayment",
+    "outputs": [],
+    "stateMutability": "nonpayable",
     "type": "function"
   },
   {
@@ -262,5 +258,16 @@
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "withdrawTokenRemainder",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "stateMutability": "payable",
+    "type": "receive"
   }
 ]

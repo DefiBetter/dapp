@@ -239,7 +239,7 @@ const VaultCard = () => {
                 }}
               >
                 <div className="flex gap-2 items-center justify-center">
-                  <div className="font-fancy">
+                  <div className="">
                     {queuedAmount > 0 && burnAmount > 0 ? (
                       `Claim queued\xa0 & \xa0burn`
                     ) : queuedAmount > 0 ? (
@@ -250,7 +250,7 @@ const VaultCard = () => {
                       "Burn"
                     )}
                   </div>
-                  <div className="pb-1 font-sans text-sm leading-none">
+                  <div className="font-sans text-sm leading-none">
                     {trimNumber(queuedAmount, 4, "dp")} {nativeGas} (
                     {epochEndTime >= Date.now() ? "queued for " : "claim now"}
                     <CountdownFormatted ms={epochEndTime} />)

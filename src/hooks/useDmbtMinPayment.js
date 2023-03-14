@@ -3,17 +3,15 @@ import { contractAddresses } from "../static/contractAddresses";
 import DBMTSaleABI from "../static/ABI/DBMTSaleABI.json";
 import { ethers } from "ethers";
 
-export default function useDbmtPerEth(buyAmount) {
+export default function useDmbtMinPayment() {
   const { chain } = useNetwork();
 
   const { data } = useContractRead({
     address: contractAddresses[chain?.network]?.dbmtSale,
     abi: DBMTSaleABI,
-    enabled: buyAmount && Number(buyAmount) > 0,
-    args: [buyAmount && Number(buyAmount) > 0 ? ethers.utils.parseEther(buyAmount) : '0'],
-    functionName: "getTokenPerEth",
-    select: (data) => ethers.utils.formatEther(data),
+    functionName: "minPayment",
+    select: (data) => ethers.utils.formatEther(data)
   });
 
-  return data;
+  return data ? Number(data) : 0;
 }

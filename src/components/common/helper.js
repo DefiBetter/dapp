@@ -13,23 +13,19 @@ const trimNumber = (number = 0, count = 0, type = "dp") => {
 
 const timeFormat = (seconds) => {
   const timeFormattedList = [];
-  const timeList = [
-    ["d", 60 * 60 * 24],
-    ["h", 60 * 60],
-    ["m", 60],
-    ["s", 1],
-  ];
+  const timeList = [60 * 60 * 24, 60 * 60, 60, 1];
+
   timeList.map((e) => {
-    if (seconds >= e[1]) {
-      timeFormattedList.push(Math.floor(seconds / e[1]).toString() + e[0]);
-      seconds %= e[1];
+    if (seconds >= e) {
+      const numbr = Math.floor(seconds / e);
+      timeFormattedList.push((numbr < 10 ? "0" : "") + numbr.toString());
+      seconds %= e;
     }
   });
-  return timeFormattedList.join(" ");
+  return timeFormattedList.join(":");
 };
 
 const CountdownFormatted = ({ ms }) => {
-  console.log("ms", ms);
   return (
     <Countdown
       key={ms}
@@ -47,13 +43,16 @@ const CountdownFormatted = ({ ms }) => {
 
 const instrumentToLabel = (instrument) => {
   if (instrument) {
-      return `${instrument.underlyingDescription.replaceAll(" ", "")} ${timeFormat(
-    +instrument.epochDurationInSeconds
-  )}+${timeFormat(+instrument.bufferDurationInSeconds)} (${(
-    +instrument.volatilityMultiplier / 10000
-  ).toFixed(2)} SD, ${+instrument.baseError / 10000} E)`;
+    return `${instrument.underlyingDescription.replaceAll(
+      " ",
+      ""
+    )} ${timeFormat(+instrument.epochDurationInSeconds)}+${timeFormat(
+      +instrument.bufferDurationInSeconds
+    )} (${(+instrument.volatilityMultiplier / 10000).toFixed(2)} SD, ${
+      +instrument.baseError / 10000
+    } E)`;
   }
-  return ''
+  return "";
 };
 
 const instrumentLabel = (instrument, br = false) => {
@@ -73,4 +72,10 @@ const instrumentLabel = (instrument, br = false) => {
   return ``;
 };
 
-export { trimNumber, instrumentLabel, instrumentToLabel, timeFormat, CountdownFormatted };
+export {
+  trimNumber,
+  instrumentLabel,
+  instrumentToLabel,
+  timeFormat,
+  CountdownFormatted,
+};

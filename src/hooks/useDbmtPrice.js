@@ -8,20 +8,23 @@ export default function useDbmtPrice() {
 
   const { data: basePrice } = useContractRead({
     address: contractAddresses[chain?.network]?.dbmtSale,
-    abi: DBMTSaleABI,
-    functionName: "BASE_PRICE_IN_DOLLAR",
+    abi: DBMTSaleABI  ,
+    functionName: "BASE_PRICE_IN_WEI",
     select: (data) => Number(ethers.utils.formatEther(data)),
+    watch: false,
   });
 
-  const { data: priceMulti } = useContractRead({
+  const { data: currentPrice } = useContractRead({
     address: contractAddresses[chain?.network]?.dbmtSale,
     abi: DBMTSaleABI,
-    functionName: "priceMulti",
-    select: (data) => Number(data),
+    functionName: "getETHperToken",
+    args: [ethers.utils.parseEther('1')],
+    select: (data) => Number(ethers.utils.formatEther(data)),
+    watch: false,
   });
 
   return {
-    basePrice: basePrice,
-    currentPrice: (basePrice * priceMulti) / 10_000,
+    basePrice,
+    currentPrice
   };
 }
