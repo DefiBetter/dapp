@@ -310,6 +310,7 @@ export default function Dbmt() {
                       />
                       <div
                         onClick={() => {
+                          setInput(1);
                           setBuyAmount(
                             (Number(userGasBalance) - 0.0001).toString()
                           );
