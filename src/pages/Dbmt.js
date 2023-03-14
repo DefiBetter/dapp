@@ -51,14 +51,29 @@ export default function Dbmt() {
   const tokenSymbol = useSymbol(contractAddresses[chain?.network]?.dbmtToken);
 
   const isSale = useMemo(
-    () => basePrice !== currentPrice,
+    () => basePrice && currentPrice && basePrice !== currentPrice,
     [basePrice, currentPrice]
   );
 
   const nativeGasToken = contractAddresses[chain?.network]?.nativeGas;
 
+  //1678802400
+  const timeStop = 1678802400;
+
+  var left = Math.ceil(Math.abs(new Date() - new Date(timeStop * 1000)) / 3600000);
+  const timeLeft = new Date(timeStop * 1000) - new Date();
   return (
     <>
+      {timeLeft > 0 && (
+        <div style={{backdropFilter: `blur(${left * 10}px)`}} className='z-50 fixed top-0 left-0 h-screen w-screen'>
+          <div className="w-full h-full flex justify-center backdrop items-center font-bold text-transparent text-4xl bg-clip-text bg-gradient-to-b from-yellow-200 to-yellow-500 text-[12rem]">
+            <CountdownFormatted
+              ms={(Date.now() + (timeStop - Date.now())) * 1000}
+            />
+          </div>
+        </div>
+      )}
+
       {isSale && (
         <div className="z-50 fixed left-0 bottom-0 w-full bg-gradient-to-r from-red-400 to-orange-500 flex justify-center items-center">
           <div className="absolute left-2 lg:left-44">
@@ -148,8 +163,9 @@ export default function Dbmt() {
                     </div>
                   )}
                   <div className="font-bold text-transparent text-4xl bg-clip-text bg-gradient-to-b from-yellow-100 to-yellow-300">
-                    {currentPrice ? currentPrice.toFixed(3) : 0}{" "}
-                    {nativeGasToken}
+                    {/* {currentPrice ? currentPrice.toFixed(3) : 0}{" "}
+                    {nativeGasToken} */}
+                    Released Soon
                   </div>
                 </div>
                 {isSale && (

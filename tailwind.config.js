@@ -4,6 +4,7 @@ module.exports = {
   darkMode: 'class',
   theme: {
     extend: {
+  
       colors: {
         "db-dark": "#131B2A",
         "db-dark-info": '#586b8c',
