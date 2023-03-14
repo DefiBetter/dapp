@@ -59,18 +59,28 @@ export default function Dbmt() {
   const nativeGasToken = contractAddresses[chain?.network]?.nativeGas;
 
   //1678802400
-  const timeStop = 1678802400;
+  const timeStop = 1678801580;
   const timeLeft = new Date(timeStop * 1000) - new Date();
 
   const fireworks = useFirework();
 
   const [playedConfetti, setPlayedConfetti] = useState(false);
+  
+  const [shouldPlayConfettis, setShouldPlayConfettis] = useState(false)
+
   useEffect(() => {
-    if (timeLeft < 0 && playedConfetti === false) {
+    if (timeLeft < 0 && playedConfetti === false && shouldPlayConfettis === true) {
       setPlayedConfetti(true);
       fireworks.firework();
     }
   }, [timeLeft]);
+
+  useEffect(() => {
+    if (timeLeft > 0) {
+      setShouldPlayConfettis(true)
+    }
+  }, [])
+
   return (
     <>
       {timeLeft > 0 && (
