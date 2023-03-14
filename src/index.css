@@ -16,5 +16,6 @@
   .frosted {
     background: #131b2a73;
     backdrop-filter: blur(30px);
+    -webkit-backdrop-filter: blur(30px);
   }
 }
