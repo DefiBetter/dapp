@@ -13,15 +13,20 @@ const trimNumber = (number = 0, count = 0, type = "dp") => {
 
 const timeFormat = (seconds) => {
   const timeFormattedList = [];
-  const timeList = [60 * 60 * 24, 60 * 60, 60, 1];
+  const timeList = [
+    ["d", 60 * 60 * 24],
+    ["h", 60 * 60],
+    ["m", 60],
+    ["s", 1],
+  ];
+
   timeList.map((e) => {
-    if (seconds >= e) {
-      const numbr = Math.floor(seconds / e);
-      timeFormattedList.push((numbr < 10 ? "0" : "") + numbr.toString());
-      seconds %= e;
+    if (seconds >= e[1]) {
+      timeFormattedList.push(Math.floor(seconds / e[1]).toString() + e[0]);
+      seconds %= e[1];
     }
   });
-  return timeFormattedList.join(":");
+  return timeFormattedList.join(" ");
 };
 
 const CountdownFormatted = ({ ms }) => {

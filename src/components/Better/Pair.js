@@ -26,7 +26,7 @@ const Pair = (props) => {
         />
         <div className="flex justify-center gap-2">
           <div className="font-bold">Time left</div>
-          <div className="font-bold text-lime-500">
+          <div className="font-bold text-db-cyan-process">
             <Countdown
               key={
                 (+props.instrument.lastEpochClosingTime +
