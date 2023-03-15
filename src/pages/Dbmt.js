@@ -237,8 +237,7 @@ export default function Dbmt() {
               <div className="flex flex-col md:flex-row justify-center items-center gap-0 md:gap-5 py-1">
                 {isSale && (
                   <div className="text-2xl font-bold relative pt-2 text-black">
-                    {basePrice ? basePrice.toFixed(3) : 0} {nativeGasToken} /{" "}
-                    {tokenSymbol}
+                    1 {tokenSymbol} = {basePrice ? basePrice.toFixed(3) : 0} {nativeGasToken}
                     <div className="absolute bottom-[35%] left-[0%] w-full h-1 bg-gradient-to-r from-red-400 to-orange-500"></div>
                   </div>
                 )}
@@ -248,8 +247,7 @@ export default function Dbmt() {
                   </div>
                 )}
                 <div className="font-bold text-3xl text-white">
-                  {currentPrice ? currentPrice.toFixed(3) : 0} {nativeGasToken}{" "}
-                  / {tokenSymbol}
+                  1 {tokenSymbol} = {currentPrice ? currentPrice.toFixed(3) : 0} {nativeGasToken}
                 </div>
               </div>
               {isSale && (
