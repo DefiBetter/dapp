@@ -34,52 +34,7 @@ const Navbar = () => {
       });
     }
 
-    if (process.env.REACT_APP_PHASE === "PRODUCTION") {
-      menuItems.push(
-        {
-          label: "Better",
-          path: "/better",
-          icon: (
-            <FaThinkPeaks
-              size={30}
-              className={`${
-                location.pathname === "/better"
-                  ? "text-db-cyan-process "
-                  : "text-[#3A4D69]"
-              } group-hover:text-db-cyan-process transition-all`}
-            />
-          ),
-        },
-        {
-          label: "Staking",
-          path: "/staking",
-          icon: (
-            <BsPiggyBank
-              size={30}
-              className={`${
-                location.pathname === "/staking"
-                  ? "text-db-cyan-process "
-                  : "text-[#3A4D69]"
-              } group-hover:text-db-cyan-process transition-all`}
-            />
-          ),
-        },
-        {
-          label: "Vaults",
-          path: "/vaults",
-          icon: (
-            <CiVault
-              size={30}
-              className={`${
-                location.pathname === "/vaults"
-                  ? "text-db-cyan-process "
-                  : "text-[#3A4D69]"
-              } group-hover:text-db-cyan-process transition-all`}
-            />
-          ),
-        }
-      );
-    } else if (process.env.REACT_APP_PHASE === "DBMT_SALE") {
+    if (process.env.REACT_APP_PHASE === "DBMT_SALE") {
       menuItems.push({
         label: "DBMT",
         path: "/dbmt",
@@ -114,6 +69,50 @@ const Navbar = () => {
         ),
       });
     }
+    menuItems.push(
+      {
+        label: "Better",
+        path: process.env.REACT_APP_PHASE === "PRODUCTION" ? "/better" : "#",
+        icon: (
+          <FaThinkPeaks
+            size={30}
+            className={`${
+              location.pathname === "/better"
+                ? "text-db-cyan-process "
+                : "text-[#3A4D69]"
+            } group-hover:text-db-cyan-process transition-all`}
+          />
+        ),
+      },
+      {
+        label: "Staking",
+        path: process.env.REACT_APP_PHASE === "PRODUCTION" ? "/staking" : "#",
+        icon: (
+          <BsPiggyBank
+            size={30}
+            className={`${
+              location.pathname === "/staking"
+                ? "text-db-cyan-process "
+                : "text-[#3A4D69]"
+            } group-hover:text-db-cyan-process transition-all`}
+          />
+        ),
+      },
+      {
+        label: "Vaults",
+        path: process.env.REACT_APP_PHASE === "PRODUCTION" ? "/vaults" : "#",
+        icon: (
+          <CiVault
+            size={30}
+            className={`${
+              location.pathname === "/vaults"
+                ? "text-db-cyan-process "
+                : "text-[#3A4D69]"
+            } group-hover:text-db-cyan-process transition-all`}
+          />
+        ),
+      }
+    );
     return menuItems;
   }
 
@@ -170,10 +169,14 @@ const Navbar = () => {
           />
         </Link>
         <nav className="gap-4 items-center justify-center h-full hidden md:flex">
-          {menuItems().map((item) => (
+          {menuItems().map((item, index) => (
             <Link
               to={item.path}
-              className="w-16 group h-full flex flex-col items-center justify-center relative"
+              className={`${
+                index !== 0 && index !== menuItems.length
+                  ? "cursor-not-allowed"
+                  : ""
+              } w-16 group h-full flex flex-col items-center justify-center relative`}
             >
               {item.icon}
               <span
@@ -241,14 +244,18 @@ const Navbar = () => {
         <nav
           className={`${
             showSideNavbar ? "translate-x-0" : "-translate-x-full"
-          } transition-transform left-0 z-40 fixed h-full top-24 w-full dark:bg-db-dark bg-white`}
+          } transition-transform left-0 z-40 fixed h-full top-16 w-full dark:bg-db-dark bg-white`}
         >
           <div className="gap-4 mt-4 items-center flex flex-col text-xl">
-            {menuItems().map((item) => (
+            {menuItems().map((item, index) => (
               <Link
                 onClick={() => setShowSideNavbar(false)}
                 to={item.path}
-                className="h-12 group gap-2 flex items-center justify-center relative"
+                className={`${
+                  index !== 0 && index !== menuItems.length
+                    ? "cursor-not-allowed"
+                    : ""
+                } h-12 group gap-2 flex items-center justify-center relative`}
               >
                 {item.icon}
                 <span
