@@ -142,7 +142,7 @@ function Better() {
   return (
     <div id="full">
       {epochData && betterContractConfig ? (
-        <div className="pt-2 bg-db-beau-blue border-[3px] border-db-cyan-process">
+        <div className="bg-db-light dark:bg-db-dark-nav transition-colors rounded-lg p-2 md:p-4">
           {/* DESKTOP VIEW */}
           <div className="hidden lg:block">
             {/* Top Row */}

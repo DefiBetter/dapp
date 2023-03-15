@@ -481,7 +481,7 @@ const Chart = (props) => {
           })()}
         </div>
       </div>
-      <div className="text-xs absolute w-[80%] md:w-1/3 left-2 bottom-6 text-white flex flex-col font-bold gap-2">
+      <div className="text-xs absolute w-[80%] md:w-1/2 left-2 bottom-6 text-white flex flex-col font-bold gap-2">
         <div className="flex justify-between items-center">
           <div>x scaling</div>
           <div className="flex gap-2">
@@ -570,6 +570,7 @@ const Chart = (props) => {
           <div>n epochs</div>
           <div>
             <InputNumber
+              heightTWClass='h-10'
               min={1}
               onChange={(e) => {
                 setChartConfig({

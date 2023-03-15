@@ -4,7 +4,7 @@ const InputNumber = (props) => {
   };
 
   return (
-    <div className="h-14 w-full bg-white dark:bg-db-dark-input rounded-lg flex items-center px-4">
+    <div className={`${props.heightTWClass ? props.heightTWClass : 'h-14'} w-full bg-white dark:bg-db-dark-input rounded-lg flex items-center px-4`}>
       <input
         onChange={props.onChange}
         type={"number"}
@@ -17,7 +17,7 @@ const InputNumber = (props) => {
 
       <button
         onClick={setMax}
-        className="cursor-pointer rounded-md flex gap-2 justify-center items-center h-9 pb-0.5 px-3 border-[1px] border-db-cyan-process text-db-cyan-process hover:bg-db-cyan-process hover:text-white transition-colors"
+        className="cursor-pointer rounded-md flex gap-2 justify-center items-center h-8 pb-0.5 px-3 border-[1px] border-db-cyan-process text-db-cyan-process hover:bg-db-cyan-process hover:text-white transition-colors"
       >
         MAX
       </button>

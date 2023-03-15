@@ -170,8 +170,8 @@ const Bins = (props) => {
   function bins() {
     return (
       <div className="h-full">
-        <div className="mt-2.5 h-[calc(100%/27*2)] flex flex-col text-center">
-          <div className="text-xs border-[1px] border-black bg-db-background flex flex-col rounded-md">
+        <div className="h-11 flex flex-col text-center">
+          <div className="text-xs h-full bg-db-blue-gray items-center justify-center text-white rounded-lg flex flex-col">
             <div className="">
               Total position:{" "}
               <span className="font-bold">
@@ -215,7 +215,7 @@ const Bins = (props) => {
                 </div>
               </div>
               <div className="h-[calc(100%/27*2)] flex flex-col text-center">
-                <div className="relative flex-1 border-2 border-black bg-db-background rounded-md">
+                <div className="relative flex-1 text-black bg-db-background rounded-md">
                   <input
                     style={{
                       fontSize: "1rem",
@@ -262,7 +262,7 @@ const Bins = (props) => {
         })}
         <div className="h-[calc(100%/27*2)] flex flex-col text-center">
           <div className="flex justify-between gap-2">
-            <DBButton onClick={handleOnClickNormal}>
+            <DBButton onClick={handleOnClickNormal} heigthTwClass="h-10">
               <div className="flex justify-center items-center gap-2">
                 <div className="text-base">Normal</div>
                 <div className="font-sans text-sm pb-0.5 border-[1px] border-white rounded-full w-4 h-4 flex justify-center items-center">
@@ -271,7 +271,11 @@ const Bins = (props) => {
               </div>
             </DBButton>
 
-            <DBButton onClick={handleOnClickNormal} disabled>
+            <DBButton
+              onClick={handleOnClickNormal}
+              disabled
+              heigthTwClass="h-10"
+            >
               <div className="flex justify-center items-center gap-2">
                 <div className="text-base">Implied</div>
                 <div className="font-sans text-sm pb-0.5 border-[1px] border-white rounded-full w-4 h-4 flex justify-center items-center">

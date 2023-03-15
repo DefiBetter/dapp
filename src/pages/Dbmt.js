@@ -260,7 +260,7 @@ export default function Dbmt() {
               <ContainerStats
                 stats={[
                   {
-                    label: "Balance",
+                    label: "Your Wallet Balance",
                     icon: <GiWallet size={20} />,
                     value1: `${userGasBalance}`,
                     value2: `${nativeGasToken}`,
