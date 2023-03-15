@@ -173,7 +173,7 @@ const Navbar = () => {
             <Link
               to={item.path}
               className={`${
-                index !== 0 && index !== menuItems.length
+                process.env.REACT_APP_PHASE !== "PRODUCTION" && index !== 0 && index !== menuItems.length
                   ? "cursor-not-allowed"
                   : ""
               } w-16 group h-full flex flex-col items-center justify-center relative`}
@@ -252,7 +252,7 @@ const Navbar = () => {
                 onClick={() => setShowSideNavbar(false)}
                 to={item.path}
                 className={`${
-                  index !== 0 && index !== menuItems.length
+                  process.env.REACT_APP_PHASE !== "PRODUCTION" && index !== 0 && index !== menuItems.length
                     ? "cursor-not-allowed"
                     : ""
                 } h-12 group gap-2 flex items-center justify-center relative`}
