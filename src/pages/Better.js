@@ -9,7 +9,6 @@ import Bins from "../components/Better/Bins";
 import Epoch from "../components/Better/Epoch";
 import Pair from "../components/Better/Pair";
 import Chart from "../components/Chart/Chart";
-import { Container } from "../components/common/container/Container";
 import useInstruments from "../hooks/useInstruments";
 // ABIs
 import DeFiBetterV1ABI from "../static/ABI/DeFiBetterV1ABI.json";
@@ -315,9 +314,7 @@ function Better() {
           </div>
         </div>
       ) : (
-        <Container>
-          <BetterLoader />
-        </Container>
+        <BetterLoader />
       )}
     </div>
   );
@@ -329,8 +326,8 @@ const BetterLoader = () => (
     width={"100%"}
     height={"100%"}
     viewBox="0 0 300 150"
-    backgroundColor="#f3f3f3"
-    foregroundColor="#ecebeb"
+    backgroundColor="#1D2738"
+    foregroundColor="#6D90C2"
     preserveAspectRatio="none"
   >
     {/* header */}
