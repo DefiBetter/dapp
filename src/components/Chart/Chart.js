@@ -1,4 +1,3 @@
-
 import { useState, useRef, useLayoutEffect, useEffect } from "react";
 import { useContractRead } from "wagmi";
 import { BigNumber, ethers } from "ethers";
@@ -481,108 +480,110 @@ const Chart = (props) => {
           })()}
         </div>
       </div>
-      <div className="text-xs absolute w-[80%] md:w-1/2 left-2 bottom-6 text-white flex flex-col font-bold gap-2">
-        <div className="flex justify-between items-center">
-          <div>x scaling</div>
-          <div className="flex gap-2">
-            <button
-              className="border-[1px] border-black shadow-db bg-db-cyan-process p-1 pb-2 w-full rounded-lg text-white hover:bg-db-blue-200"
-              onClick={() => {
-                setChartConfig({
-                  ...chartConfig,
-                  scaleType: { ...chartConfig.scaleType, x: "epochStart" },
-                });
-              }}
-            >
-              epochStart
-            </button>
+      {process.env.REACT_APP_PHASE !== "PRODUCTION" && (
+        <div className="text-xs absolute w-[80%] md:w-1/2 left-2 bottom-6 text-white flex flex-col font-bold gap-2">
+          <div className="flex justify-between items-center">
+            <div>x scaling</div>
+            <div className="flex gap-2">
+              <button
+                className="border-[1px] border-black shadow-db bg-db-cyan-process p-1 pb-2 w-full rounded-lg text-white hover:bg-db-blue-200"
+                onClick={() => {
+                  setChartConfig({
+                    ...chartConfig,
+                    scaleType: { ...chartConfig.scaleType, x: "epochStart" },
+                  });
+                }}
+              >
+                epochStart
+              </button>
 
-            <button
-              className="border-[1px] border-black shadow-db bg-db-cyan-process p-1 pb-2 w-full rounded-lg text-white hover:bg-db-blue-200"
-              onClick={() => {
-                setChartConfig({
-                  ...chartConfig,
-                  scaleType: { ...chartConfig.scaleType, x: "trailing" },
-                });
-              }}
-            >
-              trailing
-            </button>
+              <button
+                className="border-[1px] border-black shadow-db bg-db-cyan-process p-1 pb-2 w-full rounded-lg text-white hover:bg-db-blue-200"
+                onClick={() => {
+                  setChartConfig({
+                    ...chartConfig,
+                    scaleType: { ...chartConfig.scaleType, x: "trailing" },
+                  });
+                }}
+              >
+                trailing
+              </button>
 
-            <button
-              className="border-[1px] border-black shadow-db bg-db-cyan-process p-1 pb-2 w-full rounded-lg text-white hover:bg-db-blue-200"
-              onClick={() => {
-                setChartConfig({
-                  ...chartConfig,
-                  scaleType: {
-                    ...chartConfig.scaleType,
-                    xAnchor: !chartConfig.scaleType.xAnchor,
-                  },
-                });
-              }}
-            >
-              anchor
-            </button>
+              <button
+                className="border-[1px] border-black shadow-db bg-db-cyan-process p-1 pb-2 w-full rounded-lg text-white hover:bg-db-blue-200"
+                onClick={() => {
+                  setChartConfig({
+                    ...chartConfig,
+                    scaleType: {
+                      ...chartConfig.scaleType,
+                      xAnchor: !chartConfig.scaleType.xAnchor,
+                    },
+                  });
+                }}
+              >
+                anchor
+              </button>
+            </div>
+          </div>
+          <div className="flex justify-between items-center">
+            <div>y scaling</div>
+            <div className="flex gap-2">
+              <button
+                className="border-[1px] border-black shadow-db bg-db-cyan-process p-1 pb-2 w-full rounded-lg text-white hover:bg-db-blue-200"
+                onClick={() => {
+                  setChartConfig({
+                    ...chartConfig,
+                    scaleType: { ...chartConfig.scaleType, y: "binBorder" },
+                  });
+                }}
+              >
+                binBorder
+              </button>
+              <button
+                className="border-[1px] border-black shadow-db bg-db-cyan-process p-1 pb-2 w-full rounded-lg text-white hover:bg-db-blue-200"
+                onClick={() => {
+                  setChartConfig({
+                    ...chartConfig,
+                    scaleType: { ...chartConfig.scaleType, y: "minMax" },
+                  });
+                }}
+              >
+                minMax
+              </button>
+              <button
+                className="border-[1px] border-black shadow-db bg-db-cyan-process p-1 pb-2 w-full rounded-lg text-white hover:bg-db-blue-200"
+                onClick={() => {
+                  setChartConfig({
+                    ...chartConfig,
+                    scaleType: {
+                      ...chartConfig.scaleType,
+                      yAnchor: !chartConfig.scaleType.yAnchor,
+                    },
+                  });
+                }}
+              >
+                anchor
+              </button>
+            </div>
+          </div>
+          <div className="flex justify-between items-center">
+            <div>n epochs</div>
+            <div>
+              <InputNumber
+                heightTWClass="h-10"
+                min={1}
+                onChange={(e) => {
+                  setChartConfig({
+                    ...chartConfig,
+                    epochCount: +e.target.value,
+                  });
+                }}
+                placeholder={"cannot be 0"}
+              />
+            </div>
           </div>
         </div>
-        <div className="flex justify-between items-center">
-          <div>y scaling</div>
-          <div className="flex gap-2">
-            <button
-              className="border-[1px] border-black shadow-db bg-db-cyan-process p-1 pb-2 w-full rounded-lg text-white hover:bg-db-blue-200"
-              onClick={() => {
-                setChartConfig({
-                  ...chartConfig,
-                  scaleType: { ...chartConfig.scaleType, y: "binBorder" },
-                });
-              }}
-            >
-              binBorder
-            </button>
-            <button
-              className="border-[1px] border-black shadow-db bg-db-cyan-process p-1 pb-2 w-full rounded-lg text-white hover:bg-db-blue-200"
-              onClick={() => {
-                setChartConfig({
-                  ...chartConfig,
-                  scaleType: { ...chartConfig.scaleType, y: "minMax" },
-                });
-              }}
-            >
-              minMax
-            </button>
-            <button
-              className="border-[1px] border-black shadow-db bg-db-cyan-process p-1 pb-2 w-full rounded-lg text-white hover:bg-db-blue-200"
-              onClick={() => {
-                setChartConfig({
-                  ...chartConfig,
-                  scaleType: {
-                    ...chartConfig.scaleType,
-                    yAnchor: !chartConfig.scaleType.yAnchor,
-                  },
-                });
-              }}
-            >
-              anchor
-            </button>
-          </div>
-        </div>
-        <div className="flex justify-between items-center">
-          <div>n epochs</div>
-          <div>
-            <InputNumber
-              heightTWClass='h-10'
-              min={1}
-              onChange={(e) => {
-                setChartConfig({
-                  ...chartConfig,
-                  epochCount: +e.target.value,
-                });
-              }}
-              placeholder={"cannot be 0"}
-            />
-          </div>
-        </div>
-      </div>
+      )}
     </div>
   );
 };
