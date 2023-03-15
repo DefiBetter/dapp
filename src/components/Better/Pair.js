@@ -12,8 +12,8 @@ const Pair = (props) => {
   };
 
   return (
-    <div className="w-80">
-      <div>
+    <div>
+      <div className="flex flex-col md:flex-row gap-2 items-center">
         <Dropdown
           currentItem={props.instrument}
           currentItemLabel={instrumentToLabel(props.instrument, false)}
@@ -24,7 +24,7 @@ const Pair = (props) => {
             return instrumentToLabel(instrument);
           })}
         />
-        <div className="flex justify-center gap-2">
+        <div className="flex flex-col justify-center items-center">
           <div className="font-bold">Time left</div>
           <div className="font-bold text-db-cyan-process">
             <Countdown
@@ -42,7 +42,6 @@ const Pair = (props) => {
               }
               onComplete={() => {
                 props.getInstrumentBySelectorRefetch().then((result) => {
-
                   props.setInstrument({
                     ...props.instrument,
                     ...result.data,

@@ -21,7 +21,7 @@ function Staking() {
 
   return (
     <>
-      <div className="relative bg-db-light dark:bg-db-dark-nav transition-colors rounded-md p-2 md:p-4">
+      <div className="relative bg-db-light dark:bg-db-dark-nav transition-colors rounded-md p-2 md:p-4 min-h-[86vh]">
         <div className="flex gap-4 flex-col lg:flex-row">
           <div className="z-10 w-full p-4 rounded-lg dark:shadow-inner shadow-sm shadow-db-cyan-process dark:shadow-black bg-white dark:bg-db-dark flex gap-4 flex-col lg:flex-row justify-between">
             <div className="w-full z-10 h-full flex flex-col justify-between">

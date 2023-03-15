@@ -219,7 +219,7 @@ const Bins = (props) => {
                   <input
                     style={{
                       fontSize: "1rem",
-                      width: "90%",
+                      width: "95%",
                       height: "90%",
                       alignSelf: "center",
                     }}
@@ -239,15 +239,9 @@ const Bins = (props) => {
                     })`}
                   />
                   <div
+                    className="h-[15%] bg-gradient-to-r from-[#6E91C3] to-[#a4c8fb] bottom-0 right-0 absolute rounded-sm"
                     style={{
-                      backgroundColor: "#80A9E4",
-                      height: "20%",
                       width: `calc(100% * ${props.normalisedBinValueList[i]})`,
-                      bottom: "0",
-                      right: "0",
-                      position: "absolute",
-                      borderRadius: "0.5rem 0 0.5rem 0.5rem",
-                      margin: "0rem",
                     }}
                   />
                 </div>
@@ -262,7 +256,7 @@ const Bins = (props) => {
         })}
         <div className="h-[calc(100%/27*2)] flex flex-col text-center">
           <div className="flex justify-between gap-2">
-            <DBButton onClick={handleOnClickNormal} heigthTwClass="h-10">
+            <DBButton disabled={total === 0} onClick={handleOnClickNormal} heigthTwClass="h-10">
               <div className="flex justify-center items-center gap-2">
                 <div className="text-base">Normal</div>
                 <div className="font-sans text-sm pb-0.5 border-[1px] border-white rounded-full w-4 h-4 flex justify-center items-center">
@@ -277,7 +271,7 @@ const Bins = (props) => {
               heigthTwClass="h-10"
             >
               <div className="flex justify-center items-center gap-2">
-                <div className="text-base">Implied</div>
+                <div className="text-base">Copy</div>
                 <div className="font-sans text-sm pb-0.5 border-[1px] border-white rounded-full w-4 h-4 flex justify-center items-center">
                   i
                 </div>

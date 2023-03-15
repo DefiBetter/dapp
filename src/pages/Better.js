@@ -141,11 +141,11 @@ function Better() {
   return (
     <div id="full">
       {epochData && betterContractConfig ? (
-        <div className="bg-db-light dark:bg-db-dark-nav transition-colors rounded-lg p-2 md:p-4">
+        <div className="bg-db-light dark:bg-db-dark-nav transition-colors rounded-lg p-2 md:p-4 min-h-[86vh]">
           {/* DESKTOP VIEW */}
-          <div className="hidden lg:block">
+          <div className="hidden lg:block h-full">
             {/* Top Row */}
-            <div className="flex">
+            <div className="flex items-center h-full">
               <div className="w-full lg:w-2/3 px-2">
                 <div className="w-full flex items-center md:items-start flex-col md:flex-row gap-3 lg:gap-0">
                   <div>
@@ -189,7 +189,7 @@ function Better() {
             </div>
 
             {/* Middle Row */}
-            <div className="relative mt-2 flex w-full h-[480px]">
+            <div className="relative mt-6 flex w-full h-[480px]">
               <div className="w-2/3 h-full">
                 <Chart
                   instrument={instrument}
@@ -314,7 +314,9 @@ function Better() {
           </div>
         </div>
       ) : (
-        <BetterLoader />
+        <div className="h-[86vh]">
+          <BetterLoader />
+        </div>
       )}
     </div>
   );
