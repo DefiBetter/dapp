@@ -13,7 +13,7 @@ const Pair = (props) => {
 
   return (
     <div>
-      <div className="flex flex-col md:flex-row gap-2 items-center">
+      <div className="flex flex-col md:flex-row items-center justify-between gap-4 md:gap-6">
         <Dropdown
           currentItem={props.instrument}
           currentItemLabel={instrumentToLabel(props.instrument, false)}
@@ -24,7 +24,7 @@ const Pair = (props) => {
             return instrumentToLabel(instrument);
           })}
         />
-        <div className="flex flex-col justify-center items-center">
+        <div className="flex flex-col justify-center items-center m-auto">
           <div className="font-bold">Time left</div>
           <div className="font-bold text-db-cyan-process">
             <Countdown

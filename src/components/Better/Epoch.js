@@ -13,7 +13,7 @@ const Epoch = (props) => {
   };
 
   return (
-    <div className="text-xs flex bg-white dark:bg-db-dark rounded-lg py-1.5 px-3 gap-5">
+    <div className="m-auto text-xs flex justify-center bg-white dark:bg-db-dark rounded-lg py-1.5 text-center gap-5 px-4">
       {/* Left */}
       <div className="flex flex-col">
         <div className="flex justify-between gap-10">

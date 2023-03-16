@@ -20,6 +20,7 @@ import useUserPendingBetterBalance from "../hooks/useUserPendingBetterBalance";
 import useUserPositionValueForInstrument from "../hooks/useUserPositionValueForInstrument";
 import useRewardPeriodInfo from "../hooks/useRewardPeriodInfo";
 import useUserGainsInfo from "../hooks/useUserGainsInfo";
+import Countdown from "react-countdown";
 
 function Better() {
   /* account, network, configs */
@@ -146,9 +147,9 @@ function Better() {
           <div className="hidden lg:block h-full">
             {/* Top Row */}
             <div className="flex items-start h-full">
-              <div className="w-full lg:w-2/3 px-2">
-                <div className="w-full flex items-center md:items-start flex-col md:flex-row gap-3 lg:gap-0">
-                  <div>
+              <div className="w-full lg:w-2/3">
+                <div className="w-full flex items-center justify-between md:items-start flex-col md:flex-row gap-3 lg:gap-0">
+                  <div className="w-1/2">
                     <Pair
                       instrumentList={instrumentList}
                       setInstrument={setInstrument}
@@ -158,7 +159,7 @@ function Better() {
                       }
                     />
                   </div>
-                  <div className="ml-auto mr-auto">
+                  <div className="m-auto">
                     <Epoch
                       instrument={instrument}
                       setInstrument={setInstrument}
@@ -189,7 +190,7 @@ function Better() {
             </div>
 
             {/* Middle Row */}
-            <div className="relative mt-6 flex w-full h-[480px]">
+            <div className="relative mt-4 flex w-full h-[480px]">
               <div className="w-2/3 h-full">
                 <Chart
                   instrument={instrument}
