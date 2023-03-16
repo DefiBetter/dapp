@@ -145,7 +145,7 @@ function Better() {
           {/* DESKTOP VIEW */}
           <div className="hidden lg:block h-full">
             {/* Top Row */}
-            <div className="flex items-center h-full">
+            <div className="flex items-start h-full">
               <div className="w-full lg:w-2/3 px-2">
                 <div className="w-full flex items-center md:items-start flex-col md:flex-row gap-3 lg:gap-0">
                   <div>

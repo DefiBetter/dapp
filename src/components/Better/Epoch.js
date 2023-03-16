@@ -18,30 +18,25 @@ const Epoch = (props) => {
       <div className="flex flex-col">
         <div className="flex justify-between gap-10">
           <div className="font-bold text-db-blue-gray">Gain Fee</div>
-          <div> {((+props.instrument.gainFee / 10_000 ** 2) * 100).toFixed(4)}%</div>
+          <div>
+            {" "}
+            {((+props.instrument.gainFee / 10_000 ** 2) * 100).toFixed(4)}%
+          </div>
         </div>
         <div className="flex justify-between gap-10">
           <div className="font-bold text-db-blue-gray">Buffer time</div>
           <div>{timeFormat(+props.instrument.bufferDurationInSeconds)}</div>
         </div>
-        <div className="flex justify-between gap-10">
-          <div className="font-bold text-db-blue-gray">Epoch close</div>
-          <div>{endTimeFormatted()}</div>
-        </div>
       </div>
       {/* Right */}
       <div className="flex flex-col">
-        <div className="flex justify-between gap-10">
-          <div className="font-bold text-db-blue-gray">Fees</div>
-          <div>{(+props.instrument.flatFee / 10_000 ** 2) * 100}%</div>
-        </div>
         <div className="flex justify-between gap-10">
           <div className="font-bold text-db-blue-gray">Volatility factor</div>
           <div>{+props.instrument.volatilityMultiplier / 10_000}</div>
         </div>
         <div className="flex justify-between gap-10">
-          <div className="font-bold text-db-blue-gray">Base error</div>
-          <div> {+props.instrument.baseError / 10_000}</div>
+          <div className="font-bold text-db-blue-gray">Epoch close</div>
+          <div>{endTimeFormatted()}</div>
         </div>
       </div>
     </div>
