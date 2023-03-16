@@ -26,7 +26,7 @@ export default function Landing() {
           <div className="w-full lg:w-1/3">
             <div className="flex flex-col gap-4 items-stretch md:items-center justify-center">
               <div className="w-full flex flex-col lg:flex-row justify-between gap-4">
-                <div className="w-full lg:w-1/2 text-center p-4 bg-db-light dark:bg-db-dark-nav transition-colors rounded-md shadow-sm shadow-db-cyan-process">
+                <div className="w-full lg:w-1/2 text-center p-4 bg-db-light dark:bg-db-dark-nav transition-colors rounded-md border-b-2 border-db-cyan-process">
                   <div className="flex items-center gap-4">
                     <div>
                       <GiMoneyStack size={50} />
@@ -37,7 +37,7 @@ export default function Landing() {
                     </div>
                   </div>
                 </div>
-                <div className="w-full lg:w-1/2 text-center p-4 bg-db-light dark:bg-db-dark-nav transition-colors rounded-md shadow-sm shadow-db-cyan-process">
+                <div className="w-full lg:w-1/2 text-center p-4 bg-db-light dark:bg-db-dark-nav transition-colors rounded-md border-b-2 border-db-cyan-process">
                   <div className="flex items-center gap-4">
                     <div>
                       <FaThinkPeaks size={50} />
@@ -50,7 +50,7 @@ export default function Landing() {
                 </div>
               </div>
               <div className="w-full flex flex-col lg:flex-row justify-between gap-4">
-                <div className="w-full lg:w-1/2 text-center p-4 bg-db-light dark:bg-db-dark-nav transition-colors rounded-md shadow-sm shadow-db-cyan-process">
+                <div className="w-full lg:w-1/2 text-center p-4 bg-db-light dark:bg-db-dark-nav transition-colors rounded-md border-b-2 border-db-cyan-process">
                   <div className="flex items-center gap-4">
                     <div>
                       <GiReceiveMoney size={50} />
@@ -61,7 +61,7 @@ export default function Landing() {
                     </div>
                   </div>
                 </div>
-                <div className="w-full lg:w-1/2 text-center p-4 bg-db-light dark:bg-db-dark-nav transition-colors rounded-md shadow-sm shadow-db-cyan-process">
+                <div className="w-full lg:w-1/2 text-center p-4 bg-db-light dark:bg-db-dark-nav transition-colors rounded-md border-b-2 border-db-cyan-process">
                   <div className="flex items-center gap-4">
                     <div>
                       <GiPayMoney size={50} />

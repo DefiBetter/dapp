@@ -163,7 +163,7 @@ export default function Dbmt() {
       )}
 
       <div
-        className={`bg-db-light dark:bg-db-dark-nav transition-colors rounded-lg p-2 md:p-4 ${
+        className={`bg-db-light dark:bg-db-dark-nav transition-colors rounded-lg p-2 md:p-4 min-h-[86vh] border-b-2 border-db-cyan-process ${
           isSale ? "mb-16 md:mb-12 lg:mb-12" : "mb-0"
         } `}
       >

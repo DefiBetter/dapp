@@ -4,7 +4,7 @@ const InputNumber = (props) => {
   };
 
   return (
-    <div className={`${props.heightTWClass ? props.heightTWClass : 'h-14'} w-full bg-white dark:bg-db-dark-input rounded-lg flex items-center px-4`}>
+    <div className={`${props.heightTWClass ? props.heightTWClass : 'h-14'} w-full bg-white dark:bg-db-dark-input shadow-inner shadow-db-cyan-process dark:shadow-black rounded-lg flex items-center px-4`}>
       <input
         onChange={props.onChange}
         type={"number"}

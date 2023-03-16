@@ -1,9 +1,9 @@
 import { ethers } from "ethers";
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { contractAddresses } from "../../static/contractAddresses";
-import { RiInformationLine } from "react-icons/ri";
 import Dropdown from "../common/Dropdown";
 import Loader from "../common/Loader";
+import { BsBank, BsWallet2 } from "react-icons/bs";
 
 import {
   CountdownFormatted,
@@ -29,7 +29,6 @@ import DBButton from "../common/DBButton";
 const VaultCard = () => {
   /* global hooks */
   const { chain: activeChain } = useNetwork();
-  const [nativeGas, setNativeGas] = useState();
 
   /* constants */
   // contract config
@@ -96,26 +95,15 @@ const VaultCard = () => {
   };
 
   /* useEffect */
-  useEffect(() => {
-    setNativeGas(contractAddresses[activeChain?.network]?.nativeGas);
-  }, [activeChain]);
+
+  const nativeGas = contractAddresses[activeChain?.network]?.nativeGas;
 
   return (
     <>
-      <div className="w-full border-[3px] border-db-cyan-process bg-white rounded-[3rem] p-4">
-        <div className="flex items-baseline justify-center gap-5">
-          <div className="font-bold flex justify-center text-2xl md:text-4xl gap-2">
-            Strategy
-            <span className="mt-7 font-fancy text-db-cyan-process">Vaults</span>
-          </div>
-          <div className="text-sm p-3 border-[1px] border-black rounded-full w-8 h-8 flex justify-center items-center">
-            i
-          </div>
-        </div>
-
-        <div className=" mt-10 md:mt-2 flex gap-5 justify-between flex-col">
+      <div className="w-full rounded-lg dark:shadow-inner shadow-sm shadow-db-cyan-process dark:shadow-black bg-white dark:bg-db-dark p-2 md:p-4">
+        <div className="mt-10 md:mt-2 flex gap-5 justify-between flex-col">
           <div className="flex gap-5 flex-col md:flex-row">
-            <div className="flex w-full md:w-1/2 gap-2 items-center">
+            <div className="flex w-full md:w-1/2 gap-2 items-center justify-between">
               <div className="">
                 <img
                   className="h-10 w-10"
@@ -123,7 +111,7 @@ const VaultCard = () => {
                   src={require("../../static/image/bnbchain-logo.png")}
                 />
               </div>
-              <div className="flex-1">
+              <div className="">
                 <Dropdown
                   currentItemLabel={instrumentToLabel(currentInstrument)}
                   currentItem={currentInstrument}
@@ -135,7 +123,7 @@ const VaultCard = () => {
                 />
               </div>
             </div>
-            <div className="flex w-full md:w-1/2 gap-2 items-center">
+            <div className="flex w-full md:w-1/2 gap-2 items-center justify-between ">
               <Dropdown
                 currentItem={currentVault}
                 currentItemLabel={strategyRef[vaultList?.indexOf(currentVault)]}
@@ -148,12 +136,19 @@ const VaultCard = () => {
               </div>
             </div>
           </div>
+          <div className="m-auto flex items-center justify-center w-2/3 h-14 rounded-xl dark:shadow-inner shadow-sm shadow-db-cyan-process dark:shadow-black bg-white dark:bg-db-dark p-2">
+            <div className="cursor-pointer flex-1 flex justify-center items-center bg-db-blue-gray h-10 rounded-lg">
+              Mint
+            </div>
+            <div className="flex-1 flex justify-center">Burn</div>
+          </div>
           <div className="flex gap-5 flex-col md:flex-row">
-            <div className="flex justify-between w-full items-center">
-              <div className="flex-1 shadow-db w-36 text-center font-bold bg-db-background p-3 border-[1px] border-black rounded-lg">
-                Vault Balance
+            <div className="md:h-14 flex flex-row md:flex-col w-full md:w-1/2 items-center justify-between md:justify-center">
+              <div className="flex items-center gap-2 text-db-blue-gray">
+                <BsBank size={20} />
+                <div>Vault Balance</div>
               </div>
-              <div className="flex-1 text-center font-bold">
+              <div className="font-bold">
                 {vaultBalanceInfo
                   ? trimNumber(
                       ethers.utils.formatEther(vaultBalanceInfo.totalBalance),
@@ -164,21 +159,72 @@ const VaultCard = () => {
                 {nativeGas}
               </div>
             </div>
+            <div className="md:h-14 flex flex-row md:flex-col w-full md:w-1/2 items-center justify-between md:justify-center">
+              <div className="flex items-center gap-2 text-db-blue-gray">
+                <BsWallet2 size={20} />
+                <div>Your Wallet Balance</div>
+              </div>
+              <div className="font-bold">
+                {userGasBalance} {nativeGas}
+              </div>
+            </div>
 
-            <div className="flex justify-between w-full items-center">
-              <div className="flex-1 shadow-db w-36 text-center font-bold bg-db-background p-3 border-[1px] border-black rounded-lg">
-                Vault Performance
+            <div className="md:h-14 flex flex-row md:flex-col w-full md:w-1/2 items-center justify-between md:justify-center">
+              <div className="flex items-center gap-2 text-db-blue-gray">
+                <BsWallet2 size={20} />
+                <div>Vault Performance</div>
               </div>
-              <div className="flex-1 text-center text-lime-500 font-bold">
-                {trimNumber(69, 4, "dp")}% APR
-              </div>
+              <div className="font-bold">{trimNumber(69, 4, "dp")}% APR</div>
             </div>
           </div>
         </div>
 
-        <div className="flex gap-5 justify-between mt-5 flex-col md:flex-row">
+        <div className="flex gap-4 justify-between mt-4 flex-col md:flex-row">
           {/* Left */}
-          <div className="w-full md:w-[50%] flex flex-col gap-3">
+          <div className="w-full flex flex-col gap-4">
+            <div className="w-full gap-2 flex">
+              <div className="w-16 md:w-20 flex justify-center items-center">
+                <span className="">For</span>
+              </div>
+              <div className="flex items-center w-full">
+                <div className="h-14 w-full bg-white dark:bg-db-dark-input rounded-lg flex gap-4 items-center px-4 shadow-inner shadow-db-cyan-process dark:shadow-black">
+                  <input
+                    value={mintAmount > 0 ? mintAmount : ""}
+                    onChange={handleMintAmount}
+                    type={"number"}
+                    min={0}
+                    className="text-left md:text-center md:pl-20 px-0 md:px-4 h-10 w-full focus:ring-0 focus:outline-none rounded-lg bg-white dark:bg-db-dark-input"
+                    placeholder={`${nativeGas} amount`}
+                  />
+                  <div
+                    onClick={() => {
+                      setMintAmount(
+                        (Number(userGasBalance) - 0.0001).toString()
+                      );
+                    }}
+                    className="cursor-pointer rounded-lg flex justify-center items-center h-9 pb-0.5 px-2  border-[1px] border-db-cyan-process text-db-cyan-process hover:bg-db-cyan-process hover:text-white transition-colors"
+                  >
+                    MAX
+                  </div>
+                  <div className="">{nativeGas}</div>
+                </div>
+              </div>
+            </div>
+
+            <div className="w-full gap-2 flex">
+              <div className="w-16 md:w-20 flex justify-center items-center">
+                <span className="">Get</span>
+              </div>
+              <div className="flex items-center w-full">
+                <div className="h-14 w-full bg-white dark:bg-db-dark-nav rounded-lg flex gap-4 items-center px-4">
+                  <div className="text-left md:text-center md:pl-20 px-0 md:px-4 w-full text-xl">
+                    {trimNumber(previewMintAmount, 4, "dp")}
+                  </div>
+                  <div className="w-32 text-right">{currentVaultName}</div>
+                </div>
+              </div>
+            </div>
+
             <div className="w-full">
               <DBButton
                 disabled={mintAmount === 0}
@@ -195,40 +241,10 @@ const VaultCard = () => {
                 )}
               </DBButton>
             </div>
-            <div className="flex items-center w-full">
-              <div className="pt-1 px-5 text-center font-fancy text-xl text-db-cyan-process font-bold">
-                for
-              </div>
-              <div className="flex-1">
-                <InputNumber
-                  style={{ flex: 1 }}
-                  onChange={handleMintAmount}
-                  min={0}
-                  max={userGasBalance}
-                  placeholder="Mint amount..."
-                  value={mintAmount > 0 ? mintAmount : ""}
-                  setValue={setMintAmount}
-                />
-              </div>
-            </div>
-            <div className="font-bold flex justify-center gap-1 text-sm ">
-              {nativeGas}
-            </div>
-            <div className="pt-1 text-center font-fancy text-xl text-db-cyan-process font-bold">
-              and receive
-            </div>
-            <div className="w-full shadow-db text-center font-bold bg-db-french-sky p-3 border-[1px] border-black rounded-lg">
-              {trimNumber(previewMintAmount, 4, "dp")}
-            </div>
-            <div className="w-full text-center flex justify-center gap-1 text-sm">
-              {instrumentLabel(currentInstrument, false)}{" "}
-              <span className="font-bold">{currentVaultName}</span>
-            </div>
           </div>
 
           {/* Right */}
-          <div className="flex h-0.5 w-full bg-db-cyan-process md:hidden justify-center"></div>
-          <div className="w-full md:w-1/2 flex flex-col gap-3">
+          {/* <div className="w-full md:w-1/2 flex flex-col gap-3">
             <div className="w-full">
               <DBButton
                 disabled={burnAmount === 0}
@@ -288,7 +304,7 @@ const VaultCard = () => {
             <div className="w-full text-center flex justify-center gap-1 text-sm">
               {nativeGas}
             </div>
-          </div>
+          </div> */}
         </div>
       </div>
     </>

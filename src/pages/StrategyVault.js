@@ -1,10 +1,13 @@
 import VaultCard from "../components/StrategyVault/VaultCard.js";
+import PageTitle from "../components/common/PageTitle.js";
 
 function StrategyVault() {
   return (
-    <div className="relative bg-db-background border-[3px] border-db-cyan-process h-full min-h-[86vh]">
+    <div className="bg-db-light dark:bg-db-dark-nav transition-colors rounded-lg p-2 md:p-4 min-h-[86vh] border-b-2 border-db-cyan-process">
+      <PageTitle title="Strategy" fancyTitle="Vaults" />
+
       <div className="p-2 md:p-4 flex justify-around items-center">
-        <div className="hidden lg:block lg:p-4 p-0 w-1/4">
+        <div className="hidden lg:block lg:p-4 p-0 w-1/6">
           <img
             alt="vault"
             className="w-full h-full"
@@ -14,7 +17,7 @@ function StrategyVault() {
         <div className="w-full lg:w-1/2">
           <VaultCard />
         </div>
-        <div className="hidden lg:block lg:p-4 p-0 w-1/4">
+        <div className="hidden lg:block lg:p-4 p-0 w-1/6">
           <img
             alt="vaultOpen"
             className="w-full h-full"

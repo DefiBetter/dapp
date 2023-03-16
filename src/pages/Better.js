@@ -141,7 +141,7 @@ function Better() {
   return (
     <div id="full">
       {epochData && betterContractConfig ? (
-        <div className="bg-db-light dark:bg-db-dark-nav transition-colors rounded-lg p-2 md:p-4 min-h-[86vh]">
+        <div className="bg-db-light dark:bg-db-dark-nav transition-colors rounded-lg p-2 md:p-4 min-h-[86vh] border-b-2 border-db-cyan-process">
           {/* DESKTOP VIEW */}
           <div className="hidden lg:block h-full">
             {/* Top Row */}
@@ -233,7 +233,7 @@ function Better() {
           </div>
 
           {/* Mobile View */}
-          <div className="block lg:hidden">
+          <div className="block lg:hidden ">
             <div className="w-full">
               <div className="w-full flex items-center md:items-start flex-col md:flex-row gap-3 px-2">
                 <div>

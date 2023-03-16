@@ -37,7 +37,7 @@ const Stats = (props) => {
 
   return (
     <div className="w-full h-full flex flex-col lg:justify-between lg:items-stretch px-1 gap-2 lg:gap-0">
-      <div className="w-full bg-white dark:bg-db-dark-input rounded-lg flex flex-col border-b-2 border-db-cyan-process">
+      <div className="w-full bg-white dark:bg-db-dark-input rounded-lg flex flex-col border-b-2 border-db-cyan-process ">
         <div className="flex justify-center font-bold py-1">Epoch Data</div>
         <div className="p-1 text-xs">
           <div className="flex flex-col p-1">

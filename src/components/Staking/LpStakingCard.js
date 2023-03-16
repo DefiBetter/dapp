@@ -14,8 +14,8 @@ import useNativeBalance from "../../hooks/useNativeBalance";
 import Loader from "../common/Loader";
 import useUserLPStake from "../../hooks/useUserLPStake";
 import DBButton from "../../components/common/DBButton";
-import { BsCoin, BsWallet2, BsPiggyBank, BsBank } from "react-icons/bs";
-import { GiSandsOfTime, GiCoins } from "react-icons/gi";
+import { BsWallet2, BsPiggyBank, BsBank } from "react-icons/bs";
+import {  GiCoins } from "react-icons/gi";
 
 const LpStakingCard = (props) => {
   const { chain: activeChain } = useNetwork();
@@ -72,9 +72,9 @@ const LpStakingCard = (props) => {
   return (
     <div className="w-full">
       <div className="mt-4 flex flex-col gap-4">
-        <div className="w-full flex flex-wrap justify-between gap-4">
-          <div className="h-14 flex flex-col w-full md:w-[calc(50%-8px)] items-center p-2 bg-db-light dark:bg-db-dark-lighter justify-center shadow-sm shadow-db-cyan-process dark:shadow-black rounded-lg">
-            <div className="flex items-center gap-2">
+        <div className="w-full flex flex-col flex-wrap md:flex-row justify-between gap-4 md:gap-0">
+          <div className="md:h-14 flex flex-row md:flex-col w-full md:w-1/2 items-center justify-between md:justify-center">
+            <div className="flex items-center gap-2 text-db-blue-gray">
               <BsBank size={20} />
               <div>Total Staked</div>
             </div>
@@ -83,8 +83,8 @@ const LpStakingCard = (props) => {
               {`BT-${contractAddresses[activeChain?.network]?.nativeGas} LP`}
             </div>
           </div>
-          <div className="h-14 flex flex-col w-full md:w-[calc(50%-8px)] items-center p-2 bg-db-light dark:bg-db-dark-lighter justify-center shadow-sm shadow-db-cyan-process dark:shadow-black rounded-lg">
-            <div className="flex items-center gap-2">
+          <div className="md:h-14 flex flex-row md:flex-col w-full md:w-1/2 items-center justify-between md:justify-center">
+            <div className="flex items-center gap-2 text-db-blue-gray">
               <BsPiggyBank size={20} />
               <div>Your Stake</div>
             </div>
@@ -93,17 +93,17 @@ const LpStakingCard = (props) => {
               {`BT-${contractAddresses[activeChain?.network]?.nativeGas} LP`}
             </div>
           </div>
-          <div className="h-14 flex flex-col w-full md:w-[calc(50%-8px)] items-center p-2 bg-db-light dark:bg-db-dark-lighter justify-center shadow-sm shadow-db-cyan-process dark:shadow-black rounded-lg">
-            <div className="flex items-center gap-2">
+          <div className="md:h-14 flex flex-row md:flex-col w-full md:w-1/2 items-center justify-between md:justify-center">
+            <div className="flex items-center gap-2 text-db-blue-gray">
               <GiCoins size={20} />
               <div>Current APR</div>
             </div>
             <div className="font-bold">{trimNumber(69, 4, "dp")}%</div>
           </div>
-          <div className="h-14 flex flex-col w-full md:w-[calc(50%-8px)] items-center p-2 bg-db-light dark:bg-db-dark-lighter justify-center shadow-sm shadow-db-cyan-process dark:shadow-black rounded-lg">
-            <div className="flex items-center gap-2">
+          <div className="md:h-14 flex flex-row md:flex-col w-full md:w-1/2 items-center justify-between md:justify-center">
+            <div className="flex items-center gap-2 text-db-blue-gray">
               <BsWallet2 size={20} />
-              <div>Your Balance</div>
+              <div>Your Wallet Balance</div>
             </div>
             <div className="font-bold">
               {trimNumber(userLPBalance, 4, "dp")}{" "}

@@ -20,13 +20,20 @@ const Dropdown = ({
   };
 
   return (
-    <div className="relative w-full">
+    <div className="relative w-72">
       <div
         onClick={toggleOptions}
         className="cursor-pointer text-sm w-full h-12 flex flex-col justify-center bg-white dark:bg-db-dark rounded-lg border-b-2 border-db-cyan-process"
       >
         <div className="flex justify-between items-center px-2">
-          <div className="flex-1">{currentItemLabel}</div>
+          <div className="flex-1">
+            {currentItemLabel
+              ? currentItemLabel.indexOf("(") > 0
+                ? currentItemLabel.slice(0, currentItemLabel.indexOf("("))
+                : currentItemLabel
+              : ""}
+            {}
+          </div>
           <div>
             <RiArrowDownSFill
               size={30}
