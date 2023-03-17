@@ -409,7 +409,7 @@ const Chart = (props) => {
   }, []);
 
   return (
-    <div className="w-full h-full bg-db-dark-info relative" ref={containerRef}>
+    <div className="w-full h-full relative" ref={containerRef}>
       <svg className="w-full h-full bg-db-dark-info">
         <ChartBackground
           chartConfig={chartConfig}

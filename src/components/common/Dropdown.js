@@ -20,10 +20,10 @@ const Dropdown = ({
   };
 
   return (
-    <div className="relative w-72">
+    <div className="relative min-w-max">
       <div
         onClick={toggleOptions}
-        className="cursor-pointer text-sm w-full h-12 flex flex-col justify-center bg-white dark:bg-db-dark rounded-lg border-b-2 border-db-cyan-process"
+        className="cursor-pointer text-sm w-full h-12 flex flex-col justify-center bg-db-light dark:bg-db-dark-input rounded-lg border-b-2 border-db-cyan-process"
       >
         <div className="flex justify-between items-center px-2">
           <div className="flex-1">{currentItemLabel}</div>
