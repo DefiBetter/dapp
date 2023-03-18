@@ -118,7 +118,7 @@ const Navbar = () => {
 
   return (
     <div className="w-full dark:bg-db-dark-nav bg-db-light transition-colors">
-      {process.env.REACT_APP_PHASE === "PRODUCTION" && (
+      {/* {process.env.REACT_APP_PHASE === "PRODUCTION" && (
         <div className="h-8 w-full flex justify-end gap-5 text-xs px-2 md:px-4 items-center text-db-cyan-process">
           <div>
             Daily Volume Avg: <span className="font-bold">69k</span> BNB
@@ -136,7 +136,7 @@ const Navbar = () => {
             Paid to $BETR: <span className="font-bold">921</span> BNB
           </div>
         </div>
-      )}
+      )} */}
       <div className="h-16 flex justify-between items-center px-2 md:px-4">
         <div className="md:hidden">
           {showSideNavbar ? (
@@ -173,7 +173,7 @@ const Navbar = () => {
             <Link
               to={item.path}
               className={`${
-                index !== 0 && index !== menuItems.length
+                process.env.REACT_APP_PHASE !== "PRODUCTION" && index !== 0 && index !== menuItems.length
                   ? "cursor-not-allowed"
                   : ""
               } w-16 group h-full flex flex-col items-center justify-center relative`}
@@ -252,7 +252,7 @@ const Navbar = () => {
                 onClick={() => setShowSideNavbar(false)}
                 to={item.path}
                 className={`${
-                  index !== 0 && index !== menuItems.length
+                  process.env.REACT_APP_PHASE !== "PRODUCTION" && index !== 0 && index !== menuItems.length
                     ? "cursor-not-allowed"
                     : ""
                 } h-12 group gap-2 flex items-center justify-center relative`}

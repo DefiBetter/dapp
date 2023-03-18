@@ -20,10 +20,10 @@ const Dropdown = ({
   };
 
   return (
-    <div className="relative w-full">
+    <div className="relative min-w-max">
       <div
         onClick={toggleOptions}
-        className="text-sm shadow-db w-full h-10 flex flex-col justify-center bg-white border-[1px] border-black rounded-lg"
+        className="cursor-pointer text-sm w-full h-12 flex flex-col justify-center bg-db-light dark:bg-db-dark-input rounded-lg border-b-2 border-db-cyan-process"
       >
         <div className="flex justify-between items-center px-2">
           <div className="flex-1">{currentItemLabel}</div>
@@ -38,7 +38,7 @@ const Dropdown = ({
         </div>
       </div>
       {showItemList ? (
-        <div className="absolute top-10 left-0 w-full z-50">
+        <div className="absolute top-12 left-0 w-full z-50">
           {itemList?.map((item, i) => (
             <div
               key={item.selector}
@@ -48,12 +48,12 @@ const Dropdown = ({
                 toggleOptions();
               }}
             >
-              <div className="z-50 h-10 text-sm px-2 shadow-db w-full flex flex-col justify-center bg-white border-[1px] border-black rounded-lg">
+              <div className="z-50 h-12 mt-1 text-sm px-2 shadow-db w-full flex flex-col justify-center bg-white dark:bg-db-dark border-b-2 border-db-cyan-process rounded-lg">
                 <div
                   className={
                     currentItemLabel === itemLabelList[i]
                       ? "text-db-cyan-process font-bold"
-                      : "text-black"
+                      : "text-black dark:text-white"
                   }
                 >
                   <div>{itemLabelList[i]}</div>

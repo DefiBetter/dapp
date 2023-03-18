@@ -16,6 +16,7 @@ const Action = (props) => {
       <div className="flex-1">
         {
           <DBButton
+            heigthTwClass="h-10"
             onClick={() => {
               depositWrite.transaction.write();
             }}
@@ -44,6 +45,7 @@ const Action = (props) => {
 
       <div className="flex-1">
         <DBButton
+          heigthTwClass="h-10"
           onClick={() => {
             if (claimWrite.transaction.write) {
               claimWrite.transaction.write();

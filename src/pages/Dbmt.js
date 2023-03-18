@@ -163,7 +163,7 @@ export default function Dbmt() {
       )}
 
       <div
-        className={`bg-db-light dark:bg-db-dark-nav transition-colors rounded-lg p-2 md:p-4 ${
+        className={`bg-db-light dark:bg-db-dark-nav transition-colors rounded-lg p-2 md:p-4 min-h-[86vh] border-b-2 border-db-cyan-process ${
           isSale ? "mb-16 md:mb-12 lg:mb-12" : "mb-0"
         } `}
       >
@@ -181,9 +181,7 @@ export default function Dbmt() {
               className="w-full h-14 flex justify-between px-2 md:px-4 items-center cursor-pointer"
               onClick={() => setToggleReadMore(!toggleReadMore)}
             >
-              <div>
-                Read more about DeFiBetter Milestone Reward Program (DBMT)
-              </div>
+              <div>Read more about DeFiBetter Milestone Reward Program</div>
               <div>
                 <MdOutlineKeyboardArrowRight
                   size={25}
@@ -193,7 +191,10 @@ export default function Dbmt() {
                 />
               </div>
             </div>
-            <div className="w-full p-4">
+
+            <div
+              className={`${toggleReadMore ? "block" : "hidden"} w-full p-4`}
+            >
               <div className="flex flex-col ml-3 gap-2">
                 <div className="flex items-start gap-4">
                   <span>💦</span>
@@ -237,7 +238,8 @@ export default function Dbmt() {
               <div className="flex flex-col md:flex-row justify-center items-center gap-0 md:gap-5 py-1">
                 {isSale && (
                   <div className="text-2xl font-bold relative pt-2 text-black">
-                    1 {tokenSymbol} = {basePrice ? basePrice.toFixed(3) : 0} {nativeGasToken}
+                    1 {tokenSymbol} = {basePrice ? basePrice.toFixed(3) : 0}{" "}
+                    {nativeGasToken}
                     <div className="absolute bottom-[35%] left-[0%] w-full h-1 bg-gradient-to-r from-red-400 to-orange-500"></div>
                   </div>
                 )}
@@ -247,7 +249,8 @@ export default function Dbmt() {
                   </div>
                 )}
                 <div className="font-bold text-3xl text-white">
-                  1 {tokenSymbol} = {currentPrice ? currentPrice.toFixed(3) : 0} {nativeGasToken}
+                  1 {tokenSymbol} = {currentPrice ? currentPrice.toFixed(3) : 0}{" "}
+                  {nativeGasToken}
                 </div>
               </div>
               {isSale && (
@@ -260,7 +263,7 @@ export default function Dbmt() {
               <ContainerStats
                 stats={[
                   {
-                    label: "Balance",
+                    label: "Your Wallet Balance",
                     icon: <GiWallet size={20} />,
                     value1: `${userGasBalance}`,
                     value2: `${nativeGasToken}`,

@@ -9,7 +9,6 @@ import Bins from "../components/Better/Bins";
 import Epoch from "../components/Better/Epoch";
 import Pair from "../components/Better/Pair";
 import Chart from "../components/Chart/Chart";
-import { Container } from "../components/common/container/Container";
 import useInstruments from "../hooks/useInstruments";
 // ABIs
 import DeFiBetterV1ABI from "../static/ABI/DeFiBetterV1ABI.json";
@@ -21,6 +20,7 @@ import useUserPendingBetterBalance from "../hooks/useUserPendingBetterBalance";
 import useUserPositionValueForInstrument from "../hooks/useUserPositionValueForInstrument";
 import useRewardPeriodInfo from "../hooks/useRewardPeriodInfo";
 import useUserGainsInfo from "../hooks/useUserGainsInfo";
+import Countdown from "react-countdown";
 
 function Better() {
   /* account, network, configs */
@@ -142,14 +142,14 @@ function Better() {
   return (
     <div id="full">
       {epochData && betterContractConfig ? (
-        <div className="pt-2 bg-db-beau-blue border-[3px] border-db-cyan-process">
+        <div className="bg-db-light dark:bg-db-dark-nav transition-colors rounded-lg p-2 md:p-4 min-h-[86vh] border-b-2 border-db-cyan-process">
           {/* DESKTOP VIEW */}
-          <div className="hidden lg:block">
+          <div className="hidden lg:block h-full">
             {/* Top Row */}
-            <div className="flex">
-              <div className="w-full lg:w-2/3 px-2">
-                <div className="w-full flex items-center md:items-start flex-col md:flex-row gap-3 lg:gap-0">
-                  <div>
+            <div className="flex items-start h-full">
+              <div className="w-full lg:w-2/3">
+                <div className="w-full flex items-center justify-between md:items-start flex-col md:flex-row gap-3 lg:gap-0">
+                  <div className="w-1/2">
                     <Pair
                       instrumentList={instrumentList}
                       setInstrument={setInstrument}
@@ -159,7 +159,7 @@ function Better() {
                       }
                     />
                   </div>
-                  <div className="ml-auto mr-auto">
+                  <div className="m-auto">
                     <Epoch
                       instrument={instrument}
                       setInstrument={setInstrument}
@@ -190,7 +190,7 @@ function Better() {
             </div>
 
             {/* Middle Row */}
-            <div className="relative mt-2 flex w-full h-[480px]">
+            <div className="relative mt-4 flex w-full h-[480px]">
               <div className="w-2/3 h-full">
                 <Chart
                   instrument={instrument}
@@ -234,7 +234,7 @@ function Better() {
           </div>
 
           {/* Mobile View */}
-          <div className="block lg:hidden">
+          <div className="block lg:hidden ">
             <div className="w-full">
               <div className="w-full flex items-center md:items-start flex-col md:flex-row gap-3 px-2">
                 <div>
@@ -315,9 +315,9 @@ function Better() {
           </div>
         </div>
       ) : (
-        <Container>
+        <div className="h-[86vh]">
           <BetterLoader />
-        </Container>
+        </div>
       )}
     </div>
   );
@@ -329,8 +329,8 @@ const BetterLoader = () => (
     width={"100%"}
     height={"100%"}
     viewBox="0 0 300 150"
-    backgroundColor="#f3f3f3"
-    foregroundColor="#ecebeb"
+    backgroundColor="#1D2738"
+    foregroundColor="#6D90C2"
     preserveAspectRatio="none"
   >
     {/* header */}
