@@ -104,6 +104,10 @@ export function WalletConnect() {
                   {connector.name}
                 </button>
               ))}
+              <div className="text-xs">
+                On mobile devices, we recommend using Metamask Browser for the
+                best user experience.
+              </div>
             </div>
           </div>
         </div>
