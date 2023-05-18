@@ -24,6 +24,9 @@ import useSymbol from "../hooks/useSymbol";
 import { MdOutlineKeyboardArrowRight } from "react-icons/md";
 import { useAccount } from "wagmi";
 import { AiFillCopy, AiOutlineInfoCircle } from "react-icons/ai";
+import useWithdrawReferralRewards from "../hooks/useWithdrawReferralRewards";
+import useUserReferralRewardPercentage from "../hooks/useUserReferralRewardPercentage";
+import useInvestor from "../hooks/useInvestor";
 
 export default function Dbmt() {
   const queryParameters = new URLSearchParams(window.location.search);
@@ -34,12 +37,8 @@ export default function Dbmt() {
   const [buyAmount, setBuyAmount] = useState("0");
   const [dbmtBuyAmount, setDbmtBuyAmount] = useState("0");
   const [toggleReadMore, setToggleReadMore] = useState(false);
-  const [showReferralInfo, setShowReferralInfo] = useState(false)
+  const [showReferralInfo, setShowReferralInfo] = useState(false);
   const [successCopy, setSuccessCopy] = useState(false);
-  const dbmtPerEth = useDbmtPerEth(buyAmount);
-  const ethPerDbmt = useEthPerDbmt(dbmtBuyAmount);
-
-  const { basePrice, currentPrice } = useDbmtPrice();
 
   useEffect(() => {
     if (input === 0 && ethPerDbmt) {
@@ -49,14 +48,18 @@ export default function Dbmt() {
     }
   }, [dbmtPerEth, ethPerDbmt]);
 
-  // supply left
+  const { basePrice, currentPrice } = useDbmtPrice();
+  const dbmtPerEth = useDbmtPerEth(buyAmount);
+  const ethPerDbmt = useEthPerDbmt(dbmtBuyAmount);
   const supplyLeft = useDbmtSupplyLeft();
   const startTime = useDbmtStartTime();
   const duration = useDbmtDuration();
   const { chain } = useNetwork();
   const minAmount = useDmbtMinPayment();
-  const buyWrite = useDbmtBuy(buyAmount);
-  const claim = useDbmtBuy(buyAmount); //useDbmtClaimRewards();
+  const buyWrite = useDbmtBuy(buyAmount, referral);
+  const claim = useWithdrawReferralRewards();
+  const userPercent = useUserReferralRewardPercentage();
+  const investorData = useInvestor();
 
   const userGasBalance = useNativeBalance();
   const tokenSymbol = useSymbol(contractAddresses[chain?.network]?.dbmtToken);
@@ -392,29 +395,32 @@ export default function Dbmt() {
                     onMouseLeave={() => setShowReferralInfo(false)}
                   />
                   {showReferralInfo && (
-                    <div className='absolute left-0 top-8 bg-db-light dark:bg-db-dark-info rounded-lg p-2 text-xs'>Recommend DeFiBetter and bring in new investors to earn incentives and BNB. Referees must invest a minimum of $50.</div>
+                    <div className="absolute left-0 top-8 bg-db-light dark:bg-db-dark-info rounded-lg p-2 text-xs">
+                      Recommend DeFiBetter and bring in new investors to earn
+                      incentives and BNB. Referees must invest a minimum of $50.
+                    </div>
                   )}
                 </div>
 
                 <div className="mt-4 w-full flex justify-between items-center">
                   <div className="text-db-cyan-process">Your $DBMT</div>
-                  <div>4.24</div>
+                  <div>{investorData ? investorData.ownBuysInGasToken : 0}</div>
                 </div>
                 <div className="w-full flex justify-between items-center">
                   <div className="text-db-cyan-process">Referral % rewards</div>
-                  <div>5%</div>
+                  <div>{userPercent}%</div>
                 </div>
                 <div className="w-full flex justify-between items-center">
                   <div className="text-db-cyan-process">Raised</div>
-                  <div>412 BNB</div>
+                  <div>{investorData ? investorData.totalRaisedInGasToken : 0} BNB</div>
                 </div>
                 <div className="w-full flex justify-between items-center">
                   <div className="text-db-cyan-process">Profit from Raised</div>
-                  <div>24.21 BNB</div>
+                  <div>{investorData ? investorData.totalReferralGainsInGasToken : 0} BNB</div>
                 </div>
                 <div className="w-full flex justify-between items-center">
                   <div className="text-db-cyan-process">Pending Rewards</div>
-                  <div>4.21 BNB</div>
+                  <div>{investorData ? investorData.referralDebt : 0} BNB</div>
                 </div>
                 <div className="mt-4">
                   <DBButton
