@@ -26,7 +26,7 @@ import { useAccount } from "wagmi";
 import { AiFillCopy, AiOutlineInfoCircle } from "react-icons/ai";
 import useWithdrawReferralRewards from "../hooks/useWithdrawReferralRewards";
 import useUserReferralRewardPercentage from "../hooks/useUserReferralRewardPercentage";
-import useInvestor from "../hooks/useInvestor";
+import useInvestorData from "../hooks/useInvestorData";
 
 export default function Dbmt() {
   const queryParameters = new URLSearchParams(window.location.search);
@@ -59,7 +59,7 @@ export default function Dbmt() {
   const buyWrite = useDbmtBuy(buyAmount, referral);
   const claim = useWithdrawReferralRewards();
   const userPercent = useUserReferralRewardPercentage();
-  const investorData = useInvestor();
+  const investorData = useInvestorData();
 
   const userGasBalance = useNativeBalance();
   const tokenSymbol = useSymbol(contractAddresses[chain?.network]?.dbmtToken);
@@ -384,93 +384,114 @@ export default function Dbmt() {
                 </div>
               </div>
             </div>
-            <div className="w-full lg:w-1/3 bg-white dark:bg-db-dark rounded-lg overflow-hidden p-4">
-              <div className="flex flex-col w-full h-full justify-between">
-                <div className="relative text-center w-full text-xl flex gap-4 justify-center items-center">
-                  DBMT Referral
-                  <AiOutlineInfoCircle
-                    size={25}
-                    className="text-db-cyan-process"
-                    onMouseEnter={() => setShowReferralInfo(true)}
-                    onMouseLeave={() => setShowReferralInfo(false)}
-                  />
-                  {showReferralInfo && (
-                    <div className="absolute left-0 top-8 bg-db-light dark:bg-db-dark-info rounded-lg p-2 text-xs">
-                      Recommend DeFiBetter and bring in new investors to earn
-                      incentives and BNB. Referees must invest a minimum of $50.
-                    </div>
-                  )}
-                </div>
+            {investorData && investorData.whitelistedForReferral === true && (
+              <div className="w-full lg:w-1/3 bg-white dark:bg-db-dark rounded-lg overflow-hidden p-4">
+                <div className="flex flex-col w-full h-full justify-between">
+                  <div className="relative text-center w-full text-xl flex gap-4 justify-center items-center">
+                    Your DBMT Referral Stats
+                    <AiOutlineInfoCircle
+                      size={25}
+                      className="text-db-cyan-process"
+                      onMouseEnter={() => setShowReferralInfo(true)}
+                      onMouseLeave={() => setShowReferralInfo(false)}
+                    />
+                    {showReferralInfo && (
+                      <div className="absolute left-0 top-8 bg-db-light dark:bg-db-dark-info rounded-lg p-2 text-xs">
+                        Recommend DeFiBetter and bring in new investors to earn
+                        incentives and BNB. Referees must invest a minimum of
+                        $50.
+                      </div>
+                    )}
+                  </div>
 
-                <div className="mt-4 w-full flex justify-between items-center">
-                  <div className="text-db-cyan-process">Your $DBMT</div>
-                  <div>{investorData ? investorData.ownBuysInGasToken : 0}</div>
-                </div>
-                <div className="w-full flex justify-between items-center">
-                  <div className="text-db-cyan-process">Referral % rewards</div>
-                  <div>{userPercent}%</div>
-                </div>
-                <div className="w-full flex justify-between items-center">
-                  <div className="text-db-cyan-process">Raised</div>
-                  <div>{investorData ? investorData.totalRaisedInGasToken : 0} BNB</div>
-                </div>
-                <div className="w-full flex justify-between items-center">
-                  <div className="text-db-cyan-process">Profit from Raised</div>
-                  <div>{investorData ? investorData.totalReferralGainsInGasToken : 0} BNB</div>
-                </div>
-                <div className="w-full flex justify-between items-center">
-                  <div className="text-db-cyan-process">Pending Rewards</div>
-                  <div>{investorData ? investorData.referralDebt : 0} BNB</div>
-                </div>
-                <div className="mt-4">
-                  <DBButton
-                    disabled={!claim.transaction.write}
-                    heigthTwClass={"h-10"}
+                  <div className="mt-4 w-full flex justify-between items-center">
+                    <div className="text-db-cyan-process">Your $DBMT Buys</div>
+                    <div>
+                      {investorData ? investorData.ownBuysInGasToken : 0} BNB
+                    </div>
+                  </div>
+                  <div className="w-full flex justify-between items-center">
+                    <div className="text-db-cyan-process">
+                      Referral % rewards
+                    </div>
+                    <div>{userPercent}%</div>
+                  </div>
+                  <div className="w-full flex justify-between items-center">
+                    <div className="text-db-cyan-process">
+                      Raised via referral
+                    </div>
+                    <div>
+                      {investorData ? investorData.totalRaisedInGasToken : 0}{" "}
+                      BNB
+                    </div>
+                  </div>
+                  <div className="w-full flex justify-between items-center">
+                    <div className="text-db-cyan-process">
+                      Profit from Raised
+                    </div>
+                    <div>
+                      {investorData
+                        ? investorData.totalReferralGainsInGasToken
+                        : 0}{" "}
+                      BNB
+                    </div>
+                  </div>
+                  <div className="w-full flex justify-between items-center">
+                    <div className="text-db-cyan-process">Pending Rewards</div>
+                    <div>
+                      {investorData ? investorData.referralDebt : 0} BNB
+                    </div>
+                  </div>
+                  <div className="mt-4">
+                    <DBButton
+                      disabled={!claim.transaction.write}
+                      heigthTwClass={"h-10"}
+                      onClick={() => {
+                        if (claim.transaction.write) {
+                          claim.transaction.write();
+                        }
+                      }}
+                    >
+                      {claim.confirmation.isLoading ? (
+                        <Loader text="Claiming Rewards" />
+                      ) : (
+                        "Claim Rewards"
+                      )}
+                    </DBButton>
+                  </div>
+                  <div
+                    className="mt-4 overflow-hidden cursor-pointer"
                     onClick={() => {
-                      if (claim.transaction.write) {
-                        claim.transaction.write();
-                      }
+                      setSuccessCopy(true);
+                      navigator.clipboard.writeText(
+                        `${window.location.origin}${window.location.pathname}?ref=${address}`
+                      );
+                      setTimeout(() => {
+                        setSuccessCopy(false);
+                      }, 3000);
                     }}
                   >
-                    {claim.confirmation.isLoading ? (
-                      <Loader text="Claiming Rewards" />
-                    ) : (
-                      "Claim Rewards"
-                    )}
-                  </DBButton>
-                </div>
-                <div
-                  className="mt-4 overflow-hidden cursor-pointer"
-                  onClick={() => {
-                    setSuccessCopy(true);
-                    navigator.clipboard.writeText(
-                      `${window.location.origin}${window.location.pathname}?ref=${address}`
-                    );
-                    setTimeout(() => {
-                      setSuccessCopy(false);
-                    }, 3000);
-                  }}
-                >
-                  <div className="text-db-cyan-process">
-                    Your Referral Link (click to copy)
-                  </div>
-                  <div className="w-full flex gap-4 items-center cursor-pointer justify-between">
-                    <div className="w-full text-db-dark-info overflow-hidden">
-                      .../ref={address}...
+                    <div className="text-db-cyan-process">
+                      Your Referral Link (click to copy)
                     </div>
-                    <AiFillCopy
-                      className="text-db-cyan-process active:text-db-dark"
-                      size={20}
-                    />
+                    <div className="w-full flex gap-4 items-center cursor-pointer justify-between">
+                      <div className="w-full text-db-dark-info overflow-hidden">
+                        .../ref={address}...
+                      </div>
+                      <AiFillCopy
+                        className="text-db-cyan-process active:text-db-dark"
+                        size={20}
+                      />
+                    </div>
                   </div>
-                </div>
-                <div className="h-5 text-green-500 text-xs text-center">
-                  {successCopy && (
-                    <span>Copied referral link to clipboard</span>
-                  )}
+                  <div className="h-5 text-green-500 text-xs text-center">
+                    {successCopy && (
+                      <span>Copied referral link to clipboard</span>
+                    )}
+                  </div>
                 </div>
               </div>
-            </div>
+            )}
           </div>
         </div>
       </div>

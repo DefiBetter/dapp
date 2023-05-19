@@ -3,14 +3,14 @@ import { contractAddresses } from "../static/contractAddresses";
 import DBMTSaleABI from "../static/ABI/DBMTSaleABI.json";
 import { useAccount } from "wagmi";
 
-export default function useInvestor() {
+export default function useInvestorData() {
   const { chain } = useNetwork();
   const { address } = useAccount;
 
   const { data } = useContractRead({
     address: contractAddresses[chain?.network]?.dbmtToken,
     abi: DBMTSaleABI,
-    functionName: "investors",
+    functionName: "getInvestorData",
     args: [address],
   });
 
