@@ -6,7 +6,7 @@ import {
 } from "wagmi";
 import { ToastStatus, useToast } from "../context/ToastContext";
 import { contractAddresses } from "../static/contractAddresses";
-import DBMTSaleABI from "../static/ABI/DBMTSaleABI.json";
+import ReferralSaleABI from "../static/ABI/ReferralSaleABI.json";
 
 export default function useWithdrawReferralRewards() {
   const toastContext = useToast();
@@ -14,7 +14,7 @@ export default function useWithdrawReferralRewards() {
 
   const preparation = usePrepareContractWrite({
     address: contractAddresses[chain?.network]?.dbmtSale,
-    abi: DBMTSaleABI,
+    abi: ReferralSaleABI,
     functionName: "withdrawReferralRewards",
     onError(err) {
       console.error(err);

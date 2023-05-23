@@ -3,7 +3,7 @@ const contractAddresses = {
   hardhat: {
     dbmtToken: process.env.REACT_APP_dbmtToken,
     dbmtAirdrop: process.env.REACT_APP_airdropContract,
-    dbmtSale: process.env.REACT_APP_dbmtSale,
+    dbmtSale: process.env.REACT_APP_referralSale,
     btToken: process.env.REACT_APP_btToken,
     vcPresale: process.env.REACT_APP_vcPresale,
     communityPresale: process.env.REACT_APP_communityPresale,

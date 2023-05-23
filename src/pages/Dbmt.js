@@ -29,16 +29,30 @@ import useUserReferralRewardPercentage from "../hooks/useUserReferralRewardPerce
 import useInvestorData from "../hooks/useInvestorData";
 
 export default function Dbmt() {
-  const queryParameters = new URLSearchParams(window.location.search);
-  const referral = queryParameters.get("ref");
-
   const { address } = useAccount();
+  const queryParameters = new URLSearchParams(window.location.search);
+  const referral = queryParameters.get("ref") || address;
+
+  const { chain } = useNetwork();
   const [input, setInput] = useState();
   const [buyAmount, setBuyAmount] = useState("0");
   const [dbmtBuyAmount, setDbmtBuyAmount] = useState("0");
   const [toggleReadMore, setToggleReadMore] = useState(false);
   const [showReferralInfo, setShowReferralInfo] = useState(false);
   const [successCopy, setSuccessCopy] = useState(false);
+  const { basePrice, currentPrice } = useDbmtPrice();
+  const dbmtPerEth = useDbmtPerEth(buyAmount);
+  const ethPerDbmt = useEthPerDbmt(dbmtBuyAmount);
+  const supplyLeft = useDbmtSupplyLeft();
+  const startTime = useDbmtStartTime();
+  const duration = useDbmtDuration();
+  const minAmount = useDmbtMinPayment();
+  const buyWrite = useDbmtBuy(buyAmount, referral);
+  const claim = useWithdrawReferralRewards();
+  const userPercent = useUserReferralRewardPercentage();
+  const investorData = useInvestorData();
+  const userGasBalance = useNativeBalance();
+  const tokenSymbol = useSymbol(contractAddresses[chain?.network]?.dbmtToken);
 
   useEffect(() => {
     if (input === 0 && ethPerDbmt) {
@@ -47,22 +61,6 @@ export default function Dbmt() {
       setDbmtBuyAmount(dbmtPerEth);
     }
   }, [dbmtPerEth, ethPerDbmt]);
-
-  const { basePrice, currentPrice } = useDbmtPrice();
-  const dbmtPerEth = useDbmtPerEth(buyAmount);
-  const ethPerDbmt = useEthPerDbmt(dbmtBuyAmount);
-  const supplyLeft = useDbmtSupplyLeft();
-  const startTime = useDbmtStartTime();
-  const duration = useDbmtDuration();
-  const { chain } = useNetwork();
-  const minAmount = useDmbtMinPayment();
-  const buyWrite = useDbmtBuy(buyAmount, referral);
-  const claim = useWithdrawReferralRewards();
-  const userPercent = useUserReferralRewardPercentage();
-  const investorData = useInvestorData();
-
-  const userGasBalance = useNativeBalance();
-  const tokenSymbol = useSymbol(contractAddresses[chain?.network]?.dbmtToken);
 
   const isSale = useMemo(
     () => basePrice && currentPrice && basePrice !== currentPrice,
@@ -247,7 +245,14 @@ export default function Dbmt() {
             </div>
           </div>
           <div className="w-full lg:w-2/3 flex flex-col lg:flex-row gap-4">
-            <div className="w-full lg:w-2/3 bg-white dark:bg-db-dark rounded-lg overflow-hidden">
+            <div
+              className={`w-full ${
+                !investorData ||
+                (investorData && investorData.whitelistedForReferralLevel == 0)
+                  ? null
+                  : "lg:w-2/3"
+              } bg-white dark:bg-db-dark rounded-lg overflow-hidden`}
+            >
               <div className="w-full bg-db-cyan-process pb-2">
                 <div className="flex flex-col md:flex-row justify-center items-center gap-0 md:gap-5 py-1">
                   {isSale && (
@@ -384,7 +389,7 @@ export default function Dbmt() {
                 </div>
               </div>
             </div>
-            {investorData && investorData.whitelistedForReferral === true && (
+            {investorData && investorData.whitelistedForReferralLevel > 1 && (
               <div className="w-full lg:w-1/3 bg-white dark:bg-db-dark rounded-lg overflow-hidden p-4">
                 <div className="flex flex-col w-full h-full justify-between">
                   <div className="relative text-center w-full text-xl flex gap-4 justify-center items-center">
