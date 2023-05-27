@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { CountdownFormatted, trimNumber } from "../components/common/helper";
-import { MdDoubleArrow } from "react-icons/md";
+import { MdDoubleArrow, MdOutlineKeyboardArrowDown } from "react-icons/md";
 import { CgArrowLongRight } from "react-icons/cg";
 import useDbmtPerEth from "../hooks/useDbmtPerEth";
 import useEthPerDbmt from "../hooks/useEthPerDbmt";
@@ -21,12 +21,14 @@ import { useNetwork } from "wagmi";
 import useDmbtMinPayment from "../hooks/useDmbtMinPayment";
 import ContainerStats from "../components/common/ContainerStats.js";
 import useSymbol from "../hooks/useSymbol";
-import { MdOutlineKeyboardArrowRight } from "react-icons/md";
 import { useAccount } from "wagmi";
-import { AiFillCopy, AiOutlineInfoCircle } from "react-icons/ai";
+import { AiFillCopy } from "react-icons/ai";
 import useWithdrawReferralRewards from "../hooks/useWithdrawReferralRewards";
 import useUserReferralRewardPercentage from "../hooks/useUserReferralRewardPercentage";
 import useInvestorData from "../hooks/useInvestorData";
+import useReferralLevelRewardPercentage from "../hooks/useReferralLevelRewardPercentage";
+import useGetReferralLevelThresholdsInGasToken from "../hooks/useGetReferralLevelThresholdsInGasToken";
+import { ethers } from "ethers";
 
 export default function Dbmt() {
   const { address } = useAccount();
@@ -38,7 +40,6 @@ export default function Dbmt() {
   const [buyAmount, setBuyAmount] = useState("0");
   const [dbmtBuyAmount, setDbmtBuyAmount] = useState("0");
   const [toggleReadMore, setToggleReadMore] = useState(false);
-  const [showReferralInfo, setShowReferralInfo] = useState(false);
   const [successCopy, setSuccessCopy] = useState(false);
   const { basePrice, currentPrice } = useDbmtPrice();
   const dbmtPerEth = useDbmtPerEth(buyAmount);
@@ -51,6 +52,10 @@ export default function Dbmt() {
   const claim = useWithdrawReferralRewards();
   const userPercent = useUserReferralRewardPercentage();
   const investorData = useInvestorData();
+  const referralLevelRewardPercentage = useReferralLevelRewardPercentage();
+  const referralLevelThresholdsInGasToken =
+    useGetReferralLevelThresholdsInGasToken();
+
   const userGasBalance = useNativeBalance();
   const tokenSymbol = useSymbol(contractAddresses[chain?.network]?.dbmtToken);
 
@@ -69,6 +74,61 @@ export default function Dbmt() {
 
   const nativeGasToken = contractAddresses[chain?.network]?.nativeGas;
 
+  const bnbTilNextLevel = useMemo(() => {
+    if (referralLevelThresholdsInGasToken) {
+      if (investorData && basePrice) {
+        const boughtInBNB = ethers.utils.parseEther(
+          investorData.ownBuysInGasToken
+        );
+        //  ? ethers.utils.parseEther(
+        //   (investorData.ownBuysInGasToken / basePrice).toFixed(2)
+        // ) : 0
+
+        for (let i = 0; i < referralLevelThresholdsInGasToken.length - 1; i++) {
+          if (
+            boughtInBNB.gte(referralLevelThresholdsInGasToken[i]) &&
+            boughtInBNB.lt(referralLevelThresholdsInGasToken[i + 1])
+          ) {
+            return referralLevelThresholdsInGasToken[i + 1] - boughtInBNB;
+          }
+        }
+      }
+      return referralLevelThresholdsInGasToken[0];
+    }
+    return 0;
+  }, [referralLevelThresholdsInGasToken, investorData, basePrice]);
+
+  function bnbToDBMT(bnb) {
+    if (basePrice && bnb > 0) {
+      return bnb / basePrice;
+    }
+    return 0;
+  }
+
+  function displayLevelUp() {
+    if (
+      investorData &&
+      referralLevelThresholdsInGasToken &&
+      ethers.utils
+        .parseEther(investorData.ownBuysInGasToken)
+        .lt(
+          referralLevelThresholdsInGasToken[
+            referralLevelThresholdsInGasToken.length - 1
+          ]
+        )
+    ) {
+    }
+    return (
+      <div className="mt-2 w-full text-center">
+        Buy{" "}
+        <span className="text-green-500 font-bold">
+          {bnbToDBMT(ethers.utils.formatEther(bnbTilNextLevel.toString())).toFixed(2)}{" "}
+          {tokenSymbol}
+        </span>{" "}
+        more to unlock the next referral level!
+      </div>
+    );
+  }
   //1678802400
   // const timeStop = 1678802400;
   // const timeLeft = new Date(timeStop * 1000) - new Date();
@@ -194,10 +254,10 @@ export default function Dbmt() {
             >
               <div>Read more about DeFiBetter Milestone Reward Program</div>
               <div>
-                <MdOutlineKeyboardArrowRight
+                <MdOutlineKeyboardArrowDown
                   size={25}
                   className={`transition-transform ${
-                    toggleReadMore === true ? "rotate-90" : "rotate-0"
+                    toggleReadMore === true ? "-rotate-180" : "rotate-0"
                   }`}
                 />
               </div>
@@ -244,14 +304,136 @@ export default function Dbmt() {
               </div>
             </div>
           </div>
-          <div className="w-full lg:w-2/3 flex flex-col lg:flex-row gap-4">
+
+          <div className="w-full lg:w-2/3 bg-white dark:bg-db-dark rounded-lg overflow-hidden">
+            <div className="py-2 w-full rounded-t-lg bg-green-600 text-center">
+              Refer friends to receive a share of their investments as rewards.
+              <br />
+              Unlock higher referral levels to increase your rewards!
+            </div>
             <div
-              className={`w-full ${
-                !investorData ||
-                (investorData && investorData.whitelistedForReferralLevel == 0)
-                  ? null
-                  : "lg:w-2/3"
-              } bg-white dark:bg-db-dark rounded-lg overflow-hidden`}
+              className="w-2/3 md:w-1/2 m-auto rounded-lg text-center mt-4 cursor-pointer justify-between px-2 bg-db-dark-input py-1 flex items-center"
+              onClick={() => {
+                setSuccessCopy(true);
+                navigator.clipboard.writeText(
+                  `${window.location.origin}${window.location.pathname}?ref=${address}`
+                );
+                setTimeout(() => {
+                  setSuccessCopy(false);
+                }, 3000);
+              }}
+            >
+              <div className="whitespace-nowrap">Your Referral Link</div>
+              <div className="w-full flex gap-1 items-center cursor-pointer justify-between">
+                <div className="w-full text-db-cyan-process overflow-hidden">
+                  .../ref={`${address.slice(0, 5)}...${address.slice(-4)}`}
+                </div>
+                <AiFillCopy
+                  className="text-db-cyan-process active:text-db-dark"
+                  size={20}
+                />
+                <div
+                  className={`${successCopy ? "text-green-500" : null} text-xs`}
+                >
+                  {successCopy ? "Copied" : "Copy"}
+                </div>
+              </div>
+            </div>
+
+            <div className="mt-4 w-full flex justify-between px-4 gap-4">
+              {referralLevelRewardPercentage &&
+                referralLevelThresholdsInGasToken &&
+                referralLevelRewardPercentage.map((ref, index) => (
+                  <div
+                    className={`w-full rounded-lg ${
+                      userPercent === Number(ref) / 100
+                        ? "bg-db-cyan-process"
+                        : "bg-db-cadet-grey"
+                    }  p-2 text-center`}
+                  >
+                    <div className="text-2xl font-bold">
+                      {Number(ref) / 100}%
+                    </div>
+                    <div className="">
+                      {bnbToDBMT(
+                        ethers.utils.formatEther(
+                          referralLevelThresholdsInGasToken[index]
+                        )
+                      ).toFixed(2)}{" "}
+                      {tokenSymbol}
+                    </div>
+                  </div>
+                ))}
+            </div>
+            {displayLevelUp()}
+
+            <div className="flex w-full h-full justify-between p-4 gap-4 md:gap-10">
+              <div className="flex flex-col justify-between w-full">
+                <div className="w-full flex justify-between items-center">
+                  <div className="text-db-cyan-process">
+                    Your {tokenSymbol} Buys
+                  </div>
+                  <div className="font-bold">
+                    {investorData
+                      ? bnbToDBMT(investorData.ownBuysInGasToken).toFixed(2)
+                      : 0}{" "}
+                    {tokenSymbol}
+                  </div>
+                </div>
+
+                <div className="w-full flex justify-between items-center">
+                  <div className="text-db-cyan-process">
+                    Raised via referral
+                  </div>
+                  <div className="font-bold">
+                    {investorData ? investorData.totalRaisedInGasToken : 0}{" "}
+                    {nativeGasToken}
+                  </div>
+                </div>
+                <div className="w-full flex justify-between items-center">
+                  <div className="text-db-cyan-process">Profit from Raised</div>
+                  <div className="font-bold">
+                    {investorData
+                      ? investorData.totalReferralGainsInGasToken
+                      : 0}{" "}
+                    BNB
+                  </div>
+                </div>
+              </div>
+              <div className="min-w-[250px] flex flex-col rounded-lg bg-db-dark-input p-2">
+                <div className="w-full flex justify-between items-center">
+                  <div className="">Pending Rewards</div>
+                  <div className="font-bold">
+                    {investorData ? investorData.referralDebt : 0}{" "}
+                    {nativeGasToken}
+                  </div>
+                </div>
+                <div className="mt-4">
+                  <DBButton
+                    disabled={
+                      !claim.transaction.write ||
+                      (investorData && investorData.referralDebt === 0)
+                    }
+                    heigthTwClass={"h-10"}
+                    onClick={() => {
+                      if (claim.transaction.write) {
+                        claim.transaction.write();
+                      }
+                    }}
+                  >
+                    {claim.confirmation.isLoading ? (
+                      <Loader text="Claiming Rewards" />
+                    ) : (
+                      "Claim Rewards"
+                    )}
+                  </DBButton>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="w-full lg:w-2/3">
+            <div
+              className={`w-full bg-white dark:bg-db-dark rounded-lg overflow-hidden`}
             >
               <div className="w-full bg-db-cyan-process pb-2">
                 <div className="flex flex-col md:flex-row justify-center items-center gap-0 md:gap-5 py-1">
@@ -389,114 +571,6 @@ export default function Dbmt() {
                 </div>
               </div>
             </div>
-            {investorData && investorData.whitelistedForReferralLevel > 1 && (
-              <div className="w-full lg:w-1/3 bg-white dark:bg-db-dark rounded-lg overflow-hidden p-4">
-                <div className="flex flex-col w-full h-full justify-between">
-                  <div className="relative text-center w-full text-xl flex gap-4 justify-center items-center">
-                    Your DBMT Referral Stats
-                    <AiOutlineInfoCircle
-                      size={25}
-                      className="text-db-cyan-process"
-                      onMouseEnter={() => setShowReferralInfo(true)}
-                      onMouseLeave={() => setShowReferralInfo(false)}
-                    />
-                    {showReferralInfo && (
-                      <div className="absolute left-0 top-8 bg-db-light dark:bg-db-dark-info rounded-lg p-2 text-xs">
-                        Recommend DeFiBetter and bring in new investors to earn
-                        incentives and BNB. Referees must invest a minimum of
-                        $50.
-                      </div>
-                    )}
-                  </div>
-
-                  <div className="mt-4 w-full flex justify-between items-center">
-                    <div className="text-db-cyan-process">Your $DBMT Buys</div>
-                    <div>
-                      {investorData ? investorData.ownBuysInGasToken : 0} BNB
-                    </div>
-                  </div>
-                  <div className="w-full flex justify-between items-center">
-                    <div className="text-db-cyan-process">
-                      Referral % rewards
-                    </div>
-                    <div>{userPercent}%</div>
-                  </div>
-                  <div className="w-full flex justify-between items-center">
-                    <div className="text-db-cyan-process">
-                      Raised via referral
-                    </div>
-                    <div>
-                      {investorData ? investorData.totalRaisedInGasToken : 0}{" "}
-                      BNB
-                    </div>
-                  </div>
-                  <div className="w-full flex justify-between items-center">
-                    <div className="text-db-cyan-process">
-                      Profit from Raised
-                    </div>
-                    <div>
-                      {investorData
-                        ? investorData.totalReferralGainsInGasToken
-                        : 0}{" "}
-                      BNB
-                    </div>
-                  </div>
-                  <div className="w-full flex justify-between items-center">
-                    <div className="text-db-cyan-process">Pending Rewards</div>
-                    <div>
-                      {investorData ? investorData.referralDebt : 0} BNB
-                    </div>
-                  </div>
-                  <div className="mt-4">
-                    <DBButton
-                      disabled={!claim.transaction.write}
-                      heigthTwClass={"h-10"}
-                      onClick={() => {
-                        if (claim.transaction.write) {
-                          claim.transaction.write();
-                        }
-                      }}
-                    >
-                      {claim.confirmation.isLoading ? (
-                        <Loader text="Claiming Rewards" />
-                      ) : (
-                        "Claim Rewards"
-                      )}
-                    </DBButton>
-                  </div>
-                  <div
-                    className="mt-4 overflow-hidden cursor-pointer"
-                    onClick={() => {
-                      setSuccessCopy(true);
-                      navigator.clipboard.writeText(
-                        `${window.location.origin}${window.location.pathname}?ref=${address}`
-                      );
-                      setTimeout(() => {
-                        setSuccessCopy(false);
-                      }, 3000);
-                    }}
-                  >
-                    <div className="text-db-cyan-process">
-                      Your Referral Link (click to copy)
-                    </div>
-                    <div className="w-full flex gap-4 items-center cursor-pointer justify-between">
-                      <div className="w-full text-db-dark-info overflow-hidden">
-                        .../ref={address}...
-                      </div>
-                      <AiFillCopy
-                        className="text-db-cyan-process active:text-db-dark"
-                        size={20}
-                      />
-                    </div>
-                  </div>
-                  <div className="h-5 text-green-500 text-xs text-center">
-                    {successCopy && (
-                      <span>Copied referral link to clipboard</span>
-                    )}
-                  </div>
-                </div>
-              </div>
-            )}
           </div>
         </div>
       </div>

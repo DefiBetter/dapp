@@ -7,10 +7,12 @@ import {
 import { ToastStatus, useToast } from "../context/ToastContext";
 import { contractAddresses } from "../static/contractAddresses";
 import ReferralSaleABI from "../static/ABI/ReferralSaleABI.json";
+import useFirework from "./useFireworks";
 
 export default function useWithdrawReferralRewards() {
   const toastContext = useToast();
   const { chain } = useNetwork();
+  const { firework } = useFirework();
 
   const preparation = usePrepareContractWrite({
     address: contractAddresses[chain?.network]?.dbmtSale,
@@ -40,6 +42,7 @@ export default function useWithdrawReferralRewards() {
       );
     },
     onSuccess(data) {
+      firework()
       toastContext.addToast(
         ToastStatus.Success,
         "Successfuly claimed rewards",
