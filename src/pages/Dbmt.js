@@ -360,11 +360,18 @@ export default function Dbmt({ bnbPrice }) {
                 referralLevelThresholdsInGasToken &&
                 referralLevelRewardPercentage.map((ref, index) => (
                   <div
+                    onClick={() =>
+                      setBuyAmount(
+                        ethers.utils.formatEther(
+                          referralLevelThresholdsInGasToken[index]
+                        )
+                      )
+                    }
                     className={`w-full rounded-lg ${
                       userPercent === Number(ref) / 100
                         ? "bg-db-cyan-process"
                         : "bg-db-cadet-grey"
-                    }  p-2 text-center`}
+                    }  p-2 text-center cursor-pointer`}
                   >
                     <div className="text-2xl font-bold">
                       {Number(ref) / 100}%
