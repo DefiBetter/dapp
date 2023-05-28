@@ -138,7 +138,7 @@ export default function Dbmt({ bnbPrice }) {
             }
             className="text-green-500 font-bold underline cursor-pointer"
           >
-            {ethers.utils.formatEther(bnbTilNextLevel.toString())}{" "}
+            {(+ethers.utils.formatEther(bnbTilNextLevel.toString())).toFixed(3)}{" "}
             {nativeGasToken}
           </span>{" "}
           more to unlock the next referral level!
