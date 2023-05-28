@@ -28,7 +28,7 @@ import useUserReferralRewardPercentage from "../hooks/useUserReferralRewardPerce
 import useInvestorData from "../hooks/useInvestorData";
 import useReferralLevelRewardPercentage from "../hooks/useReferralLevelRewardPercentage";
 import useGetReferralLevelThresholdsInGasToken from "../hooks/useGetReferralLevelThresholdsInGasToken";
-import { ethers } from "ethers";
+import { BigNumber, ethers } from "ethers";
 
 export default function Dbmt({ bnbPrice }) {
   const { address } = useAccount();
@@ -131,11 +131,14 @@ export default function Dbmt({ bnbPrice }) {
     } else if (userPercentValue !== maxPercentValue) {
       return (
         <div className="mt-2 w-full text-center">
-          Buy{" "}
+          Buy for{" "}
           <span
-            onClick={() =>
-              setBuyAmount(ethers.utils.formatEther(bnbTilNextLevel.toString()))
-            }
+            onClick={() => {
+              setInput(1);
+              setBuyAmount(
+                ethers.utils.formatEther(bnbTilNextLevel.toString())
+              );
+            }}
             className="text-green-500 font-bold underline cursor-pointer"
           >
             {(+ethers.utils.formatEther(bnbTilNextLevel.toString())).toFixed(3)}{" "}
@@ -145,6 +148,20 @@ export default function Dbmt({ bnbPrice }) {
         </div>
       );
     }
+  }
+
+  function boxClicked(index) {
+    let amount = "0";
+    if (investorData) {
+      const userBought = ethers.utils.parseEther(investorData.ownBuysInGasToken)
+      const tierAmount = BigNumber.from(referralLevelThresholdsInGasToken[index])
+      amount = ethers.utils.formatEther(tierAmount.sub(userBought))
+      if (+amount < 0) {
+        return
+      }
+    }
+    setInput(1);
+    setBuyAmount(amount);
   }
   //1678802400
   // const timeStop = 1678802400;
@@ -360,13 +377,9 @@ export default function Dbmt({ bnbPrice }) {
                 referralLevelThresholdsInGasToken &&
                 referralLevelRewardPercentage.map((ref, index) => (
                   <div
-                    onClick={() =>
-                      setBuyAmount(
-                        ethers.utils.formatEther(
-                          referralLevelThresholdsInGasToken[index]
-                        )
-                      )
-                    }
+                    onClick={() => {
+                      boxClicked(index);
+                    }}
                     className={`w-full rounded-lg ${
                       userPercent === Number(ref) / 100
                         ? "bg-db-cyan-process"
