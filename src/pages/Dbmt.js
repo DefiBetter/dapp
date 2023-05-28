@@ -134,18 +134,12 @@ export default function Dbmt({ bnbPrice }) {
           Buy{" "}
           <span
             onClick={() =>
-              setDbmtBuyAmount(
-                bnbToDBMT(
-                  ethers.utils.formatEther(bnbTilNextLevel.toString())
-                ).toFixed(2)
-              )
+              setBuyAmount(ethers.utils.formatEther(bnbTilNextLevel.toString()))
             }
             className="text-green-500 font-bold underline cursor-pointer"
           >
-            {bnbToDBMT(
-              ethers.utils.formatEther(bnbTilNextLevel.toString())
-            ).toFixed(2)}{" "}
-            {tokenSymbol}
+            {ethers.utils.formatEther(bnbTilNextLevel.toString())}{" "}
+            {nativeGasToken}
           </span>{" "}
           more to unlock the next referral level!
         </div>
@@ -376,19 +370,19 @@ export default function Dbmt({ bnbPrice }) {
                       {Number(ref) / 100}%
                     </div>
                     <div className="">
-                      {bnbToDBMT(
-                        ethers.utils.formatEther(
-                          referralLevelThresholdsInGasToken[index]
-                        )
-                      ).toFixed(2)}{" "}
-                      {tokenSymbol}{" "}
+                      {ethers.utils.formatEther(
+                        referralLevelThresholdsInGasToken[index]
+                      )}{" "}
+                      {nativeGasToken}{" "}
                       {bnbPrice && (
                         <span className="text-xs">
-                          (
-                          {ethers.utils.formatEther(
-                            referralLevelThresholdsInGasToken[index]
-                          )}{" "}
-                          {nativeGasToken} ≈ $
+                          (≈
+                          {bnbToDBMT(
+                            ethers.utils.formatEther(
+                              referralLevelThresholdsInGasToken[index]
+                            )
+                          ).toFixed(3)}{" "}
+                          {tokenSymbol} ≈ $
                           {displayedRoundedPrice(
                             referralLevelThresholdsInGasToken[index]
                           )}
@@ -409,7 +403,7 @@ export default function Dbmt({ bnbPrice }) {
                   </div>
                   <div className="font-bold">
                     {investorData
-                      ? bnbToDBMT(investorData.ownBuysInGasToken).toFixed(2)
+                      ? bnbToDBMT(investorData.ownBuysInGasToken).toFixed(3)
                       : 0}{" "}
                     {tokenSymbol}
                   </div>
