@@ -108,6 +108,12 @@ export default function Dbmt({ bnbPrice }) {
     return 0;
   }
 
+  function displayedRoundedPrice(number) {
+    const formattedNumber = ethers.utils.formatEther(number);
+    const price = bnbPrice * formattedNumber
+    return Math.round(price / 50) * 50;
+  }
+
   function displayLevelUp() {
     const userPercentValue = userPercent * 100;
     const maxPercentValue =
@@ -318,7 +324,7 @@ export default function Dbmt({ bnbPrice }) {
               Refer friends to receive a share of their investments as rewards!
             </div>
             <div
-              className="w-2/3 md:w-1/2 m-auto rounded-lg text-center mt-4 cursor-pointer justify-between px-2 bg-db-dark-input py-1 flex items-center"
+              className="w-[93%] md:w-1/2 m-auto rounded-lg text-center mt-4 cursor-pointer justify-between px-2 bg-db-dark-input py-1 flex items-center"
               onClick={() => {
                 setSuccessCopy(true);
                 navigator.clipboard.writeText(
@@ -374,12 +380,9 @@ export default function Dbmt({ bnbPrice }) {
                             referralLevelThresholdsInGasToken[index]
                           )}{" "}
                           {nativeGasToken} ≈ $
-                          {(
-                            bnbPrice *
-                            ethers.utils.formatEther(
-                              referralLevelThresholdsInGasToken[index]
-                            )
-                          ).toFixed(0)}
+                          {displayedRoundedPrice(
+                            referralLevelThresholdsInGasToken[index]
+                          )}
                           )
                         </span>
                       )}
@@ -389,7 +392,7 @@ export default function Dbmt({ bnbPrice }) {
             </div>
             {displayLevelUp()}
 
-            <div className="flex w-full h-full justify-between p-4 gap-4 md:gap-10">
+            <div className="flex w-full h-full flex-col md:flex-row justify-between p-4 gap-4 md:gap-10">
               <div className="flex flex-col justify-between w-full">
                 <div className="w-full flex justify-between items-center">
                   <div className="text-db-cyan-process">
