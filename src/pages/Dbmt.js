@@ -110,7 +110,7 @@ export default function Dbmt({ bnbPrice }) {
 
   function displayedRoundedPrice(number) {
     const formattedNumber = ethers.utils.formatEther(number);
-    const price = bnbPrice * formattedNumber
+    const price = bnbPrice * formattedNumber;
     return Math.round(price / 50) * 50;
   }
 
@@ -132,7 +132,16 @@ export default function Dbmt({ bnbPrice }) {
       return (
         <div className="mt-2 w-full text-center">
           Buy{" "}
-          <span className="text-green-500 font-bold">
+          <span
+            onClick={() =>
+              setDbmtBuyAmount(
+                bnbToDBMT(
+                  ethers.utils.formatEther(bnbTilNextLevel.toString())
+                ).toFixed(2)
+              )
+            }
+            className="text-green-500 font-bold underline cursor-pointer"
+          >
             {bnbToDBMT(
               ethers.utils.formatEther(bnbTilNextLevel.toString())
             ).toFixed(2)}{" "}
