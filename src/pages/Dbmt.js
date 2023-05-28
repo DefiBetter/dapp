@@ -30,25 +30,25 @@ import useReferralLevelRewardPercentage from "../hooks/useReferralLevelRewardPer
 import useGetReferralLevelThresholdsInGasToken from "../hooks/useGetReferralLevelThresholdsInGasToken";
 import { ethers } from "ethers";
 
-export default function Dbmt() {
+export default function Dbmt({ bnbPrice }) {
   const { address } = useAccount();
   const queryParameters = new URLSearchParams(window.location.search);
   const referral = queryParameters.get("ref") || address;
 
   const { chain } = useNetwork();
   const [input, setInput] = useState();
-  const [buyAmount, setBuyAmount] = useState("0");
-  const [dbmtBuyAmount, setDbmtBuyAmount] = useState("0");
+  const [buyAmount, setBuyAmount] = useState("");
+  const [dbmtBuyAmount, setDbmtBuyAmount] = useState("");
   const [toggleReadMore, setToggleReadMore] = useState(false);
   const [successCopy, setSuccessCopy] = useState(false);
   const { basePrice, currentPrice } = useDbmtPrice();
-  const dbmtPerEth = useDbmtPerEth(buyAmount);
-  const ethPerDbmt = useEthPerDbmt(dbmtBuyAmount);
+  const dbmtPerEth = useDbmtPerEth(buyAmount === "" ? "0" : buyAmount);
+  const ethPerDbmt = useEthPerDbmt(dbmtBuyAmount === "" ? "0" : dbmtBuyAmount);
   const supplyLeft = useDbmtSupplyLeft();
   const startTime = useDbmtStartTime();
   const duration = useDbmtDuration();
   const minAmount = useDmbtMinPayment();
-  const buyWrite = useDbmtBuy(buyAmount, referral);
+  const buyWrite = useDbmtBuy(buyAmount === "" ? "0" : buyAmount, referral);
   const claim = useWithdrawReferralRewards();
   const userPercent = useUserReferralRewardPercentage();
   const investorData = useInvestorData();
@@ -348,7 +348,7 @@ export default function Dbmt() {
               </div>
             </div>
 
-            <div className="mt-4 w-full flex justify-between px-4 gap-4">
+            <div className="mt-4 w-full flex flex-col md:flex-row justify-between px-4 gap-4">
               {referralLevelRewardPercentage &&
                 referralLevelThresholdsInGasToken &&
                 referralLevelRewardPercentage.map((ref, index) => (
@@ -368,7 +368,23 @@ export default function Dbmt() {
                           referralLevelThresholdsInGasToken[index]
                         )
                       ).toFixed(2)}{" "}
-                      {tokenSymbol}
+                      {tokenSymbol}{" "}
+                      {bnbPrice && (
+                        <span className="text-xs">
+                          (
+                          {ethers.utils.formatEther(
+                            referralLevelThresholdsInGasToken[index]
+                          )}{" "}
+                          {nativeGasToken} ≈ $
+                          {(
+                            bnbPrice *
+                            ethers.utils.formatEther(
+                              referralLevelThresholdsInGasToken[index]
+                            )
+                          ).toFixed(0)}
+                          )
+                        </span>
+                      )}
                     </div>
                   </div>
                 ))}
@@ -498,21 +514,19 @@ export default function Dbmt() {
                     </div>
                     <div className="h-14 w-full bg-white dark:bg-db-dark-input shadow-inner shadow-db-cyan-process dark:shadow-black rounded-lg flex gap-2 items-center px-4">
                       <input
-                        value={Number(dbmtBuyAmount) !== 0 ? dbmtBuyAmount : ""}
+                        value={dbmtBuyAmount}
                         onChange={(e) => {
                           setInput(0);
-                          let val = e.target.value || "0";
-                          if (Number(val) > supplyLeft) {
-                            val = supplyLeft.toString();
-                          }
-                          setDbmtBuyAmount(val);
-                          if (val === "0") {
-                            setBuyAmount("0");
-                          }
+                          let val = e.target.value;
+                          try {
+                            const testNumber = Number(val);
+                            if (testNumber != null && !isNaN(testNumber)) {
+                              setDbmtBuyAmount(val);
+                            }
+                          } catch (e) {}
                         }}
-                        type={"number"}
-                        min={0}
-                        max={Number(supplyLeft)}
+                        // min={0}
+                        // max={Number(supplyLeft)}
                         className="text-left md:text-center px-0 md:px-4 h-10 w-full focus:ring-0 focus:outline-none rounded-lg bg-white dark:bg-db-dark-input"
                         placeholder={`${tokenSymbol} amount`}
                       />
@@ -527,17 +541,19 @@ export default function Dbmt() {
                     </div>
                     <div className="h-14 w-full bg-white dark:bg-db-dark-input rounded-lg flex gap-4 items-center px-4 shadow-inner shadow-db-cyan-process dark:shadow-black">
                       <input
-                        value={Number(buyAmount) !== 0 ? buyAmount : ""}
+                        value={buyAmount}
                         onChange={(e) => {
                           setInput(1);
-                          const val = e.target.value || "0";
-                          setBuyAmount(val);
-                          if (val === "0") {
-                            setDbmtBuyAmount("0");
-                          }
+                          let val = e.target.value;
+
+                          try {
+                            const testNumber = Number(val);
+                            if (testNumber != null && !isNaN(testNumber)) {
+                              setBuyAmount(val);
+                            }
+                          } catch (e) {}
                         }}
-                        type={"number"}
-                        min={0}
+                        // min={0}
                         className="text-left md:text-center md:pl-20 px-0 md:px-4 h-10 w-full focus:ring-0 focus:outline-none rounded-lg bg-white dark:bg-db-dark-input"
                         placeholder={`${nativeGasToken} amount`}
                       />

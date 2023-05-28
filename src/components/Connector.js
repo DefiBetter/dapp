@@ -8,8 +8,11 @@ import AppContainer from "./common/container/AppContainer";
 import CommunityPresale from "../pages/CommunityPresale";
 import VcPresale from "../pages/VcPresale";
 import Dbmt from "../pages/Dbmt";
+import useBNBPrice from "../hooks/useBNBPrice";
 
 function Connector() {
+  const bnbPrice = useBNBPrice()
+
   return (
     <>
       <Routes>
@@ -20,7 +23,7 @@ function Connector() {
               path="/dbmt"
               element={
                 <AppContainer>
-                  <Dbmt />
+                  <Dbmt bnbPrice={bnbPrice}/>
                 </AppContainer>
               }
             />
