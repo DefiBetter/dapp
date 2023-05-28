@@ -314,10 +314,8 @@ export default function Dbmt() {
           </div>
 
           <div className="w-full lg:w-2/3 bg-white dark:bg-db-dark rounded-lg overflow-hidden">
-            <div className="py-2 w-full rounded-t-lg bg-green-600 text-center">
-              Refer friends to receive a share of their investments as rewards.
-              <br />
-              Unlock higher referral levels to increase your rewards!
+            <div className="py-2 w-full rounded-t-lg bg-green-600 text-center text-2xl font-bold">
+              Refer friends to receive a share of their investments as rewards!
             </div>
             <div
               className="w-2/3 md:w-1/2 m-auto rounded-lg text-center mt-4 cursor-pointer justify-between px-2 bg-db-dark-input py-1 flex items-center"
