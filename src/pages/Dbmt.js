@@ -77,9 +77,10 @@ export default function Dbmt() {
   const bnbTilNextLevel = useMemo(() => {
     if (referralLevelThresholdsInGasToken) {
       if (investorData && basePrice) {
-        const boughtInBNB = investorData.ownBuysInGasToken > 0 ? ethers.utils.parseEther(
-          investorData.ownBuysInGasToken
-        ) : ethers.utils.parseEther('0')
+        const boughtInBNB =
+          investorData.ownBuysInGasToken > 0
+            ? ethers.utils.parseEther(investorData.ownBuysInGasToken)
+            : ethers.utils.parseEther("0");
 
         const currentLevelIndex = referralLevelRewardPercentage.findIndex(
           (percent) => userPercent === Number(percent) / 100
@@ -108,30 +109,33 @@ export default function Dbmt() {
   }
 
   function displayLevelUp() {
-    if (
-      investorData &&
-      referralLevelThresholdsInGasToken &&
-      ethers.utils
-        .parseEther(investorData.ownBuysInGasToken)
-        .lt(
-          referralLevelThresholdsInGasToken[
-            referralLevelThresholdsInGasToken.length - 1
-          ]
-        )
-    ) {
+    const userPercentValue = userPercent * 100;
+    const maxPercentValue =
+      referralLevelRewardPercentage && referralLevelRewardPercentage.length > 0
+        ? Number(
+            referralLevelRewardPercentage[
+              referralLevelRewardPercentage.length - 1
+            ]
+          )
+        : -1;
+    if (userPercentValue === maxPercentValue) {
+      return (
+        <div className="mt-2 w-full text-center">You've reached max tier!</div>
+      );
+    } else if (userPercentValue !== maxPercentValue) {
+      return (
+        <div className="mt-2 w-full text-center">
+          Buy{" "}
+          <span className="text-green-500 font-bold">
+            {bnbToDBMT(
+              ethers.utils.formatEther(bnbTilNextLevel.toString())
+            ).toFixed(2)}{" "}
+            {tokenSymbol}
+          </span>{" "}
+          more to unlock the next referral level!
+        </div>
+      );
     }
-    return (
-      <div className="mt-2 w-full text-center">
-        Buy{" "}
-        <span className="text-green-500 font-bold">
-          {bnbToDBMT(
-            ethers.utils.formatEther(bnbTilNextLevel.toString())
-          ).toFixed(2)}{" "}
-          {tokenSymbol}
-        </span>{" "}
-        more to unlock the next referral level!
-      </div>
-    );
   }
   //1678802400
   // const timeStop = 1678802400;
