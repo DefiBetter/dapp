@@ -1,19 +1,19 @@
 import { useContractRead, useNetwork } from "wagmi";
 import { contractAddresses } from "../static/contractAddresses";
 import ReferralSaleABI from "../static/ABI/ReferralSaleABI.json";
-import { ethers } from "ethers";
+import { useAccount } from "wagmi";
 
-export default function useDbmtPerEth(buyAmount) {
+export default function useUserReferralRewardPercentage() {
   const { chain } = useNetwork();
+  const { address } = useAccount();
 
   const { data } = useContractRead({
     address: contractAddresses[chain?.network]?.dbmtSale,
     abi: ReferralSaleABI,
-    enabled: buyAmount && Number(buyAmount) > 0,
-    args: [buyAmount && Number(buyAmount) > 0 ? ethers.utils.parseEther(buyAmount) : '0'],
-    functionName: "getTokenPerETH",
-    select: (data) => ethers.utils.formatEther(data),
+    functionName: "getUserReferralRewardPercentage",
+    args: [address],
+    watch: true,
   });
 
-  return data;
+  return data ? Number(data) / 100 : 0;
 }

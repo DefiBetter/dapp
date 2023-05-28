@@ -5,12 +5,11 @@ import {
   useWaitForTransaction,
 } from "wagmi";
 import { ToastStatus, useToast } from "../context/ToastContext";
-import { ethers } from "ethers";
 import { contractAddresses } from "../static/contractAddresses";
 import ReferralSaleABI from "../static/ABI/ReferralSaleABI.json";
 import useFirework from "./useFireworks";
 
-export default function useDbmtBuy(buyAmount, referral) {
+export default function useWithdrawReferralRewards() {
   const toastContext = useToast();
   const { chain } = useNetwork();
   const { firework } = useFirework();
@@ -18,12 +17,7 @@ export default function useDbmtBuy(buyAmount, referral) {
   const preparation = usePrepareContractWrite({
     address: contractAddresses[chain?.network]?.dbmtSale,
     abi: ReferralSaleABI,
-    enabled: Number(buyAmount) > 0,
-    functionName: "buy",
-    args: [referral],
-    overrides: {
-      value: ethers.utils.parseEther(buyAmount),
-    },
+    functionName: "withdrawReferralRewards",
     onError(err) {
       console.error(err);
     },
@@ -43,7 +37,7 @@ export default function useDbmtBuy(buyAmount, referral) {
       console.error(error);
       toastContext.addToast(
         ToastStatus.Failed,
-        "Failed to buy $DBMT",
+        "Failed to claim rewards",
         transaction.data?.hash
       );
     },
@@ -51,7 +45,7 @@ export default function useDbmtBuy(buyAmount, referral) {
       firework()
       toastContext.addToast(
         ToastStatus.Success,
-        "Successfuly bought $DBMT",
+        "Successfuly claimed rewards",
         transaction.data?.hash
       );
     },

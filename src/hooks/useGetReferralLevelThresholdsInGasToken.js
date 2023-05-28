@@ -1,19 +1,14 @@
 import { useContractRead, useNetwork } from "wagmi";
 import { contractAddresses } from "../static/contractAddresses";
 import ReferralSaleABI from "../static/ABI/ReferralSaleABI.json";
-import { ethers } from "ethers";
 
-export default function useDbmtPerEth(buyAmount) {
+export default function useGetReferralLevelThresholdsInGasToken() {
   const { chain } = useNetwork();
 
   const { data } = useContractRead({
     address: contractAddresses[chain?.network]?.dbmtSale,
     abi: ReferralSaleABI,
-    enabled: buyAmount && Number(buyAmount) > 0,
-    args: [buyAmount && Number(buyAmount) > 0 ? ethers.utils.parseEther(buyAmount) : '0'],
-    functionName: "getTokenPerETH",
-    select: (data) => ethers.utils.formatEther(data),
+    functionName: "getReferralLevelThresholdsInGasToken",
   });
-
   return data;
 }
