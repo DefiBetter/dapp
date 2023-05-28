@@ -171,6 +171,7 @@ const Navbar = () => {
         <nav className="gap-4 items-center justify-center h-full hidden md:flex">
           {menuItems().map((item, index) => (
             <Link
+              key={`${item.label}-${index}`}
               to={item.path}
               className={`${
                 process.env.REACT_APP_PHASE !== "PRODUCTION" && index !== 0 && index !== menuItems.length
@@ -249,6 +250,7 @@ const Navbar = () => {
           <div className="gap-4 mt-4 items-center flex flex-col text-xl">
             {menuItems().map((item, index) => (
               <Link
+                key={`${item.label}-${index}`}
                 onClick={() => setShowSideNavbar(false)}
                 to={item.path}
                 className={`${

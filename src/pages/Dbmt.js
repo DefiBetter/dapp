@@ -77,18 +77,20 @@ export default function Dbmt() {
   const bnbTilNextLevel = useMemo(() => {
     if (referralLevelThresholdsInGasToken) {
       if (investorData && basePrice) {
-        const boughtInBNB = ethers.utils.parseEther(
+        const boughtInBNB = investorData.ownBuysInGasToken > 0 ? ethers.utils.parseEther(
           investorData.ownBuysInGasToken
-        );
-        //  ? ethers.utils.parseEther(
-        //   (investorData.ownBuysInGasToken / basePrice).toFixed(2)
-        // ) : 0
+        ) : ethers.utils.parseEther('0')
 
-        for (let i = 0; i < referralLevelThresholdsInGasToken.length - 1; i++) {
-          if (
-            boughtInBNB.gte(referralLevelThresholdsInGasToken[i]) &&
-            boughtInBNB.lt(referralLevelThresholdsInGasToken[i + 1])
-          ) {
+        const currentLevelIndex = referralLevelRewardPercentage.findIndex(
+          (percent) => userPercent === Number(percent) / 100
+        );
+
+        for (
+          let i = currentLevelIndex;
+          i < referralLevelThresholdsInGasToken.length - 1;
+          i++
+        ) {
+          if (boughtInBNB.lt(referralLevelThresholdsInGasToken[i + 1])) {
             return referralLevelThresholdsInGasToken[i + 1] - boughtInBNB;
           }
         }
@@ -122,7 +124,9 @@ export default function Dbmt() {
       <div className="mt-2 w-full text-center">
         Buy{" "}
         <span className="text-green-500 font-bold">
-          {bnbToDBMT(ethers.utils.formatEther(bnbTilNextLevel.toString())).toFixed(2)}{" "}
+          {bnbToDBMT(
+            ethers.utils.formatEther(bnbTilNextLevel.toString())
+          ).toFixed(2)}{" "}
           {tokenSymbol}
         </span>{" "}
         more to unlock the next referral level!
