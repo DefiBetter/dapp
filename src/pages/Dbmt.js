@@ -153,11 +153,15 @@ export default function Dbmt({ bnbPrice }) {
   function boxClicked(index) {
     let amount = "0";
     if (investorData) {
-      const userBought = ethers.utils.parseEther(investorData.ownBuysInGasToken)
-      const tierAmount = BigNumber.from(referralLevelThresholdsInGasToken[index])
-      amount = ethers.utils.formatEther(tierAmount.sub(userBought))
+      const userBought = ethers.utils.parseEther(
+        investorData.ownBuysInGasToken
+      );
+      const tierAmount = BigNumber.from(
+        referralLevelThresholdsInGasToken[index]
+      );
+      amount = ethers.utils.formatEther(tierAmount.sub(userBought));
       if (+amount < 0) {
-        return
+        return;
       }
     }
     setInput(1);
@@ -609,7 +613,19 @@ export default function Dbmt({ bnbPrice }) {
                       {buyWrite.confirmation.isLoading ? (
                         <Loader text="Buying" />
                       ) : (
-                        "Buy"
+                        <>
+                          <div className="flex flex-col">
+                            <span>Buy</span>
+                            {referral &&
+                              (referral !== address ? (
+                                <span className="text-xs">
+                                  referred by {referral}
+                                </span>
+                              ) : (
+                                <span className="text-xs">No referral</span>
+                              ))}
+                          </div>
+                        </>
                       )}
                     </DBButton>
                   </div>
