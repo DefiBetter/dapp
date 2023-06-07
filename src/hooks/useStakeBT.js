@@ -28,14 +28,14 @@ export default function useStakeBT(btAmount, onSuccessCallback) {
       console.error(error);
       toastContext.addToast(
         ToastStatus.Failed,
-        "Failed to stake BT",
+        "Failed to stake BETR",
         transaction.data?.hash
       );
     },
     onSuccess() {
       toastContext.addToast(
         ToastStatus.Success,
-        "Successfuly staked BT",
+        "Successfully staked BETR",
         transaction.data?.hash
       );
       onSuccessCallback();

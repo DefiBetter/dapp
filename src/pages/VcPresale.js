@@ -114,7 +114,7 @@ function VcPresale() {
       toastContext.addToast(ToastStatus.Failed, "Failed to approve", null);
     },
     onSuccess() {
-      toastContext.addToast(ToastStatus.Success, "Successfuly approved", null);
+      toastContext.addToast(ToastStatus.Success, "Successfully approved", null);
     },
   });
 
@@ -141,7 +141,7 @@ function VcPresale() {
       toastContext.addToast(ToastStatus.Failed, "Failed to buy", null);
     },
     onSuccess() {
-      toastContext.addToast(ToastStatus.Success, "Successfuly bought", null);
+      toastContext.addToast(ToastStatus.Success, "Successfully bought", null);
     },
   });
 
@@ -228,7 +228,7 @@ function VcPresale() {
                     setBuyAmount(userWethBalance.toString());
                   }}
                   className="cursor-pointer rounded-md flex gap-2 justify-center items-center h-9 pb-0.5 px-3 border-[1px] border-db-cyan-process text-db-cyan-process hover:bg-db-cyan-process hover:text-white transition-colors"
-                  >
+                >
                   MAX
                 </div>
                 <input
@@ -276,7 +276,15 @@ function VcPresale() {
                 )}
               </div>
               <div className="w-full md:w-1/3">
-                <AddToWallet asset="BETR" />
+                <AddToWallet
+                  symbol={"BETR"}
+                  address={contractAddresses[chain?.network]?.btToken}
+                  decimals={18}
+                  logo={'betr.png'}
+                  imageURL={
+                    "https://github.com/ArchitectOfParadise/DefiBetterV1-FrontEnd-V2/blob/dev/src/static/image/betr.png?raw=true"
+                  }
+                />
               </div>
             </div>
           </div>

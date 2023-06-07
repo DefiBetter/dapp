@@ -18,6 +18,9 @@ export default function useVaultDeposit(vault, amount, onSuccessCallback) {
     overrides: {
       value: amount ? ethers.utils.parseEther(amount.toString()) : "0",
     },
+    onError(err) {
+      console.error(err)
+    }
   });
 
   const transaction = useContractWrite(preparation.config);
@@ -35,7 +38,7 @@ export default function useVaultDeposit(vault, amount, onSuccessCallback) {
     onSuccess() {
       toastContext.addToast(
         ToastStatus.Success,
-        "Successfuly deposited",
+        "Successfully deposited",
         transaction.data?.hash
       );
       onSuccessCallback();

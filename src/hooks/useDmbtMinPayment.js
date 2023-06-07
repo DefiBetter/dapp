@@ -1,6 +1,6 @@
 import { useContractRead, useNetwork } from "wagmi";
 import { contractAddresses } from "../static/contractAddresses";
-import ReferralSaleABI from "../static/ABI/ReferralSaleABI.json";
+import DBMTSaleABI from "../static/ABI/DBMTSaleABI.json";
 import { ethers } from "ethers";
 
 export default function useDmbtMinPayment() {
@@ -8,7 +8,7 @@ export default function useDmbtMinPayment() {
 
   const { data } = useContractRead({
     address: contractAddresses[chain?.network]?.dbmtSale,
-    abi: ReferralSaleABI,
+    abi: DBMTSaleABI,
     functionName: "minPayment",
     select: (data) => ethers.utils.formatEther(data)
   });

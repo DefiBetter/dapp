@@ -21,6 +21,7 @@ import useUserPositionValueForInstrument from "../hooks/useUserPositionValueForI
 import useRewardPeriodInfo from "../hooks/useRewardPeriodInfo";
 import useUserGainsInfo from "../hooks/useUserGainsInfo";
 import Countdown from "react-countdown";
+import useMediaQuery from "../hooks/useMediaQuery";
 
 function Better() {
   /* account, network, configs */
@@ -139,102 +140,104 @@ function Better() {
   max-height: 812.16
   */
 
+  const isMobile = useMediaQuery(1023);
+
   return (
     <div id="full">
       {epochData && betterContractConfig ? (
-        <div className="bg-db-light dark:bg-db-dark-nav transition-colors rounded-lg p-2 md:p-4 min-h-[86vh] border-b-2 border-db-cyan-process">
-          {/* DESKTOP VIEW */}
-          <div className="hidden lg:block h-full">
-            {/* Top Row */}
-            <div className="flex items-start h-full">
-              <div className="w-full lg:w-2/3">
-                <div className="w-full flex items-center justify-between md:items-start flex-col md:flex-row gap-3 lg:gap-0">
-                  <div className="w-1/2">
-                    <Pair
-                      instrumentList={instrumentList}
-                      setInstrument={setInstrument}
-                      instrument={instrument}
-                      getInstrumentBySelectorRefetch={
-                        getInstrumentBySelectorRefetch
-                      }
-                    />
-                  </div>
-                  <div className="m-auto">
-                    <Epoch
-                      instrument={instrument}
-                      setInstrument={setInstrument}
-                      getInstrumentBySelectorRefetch={
-                        getInstrumentBySelectorRefetch
-                      }
-                      getInstrumentBySelectorIsRefetching={
-                        getInstrumentBySelectorIsRefetching
-                      }
-                    />
+        <div className="bg-db-light dark:bg-db-dark-nav transition-colors rounded-lg p-2 md:p-4 min-h-[86vh] border-b-2 border-db-cyan-process h-min lg:h-1">
+          {!isMobile ? (
+            // Desktop View
+            <div className="w-full h-full flex flex-col items-stretch">
+              {/* Top Row */}
+              <div className="flex items-start">
+                <div className="w-full lg:w-2/3">
+                  <div className="w-full flex items-center justify-between md:items-start flex-col md:flex-row gap-3 lg:gap-0">
+                    <div className="w-1/2">
+                      <Pair
+                        instrumentList={instrumentList}
+                        setInstrument={setInstrument}
+                        instrument={instrument}
+                        getInstrumentBySelectorRefetch={
+                          getInstrumentBySelectorRefetch
+                        }
+                      />
+                    </div>
+                    <div className="m-auto">
+                      <Epoch
+                        instrument={instrument}
+                        setInstrument={setInstrument}
+                        getInstrumentBySelectorRefetch={
+                          getInstrumentBySelectorRefetch
+                        }
+                        getInstrumentBySelectorIsRefetching={
+                          getInstrumentBySelectorIsRefetching
+                        }
+                      />
+                    </div>
                   </div>
                 </div>
-              </div>
-              <div className="w-1/3 px-2">
-                <Action
-                  betterContractConfig={betterContractConfig}
-                  instrument={instrument}
-                  binAmountList={binAmountList}
-                  setBinTotal={setBinTotal}
-                  customFlatFee={customFlatFee}
-                  customGainFee={customGainFee}
-                  pendingBetterBalance={pendingBetterBalance}
-                  nativeGas={nativeGas}
-                  setBinAmountList={setBinAmountList}
-                  binTotal={binTotal}
-                />
-              </div>
-            </div>
-
-            {/* Middle Row */}
-            <div className="relative mt-4 flex w-full h-[480px]">
-              <div className="w-2/3 h-full">
-                <Chart
-                  instrument={instrument}
-                  epochData={epochData}
-                  betterContractConfig={betterContractConfig}
-                />
-              </div>
-
-              <div className="w-1/3 h-[480px] flex">
-                <div className="w-1/2">
-                  <Bins
+                <div className="w-1/3 px-2">
+                  <Action
+                    betterContractConfig={betterContractConfig}
+                    instrument={instrument}
                     binAmountList={binAmountList}
-                    binTotal={binTotal}
-                    setBinAmountList={setBinAmountList}
                     setBinTotal={setBinTotal}
+                    customFlatFee={customFlatFee}
+                    customGainFee={customGainFee}
                     pendingBetterBalance={pendingBetterBalance}
-                    epochData={epochData}
-                    normalisedBinValueList={normalisedBinValueList}
-                    instrument={instrument}
                     nativeGas={nativeGas}
-                    userPosition={userPosition}
-                    betterContractConfig={betterContractConfig}
-                    rewardPeriodInfo={rewardPeriodInfo}
-                    userGainsInfo={userGainsInfo}
-                  />
-                </div>
-                <div className="w-1/2">
-                  <Stats
-                    pendingBetterBalance={pendingBetterBalance}
-                    epochData={epochData}
-                    instrument={instrument}
-                    nativeGas={nativeGas}
-                    userPosition={userPosition}
-                    betterContractConfig={betterContractConfig}
-                    rewardPeriodInfo={rewardPeriodInfo}
-                    userGainsInfo={userGainsInfo}
+                    setBinAmountList={setBinAmountList}
+                    binTotal={binTotal}
                   />
                 </div>
               </div>
-            </div>
-          </div>
 
-          {/* Mobile View */}
-          <div className="block lg:hidden ">
+              {/* Middle Row */}
+              <div className="mt-4 w-full h-full flex">
+                <div className="w-2/3 h-full">
+                  <Chart
+                    instrument={instrument}
+                    epochData={epochData}
+                    betterContractConfig={betterContractConfig}
+                  />
+                </div>
+
+                <div className="w-1/3 flex">
+                  <div className="w-1/2">
+                    <Bins
+                      binAmountList={binAmountList}
+                      binTotal={binTotal}
+                      setBinAmountList={setBinAmountList}
+                      setBinTotal={setBinTotal}
+                      pendingBetterBalance={pendingBetterBalance}
+                      epochData={epochData}
+                      normalisedBinValueList={normalisedBinValueList}
+                      instrument={instrument}
+                      nativeGas={nativeGas}
+                      userPosition={userPosition}
+                      betterContractConfig={betterContractConfig}
+                      rewardPeriodInfo={rewardPeriodInfo}
+                      userGainsInfo={userGainsInfo}
+                    />
+                  </div>
+                  <div className="w-1/2">
+                    <Stats
+                      pendingBetterBalance={pendingBetterBalance}
+                      epochData={epochData}
+                      instrument={instrument}
+                      nativeGas={nativeGas}
+                      userPosition={userPosition}
+                      betterContractConfig={betterContractConfig}
+                      rewardPeriodInfo={rewardPeriodInfo}
+                      userGainsInfo={userGainsInfo}
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          ) : (
+            // Mobile View
             <div className="w-full">
               <div className="w-full flex items-center md:items-start flex-col md:flex-row gap-3 px-2">
                 <div>
@@ -267,21 +270,23 @@ function Better() {
                     epochData={epochData}
                     betterContractConfig={betterContractConfig}
                   />
-                  <Bins
-                    binAmountList={binAmountList}
-                    binTotal={binTotal}
-                    setBinAmountList={setBinAmountList}
-                    setBinTotal={setBinTotal}
-                    pendingBetterBalance={pendingBetterBalance}
-                    epochData={epochData}
-                    normalisedBinValueList={normalisedBinValueList}
-                    instrument={instrument}
-                    nativeGas={nativeGas}
-                    userPosition={userPosition}
-                    betterContractConfig={betterContractConfig}
-                    rewardPeriodInfo={rewardPeriodInfo}
-                    userGainsInfo={userGainsInfo}
-                  />
+                  <div className="float-right">
+                    <Bins
+                      binAmountList={binAmountList}
+                      binTotal={binTotal}
+                      setBinAmountList={setBinAmountList}
+                      setBinTotal={setBinTotal}
+                      pendingBetterBalance={pendingBetterBalance}
+                      epochData={epochData}
+                      normalisedBinValueList={normalisedBinValueList}
+                      instrument={instrument}
+                      nativeGas={nativeGas}
+                      userPosition={userPosition}
+                      betterContractConfig={betterContractConfig}
+                      rewardPeriodInfo={rewardPeriodInfo}
+                      userGainsInfo={userGainsInfo}
+                    />
+                  </div>
                 </div>
 
                 <div className="w-full px-2">
@@ -312,7 +317,7 @@ function Better() {
                 </div>
               </div>
             </div>
-          </div>
+          )}
         </div>
       ) : (
         <div className="h-[86vh]">

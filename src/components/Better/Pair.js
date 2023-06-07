@@ -1,19 +1,13 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Countdown from "react-countdown";
 import Dropdown from "../common/Dropdown";
 import { instrumentToLabel } from "../common/helper";
 
 const Pair = (props) => {
-  const [showInstrumentList, setShowInstrumentList] = useState(false);
-  // const [currentPair, setCurrentPair] = useState("");
-
-  const toggleOptions = () => {
-    setShowInstrumentList(!showInstrumentList);
-  };
 
   return (
     <div>
-      <div className="flex flex-col md:flex-row items-center justify-between gap-4 md:gap-6">
+      <div className="flex flex-col xl:flex-row items-center justify-between gap-2 xl:gap-6">
         <Dropdown
           currentItem={props.instrument}
           currentItemLabel={instrumentToLabel(props.instrument, false)}
@@ -24,7 +18,7 @@ const Pair = (props) => {
             return instrumentToLabel(instrument);
           })}
         />
-        <div className="flex flex-col justify-center items-center m-auto">
+        <div className="flex flex-row xl:flex-col justify-center items-center m-auto gap-2 xl:gap-0">
           <div className="font-bold">Time left</div>
           <div className="font-bold text-db-cyan-process">
             <Countdown

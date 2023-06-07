@@ -46,6 +46,11 @@
     "type": "constructor"
   },
   {
+    "inputs": [],
+    "name": "NoFundsToDeposit",
+    "type": "error"
+  },
+  {
     "anonymous": false,
     "inputs": [
       {
@@ -72,6 +77,12 @@
         "internalType": "uint256",
         "name": "",
         "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "",
+        "type": "string"
       }
     ],
     "name": "VaultExecutionFailed",

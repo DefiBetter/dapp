@@ -9,25 +9,23 @@ import { ethers } from "ethers";
 export default function useOpenPosition(props, onSuccessCallback) {
   const toastContext = useToast();
 
+  const weiBins = ethers.utils.parseEther(props.binTotal.toString());
+  const pendingRewards = ethers.utils.parseEther(props.pendingBetterBalance);
+
   const transaction = useContractWrite({
     ...props.betterContractConfig,
-    functionName: "openPosition",
     mode: "recklesslyUnprepared",
+    functionName: "openPosition",
     args: [
       props.instrument.selector,
       props.customFlatFee,
       props.customGainFee,
-      props.binAmountList.map((bin) => {
-        return ethers.utils.parseEther(bin.toString());
-      }),
+      props.binAmountList.map((bin) => ethers.utils.parseEther(bin.toString())),
     ],
     overrides: {
-      value: ethers.utils.parseEther(
-        (props.binTotal >= props.pendingBetterBalance
-          ? props.binTotal - props.pendingBetterBalance
-          : 0
-        ).toString()
-      ),
+      value: weiBins.gt(pendingRewards)
+        ? weiBins.sub(pendingRewards).toString()
+        : "0",
     },
   });
 
@@ -45,7 +43,7 @@ export default function useOpenPosition(props, onSuccessCallback) {
     onSuccess() {
       toastContext.addToast(
         ToastStatus.Success,
-        "Successfuly opened position",
+        "Successfully opened position",
         transaction.data?.hash
       );
       onSuccessCallback();

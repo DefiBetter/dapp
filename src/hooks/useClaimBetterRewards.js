@@ -29,7 +29,7 @@ export default function useClaimBetterRewards(props) {
     onSuccess() {
       toastContext.addToast(
         ToastStatus.Success,
-        "Successfuly claimed",
+        "Successfully claimed",
         transaction.data?.hash
       );
     },

@@ -16,6 +16,7 @@ import useUserBTStake from "../../hooks/useUserBTStake";
 import DBButton from "../../components/common/DBButton";
 import { BsWallet2, BsPiggyBank, BsBank } from "react-icons/bs";
 import { GiCoins } from "react-icons/gi";
+import AddToWallet from "../common/AddToWallet";
 
 const BtStakingCard = (props) => {
   /* global hooks */
@@ -67,14 +68,14 @@ const BtStakingCard = (props) => {
   return (
     <div className="w-full">
       <div className="mt-4 flex flex-col gap-4">
-      <div className="w-full flex flex-col flex-wrap md:flex-row justify-between gap-4 md:gap-0">
+        <div className="w-full flex flex-col flex-wrap md:flex-row justify-between gap-4 md:gap-0">
           <div className="md:h-14 flex flex-row md:flex-col w-full md:w-1/2 items-center justify-between md:justify-center">
             <div className="flex items-center gap-2 text-db-blue-gray">
               <BsBank size={20} />
               <div>Total Staked</div>
             </div>
             <div className="font-bold">
-              {trimNumber(vaultBalance, 4, "dp")} BT
+              {trimNumber(vaultBalance, 4, "dp")} BETR
             </div>
           </div>
           <div className="md:h-14 flex flex-row md:flex-col w-full md:w-1/2 items-center justify-between md:justify-center">
@@ -82,14 +83,14 @@ const BtStakingCard = (props) => {
               <BsPiggyBank size={20} />
               <div>Your Stake</div>
             </div>
-            <div className="font-bold">{userStaked} BT</div>
+            <div className="font-bold">{userStaked} BETR</div>
           </div>
           <div className="md:h-14 flex flex-row md:flex-col w-full md:w-1/2 items-center justify-between md:justify-center">
             <div className="flex items-center gap-2 text-db-blue-gray">
               <GiCoins size={20} />
               <div>Current APR</div>
             </div>
-            <div className="font-bold">{trimNumber(69, 4, "dp")}%</div>
+            <div className="font-bold">Coming soon!</div>
           </div>
           <div className="md:h-14 flex flex-row md:flex-col w-full md:w-1/2 items-center justify-between md:justify-center">
             <div className="flex items-center gap-2 text-db-blue-gray">
@@ -97,19 +98,20 @@ const BtStakingCard = (props) => {
               <div>Your Wallet Balance</div>
             </div>
             <div className="font-bold">
-              {trimNumber(userBTBalance, 4, "dp")} BT
+              {trimNumber(userBTBalance, 4, "dp")} BETR
             </div>
           </div>
         </div>
 
         <div className="w-full">
           <InputNumber
-            onChange={handleBtAmount}
             min={0}
             max={userBTBalance}
-            placeholder={0}
+            placeholder="BETR amount"
             value={btAmount > 0 ? btAmount : ""}
-            setValue={setBtAmount}
+            symbol="BETR"
+            onChange={handleBtAmount}
+            onMax={setBtAmount}
           />
         </div>
 
@@ -130,7 +132,7 @@ const BtStakingCard = (props) => {
             </DBButton>
           ) : (
             <DBButton
-              disabled={btAmount === 0}
+              disabled={Number(btAmount) === 0}
               onClick={() => {
                 if (stakeBtWrite.transaction.write) {
                   stakeBtWrite.transaction.write();
@@ -146,7 +148,7 @@ const BtStakingCard = (props) => {
           )}
 
           <DBButton
-            disabled={btAmount === 0 || btAmount > userStaked}
+            disabled={Number(btAmount) === 0 || btAmount > userStaked}
             onClick={() => {
               if (unstakeBtWrite.transaction.write) {
                 unstakeBtWrite.transaction.write();
@@ -161,28 +163,41 @@ const BtStakingCard = (props) => {
           </DBButton>
         </div>
 
-        <div>
-          <DBButton
-            disabled={pendingRewards === 0}
-            onClick={() => {
-              if (claimBtWrite.transaction.write) {
-                claimBtWrite.transaction.write();
+        <div className="flex gap-4">
+          <div className="w-full">
+            <DBButton
+              disabled={pendingRewards === 0}
+              onClick={() => {
+                if (claimBtWrite.transaction.write) {
+                  claimBtWrite.transaction.write();
+                }
+              }}
+            >
+              <div className="flex justify-center items-center gap-2">
+                <div>
+                  {claimBtWrite.confirmation.isLoading ? (
+                    <Loader text="Claiming" />
+                  ) : (
+                    "Claim"
+                  )}
+                </div>
+                <div className="font-sans text-sm leading-none">
+                  {trimNumber(pendingRewards, 4, "dp")} {props.nativeGas}
+                </div>
+              </div>
+            </DBButton>
+          </div>
+          <div className="">
+            <AddToWallet
+              symbol={"BETR"}
+              address={contractAddresses[activeChain?.network]?.btToken}
+              decimals={18}
+              imageURL={
+                "https://github.com/ArchitectOfParadise/DefiBetterV1-FrontEnd-V2/blob/dev/src/static/image/betr.png?raw=true"
               }
-            }}
-          >
-            <div className="flex justify-center items-center gap-2">
-              <div>
-                {claimBtWrite.confirmation.isLoading ? (
-                  <Loader text="Claiming" />
-                ) : (
-                  "Claim"
-                )}
-              </div>
-              <div className="font-sans text-sm leading-none">
-                {trimNumber(pendingRewards, 4, "dp")} {props.nativeGas}
-              </div>
-            </div>
-          </DBButton>
+              logo={'betr.png'}
+            />
+          </div>
         </div>
       </div>
     </div>

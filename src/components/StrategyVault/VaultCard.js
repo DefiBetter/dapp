@@ -3,13 +3,9 @@ import { useEffect, useState } from "react";
 import { contractAddresses } from "../../static/contractAddresses";
 import Dropdown from "../common/Dropdown";
 import Loader from "../common/Loader";
-import { BsBank, BsWallet2, BsPiggyBank } from "react-icons/bs";
+import { BsBank, BsWallet2, BsPiggyBank, BsClock } from "react-icons/bs";
 import { GiCoins } from "react-icons/gi";
-import {
-  CountdownFormatted,
-  instrumentToLabel,
-  trimNumber,
-} from "../common/helper";
+import { instrumentToLabel, trimNumber } from "../common/helper";
 import AddToWallet from "../../components/common/AddToWallet";
 
 import { useNetwork } from "wagmi";
@@ -22,8 +18,11 @@ import useVaultWithdraw from "../../hooks/useVaultWithdraw";
 import useVaultBalanceInfo from "../../hooks/useVaultBalanceInfo";
 import usePreviewMintAmount from "../../hooks/usePreviewMintAmount";
 import usePreviewBurnAmount from "../../hooks/usePreviewBurnAmount";
+import useSharePrice from "../../hooks/useSharePrice";
 import useVaultName from "../../hooks/useVaultName";
 import DBButton from "../common/DBButton";
+import Countdown from "react-countdown";
+import { InputNumber } from "../common/Input";
 
 const VaultCard = () => {
   /* constants */
@@ -42,10 +41,8 @@ const VaultCard = () => {
   /* states */
   // instrument
   const [currentInstrument, setCurrentInstrument] = useState();
-  const [epochEndTime, setEpochEndTime] = useState();
   // vault
   const [currentVault, setCurrentVault] = useState();
-  const [queuedAmount, setQueuedAmount] = useState(0);
   // input amounts
   const [mintAmount, setMintAmount] = useState(0);
   const [burnAmount, setBurnAmount] = useState(0);
@@ -96,12 +93,8 @@ const VaultCard = () => {
   const instrumentList = useInstruments((data) => {
     // Success callback function
     setCurrentInstrument(data[0]);
-    setEpochEndTime(
-      +data[0].lastEpochClosingTime +
-        (+data[0].bufferDurationInSeconds + +data[0].epochDurationInSeconds) *
-          1000
-    );
   });
+
   const vaultList = useVaults(currentInstrument?.vaultManager, (data) => {
     // Success callback function
     setCurrentVault(data[3]);
@@ -112,8 +105,14 @@ const VaultCard = () => {
 
   const vaultBalanceInfo = useVaultBalanceInfo(currentVault);
   const previewMintAmount = usePreviewMintAmount(currentVault, mintAmount);
-  const previewBurnAmount = usePreviewBurnAmount(currentVault, burnAmount);
+  const previewBurnAmount = usePreviewBurnAmount(
+    currentVault,
+    burnAmount,
+    false
+  );
+  const previewClaim = usePreviewBurnAmount(currentVault, 0);
   const currentVaultName = useVaultName(currentVault);
+  const sharePrice = useSharePrice(currentVault);
 
   // mint strategy vault token
   const depositWrite = useVaultDeposit(currentVault, mintAmount, () => {
@@ -121,7 +120,16 @@ const VaultCard = () => {
     setMintAmount(0);
   });
 
-  const withdrawWrite = useVaultWithdraw(currentVault, burnAmount, () => {
+  const withdrawWrite = useVaultWithdraw(
+    currentVault,
+    burnAmount,
+    false,
+    () => {
+      setBurnAmount(0);
+    }
+  );
+
+  const claimWrite = useVaultWithdraw(currentVault, 0, true, () => {
     setBurnAmount(0);
   });
 
@@ -166,13 +174,18 @@ const VaultCard = () => {
               itemList={vaultList}
               itemLabelList={strategyRef}
             />
-            <div className="p-3 border-[1px] border-db-cyan-process rounded-full w-8 h-8 flex justify-center items-center">
+            <div className="p-3 border-[1px] border-db-cyan-process rounded-full w-8 h-8 flex justify-center items-center group relative">
               i
+              <div className="absolute top-8 w-60 bg-db-background dark:bg-db-dark-input z-50 left-0 scale-0 group-hover:scale-100 transition-transform p-2 rounded-lg">
+                Automatically distribute your funds around the bin you select,
+                with most being in the selected bin and less per bin the further
+                it's away.
+              </div>
             </div>
           </div>
 
           <div className="flex flex-col lg:flex-row gap-4 w-full">
-            <div className="w-full flex-1 h-40 flex flex-col">
+            <div className="w-full flex-1 h-48 flex flex-col">
               <div className="relative m-auto flex items-center justify-center w-full h-14 rounded-xl bg-db-light dark:bg-db-dark-input p-2">
                 <div
                   className={`w-[48%] top-2 absolute ${
@@ -222,6 +235,31 @@ const VaultCard = () => {
                 </div>
                 <div className="flex flex-row w-full items-center justify-between">
                   <div className="flex items-center gap-2 text-db-blue-gray">
+                    <BsClock size={20} />
+                    <div>Next Epoch in</div>
+                  </div>
+                  <div className="font-bold">
+                    {currentInstrument && (
+                      <Countdown
+                        key={
+                          (currentInstrument.lastEpochClosingTime +
+                            +currentInstrument.epochDurationInSeconds +
+                            +currentInstrument.bufferDurationInSeconds) *
+                          1000
+                        }
+                        date={
+                          (+currentInstrument.lastEpochClosingTime +
+                            +currentInstrument.epochDurationInSeconds +
+                            +currentInstrument.bufferDurationInSeconds) *
+                          1000
+                        }
+                      />
+                    )}
+                  </div>
+                </div>
+
+                <div className="flex flex-row w-full items-center justify-between">
+                  <div className="flex items-center gap-2 text-db-blue-gray">
                     {mintOrBurn === "mint" ? (
                       <BsWallet2 size={20} />
                     ) : (
@@ -234,26 +272,28 @@ const VaultCard = () => {
                         : "Your Vault Balance"}
                     </div>
                   </div>
-                  <div className="font-bold">
+                  <div className="font-bold text-right">
                     {mintOrBurn === "mint"
-                      ? `${userGasBalance} ${nativeGas}`
-                      : `${userVaultBalance} ${currentVaultName}`}
+                      ? `${Number(userGasBalance).toFixed(3)} ${nativeGas}`
+                      : `${Number(userVaultBalance).toFixed(
+                          3
+                        )} ${currentVaultName}`}
                   </div>
                 </div>
 
                 <div className="flex flex-row w-full items-center justify-between">
                   <div className="flex items-center gap-2 text-db-blue-gray">
                     <GiCoins size={20} />
-                    <div>Vault Performance</div>
+                    <div>Share Value</div>
                   </div>
                   <div className="font-bold">
-                    {trimNumber(69, 4, "dp")}% APR
+                    {trimNumber(sharePrice, 4, "dp")} {nativeGas}
                   </div>
                 </div>
               </div>
             </div>
             <div className="w-full flex-1">
-              <div className="h-40 w-full flex flex-col gap-1 bg-db-light dark:bg-db-dark-nav rounded-lg p-2">
+              <div className="h-48 w-full flex flex-col gap-1 bg-db-light dark:bg-db-dark-nav rounded-lg p-2">
                 <div className="w-full text-xs text-right">
                   {strategyRef[vaultList?.indexOf(currentVault)]} vault relative
                   capital allocation
@@ -298,60 +338,60 @@ const VaultCard = () => {
                 <span className="">For</span>
               </div>
               <div className="flex items-center w-full">
-                <div className="h-14 w-full bg-white dark:bg-db-dark-input rounded-lg flex gap-4 items-center px-4 shadow-inner shadow-db-cyan-process dark:shadow-black">
-                  <input
-                    value={
-                      mintOrBurn === "mint"
-                        ? mintAmount > 0
-                          ? mintAmount
-                          : ""
-                        : burnAmount > 0
-                        ? burnAmount
+                <InputNumber
+                  min={0}
+                  max={
+                    mintOrBurn === "mint" ? Number(userGasBalance) - 0.0001 : 0
+                  }
+                  placeholder={`${
+                    mintOrBurn === "mint" ? nativeGas : currentVaultName
+                  } amount`}
+                  value={
+                    mintOrBurn === "mint"
+                      ? mintAmount > 0
+                        ? mintAmount
                         : ""
+                      : burnAmount > 0
+                      ? burnAmount
+                      : ""
+                  }
+                  symbol={mintOrBurn === "mint" ? nativeGas : currentVaultName}
+                  onMax={() => {
+                    if (mintOrBurn === "mint") {
+                      setMintAmount(
+                        (Number(userGasBalance) - 0.0001).toString()
+                      );
+                    } else {
+                      setBurnAmount(userVaultBalance.toString());
                     }
-                    onChange={
-                      mintOrBurn === "mint"
-                        ? handleMintAmount
-                        : handleBurnAmount
-                    }
-                    type={"number"}
-                    min={0}
-                    className="text-left md:text-center md:pl-20 px-0 md:px-4 h-10 w-full focus:ring-0 focus:outline-none rounded-lg bg-white dark:bg-db-dark-input"
-                    placeholder={`${
-                      mintOrBurn === "mint" ? nativeGas : currentVaultName
-                    } amount`}
-                  />
-                  <div
-                    onClick={() => {
-                      if (mintOrBurn === "mint") {
-                        setMintAmount(
-                          (Number(userGasBalance) - 0.0001).toString()
-                        );
-                      } else {
-                        setBurnAmount(userVaultBalance.toString());
-                      }
-                    }}
-                    className="cursor-pointer rounded-lg flex justify-center items-center h-9 pb-0.5 px-2 border-[1px] border-db-cyan-process text-db-cyan-process hover:bg-db-cyan-process hover:text-white transition-colors"
-                  >
-                    MAX
-                  </div>
-                  <div className="flex-shrink-0">
-                    {mintOrBurn === "mint" ? nativeGas : currentVaultName}
-                  </div>
-                </div>
+                  }}
+                  onChange={
+                    mintOrBurn === "mint" ? handleMintAmount : handleBurnAmount
+                  }
+                />
               </div>
             </div>
 
             <div className="w-full gap-2 flex">
               <div className="w-16 md:w-20 flex justify-center items-center">
-                <span className="">Get</span>
+                <span className="">
+                  {mintOrBurn === "mint" ? "Mint" : "Get"}
+                </span>
               </div>
               <div className="flex items-center w-full">
                 <div className="h-14 w-full bg-white dark:bg-db-dark-nav rounded-lg flex gap-4 items-center px-4">
-                  <div className="text-left md:text-center md:pl-20 px-0 md:px-4 w-full text-xl">
+                  <div
+                    className={`${
+                      mintOrBurn === "mint"
+                        ? "md:text-center md:pl-26"
+                        : "md:text-center md:pl-12"
+                    } text-left px-0 md:px-4 w-full text-xl`}
+                  >
                     {mintOrBurn === "mint"
                       ? trimNumber(previewMintAmount, 4, "dp")
-                      : trimNumber(previewBurnAmount, 4, "dp")}
+                      : burnAmount > 0
+                      ? trimNumber(previewBurnAmount, 4, "dp")
+                      : 0}
                   </div>
                   <div className="w-32 text-right flex-shrink-0">
                     {mintOrBurn === "mint" ? currentVaultName : nativeGas}
@@ -360,65 +400,96 @@ const VaultCard = () => {
               </div>
             </div>
 
-            <div className="w-full flex gap-4">
-              <div className='grow'>
-                {mintOrBurn === "mint" ? (
-                  <DBButton
-                    disabled={!depositWrite.transaction.write}
-                    onClickCallback={() => {
-                      if (depositWrite.transaction.write) {
-                        depositWrite.transaction.write();
+            <div className="">
+              {mintOrBurn === "mint" ? (
+                <div className="w-full flex gap-4">
+                  <div className="w-full">
+                    <DBButton
+                      disabled={!depositWrite.transaction.write}
+                      onClick={() => {
+                        if (depositWrite.transaction.write) {
+                          depositWrite.transaction.write();
+                        }
+                      }}
+                    >
+                      {depositWrite.confirmation.isLoading ? (
+                        <Loader text="Minting" />
+                      ) : (
+                        "Mint"
+                      )}
+                    </DBButton>
+                  </div>
+                  <div className="">
+                    <AddToWallet
+                      symbol={currentVaultName}
+                      address={currentVault}
+                      decimals={18}
+                    />
+                  </div>
+                </div>
+              ) : (
+                <div className="w-full flex-col lg:flex-row flex gap-4">
+                  <div className="grow">
+                    <DBButton
+                      disabled={
+                        !withdrawWrite.transaction.write ||
+                        Number(burnAmount) === 0
                       }
-                    }}
-                  >
-                    {depositWrite.confirmation.isLoading ? (
-                      <Loader text="Minting" />
-                    ) : (
-                      "Mint"
-                    )}
-                  </DBButton>
-                ) : (
-                  <DBButton
-                    disabled={!withdrawWrite.transaction.write}
-                    onClickCallback={() => {
-                      if (withdrawWrite.transaction.write) {
-                        withdrawWrite.transaction.write();
+                      onClick={() => {
+                        if (withdrawWrite.transaction.write) {
+                          withdrawWrite.transaction.write();
+                        }
+                      }}
+                    >
+                      <div className="flex gap-2 items-center justify-center">
+                        <div className="">
+                          {withdrawWrite.confirmation.isLoading ? (
+                            <Loader text="Burning" />
+                          ) : (
+                            <span>Burn and queue</span>
+                          )}
+                        </div>
+                      </div>
+                    </DBButton>
+                  </div>
+                  <div className="grow">
+                    <DBButton
+                      disabled={
+                        !claimWrite.transaction.write ||
+                        Number(previewClaim) === 0
                       }
-                    }}
-                  >
-                    <div className="flex gap-2 items-center justify-center">
-                      <div className="">
-                        {queuedAmount > 0 && burnAmount > 0 ? (
-                          `Claim queued\xa0 & \xa0burn`
-                        ) : queuedAmount > 0 ? (
-                          `Claim queued`
-                        ) : withdrawWrite.confirmation.isLoading ? (
-                          <Loader text="Burning" />
-                        ) : (
-                          "Burn"
+                      onClick={() => {
+                        if (claimWrite.transaction.write) {
+                          claimWrite.transaction.write();
+                        }
+                      }}
+                    >
+                      <div className="flex gap-2 items-center justify-center">
+                        <div className="">
+                          {claimWrite.confirmation.isLoading ? (
+                            <Loader text="Claiming" />
+                          ) : (
+                            "Claim"
+                          )}
+                        </div>
+                        {previewClaim > 0 && (
+                          <div className="font-sans text-sm leading-none">
+                            {trimNumber(previewClaim, 4, "dp")} {nativeGas}
+                          </div>
                         )}
                       </div>
-                      <div className="font-sans text-sm leading-none">
-                        {trimNumber(queuedAmount, 4, "dp")} {nativeGas} (
-                        {epochEndTime >= Date.now() ? (
-                          <>
-                            queued for
-                            <CountdownFormatted ms={epochEndTime} />
-                          </>
-                        ) : (
-                          "claim now"
-                        )}
-                        )
-                      </div>
-                    </div>
-                  </DBButton>
-                )}
-              </div>
-              <div className='shrink-0'>
-                <AddToWallet
-                  asset={mintOrBurn === "burn" ? nativeGas : currentVaultName}
-                />
-              </div>
+                    </DBButton>
+                  </div>
+                  <div className="shrink-0">
+                    <AddToWallet
+                      symbol={currentVaultName}
+                      address={currentVault}
+                      decimals={18}
+                      imageURL={""}
+                    />
+                  </div>
+                </div>
+              )}
             </div>
           </div>
 

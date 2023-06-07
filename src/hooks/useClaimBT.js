@@ -33,7 +33,7 @@ export default function useClaimBT() {
     onSuccess() {
       toastContext.addToast(
         ToastStatus.Success,
-        "Successfuly claimed",
+        "Successfully claimed",
         transaction.data?.hash
       );
     },

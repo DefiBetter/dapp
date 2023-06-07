@@ -4,6 +4,7 @@ import { ethers } from "ethers";
 
 export default function useBalanceOf(contractAddress, balanceOf) {
   const { address } = useAccount();
+ 
 
   const { data } = useContractRead({
     address: contractAddress,
@@ -13,6 +14,5 @@ export default function useBalanceOf(contractAddress, balanceOf) {
     select: (data) => ethers.utils.formatEther(data),
     watch: true,
   });
-
   return data ? data : 0;
 }

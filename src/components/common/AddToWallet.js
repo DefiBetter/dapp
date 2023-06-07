@@ -1,20 +1,46 @@
-import useAddToWallet from "../../hooks/useAddToWallet";
-
-export default function AddToWallet({ asset }) {
-  const addToWallet = useAddToWallet();
-
+export default function AddToWallet({
+  symbol,
+  address,
+  decimals,
+  imageURL,
+  logo,
+}) {
   return (
     <button
-      className="min-w-min h-14 px-2 w-full bg-db-background dark:bg-db-blue-gray shadow-sm shadow-db-cyan-process rounded-lg text-sm flex items-center justify-center gap-2 transition-colors"
-      onClick={() => addToWallet(asset)}
+      className="active:scale-[0.99] transition-all min-w-min h-14 px-2 w-full bg-db-background dark:bg-db-blue-gray shadow-sm shadow-db-cyan-process rounded-lg text-sm flex items-center justify-center gap-2"
+      onClick={async () => {
+        const { ethereum } = window;
+
+        await ethereum.request({
+          method: "wallet_watchAsset",
+          params: {
+            type: "ERC20",
+            options: {
+              address: address,
+              symbol: symbol,
+              decimals: decimals,
+              image: imageURL,
+            },
+          },
+        });
+      }}
     >
-      <img
-        src={require("../../../src/static/image/dbmt.png")}
-        width={30}
-        height={30}
-        alt="dbmt logo"
-      />
-      Add {asset} to wallet
+      {logo ? (
+        <img
+          src={require(`../../../src/static/image/${logo}`)}
+          width={30}
+          height={30}
+          alt="dbmt logo"
+        />
+      ) : (
+        <img
+          src={require(`../../../src/static/image/metamask.svg`).default}
+          width={30}
+          height={30}
+          alt="dbmt logo"
+        />
+      )}
+      <span className="">Add {symbol} to wallet</span>
     </button>
   );
 }

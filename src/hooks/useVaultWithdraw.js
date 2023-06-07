@@ -7,14 +7,13 @@ import { ethers } from "ethers";
 import StrategyVaultABI from "../static/ABI/StrategyVaultABI.json";
 import { ToastStatus, useToast } from "../context/ToastContext";
 
-export default function useVaultWithdraw(vault, amount, onSuccessCallback) {
+export default function useVaultWithdraw(vault, amount, isClaim, onSuccessCallback) {
   const toastContext = useToast();
 
   const preparation = usePrepareContractWrite({
     address: vault,
     abi: StrategyVaultABI,
     functionName: "withdraw",
-    enabled: amount > 0,
     args: [ethers.utils.parseEther(amount.toString())],
   });
 
@@ -33,7 +32,7 @@ export default function useVaultWithdraw(vault, amount, onSuccessCallback) {
     onSuccess() {
       toastContext.addToast(
         ToastStatus.Success,
-        "Successfuly withdrawn",
+        "Successfully withdrawn",
         transaction.data?.hash
       );
       onSuccessCallback();

@@ -35,7 +35,7 @@ export default function CommunityPresale() {
   const [allowance, setAllowance] = useState(ethers.BigNumber.from("0"));
 
   const [amountOut, setAmountOut] = useState("0"); // in WETH
-  const [buyAmount, setBuyAmount] = useState("0"); // in BT
+  const [buyAmount, setBuyAmount] = useState("0"); // in BETR
 
   const [supplyLeft, setSupplyLeft] = useState("0");
 
@@ -109,7 +109,7 @@ export default function CommunityPresale() {
       toastContext.addToast(ToastStatus.Failed, "Failed to approve", null);
     },
     onSuccess() {
-      toastContext.addToast(ToastStatus.Success, "Successfuly approved", null);
+      toastContext.addToast(ToastStatus.Success, "Successfully approved", null);
     },
   });
 
@@ -136,7 +136,7 @@ export default function CommunityPresale() {
       toastContext.addToast(ToastStatus.Failed, "Failed to buy", null);
     },
     onSuccess() {
-      toastContext.addToast(ToastStatus.Success, "Successfuly bought", null);
+      toastContext.addToast(ToastStatus.Success, "Successfully bought", null);
     },
   });
 
@@ -170,8 +170,8 @@ export default function CommunityPresale() {
 
       <div className="mt-4 flex justify-center">
         <div className="z-10 w-full md:w-3/4 p-4 rounded-lg dark:shadow-inner shadow-sm shadow-db-cyan-process dark:shadow-black bg-white dark:bg-db-dark flex gap-4 flex-col justify-between">
-        <div className="w-full flex flex-wrap justify-between gap-2">
-          <div className="h-14 flex flex-col w-full md:w-[49%] lg:w-[24%] items-center p-2 bg-white dark:bg-db-dark-info justify-center shadow-sm shadow-db-cyan-process dark:shadow-black rounded-lg">
+          <div className="w-full flex flex-wrap justify-between gap-2">
+            <div className="h-14 flex flex-col w-full md:w-[49%] lg:w-[24%] items-center p-2 bg-white dark:bg-db-dark-info justify-center shadow-sm shadow-db-cyan-process dark:shadow-black rounded-lg">
               <div className="flex items-center gap-2">
                 <BsWallet2 size={20} />
                 <div>Balance</div>
@@ -270,7 +270,13 @@ export default function CommunityPresale() {
                 )}
               </div>
               <div className="w-full md:w-1/3">
-                <AddToWallet asset="BETR" />
+                <AddToWallet
+                  symbol={"BETR"}
+                  address={contractAddresses[chain?.network]?.btToken}
+                  decimals={18}
+                  imageURL={"https://github.com/ArchitectOfParadise/DefiBetterV1-FrontEnd-V2/blob/dev/src/static/image/betr.png?raw=true"}
+                  logo={'betr.png'}
+                />
               </div>
             </div>
           </div>

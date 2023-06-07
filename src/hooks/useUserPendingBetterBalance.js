@@ -12,9 +12,8 @@ export default function useUserPendingBetterBalance(customGainFee) {
     abi: DeFiBetterV1ABI,
     functionName: "getUserPendingBetterBalance",
     args: [address, customGainFee],
-    select: (data) => (data ? +ethers.utils.formatEther(data) : 0)?.toFixed(18),
     watch: true,
   });
 
-  return data;
+  return data ? ethers.utils.formatEther(data) : 0;
 }

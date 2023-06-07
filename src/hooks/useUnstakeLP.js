@@ -36,7 +36,7 @@ export default function useUnstakeLP(poolId, lpAmount, onSuccessCallback) {
     onSuccess() {
       toastContext.addToast(
         ToastStatus.Success,
-        "Successfuly staked LP",
+        "Successfully staked LP",
         transaction.data?.hash
       );
       onSuccessCallback();

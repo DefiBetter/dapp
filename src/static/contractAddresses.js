@@ -3,7 +3,7 @@ const contractAddresses = {
   hardhat: {
     dbmtToken: process.env.REACT_APP_dbmtToken,
     dbmtAirdrop: process.env.REACT_APP_airdropContract,
-    dbmtSale: process.env.REACT_APP_referralSale,
+    dbmtSale: process.env.REACT_APP_dbmtSale,
     btToken: process.env.REACT_APP_btToken,
     vcPresale: process.env.REACT_APP_vcPresale,
     communityPresale: process.env.REACT_APP_communityPresale,
@@ -26,13 +26,13 @@ const contractAddresses = {
     nativeGas: "bBNB",
   },
   bsc: {
-    dbmtToken: '0x5a101a20170656a5377f7d24ac43c97a1d7b274d',
-    dbmtAirdrop: '0xab0ac050dca35be5025780bddf4fe4a88ca0e4fc',
-    dbmtSale: '0x013874Fb03bf2236B0774BF7e6E8E9446604fB1C',
-    better: "0xdb01265Db404b2474C8Fa2406987D9eB6bCa5db3",
+    dbmtToken: "0x5a101a20170656a5377f7d24ac43c97a1d7b274d",
+    dbmtAirdrop: "0xab0ac050dca35be5025780bddf4fe4a88ca0e4fc",
+    dbmtSale: "0x69df551a3deFcfB227631986FfEf53B49AebBB6F",
+    better: "0xb4AAAC10043C561a6d54FE5357e837ef6DDE70f9", // poc
     presale: "0xC6C5A911d6960F5175CE049399E9e9859401969e",
-    btToken: "0x9300EaF843c00267037358f397437574A1c17daC",
-    btStaking: "0xa2153a46df5b35f12f2bdd959fa22d675546f11f",
+    btToken: "0x4b7de91042d3eaFe43ad74CA5fd3f3c8E6C1A1B9", // poc
+    btStaking: "0x6F1038D801D5Ab5a57f5bb91EC2223695e9a953A", // poc
     lpStaking: "0x367761085BF3C12e5DA2Df99AC6E1a824612b8fb",
     nativeGas: "BNB",
   },
@@ -56,9 +56,11 @@ const contractAddresses = {
 };
 
 // better chart (dexscreener) underlying pair addresses
-const underlyingPairAddress = {
-  ethereum: "0x88e6a0c2ddd26feeb64f039a2c41296fcb3f5640",
-  avalanche: "0xf4003F4efBE8691B60249E6afbD307aBE7758adb",
+const underlyingToTradingViewSymbol = {
+  DOGE: "BINANCE:DOGEUSDT",
+  AVAX: "AVAXUSD",
+  JOE: "JOEUSD",
+  SPY: "AMEX:SPY",
 };
 
-export { contractAddresses, underlyingPairAddress };
+export { contractAddresses, underlyingToTradingViewSymbol };

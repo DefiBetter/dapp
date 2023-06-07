@@ -35,7 +35,7 @@ export default function useClaimLP(poolId) {
     onSuccess() {
       toastContext.addToast(
         ToastStatus.Success,
-        "Successfuly claimed",
+        "Successfully claimed",
         transaction.data?.hash
       );
     },

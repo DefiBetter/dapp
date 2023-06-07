@@ -1,6 +1,6 @@
 import { useContractRead, useNetwork } from "wagmi";
 import { contractAddresses } from "../static/contractAddresses";
-import ReferralSaleABI from "../static/ABI/ReferralSaleABI.json";
+import DBMTSaleABI from "../static/ABI/DBMTSaleABI.json";
 import { ethers } from "ethers";
 
 export default function useEthPerDbmt(buyAmount) {
@@ -8,7 +8,7 @@ export default function useEthPerDbmt(buyAmount) {
 
   const { data } = useContractRead({
     address: contractAddresses[chain?.network]?.dbmtSale,
-    abi: ReferralSaleABI,
+    abi: DBMTSaleABI,
     enabled: buyAmount && Number(buyAmount) > 0,
     args: [
       buyAmount && Number(buyAmount) > 0

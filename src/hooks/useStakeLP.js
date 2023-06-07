@@ -20,6 +20,9 @@ export default function useStakeLP(poolId, lpAmount, onSuccessCallback) {
     abi: LpStakingABI,
     functionName: "stake",
     args: [poolId, ethers.utils.parseEther(lpAmount.toString()), address],
+    onError(err) {
+      console.log(err)
+    }
   });
 
   const transaction = useContractWrite(preparation.config);
@@ -37,7 +40,7 @@ export default function useStakeLP(poolId, lpAmount, onSuccessCallback) {
     onSuccess() {
       toastContext.addToast(
         ToastStatus.Success,
-        "Successfuly staked LP",
+        "Successfully staked LP",
         transaction.data?.hash
       );
       onSuccessCallback();

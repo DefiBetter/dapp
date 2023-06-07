@@ -14,6 +14,5 @@ export default function useInstruments(onSuccessCallback) {
     },
     watch: false,
   });
-
   return data ? data : null;
 }

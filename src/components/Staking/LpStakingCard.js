@@ -15,7 +15,8 @@ import Loader from "../common/Loader";
 import useUserLPStake from "../../hooks/useUserLPStake";
 import DBButton from "../../components/common/DBButton";
 import { BsWallet2, BsPiggyBank, BsBank } from "react-icons/bs";
-import {  GiCoins } from "react-icons/gi";
+import { GiCoins } from "react-icons/gi";
+import AddToWallet from "../common/AddToWallet";
 
 const LpStakingCard = (props) => {
   const { chain: activeChain } = useNetwork();
@@ -69,6 +70,8 @@ const LpStakingCard = (props) => {
     setZapAmount(e.target.value ? e.target.value : 0);
   };
 
+  const nativeGas = contractAddresses[activeChain?.network]?.nativeGas;
+
   return (
     <div className="w-full">
       <div className="mt-4 flex flex-col gap-4">
@@ -80,7 +83,7 @@ const LpStakingCard = (props) => {
             </div>
             <div className="font-bold">
               {trimNumber(vaultBalance, 4, "dp")}{" "}
-              {`BT-${contractAddresses[activeChain?.network]?.nativeGas} LP`}
+              {`BETR-${contractAddresses[activeChain?.network]?.nativeGas} LP`}
             </div>
           </div>
           <div className="md:h-14 flex flex-row md:flex-col w-full md:w-1/2 items-center justify-between md:justify-center">
@@ -90,7 +93,7 @@ const LpStakingCard = (props) => {
             </div>
             <div className="font-bold">
               {userStaked}{" "}
-              {`BT-${contractAddresses[activeChain?.network]?.nativeGas} LP`}
+              {`BETR-${contractAddresses[activeChain?.network]?.nativeGas} LP`}
             </div>
           </div>
           <div className="md:h-14 flex flex-row md:flex-col w-full md:w-1/2 items-center justify-between md:justify-center">
@@ -98,7 +101,7 @@ const LpStakingCard = (props) => {
               <GiCoins size={20} />
               <div>Current APR</div>
             </div>
-            <div className="font-bold">{trimNumber(69, 4, "dp")}%</div>
+            <div className="font-bold">Coming soon!</div>
           </div>
           <div className="md:h-14 flex flex-row md:flex-col w-full md:w-1/2 items-center justify-between md:justify-center">
             <div className="flex items-center gap-2 text-db-blue-gray">
@@ -107,110 +110,124 @@ const LpStakingCard = (props) => {
             </div>
             <div className="font-bold">
               {trimNumber(userLPBalance, 4, "dp")}{" "}
-              {`BT-${contractAddresses[activeChain?.network]?.nativeGas} LP`}
+              {`BETR-${contractAddresses[activeChain?.network]?.nativeGas} LP`}
             </div>
           </div>
         </div>
 
-        <div className="flex gap-4">
-          <div className="w-2/3">
-            <InputNumber
-              onChange={handleLpAmount}
-              min={0}
-              max={userLPBalance}
-              placeholder={0}
-              value={lpAmount > 0 ? lpAmount : ""}
-              setValue={setLpAmount}
-            />
+        <div className="flex gap-4 flex-col lg:flex-row">
+          <div className="w-full lg:w-[60%] flex flex-col gap-4">
+            <div>
+              <InputNumber
+                min={0}
+                max={userLPBalance}
+                placeholder="LP"
+                value={lpAmount > 0 ? lpAmount : ""}
+                symbol={`BETR-${
+                  contractAddresses[activeChain?.network]?.nativeGas
+                } LP`}
+                onChange={handleLpAmount}
+                onMax={setLpAmount}
+              />
+            </div>
+            <div className="flex gap-4">
+              {!lpAllowance ? (
+                <DBButton
+                  onClick={() => {
+                    if (approveLpWrite.transaction.write) {
+                      approveLpWrite.transaction.write();
+                    }
+                  }}
+                >
+                  {approveLpWrite.confirmation.isLoading ? (
+                    <Loader text="Approving" />
+                  ) : (
+                    "Approve"
+                  )}
+                </DBButton>
+              ) : (
+                <DBButton
+                  disabled={!stakeLpWrite.transaction.write}
+                  onClick={() => {
+                    if (stakeLpWrite.transaction.write) {
+                      stakeLpWrite.transaction.write();
+                    }
+                  }}
+                >
+                  {stakeLpWrite.confirmation.isLoading ? (
+                    <Loader text="Staking" />
+                  ) : (
+                    "Stake"
+                  )}
+                </DBButton>
+              )}
+              <DBButton
+                disabled={Number(lpAmount) === 0 || lpAmount > userStaked}
+                onClick={() => {
+                  if (unstakeLpWrite.transaction.write) {
+                    unstakeLpWrite.transaction.write();
+                  }
+                }}
+              >
+                {unstakeLpWrite.confirmation.isLoading ? (
+                  <Loader text="Unstaking" />
+                ) : (
+                  "Unstake"
+                )}
+              </DBButton>
+            </div>
           </div>
-          <div className="w-1/3">
-            <InputNumber
-              onChange={handleZapAmount}
+
+          <div className="w-full lg:w-[40%] flex flex-col gap-4">
+               <InputNumber
               min={0}
               max={zapBalance}
-              placeholder={0}
+              placeholder={nativeGas}
               value={zapAmount > 0 ? zapAmount : ""}
-              setValue={setZapAmount}
+              symbol={nativeGas}
+              onChange={handleZapAmount}
+              onMax={setZapAmount}
             />
-          </div>
-        </div>
-
-        <div className="flex gap-4">
-          <div className="w-2/3 flex gap-4">
-            {!lpAllowance ? (
-              <DBButton
-                onClick={() => {
-                  if (approveLpWrite.transaction.write) {
-                    approveLpWrite.transaction.write();
-                  }
-                }}
-              >
-                {approveLpWrite.confirmation.isLoading ? (
-                  <Loader text="Approving" />
-                ) : (
-                  "Approve"
-                )}
-              </DBButton>
-            ) : (
-              <DBButton
-                disabled={lpAmount === 0}
-                onClick={() => {
-                  if (stakeLpWrite.transaction.write) {
-                    stakeLpWrite.transaction.write();
-                  }
-                }}
-              >
-                {stakeLpWrite.confirmation.isLoading ? (
-                  <Loader text="Staking" />
-                ) : (
-                  "Stake"
-                )}
-              </DBButton>
-            )}
-            <DBButton
-              disabled={lpAmount === 0 || lpAmount > userStaked}
-              onClick={() => {
-                if (unstakeLpWrite.transaction.write) {
-                  unstakeLpWrite.transaction.write();
-                }
-              }}
-            >
-              {unstakeLpWrite.confirmation.isLoading ? (
-                <Loader text="Unstaking" />
-              ) : (
-                "Unstake"
-              )}
-            </DBButton>
-          </div>
-          <div className="w-1/3">
             <DBButton disabled onClick={() => {}}>
               Zap In {contractAddresses[activeChain?.network]?.nativeGas}
             </DBButton>
           </div>
         </div>
 
-        <div>
-          <DBButton
-            disabled={pendingRewards === 0}
-            onClick={() => {
-              if (claimLpWrite.transaction.write) {
-                claimLpWrite.transaction.write();
-              }
-            }}
-          >
-            <div className="flex justify-center items-center gap-2">
-              <div>
-                {claimLpWrite.confirmation.isLoading ? (
-                  <Loader text="Claiming" />
-                ) : (
-                  "Claim"
-                )}
+        <div className="flex gap-4">
+          <div className="w-full">
+            <DBButton
+              disabled={pendingRewards === 0}
+              onClick={() => {
+                if (claimLpWrite.transaction.write) {
+                  claimLpWrite.transaction.write();
+                }
+              }}
+            >
+              <div className="flex justify-center items-center gap-2">
+                <div>
+                  {claimLpWrite.confirmation.isLoading ? (
+                    <Loader text="Claiming" />
+                  ) : (
+                    "Claim"
+                  )}
+                </div>
+                <div className="font-sans text-sm leading-none">
+                  {trimNumber(pendingRewards, 4, "dp")} BETR
+                </div>
               </div>
-              <div className="font-sans text-sm leading-none">
-                {trimNumber(pendingRewards, 4, "dp")} BT
-              </div>
-            </div>
-          </DBButton>
+            </DBButton>
+          </div>
+          <div className="">
+            <AddToWallet
+              symbol={`BETR-${
+                contractAddresses[activeChain?.network]?.nativeGas
+              }`}
+              address={contractAddresses[activeChain?.network]?.lpToken}
+              decimals={18}
+              imageURL={""}
+            />
+          </div>
         </div>
       </div>
     </div>

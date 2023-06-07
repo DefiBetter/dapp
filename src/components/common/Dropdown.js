@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 
 import { RiArrowDownSFill } from "react-icons/ri";
 import { instrumentLabel } from "./helper";
@@ -19,8 +19,21 @@ const Dropdown = ({
     setShowItemList(!showItemList);
   };
 
+  const dropdownRef = useRef(null);
+
+  const closeDropdown = (e) => {
+    if (
+      dropdownRef &&
+      dropdownRef.current &&
+      !dropdownRef.current.contains(e.target)
+    )
+      setShowItemList(false);
+  };
+
+  document.addEventListener("mousedown", closeDropdown);
+
   return (
-    <div className="relative min-w-max">
+    <div className="relative min-w-max" ref={dropdownRef}>
       <div
         onClick={toggleOptions}
         className="cursor-pointer text-sm w-full h-12 flex flex-col justify-center bg-db-light dark:bg-db-dark-input rounded-lg border-b-2 border-db-cyan-process"
@@ -38,7 +51,7 @@ const Dropdown = ({
         </div>
       </div>
       {showItemList ? (
-        <div className="absolute top-12 left-0 w-full z-50">
+        <div className="absolute bg-white dark:bg-db-dark top-12 left-0 w-full z-50  min-w-max p-2 rounded-lg">
           {itemList?.map((item, i) => (
             <div
               key={item.selector}
@@ -48,7 +61,7 @@ const Dropdown = ({
                 toggleOptions();
               }}
             >
-              <div className="z-50 h-12 mt-1 text-sm px-2 shadow-db w-full flex flex-col justify-center bg-white dark:bg-db-dark border-b-2 border-db-cyan-process rounded-lg">
+              <div className="z-50 h-12 mt-1 text-sm px-2 w-full flex flex-col justify-center bg-db-light dark:bg-db-dark-input  border-b-2 border-db-cyan-process rounded-lg">
                 <div
                   className={
                     currentItemLabel === itemLabelList[i]

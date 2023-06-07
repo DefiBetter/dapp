@@ -108,7 +108,7 @@ export default function PublicSale() {
       toastContext.addToast(ToastStatus.Failed, "Failed to approve", null);
     },
     onSuccess() {
-      toastContext.addToast(ToastStatus.Success, "Successfuly approve", null);
+      toastContext.addToast(ToastStatus.Success, "Successfully approve", null);
     },
   });
 
@@ -135,7 +135,7 @@ export default function PublicSale() {
       toastContext.addToast(ToastStatus.Failed, "Failed to buy", null);
     },
     onSuccess() {
-      toastContext.addToast(ToastStatus.Success, "Successfuly bought", null);
+      toastContext.addToast(ToastStatus.Success, "Successfully bought", null);
     },
   });
 
@@ -270,7 +270,13 @@ export default function PublicSale() {
                 )}
               </div>
               <div className="w-full md:w-1/3">
-                <AddToWallet asset="BETR" />
+                <AddToWallet
+                  symbol={"BETR"}
+                  address={contractAddresses[chain?.network]?.btToken}
+                  decimals={18}
+                  logo={'betr.png'}
+                  imageURL={"https://github.com/ArchitectOfParadise/DefiBetterV1-FrontEnd-V2/blob/dev/src/static/image/betr.png?raw=true"}
+                />
               </div>
             </div>
           </div>

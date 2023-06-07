@@ -1,5 +1,6 @@
 import { ethers } from "ethers";
-import { useEffect, useState } from "react";
+import { useRef } from "react";
+import { makeBG } from "../../common/helper";
 import { data2SvgView, preProcessData, transpose } from "../Transformations";
 
 const ChartBackground = (props) => {
@@ -37,19 +38,57 @@ const ChartBackground = (props) => {
 
     /* generate data points for x axis labels */
     let xLabelCoordList = [];
-    let xAxisRange = data[0][data[0].length - 1] - data[0][0]; // seconds
+    let xAxisRange = oldRangeInfo[0][2]; // seconds
 
     let interval = timeRange2TimeInterval(xAxisRange);
     let xMiddle = middleCoords[0];
 
     // historical time
     for (let i = 0; i < xAxisRange / interval; i++) {
-      xLabelCoordList.push([xMiddle - interval * i, 0]);
+      const roundingDiff = i <= 0 ? 0 : xMiddle % 10;
+      xLabelCoordList.push([xMiddle - roundingDiff - interval * i, 0]);
     }
 
     // future time
     for (let i = 0; i < xAxisRange / interval; i++) {
-      xLabelCoordList.push([xMiddle + interval * i, 0]);
+      const roundingDiff = i <= 0 ? 0 : xMiddle % 10;
+      xLabelCoordList.push([xMiddle - roundingDiff + interval * i, 0]);
+    }
+
+    // force remove timestamps nearby buffer
+    let bufferTime =
+      +props.lastEpochData.closeTime.toString() +
+      +props.instrument.epochDurationInSeconds.toString();
+    let bufferCoord = transpose([[bufferTime, 0]]);
+
+    xLabelCoordList.sort((a, b) => a?.[0] - b?.[0]);
+    for (let i = 0; i < xLabelCoordList.length - 1; i++) {
+      if (interval >= Math.abs(xLabelCoordList[i]?.[0] - bufferTime)) {
+        xLabelCoordList.splice(i, 1);
+        i--;
+      }
+    }
+
+    // force remove timestamp nearby epoch start
+    for (let i = 0; i < xLabelCoordList.length - 1; i++) {
+      if (interval >= Math.abs(xLabelCoordList[i]?.[0] - xMiddle)) {
+        xLabelCoordList.splice(i, 1);
+        i--;
+      }
+    }
+
+    // force remove epoch start timestamp(s)
+    for (let i = 0; i < xLabelCoordList.length; i++) {
+      // console.log(
+      //   "xLabelCoordList[i]?.[0] == xMiddle",
+      //   i,
+      //   xLabelCoordList[i]?.[0] == xMiddle,
+      //   xLabelCoordList.length
+      // );
+      if (xLabelCoordList[i]?.[0] == xMiddle) {
+        xLabelCoordList.splice(i, 1);
+        i--;
+      }
     }
 
     // get x labels for each coord
@@ -78,28 +117,23 @@ const ChartBackground = (props) => {
     xLabelCoordList = transpose(xLabelCoordList);
 
     // add label element
-    // xLabelCoordList.map((x, i) => {
-    //   // text
-    //   dataPointList.push(
-    //     <text
-    //       x={x[0]}
-    //       y={x[1]}
-    //       fill="red"
-    //       textAnchor="middle"
-    //       alignmentBaseline="text-after-edge"
-    //     >
-    //       {xLabelList[i]}
-    //     </text>
-    //   );
-    // });
+    xLabelCoordList.map((x, i) => {
+      // text
+      dataPointList.push(
+        <text
+          x={x[0]}
+          y={props.chartConfig.containerHeight - 40}
+          fill="#C4DCF5"
+          textAnchor="middle"
+          alignmentBaseline="text-after-edge"
+          fontSize="0.75rem"
+        >
+          {xLabelList[i]}
+        </text>
+      );
+    });
 
     // buffer time line
-    let bufferTime =
-      +props.lastEpochData.closeTime.toString() +
-      +props.instrument.epochDurationInSeconds.toString();
-
-    let bufferCoord = transpose([[bufferTime, 0]]);
-
     bufferCoord = data2SvgView(
       bufferCoord,
       oldRangeInfo,
@@ -141,12 +175,67 @@ const ChartBackground = (props) => {
     dataPointList.push(
       <text
         x={ePoint[0]}
-        y={props.chartConfig.containerHeight}
+        y={props.chartConfig.containerHeight - 20}
         fill="#C4DCF5"
         textAnchor="middle"
         alignmentBaseline="text-after-edge"
+        style={{ fontWeight: "bold" }}
       >
         Epoch start
+      </text>
+    );
+
+    // buffer start text
+    dataPointList.push(
+      <text
+        x={bufferCoord[0]}
+        y={props.chartConfig.containerHeight - 20}
+        fill="#C4DCF5"
+        textAnchor="middle"
+        alignmentBaseline="text-after-edge"
+        style={{ fontWeight: "bold" }}
+      >
+        Buffer start
+      </text>
+    );
+
+    // epoch start label/timestamp
+    dataPointList.push(
+      <text
+        x={ePoint[0]}
+        y={props.chartConfig.containerHeight - 40}
+        fill="#C4DCF5"
+        textAnchor="middle"
+        alignmentBaseline="text-after-edge"
+        fontSize="1rem"
+        fontWeight="bold"
+      >
+        {(() => {
+          const dt = new Date(xMiddle * 1000);
+          return `${("0" + dt.getHours()).slice(-2)}:${(
+            "0" + dt.getMinutes()
+          ).slice(-2)}:${("0" + dt.getSeconds()).slice(-2)}`;
+        })()}
+      </text>
+    );
+
+    // buffer start label/timestamp
+    dataPointList.push(
+      <text
+        x={bufferCoord[0]}
+        y={props.chartConfig.containerHeight - 40}
+        fill="#C4DCF5"
+        textAnchor="middle"
+        alignmentBaseline="text-after-edge"
+        fontSize="1rem"
+        fontWeight="bold"
+      >
+        {(() => {
+          const dt = new Date(bufferTime * 1000);
+          return `${("0" + dt.getHours()).slice(-2)}:${(
+            "0" + dt.getMinutes()
+          ).slice(-2)}:${("0" + dt.getSeconds()).slice(-2)}`;
+        })()}
       </text>
     );
 
@@ -247,8 +336,8 @@ const ChartBackground = (props) => {
 
   return (
     <>
-      {props.data && props.epochData ? getVerticalBackground() : null}
       {props.data && props.epochData ? getHorizontalBackground() : null}
+      {props.data && props.epochData ? getVerticalBackground() : null}
 
       {/* y axis */}
       {/* <line

@@ -1,4 +1,5 @@
-import { useContext, useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
+
 import styles from "./Bins.module.css";
 import { useNetwork } from "wagmi";
 import { ethers } from "ethers";
@@ -6,7 +7,8 @@ import { contractAddresses } from "../../static/contractAddresses";
 import { trimNumber } from "../common/helper";
 import { AiOutlineDoubleLeft, AiOutlineDoubleRight } from "react-icons/ai";
 import DBButton from "../common/DBButton";
-
+import useMediaQuery from "../../hooks/useMediaQuery";
+import { MdClear } from "react-icons/md";
 const Bins = (props) => {
   /* account, network, configs */
   // network
@@ -61,7 +63,12 @@ const Bins = (props) => {
     props.setBinTotal(temp.reduce((a, b) => +a + +b, 0));
   };
 
-  /* handle normal/implied button */
+  const handleClear = () => {
+    props.setBinAmountList([0, 0, 0, 0, 0, 0, 0]);
+    props.setBinTotal(0);
+  };
+
+  /* handle normal & copy button */
   const handleOnClickNormal = () => {
     //setAlertMessageList([...alertMessageList, "'Normal' button clicked"]);
     const range = (x) => [...Array(x).keys()];
@@ -150,6 +157,19 @@ const Bins = (props) => {
     });
   };
 
+  const handleOnClickCopy = () => {
+    const binListSum = props.normalisedBinValueList.reduce((a, b) => a + b);
+
+    const newArr = [];
+    for (let i = 0; i < props.normalisedBinValueList.length; i++) {
+      newArr.push(
+        (props.binTotal * props.normalisedBinValueList[i]) / binListSum
+      );
+    }
+    props.setBinAmountList(newArr);
+    props.setBinTotal(newArr.reduce((a, b) => a + b));
+  };
+
   /* useEffect */
   useEffect(() => {
     setTotal(props.binAmountList.reduce((a, b) => Number(a) + Number(b), 0));
@@ -170,7 +190,7 @@ const Bins = (props) => {
   function bins() {
     return (
       <div className="h-full">
-        <div className="h-11 flex flex-col text-center">
+        <div className="h-[2.85rem] flex flex-col text-center">
           <div className="text-xs h-full bg-db-blue-gray items-center justify-center text-white rounded-lg flex flex-col">
             <div className="">
               Total:{" "}
@@ -190,7 +210,7 @@ const Bins = (props) => {
               {" + "}
               {total > props.pendingBetterBalance
                 ? Number(props.pendingBetterBalance) > 0
-                  ? trimNumber(props.pendingBetterBalance, 6, "sf")
+                  ? trimNumber(props.pendingBetterBalance, 5, "sf")
                   : 0
                 : total}{" "}
               pending)
@@ -217,7 +237,7 @@ const Bins = (props) => {
               <div className="h-[calc(100%/27*2)] flex flex-col text-center">
                 <div className="relative flex-1 text-black bg-db-background rounded-md  dark:shadow-black">
                   <input
-                    className="bg-transparent text-base rounded-md w-[90%]"
+                    className="bg-transparent text-base rounded-md w-[90%] hover:brightness-125 transition-all"
                     type="number"
                     min={0}
                     id={`${i}`}
@@ -249,8 +269,8 @@ const Bins = (props) => {
             </>
           );
         })}
-        <div className="h-[calc(100%/27*2)] flex flex-col text-center">
-          <div className="flex justify-between gap-2">
+        <div className="h-[calc(100%/27*2)] flex flex-col text-center mt-1">
+          <div className="flex justify-between gap-2 items-center">
             <DBButton
               disabled={total === 0}
               onClick={handleOnClickNormal}
@@ -258,55 +278,87 @@ const Bins = (props) => {
             >
               <div className="flex justify-center items-center gap-2">
                 <div className="text-base">Normal</div>
-                <div className="font-sans text-sm pb-0.5 border-[1px] border-white rounded-full w-4 h-4 flex justify-center items-center">
+                <div className="font-sans text-sm pb-0.5 border-[1px] border-white rounded-full w-4 h-4 flex justify-center items-center group relative">
                   i
+                  <div className="absolute bottom-4 w-60 bg-db-background dark:bg-db-dark-input z-50 right-0 scale-0 group-hover:scale-100 transition-transform p-2 rounded-lg">
+                    Automatically distribute your funds around the bin you
+                    select, with most being in the selected bin and less per bin
+                    the further it's away.
+                  </div>
                 </div>
               </div>
             </DBButton>
 
             <DBButton
-              onClick={handleOnClickNormal}
-              disabled
+              onClick={handleOnClickCopy}
+              disabled={
+                total === 0 ||
+                props.normalisedBinValueList.reduce((a, b) => a + b) <= 0
+              }
               heigthTwClass="h-10"
             >
               <div className="flex justify-center items-center gap-2">
                 <div className="text-base">Copy</div>
-                <div className="font-sans text-sm pb-0.5 border-[1px] border-white rounded-full w-4 h-4 flex justify-center items-center">
+                <div className="font-sans text-sm pb-0.5 border-[1px] border-white rounded-full w-4 h-4 flex justify-center items-center group relative">
                   i
+                  <div className="absolute bottom-4 w-60 bg-db-background dark:bg-db-dark-input z-50 right-0 scale-0 group-hover:scale-100 transition-transform p-2 rounded-lg">
+                    Automatically copy the current distribution implied by other
+                    participants (follow popular market sentiment).
+                  </div>
                 </div>
               </div>
             </DBButton>
+
+            <MdClear
+              size={30}
+              className="scale-150 w-10 h-10 cursor-pointer transition-transform hover:text-red-400"
+              onClick={handleClear}
+            />
           </div>
         </div>
       </div>
     );
   }
 
+  const isMobile = useMediaQuery(1023);
   return (
-    <div className="flex w-full h-full flex-wrap">
+    <div className="flex w-full h-full">
       {/* Desktop */}
-      <div className="hidden w-full h-full px-2 lg:flex flex-col">{bins()}</div>
+      {!isMobile && (
+        <div className=" w-full h-full px-2 flex flex-col">{bins()}</div>
+      )}
       {/* Floating Button */}
-      <div
-        onClick={() => setBinsOpen(!binsOpen)}
-        className={`lg:hidden z-20 absolute top-[210px] ${
-          binsOpen ? "right-[calc(66%+1rem)]" : "right-5"
-        } flex items-center transition-all`}
-      >
-        <div className="cursor-pointer bg-db-light dark:bg-db-dark-nav transition-colors rounded-xl w-10 h-10 animate-pulse flex justify-center items-center">
-          {binsOpen ? (
-            <AiOutlineDoubleRight size={30} className="text-db-cyan-process " />
-          ) : (
-            <AiOutlineDoubleLeft size={30} className="text-db-cyan-process " />
-          )}
-        </div>
-      </div>
 
-      {/* Mobile */}
-      {binsOpen && (
-        <div className="bg-transparent absolute w-2/3 top-0 right-0 px-2 h-[480px]">
-          {bins()}
-        </div>
+      {isMobile && (
+        <>
+          <div
+            onClick={() => setBinsOpen(!binsOpen)}
+            className={`z-20 absolute top-[210px] ${
+              binsOpen ? "right-[calc(66%+1rem)]" : "right-5"
+            } flex items-center transition-all`}
+          >
+            <div className="cursor-pointer bg-db-light dark:bg-db-dark-nav transition-colors rounded-xl w-10 h-10 animate-pulse flex justify-center items-center">
+              {binsOpen ? (
+                <AiOutlineDoubleRight
+                  size={30}
+                  className="text-db-cyan-process "
+                />
+              ) : (
+                <AiOutlineDoubleLeft
+                  size={30}
+                  className="text-db-cyan-process "
+                />
+              )}
+            </div>
+          </div>
+
+          {/* Mobile */}
+          {binsOpen && (
+            <div className="bg-transparent absolute w-2/3 top-0 right-0 px-2 h-[480px]">
+              {bins()}
+            </div>
+          )}
+        </>
       )}
     </div>
   );

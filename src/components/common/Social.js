@@ -16,7 +16,7 @@ const Container = styled.div`
 const Social = () => {
   return (
     <Container style={{ margin: "0 auto" }}>
-      <a href="https://discord.gg/DSDXSXf6Ub">
+      <a href="https://discord.gg/7E3kYy9rru">
         <Logo src={require("../../static/image/discord-logo.png")} />
       </a>
       <a href="https://t.me/+2z4mDnFAnjxiMWJl">

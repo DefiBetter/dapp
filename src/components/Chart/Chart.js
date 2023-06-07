@@ -9,6 +9,9 @@ import ChartBackground from "./modules/ChartBackground";
 import SdCone from "./modules/SdCone";
 import { transpose } from "./Transformations";
 import { InputNumber } from "../common/Input";
+import ReactTradingviewWidget from "react-tradingview-widget";
+import useTradingView from "../../hooks/useTradingView";
+import { useTheme } from "../../context/ThemeContext";
 
 /* chart rework:
 - global chart data state
@@ -34,6 +37,12 @@ data flow:
 
 const Chart = (props) => {
   /* states */
+  // chart type
+  const [customChart, setCustomChart] = useState(true);
+  const tradingViewSymbol = useTradingView(
+    props.instrument?.underlyingDescription
+  );
+
   // last epoch data
   const [lastEpochData, setLastEpochData] = useState();
 
@@ -107,6 +116,8 @@ const Chart = (props) => {
     watch: true,
   });
 
+  const themeProvider = useTheme();
+
   // aggregator config
   const aggregatorContractConfig = {
     address: props.instrument?.underlying,
@@ -136,6 +147,7 @@ const Chart = (props) => {
   const [pointer, setPointer] = useState(0n);
   const [instrumentRef, setInstrumentRef] = useState();
   const [latestRoundDataRef, setLatestRoundDataRef] = useState();
+
   useEffect(() => {
     if (!latestRoundDataRef) {
       setLatestRoundDataRef(latestRoundData);
@@ -189,7 +201,7 @@ const Chart = (props) => {
       }
 
       let newChartData = {};
-      decodedResultList.map((r, i) => {
+      decodedResultList.forEach((r, i) => {
         const round = {
           time: +r.updatedAt.toString(),
           price: +ethers.utils.formatUnits(r.answer, 8),
@@ -198,7 +210,7 @@ const Chart = (props) => {
       });
       if (chartData) {
         console.log("chartData adding");
-        setChartData({ ...chartData, ...newChartData });
+        setChartData({ ...newChartData, ...chartData });
 
         // fetch historical data if not enough
         const timeList = Object.values(chartData).map((r) => r.time);
@@ -218,6 +230,25 @@ const Chart = (props) => {
       } else {
         console.log("chartData newChartData");
         setChartData(newChartData);
+      }
+
+      // if latest price is higher than binMax, or lower than binMin
+      const currentPrice = Object.values(newChartData)[0].price;
+      const binMin = +ethers.utils.formatEther(props.epochData.binStart);
+      const binMax =
+        binMin + +ethers.utils.formatEther(props.epochData.binSize) * 7;
+      if (currentPrice >= binMax || currentPrice <= binMin) {
+        setChartConfig({
+          ...chartConfig,
+          scaleType: { ...chartConfig.scaleType, y: "minMax" },
+        });
+        console.log("setting y scaling: minMax");
+      } else {
+        setChartConfig({
+          ...chartConfig,
+          scaleType: { ...chartConfig.scaleType, y: "binBorder" },
+        });
+        console.log("setting y scaling: binBorder");
       }
     },
   });
@@ -366,7 +397,7 @@ const Chart = (props) => {
         yNewMax = chartConfig.paddingY() + chartConfig.chartHeight;
       }
       yNewRange = yNewMax - yNewMin;
-      console.log("yNewRange", yNewRange);
+      // console.log("yNewRange", yNewRange);
     }
 
     oldRangeInfo[1] = [yMin, yMax, yRange];
@@ -410,180 +441,222 @@ const Chart = (props) => {
 
   return (
     <div className="w-full h-full relative" ref={containerRef}>
-      <svg className="w-full h-full bg-db-dark-info">
-        <ChartBackground
-          chartConfig={chartConfig}
-          data={chartData}
-          epochData={props.epochData}
-          lastEpochData={lastEpochData}
-          instrument={props.instrument}
-          rangeInfo={rangeInfo}
-        />
-        <LineChart
-          chartConfig={chartConfig}
-          data={chartData}
-          epochData={props.epochData}
-          lastEpochData={lastEpochData}
-          instrument={props.instrument}
-          rangeInfo={rangeInfo}
-        />
-        <SdCone
-          epochData={props.epochData}
-          data={chartData}
-          instrument={props.instrument}
-          rangeInfo={rangeInfo}
-          sdCount={2}
-          chartConfig={chartConfig}
-        />
-        <SdCone
-          epochData={props.epochData}
-          data={chartData}
-          instrument={props.instrument}
-          rangeInfo={rangeInfo}
-          sdCount={1}
-          chartConfig={chartConfig}
-        />
-        <SdCone
-          epochData={props.epochData}
-          data={chartData}
-          instrument={props.instrument}
-          rangeInfo={rangeInfo}
-          sdCount={1}
-          chartConfig={chartConfig}
-          trailing={true}
-          color={"#2AAEE6"}
-        />
-        <SdCone
-          epochData={props.epochData}
-          data={chartData}
-          instrument={props.instrument}
-          rangeInfo={rangeInfo}
-          sdCount={2}
-          chartConfig={chartConfig}
-          trailing={true}
-          color={"#2AAEE6"}
-        />
-      </svg>
-      <div className="text-xs absolute w-full left-2 top-0 text-white flex flex-col lg:flex-row font-bold gap-2 lg:gap-6">
-        <div>Current: {currentPrice}</div>
-        <div>
-          Epoch open:{" "}
-          {lastEpochData
-            ? ethers.utils.formatEther(lastEpochData.closingPrice)
-            : null}
-        </div>
-        <div>
-          Last updated:{" "}
-          {(() => {
-            const dt = new Date(lastUpdated * 1000);
-            return `${dt.toLocaleTimeString()}`;
-          })()}
-        </div>
-      </div>
-      {process.env.REACT_APP_PHASE !== "PRODUCTION" && (
-        <div className="text-xs absolute w-[80%] md:w-1/2 left-2 bottom-6 text-white flex flex-col font-bold gap-2">
-          <div className="flex justify-between items-center">
-            <div>x scaling</div>
-            <div className="flex gap-2">
-              <button
-                className="border-[1px] border-black shadow-db bg-db-cyan-process p-1 pb-2 w-full rounded-lg text-white hover:bg-db-blue-200"
-                onClick={() => {
-                  setChartConfig({
-                    ...chartConfig,
-                    scaleType: { ...chartConfig.scaleType, x: "epochStart" },
-                  });
-                }}
-              >
-                epochStart
-              </button>
-
-              <button
-                className="border-[1px] border-black shadow-db bg-db-cyan-process p-1 pb-2 w-full rounded-lg text-white hover:bg-db-blue-200"
-                onClick={() => {
-                  setChartConfig({
-                    ...chartConfig,
-                    scaleType: { ...chartConfig.scaleType, x: "trailing" },
-                  });
-                }}
-              >
-                trailing
-              </button>
-
-              <button
-                className="border-[1px] border-black shadow-db bg-db-cyan-process p-1 pb-2 w-full rounded-lg text-white hover:bg-db-blue-200"
-                onClick={() => {
-                  setChartConfig({
-                    ...chartConfig,
-                    scaleType: {
-                      ...chartConfig.scaleType,
-                      xAnchor: !chartConfig.scaleType.xAnchor,
-                    },
-                  });
-                }}
-              >
-                anchor
-              </button>
-            </div>
-          </div>
-          <div className="flex justify-between items-center">
-            <div>y scaling</div>
-            <div className="flex gap-2">
-              <button
-                className="border-[1px] border-black shadow-db bg-db-cyan-process p-1 pb-2 w-full rounded-lg text-white hover:bg-db-blue-200"
-                onClick={() => {
-                  setChartConfig({
-                    ...chartConfig,
-                    scaleType: { ...chartConfig.scaleType, y: "binBorder" },
-                  });
-                }}
-              >
-                binBorder
-              </button>
-              <button
-                className="border-[1px] border-black shadow-db bg-db-cyan-process p-1 pb-2 w-full rounded-lg text-white hover:bg-db-blue-200"
-                onClick={() => {
-                  setChartConfig({
-                    ...chartConfig,
-                    scaleType: { ...chartConfig.scaleType, y: "minMax" },
-                  });
-                }}
-              >
-                minMax
-              </button>
-              <button
-                className="border-[1px] border-black shadow-db bg-db-cyan-process p-1 pb-2 w-full rounded-lg text-white hover:bg-db-blue-200"
-                onClick={() => {
-                  setChartConfig({
-                    ...chartConfig,
-                    scaleType: {
-                      ...chartConfig.scaleType,
-                      yAnchor: !chartConfig.scaleType.yAnchor,
-                    },
-                  });
-                }}
-              >
-                anchor
-              </button>
-            </div>
-          </div>
-          <div className="flex justify-between items-center">
-            <div>n epochs</div>
+      {customChart ? (
+        <>
+          <svg className="w-full h-full bg-db-dark-info">
+            <ChartBackground
+              chartConfig={chartConfig}
+              data={chartData}
+              epochData={props.epochData}
+              lastEpochData={lastEpochData}
+              instrument={props.instrument}
+              rangeInfo={rangeInfo}
+            />
+            <LineChart
+              chartConfig={chartConfig}
+              data={chartData}
+              epochData={props.epochData}
+              lastEpochData={lastEpochData}
+              instrument={props.instrument}
+              rangeInfo={rangeInfo}
+            />
+            <SdCone
+              epochData={props.epochData}
+              data={chartData}
+              instrument={props.instrument}
+              rangeInfo={rangeInfo}
+              sdCount={2}
+              chartConfig={chartConfig}
+            />
+            <SdCone
+              epochData={props.epochData}
+              data={chartData}
+              instrument={props.instrument}
+              rangeInfo={rangeInfo}
+              sdCount={1}
+              chartConfig={chartConfig}
+            />
+            <SdCone
+              epochData={props.epochData}
+              data={chartData}
+              instrument={props.instrument}
+              rangeInfo={rangeInfo}
+              sdCount={1}
+              chartConfig={chartConfig}
+              trailing={true}
+              color={"#2AAEE6"}
+            />
+            <SdCone
+              epochData={props.epochData}
+              data={chartData}
+              instrument={props.instrument}
+              rangeInfo={rangeInfo}
+              sdCount={2}
+              chartConfig={chartConfig}
+              trailing={true}
+              color={"#2AAEE6"}
+            />
+          </svg>
+          <div className="text-xs absolute w-full left-2 top-0 text-white flex flex-col lg:flex-row font-bold gap-2 lg:gap-6">
+            <div>Current: {currentPrice}</div>
             <div>
-              <InputNumber
-                heightTWClass="h-10"
-                min={1}
-                onChange={(e) => {
-                  setChartConfig({
-                    ...chartConfig,
-                    epochCount: +e.target.value,
-                  });
-                }}
-                placeholder={"cannot be 0"}
-              />
+              Epoch open:{" "}
+              {lastEpochData
+                ? ethers.utils.formatEther(lastEpochData.closingPrice)
+                : null}
+            </div>
+            <div>
+              Last updated:{" "}
+              {(() => {
+                const dt = new Date(lastUpdated * 1000);
+                return `${dt.toLocaleTimeString()}`;
+              })()}
             </div>
           </div>
+          {/* need to make this display togglable */}
+          {process.env.REACT_APP_PHASE !== "PRODUCTION" && (
+            <div className="text-xs absolute w-[80%] md:w-1/2 left-2 bottom-6 text-white flex flex-col font-bold gap-2">
+              <div className="flex justify-between items-center">
+                <div>x scaling</div>
+                <div className="flex gap-2">
+                  <button
+                    className="border-[1px] border-black shadow-db bg-db-cyan-process p-1 pb-2 w-full rounded-lg text-white hover:bg-db-blue-200"
+                    onClick={() => {
+                      setChartConfig({
+                        ...chartConfig,
+                        scaleType: {
+                          ...chartConfig.scaleType,
+                          x: "epochStart",
+                        },
+                      });
+                    }}
+                  >
+                    epochStart
+                  </button>
+
+                  <button
+                    className="border-[1px] border-black shadow-db bg-db-cyan-process p-1 pb-2 w-full rounded-lg text-white hover:bg-db-blue-200"
+                    onClick={() => {
+                      setChartConfig({
+                        ...chartConfig,
+                        scaleType: { ...chartConfig.scaleType, x: "trailing" },
+                      });
+                    }}
+                  >
+                    trailing
+                  </button>
+
+                  <button
+                    className="border-[1px] border-black shadow-db bg-db-cyan-process p-1 pb-2 w-full rounded-lg text-white hover:bg-db-blue-200"
+                    onClick={() => {
+                      setChartConfig({
+                        ...chartConfig,
+                        scaleType: {
+                          ...chartConfig.scaleType,
+                          xAnchor: !chartConfig.scaleType.xAnchor,
+                        },
+                      });
+                    }}
+                  >
+                    anchor
+                  </button>
+                </div>
+              </div>
+              <div className="flex justify-between items-center">
+                <div>y scaling</div>
+                <div className="flex gap-2">
+                  <button
+                    className="border-[1px] border-black shadow-db bg-db-cyan-process p-1 pb-2 w-full rounded-lg text-white hover:bg-db-blue-200"
+                    onClick={() => {
+                      setChartConfig({
+                        ...chartConfig,
+                        scaleType: { ...chartConfig.scaleType, y: "binBorder" },
+                      });
+                    }}
+                  >
+                    binBorder
+                  </button>
+                  <button
+                    className="border-[1px] border-black shadow-db bg-db-cyan-process p-1 pb-2 w-full rounded-lg text-white hover:bg-db-blue-200"
+                    onClick={() => {
+                      setChartConfig({
+                        ...chartConfig,
+                        scaleType: { ...chartConfig.scaleType, y: "minMax" },
+                      });
+                    }}
+                  >
+                    minMax
+                  </button>
+                  <button
+                    className="border-[1px] border-black shadow-db bg-db-cyan-process p-1 pb-2 w-full rounded-lg text-white hover:bg-db-blue-200"
+                    onClick={() => {
+                      setChartConfig({
+                        ...chartConfig,
+                        scaleType: {
+                          ...chartConfig.scaleType,
+                          yAnchor: !chartConfig.scaleType.yAnchor,
+                        },
+                      });
+                    }}
+                  >
+                    anchor
+                  </button>
+                </div>
+              </div>
+              <div className="flex justify-between items-center">
+                <div>n epochs</div>
+                <div>
+                  <InputNumber
+                    heightTWClass="h-10"
+                    min={1}
+                    onChange={(e) => {
+                      setChartConfig({
+                        ...chartConfig,
+                        epochCount: +e.target.value <= 0 ? 1 : +e.target.value,
+                      });
+                    }}
+                    placeholder={"cannot be 0"}
+                  />
+                </div>
+              </div>
+            </div>
+          )}
+        </>
+      ) : (
+        <div className="w-full h-full bg-db-dark-info">
+          <ReactTradingviewWidget
+            autosize
+            symbol={tradingViewSymbol}
+            theme={themeProvider?.theme}
+            hide_side_toolbar={false}
+            hide_top_toolbar={false}
+            interval={1}
+          ></ReactTradingviewWidget>
         </div>
       )}
+      <div className="z-0 text-xs absolute bottom-1 left-1 m-auto flex items-center justify-center w-52 text-center h-7 rounded-xl bg-db-light dark:bg-db-dark-input p-2">
+        <div
+          className={`w-[48%] top-1 absolute ${
+            customChart ? "left-1" : "left-1/2"
+          } transition-all z-0 bg-db-cyan-process dark:bg-db-blue-gray rounded-lg h-5 flex-1 flex justify-center items-center`}
+        />
+        <div
+          onClick={() => {
+            setCustomChart(!customChart);
+          }}
+          className="z-10 h-full w-full cursor-pointer flex justify-center items-center pb-0.5"
+        >
+          Custom
+        </div>
+        <div
+          onClick={() => {
+            setCustomChart(!customChart);
+          }}
+          className="z-10 h-full w-full cursor-pointer flex justify-center items-center pb-0.5"
+        >
+          TradingView
+        </div>
+      </div>
     </div>
   );
 };

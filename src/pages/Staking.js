@@ -16,7 +16,7 @@ function Staking() {
   const [lpTokenSymbol, setLpTokenSymbol] = useState();
   useEffect(() => {
     setLpTokenSymbol(
-      `BT-${contractAddresses[activeChain?.network]?.nativeGas} LP`
+      `BETR-${contractAddresses[activeChain?.network]?.nativeGas} LP`
     );
   }, [activeChain]);
 
@@ -29,7 +29,7 @@ function Staking() {
             <div className="w-full z-10 h-full flex flex-col justify-between">
               <StakeDiagram
                 stakeSymbol={lpTokenSymbol}
-                rewardSymbol={"BT"}
+                rewardSymbol={"BETR"}
                 stakeName={lpTokenSymbol}
                 rewardName={"Better Token"}
               />
@@ -47,7 +47,7 @@ function Staking() {
           <div className="z-10 w-full p-4 rounded-lg dark:shadow-inner shadow-sm shadow-db-cyan-process dark:shadow-black bg-white dark:bg-db-dark flex gap-4 flex-col lg:flex-row justify-between">
             <div className="w-full z-10 h-full flex flex-col justify-between">
               <StakeDiagram
-                stakeSymbol={"BT"}
+                stakeSymbol={"BETR"}
                 rewardSymbol={
                   contractAddresses[activeChain?.network]?.nativeGas
                 }

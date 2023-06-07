@@ -9,7 +9,7 @@ import { BsSun, BsMoon, BsPiggyBank, BsBook, BsCoin } from "react-icons/bs";
 import { CiVault } from "react-icons/ci";
 import { FaThinkPeaks } from "react-icons/fa";
 
-const Navbar = () => {
+const Navbar = ({ restricted }) => {
   const [showSideNavbar, setShowSideNavbar] = useState(false);
   const location = useLocation();
   const themeProvider = useTheme();
@@ -17,12 +17,16 @@ const Navbar = () => {
   function menuItems() {
     let menuItems = [];
 
+    if (restricted) {
+      return menuItems;
+    }
+
     if (process.env.REACT_APP_PHASE === "PRODUCTION") {
       menuItems.push({
-        label: "Home",
+        label: "Better",
         path: "/",
         icon: (
-          <BiHomeAlt2
+          <FaThinkPeaks
             size={30}
             className={`${
               location.pathname === "/"
@@ -34,15 +38,18 @@ const Navbar = () => {
       });
     }
 
-    if (process.env.REACT_APP_PHASE === "DBMT_SALE") {
+    if (
+      process.env.REACT_APP_PHASE === "DBMT_SALE" ||
+      process.env.REACT_APP_PHASE === "PRODUCTION"
+    ) {
       menuItems.push({
-        label: "DBMT",
-        path: "/dbmt",
+        label: "MRP",
+        path: "/mrp",
         icon: (
           <BsCoin
             size={30}
             className={`${
-              location.pathname === "/dbmt"
+              location.pathname === "/mrp"
                 ? "text-db-cyan-process "
                 : "text-[#3A4D69]"
             } group-hover:text-db-cyan-process transition-all`}
@@ -70,20 +77,6 @@ const Navbar = () => {
       });
     }
     menuItems.push(
-      {
-        label: "Better",
-        path: process.env.REACT_APP_PHASE === "PRODUCTION" ? "/better" : "#",
-        icon: (
-          <FaThinkPeaks
-            size={30}
-            className={`${
-              location.pathname === "/better"
-                ? "text-db-cyan-process "
-                : "text-[#3A4D69]"
-            } group-hover:text-db-cyan-process transition-all`}
-          />
-        ),
-      },
       {
         label: "Staking",
         path: process.env.REACT_APP_PHASE === "PRODUCTION" ? "/staking" : "#",
@@ -171,10 +164,12 @@ const Navbar = () => {
         <nav className="gap-4 items-center justify-center h-full hidden md:flex">
           {menuItems().map((item, index) => (
             <Link
-              key={`${item.label}-${index}`}
               to={item.path}
+              key={item.label}
               className={`${
-                process.env.REACT_APP_PHASE !== "PRODUCTION" && index !== 0 && index !== menuItems.length
+                process.env.REACT_APP_PHASE !== "PRODUCTION" &&
+                index !== 0 &&
+                index !== menuItems.length
                   ? "cursor-not-allowed"
                   : ""
               } w-16 group h-full flex flex-col items-center justify-center relative`}
@@ -250,11 +245,13 @@ const Navbar = () => {
           <div className="gap-4 mt-4 items-center flex flex-col text-xl">
             {menuItems().map((item, index) => (
               <Link
-                key={`${item.label}-${index}`}
                 onClick={() => setShowSideNavbar(false)}
+                key={item.label}
                 to={item.path}
                 className={`${
-                  process.env.REACT_APP_PHASE !== "PRODUCTION" && index !== 0 && index !== menuItems.length
+                  process.env.REACT_APP_PHASE !== "PRODUCTION" &&
+                  index !== 0 &&
+                  index !== menuItems.length
                     ? "cursor-not-allowed"
                     : ""
                 } h-12 group gap-2 flex items-center justify-center relative`}

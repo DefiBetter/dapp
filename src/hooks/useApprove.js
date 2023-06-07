@@ -28,7 +28,7 @@ export default function useApprove(token, contractAddress) {
     onSuccess() {
       toastContext.addToast(
         ToastStatus.Success,
-        "Successfuly approved",
+        "Successfully approved",
         transaction.data?.hash
       );
     },

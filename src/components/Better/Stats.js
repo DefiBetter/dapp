@@ -36,20 +36,20 @@ const Stats = (props) => {
   });
 
   return (
-    <div className="w-full h-full flex flex-col lg:justify-between lg:items-stretch px-1 gap-2 lg:gap-0">
-      <div className="w-full bg-white dark:bg-db-dark-input rounded-lg flex flex-col border-b-2 border-db-cyan-process ">
+    <div className="w-full h-full flex flex-col lg:items-stretch gap-2 lg:gap-3">
+      <div className="w-full bg-white dark:bg-db-dark-input rounded-lg border-b-2 border-db-cyan-process ">
         <div className="flex justify-center font-bold py-1">Epoch Data</div>
         <div className="p-1 text-xs">
-          <div className="flex flex-col p-1">
+          <div className="flex flex-col p-1 gap-1">
             <div className="flex justify-between">
               <div className="font-bold text-db-blue-gray">Epoch</div>
-              <div>
+              <div className="text-right">
                 {props.instrument ? props.instrument.epoch.toString() : null}
               </div>
             </div>
             <div className="flex justify-between">
               <div className="font-bold text-db-blue-gray">Pot Size</div>
-              <div>
+              <div className="text-right">
                 {props.epochData
                   ? trimNumber(
                       ethers.utils.formatEther(props.epochData.pot),
@@ -62,7 +62,7 @@ const Stats = (props) => {
             </div>
             <div className="flex justify-between">
               <div className="font-bold text-db-blue-gray">Number of bets</div>
-              <div>
+              <div className="text-right">
                 {props.epochData ? props.epochData.numBets.toString() : null}
               </div>
             </div>
@@ -79,12 +79,12 @@ const Stats = (props) => {
             </span>
           </div>
           <div className="p-1 pt-0 text-xs">
-            <div className="flex flex-col p-1">
+            <div className="flex flex-col p-1 gap-1">
               <div className="flex justify-between font-bold">
                 <div className="font-bold text-db-blue-gray">
                   Position value
                 </div>
-                <div>
+                <div className="text-right">
                   {trimNumber(
                     ethers.utils.formatEther(props.userPosition || 0),
                     6,
@@ -97,7 +97,7 @@ const Stats = (props) => {
                 <div className="font-bold text-db-blue-gray">
                   Pending Rewards
                 </div>
-                <div>
+                <div className="text-right">
                   {trimNumber(props.pendingBetterBalance, 6, "dp")}{" "}
                   {props.nativeGas}
                 </div>
@@ -106,11 +106,13 @@ const Stats = (props) => {
                 <div className="font-bold text-db-blue-gray">
                   Number of games
                 </div>
-                <div>{props.userGainsInfo.numberOfGames.toString()}</div>
+                <div className="text-right">
+                  {props.userGainsInfo.numberOfGames.toString()}
+                </div>
               </div>
               <div className="flex justify-between">
                 <div className="font-bold text-db-blue-gray">Biggest gain</div>
-                <div className="text-db-cyan-process">
+                <div className="text-db-cyan-process text-right">
                   {+props.userGainsInfo.biggestRelativeGainAmount >= 0
                     ? "+"
                     : "-"}
@@ -121,7 +123,7 @@ const Stats = (props) => {
                 <div className="font-bold text-db-blue-gray">
                   Most recent gain
                 </div>
-                <div className="text-db-cyan-process">
+                <div className="text-db-cyan-process text-right">
                   {+props.userGainsInfo.mostRecentRelativeGainAmount >= 0
                     ? "+"
                     : "-"}
@@ -133,19 +135,19 @@ const Stats = (props) => {
         </div>
       </div>
 
-      <div className="flex flex-col gap-2 w-full">
-        <div className="bg-white dark:bg-db-dark-input rounded-lg flex flex-col border-b-2 border-db-cyan-process">
+      <div className="flex flex-col gap-2 w-full grow">
+        <div className="bg-white dark:bg-db-dark-input rounded-lg flex flex-col border-b-2 border-db-cyan-process grow">
           <div className="text-center font-bold flex justify-center py-1">
             Better
             <span className="font-fancy mt-3 text-db-cyan-process">Gains</span>
           </div>
           <div className="p-1 pt-0 text-xs">
-            <div className="flex flex-col p-1">
+            <div className="flex flex-col p-1 gap-1">
               <div className="flex justify-between">
                 <div className="w-1/2 font-bold text-db-blue-gray">
                   Time left for current week
                 </div>
-                <div className=" text-right">
+                <div className="text-right">
                   {props.rewardPeriodInfo ? (
                     <Countdown
                       key={
@@ -167,7 +169,7 @@ const Stats = (props) => {
                   Week's biggest gain
                 </div>
                 <div className="text-right flex flex-col">
-                  <div className="text-db-cyan-process">
+                  <div className="text-db-cyan-process text-right">
                     {+props.rewardPeriodInfo
                       .globalBiggestRelativeGainCurrentPeriod >= 0
                       ? "+"
@@ -178,7 +180,7 @@ const Stats = (props) => {
                     }
                     %
                   </div>
-                  <div>
+                  <div className="text-right">
                     {truncateEthAddress(
                       props.rewardPeriodInfo
                         .globalBiggestRelativeGainCurrentPeriodAddress
@@ -191,7 +193,7 @@ const Stats = (props) => {
                   Last week's biggest gain
                 </div>
                 <div className="text-right flex flex-col">
-                  <div className="text-db-cyan-process">
+                  <div className="text-db-cyan-process text-right">
                     {+props.rewardPeriodInfo
                       .globalBiggestRelativeGainPastPeriod >= 0
                       ? "+"
@@ -202,7 +204,7 @@ const Stats = (props) => {
                     }
                     %
                   </div>
-                  <div className="">
+                  <div className="text-right">
                     {truncateEthAddress(
                       props.rewardPeriodInfo
                         .globalBiggestRelativeGainPastPeriodAddress
@@ -221,7 +223,7 @@ const Stats = (props) => {
                       : "-"}
                     {+props.rewardPeriodInfo.globalBiggestRelativeGain}%
                   </div>
-                  <div className="">
+                  <div className="text-right">
                     {truncateEthAddress(
                       props.rewardPeriodInfo.globalBiggestRelativeGainAddress
                     )}

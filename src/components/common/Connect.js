@@ -16,7 +16,7 @@ const Connect = ({ children }) => {
           <a
             target="_blank"
             rel="noreferrer"
-            href="https://discord.gg/DSDXSXf6Ub"
+            href="https://discord.gg/7E3kYy9rru"
           >
             <img
               className="w-10 h-10"

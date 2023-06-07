@@ -3,11 +3,7 @@ import { WagmiConfig, createClient, configureChains, chain } from "wagmi";
 import { publicProvider } from "wagmi/providers/public";
 import { jsonRpcProvider } from "wagmi/providers/jsonRpc";
 
-import { CoinbaseWalletConnector } from "wagmi/connectors/coinbaseWallet";
 import { InjectedConnector } from "wagmi/connectors/injected";
-import { MetaMaskConnector } from "wagmi/connectors/metaMask";
-import { WalletConnectConnector } from "wagmi/connectors/walletConnect";
-
 import Connector from "./components/Connector";
 
 import customChains from "./static/chains";
@@ -17,20 +13,25 @@ import { ThemeProvider } from "./context/ThemeContext";
 // Two popular providers are Alchemy (alchemy.com) and Infura (infura.io)
 const { chains, provider, webSocketProvider } = configureChains(
   [
-    // chain.polygon,
     customChains.binanceSmartChain,
+    customChains.hardhat,
+    // chain.polygon,
     // customChains.fantomChain,
     // customChains.defiBetterChain,
-    { ...chain.hardhat, logo: "hardhat-logo.png" },
-    chain.hardhat,
   ],
   [
-    publicProvider(),
     jsonRpcProvider({
       rpc: (_chain) => {
-        for (const custChain of Object.values(customChains)) {
-          if (_chain.id === custChain.id)
-            return { http: custChain.rpcUrls.default };
+        if (_chain.id === customChains.binanceSmartChain.id) {
+          return { http: customChains.binanceSmartChain.rpcUrls.default };
+        }
+        return null;
+      },
+    }),
+    jsonRpcProvider({
+      rpc: (_chain) => {
+        if (_chain.id === customChains.hardhat.id) {
+          return { http: customChains.hardhat.rpcUrls.default };
         }
         return null;
       },
@@ -45,19 +46,18 @@ const client = createClient({
     new InjectedConnector({
       chains,
       options: {
-        name: `Injected`,
-        shimDisconnect: true,
-      },
-    }),
-    new MetaMaskConnector({
-      chains,
-      options: {
+        name: (detectedName) =>
+          `Injected (${
+            typeof detectedName === "string"
+              ? detectedName
+              : detectedName.join(", ")
+          })`,
         shimDisconnect: true,
       },
     }),
   ],
   provider,
-  webSocketProvider,
+  // webSocketProvider
 });
 
 // Pass client to React Context Provider

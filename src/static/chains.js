@@ -1,19 +1,15 @@
 const customChains = {
-
   hardhat: {
-    id: 56,
-    name: "BSC",
-    network: "bsc",
+    id: 31337,
+    name: `Hardhat`,
+    network: `hardhat`,
     nativeCurrency: {
       decimals: 18,
-      name: "BNB",
-      symbol: "BNB",
+      name: `Avalanche`,
+      symbol: `AVAX`,
     },
     rpcUrls: {
-      default: "https://bsc-dataseed1.binance.org/",
-    },
-    blockExplorers: {
-      default: { name: "BSCscan", url: "https://bscscan.com/" },
+      default: `http://127.0.0.1:8545`,
     },
     testnet: false,
   },
