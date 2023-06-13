@@ -8,6 +8,7 @@ import { BiHomeAlt2 } from "react-icons/bi";
 import { BsSun, BsMoon, BsPiggyBank, BsBook, BsCoin } from "react-icons/bs";
 import { CiVault } from "react-icons/ci";
 import { FaThinkPeaks } from "react-icons/fa";
+import { MdOutlineLeaderboard } from "react-icons/md";
 
 const Navbar = () => {
   const [showSideNavbar, setShowSideNavbar] = useState(false);
@@ -43,6 +44,20 @@ const Navbar = () => {
             size={30}
             className={`${
               location.pathname === "/dbmt"
+                ? "text-db-cyan-process "
+                : "text-[#3A4D69]"
+            } group-hover:text-db-cyan-process transition-all`}
+          />
+        ),
+      });
+      menuItems.push({
+        label: "Leaderboard",
+        path: "/leaderboard",
+        icon: (
+          <MdOutlineLeaderboard
+            size={30}
+            className={`${
+              location.pathname === "/leaderboard"
                 ? "text-db-cyan-process "
                 : "text-[#3A4D69]"
             } group-hover:text-db-cyan-process transition-all`}
@@ -174,7 +189,7 @@ const Navbar = () => {
               key={`${item.label}-${index}`}
               to={item.path}
               className={`${
-                process.env.REACT_APP_PHASE !== "PRODUCTION" && index !== 0 && index !== menuItems.length
+                process.env.REACT_APP_PHASE !== "PRODUCTION" && index > 1 && index !== menuItems.length
                   ? "cursor-not-allowed"
                   : ""
               } w-16 group h-full flex flex-col items-center justify-center relative`}

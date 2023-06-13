@@ -12,10 +12,9 @@ export default function useBNBPrice() {
       ).json();
       setPrice(bnbPriceData["binancecoin"].usd);
     } catch (e) {
-      console.error(e)
+      console.error(e);
     }
   }
   fetchPrice();
-  console.log(" price = " + price);
   return price;
 }

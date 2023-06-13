@@ -1,4 +1,5 @@
 import {
+  useAccount,
   useContractWrite,
   useNetwork,
   usePrepareContractWrite,
@@ -9,9 +10,12 @@ import { ethers } from "ethers";
 import { contractAddresses } from "../static/contractAddresses";
 import ReferralSaleABI from "../static/ABI/ReferralSaleABI.json";
 import useFirework from "./useFireworks";
+import { investorData } from "./useInvestorData";
+import { updateInvestor } from "./useInvestors";
 
 export default function useDbmtBuy(buyAmount, referral) {
   const toastContext = useToast();
+  const { address } = useAccount();
   const { chain } = useNetwork();
   const { firework } = useFirework();
 
@@ -48,7 +52,15 @@ export default function useDbmtBuy(buyAmount, referral) {
       );
     },
     onSuccess(data) {
-      firework()
+      firework();
+      if (address !== referral) {
+        investorData(referral, chain).then((data) => {
+          updateInvestor(referral, data);
+        });
+      }
+      investorData(address, chain).then((data) => {
+        updateInvestor(address, data);
+      });
       toastContext.addToast(
         ToastStatus.Success,
         "Successfuly bought $DBMT",
@@ -56,5 +68,6 @@ export default function useDbmtBuy(buyAmount, referral) {
       );
     },
   });
+
   return { confirmation, transaction };
 }

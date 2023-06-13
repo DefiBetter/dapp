@@ -3,20 +3,20 @@ import { contractAddresses } from "../static/contractAddresses";
 import ReferralSaleABI from "../static/ABI/ReferralSaleABI.json";
 import { useAccount } from "wagmi";
 import { ethers } from "ethers";
+import { readContract } from "@wagmi/core";
 
-export default function useInvestorData() {
-  const { chain } = useNetwork();
-  const { address } = useAccount();
-
-  const { data } = useContractRead({
-    address: contractAddresses[chain?.network]?.dbmtSale,
+export async function investorData(address, chain) {
+  const data = await readContract({
+    address: contractAddresses[chain.network]?.dbmtSale,
     abi: ReferralSaleABI,
     functionName: "getInvestorData",
     args: [address],
-    watch: true
   });
+  return dataToRef(data);
+}
 
-  const refData = {
+function dataToRef(data) {
+  return {
     ownBuysInGasToken: data
       ? ethers.utils.formatEther(data.ownBuysInGasToken)
       : 0,
@@ -31,5 +31,19 @@ export default function useInvestorData() {
       ? Number(data.whitelistedForReferralLevel)
       : 0,
   };
-  return refData;
+}
+
+export default function useInvestorData() {
+  const { chain } = useNetwork();
+  const { address } = useAccount();
+
+  const { data } = useContractRead({
+    address: contractAddresses[chain?.network]?.dbmtSale,
+    abi: ReferralSaleABI,
+    functionName: "getInvestorData",
+    args: [address],
+    watch: true,
+  });
+
+  return dataToRef(data);
 }

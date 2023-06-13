@@ -9,6 +9,7 @@ import CommunityPresale from "../pages/CommunityPresale";
 import VcPresale from "../pages/VcPresale";
 import Dbmt from "../pages/Dbmt";
 import useBNBPrice from "../hooks/useBNBPrice";
+import Leaderboard from "../pages/Leaderboard";
 
 function Connector() {
   const bnbPrice = useBNBPrice()
@@ -24,6 +25,14 @@ function Connector() {
               element={
                 <AppContainer>
                   <Dbmt bnbPrice={bnbPrice}/>
+                </AppContainer>
+              }
+            />
+             <Route
+              path="/leaderboard"
+              element={
+                <AppContainer>
+                  <Leaderboard />
                 </AppContainer>
               }
             />
