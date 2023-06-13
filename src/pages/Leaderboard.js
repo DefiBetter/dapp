@@ -2,13 +2,12 @@ import PageTitle from "../components/common/PageTitle";
 import { contractAddresses } from "../static/contractAddresses";
 import { useNetwork } from "wagmi";
 import useSymbol from "../hooks/useSymbol";
-import { useAccount } from "wagmi";
 import { row } from "mathjs";
-import { BigNumber, ethers } from "ethers";
 import useDbmtPrice from "../hooks/useDbmtPrice";
 import { GiPodiumSecond, GiPodiumThird, GiPodiumWinner } from "react-icons/gi";
 import { BiLinkExternal } from "react-icons/bi";
 import { useGetInvestors } from "../hooks/useInvestors";
+import { motion } from "framer-motion";
 
 export default function Leaderboard() {
   const { chain } = useNetwork();
@@ -36,16 +35,16 @@ export default function Leaderboard() {
               className={`w-full bg-white dark:bg-db-dark rounded-lg overflow-hidden p-4`}
             >
               <table className="w-full text-left table-auto">
-                <thead className="text-xs uppercase">
+                <thead className="text-xs uppercase contrast-50">
                   <tr>
-                    <th className="w-[40%]"></th>
-                    <th scope="col" className="px-6 py-3 text-right w-[20%]">
+                    <th className=""></th>
+                    <th scope="col" className="px-6 py-3 text-right min-w-[20%] whitespace-nowrap">
                       Bought
                     </th>
-                    <th scope="col" className="px-6 py-3 text-right w-[20%]">
+                    <th scope="col" className="px-6 py-3 text-right min-w-[20%] whitespace-nowrap">
                       Total Raised
                     </th>
-                    <th scope="col" className="px-6 py-3 text-right w-[20%]">
+                    <th scope="col" className="px-6 py-3 text-right min-w-[20%] whitespace-nowrap">
                       Profits from Raised
                     </th>
                   </tr>
@@ -76,13 +75,17 @@ export default function Leaderboard() {
                         </tr>
                       ))
                     : investors.map((row, index) => (
-                        <tr
+                        <motion.tr
+                          initial={{ opacity: 0, paddingLeft: '-50px' }}
+                          animate={{ opacity: 1, paddingLeft: '0' }}
+                          transition={{ duration: 1, delay: 0.1 * index }}
+                          
                           key={row.address}
                           className={`${
                             index % 2 === 0
                               ? "bg-db-cyan-process/10 dark:bg-db-dark-input/30 "
                               : " bg-db-light dark:bg-db-dark-input/50"
-                          }`}
+                          } ml-24 relative`}
                         >
                           <th scope="row" className="px-6 py-4 flex gap-4">
                             {index === 0 && (
@@ -126,7 +129,7 @@ export default function Leaderboard() {
                           <td className="px-6 py-4 text-right">
                             {row.totalReferralGainsInGasToken} BNB
                           </td>
-                        </tr>
+                        </motion.tr>
                       ))}
                 </tbody>
               </table>

@@ -54,7 +54,6 @@ export function useGetInvestors() {
           address: investor.id,
         });
       });
-      console.log("tmpArray", JSON.stringify(tmpArray, null, 2));
       setInvestors(tmpArray);
     } catch (e) {
       console.error(e);
