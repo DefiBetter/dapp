@@ -50,30 +50,33 @@ export default function Leaderboard() {
               <div className="relative w-full text-left flex flex-col gap-2">
                 {!investors
                   ? [...Array(3)].map((_, index) => (
-                      <tr
+                      <motion.div
+                        initial={{ opacity: 0, marginTop: "50px" }}
+                        animate={{ opacity: 1, marginTop: "0" }}
+                        transition={{ duration: 0.5, delay: 0.1 * index }}
                         key={row.address}
                         className={`${
                           index % 2 === 0
                             ? "bg-db-cyan-process/10 dark:bg-db-dark-input/30 "
                             : " bg-db-light dark:bg-db-dark-input/50"
-                        }`}
+                        } w-full rounded-lg flex flex-col md:flex-row justify-between items-center`}
                       >
-                        <th scope="row" className="px-6 py-4 flex">
+                        <div className="px-6 py-4 flex">
                           <div class="h-4 bg-gray-700 w-48 animate-pulse"></div>
-                        </th>
-                        <td className="px-6 py-4 ">
+                        </div>
+                        <div className="px-6 py-4 ">
                           <div class="h-4 bg-gray-700 w-20 ml-auto animate-pulse"></div>
-                        </td>
-                        <td className="px-6 py-4 text-right">
+                        </div>
+                        <div className="px-6 py-4 text-right">
                           <div class="h-4 bg-gray-700 w-20 ml-auto animate-pulse"></div>
-                        </td>
-                        <td className="px-6 py-4 text-right">
+                        </div>
+                        <div className="px-6 py-4 text-right">
                           <div class="h-4 bg-gray-700 w-20 ml-auto animate-pulse"></div>
-                        </td>
-                      </tr>
+                        </div>
+                      </motion.div>
                     ))
                   : investors.map((row, index) => (
-                      <motion.tr
+                      <motion.div
                         initial={{ opacity: 0, marginTop: "50px" }}
                         animate={{ opacity: 1, marginTop: "0" }}
                         transition={{ duration: 0.5, delay: 0.1 * index }}
@@ -128,7 +131,7 @@ export default function Leaderboard() {
                           <div className="md:hidden">PROFITS FROM RAISED</div>
                           {row.totalReferralGainsInGasToken} BNB
                         </div>
-                      </motion.tr>
+                      </motion.div>
                     ))}
               </div>
             </div>
