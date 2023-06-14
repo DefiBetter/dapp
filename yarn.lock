@@ -4821,6 +4821,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@vercel/analytics@npm:^1.0.1":
+  version: 1.0.1
+  resolution: "@vercel/analytics@npm:1.0.1"
+  checksum: 6876e1d0868e85198d43a17ffec7266cdee5a53d5fc797d3f7e0d64e9d76a2ade3cbdcbc0a665e2ee2389f65dfc80591f7d667e9fc981cdbaa848006cbaefe19
+  languageName: node
+  linkType: hard
+
 "@wagmi/core@npm:0.7.4":
   version: 0.7.4
   resolution: "@wagmi/core@npm:0.7.4"
@@ -6192,6 +6199,7 @@ __metadata:
     "@testing-library/jest-dom": ^5.16.4
     "@testing-library/react": ^13.3.0
     "@testing-library/user-event": ^13.5.0
+    "@vercel/analytics": ^1.0.1
     "@web3-react/core": ^6.1.9
     canvas-confetti: ^1.6.0
     ethers: ^5.6.9
