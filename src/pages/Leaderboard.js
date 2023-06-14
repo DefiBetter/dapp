@@ -36,11 +36,12 @@ export default function Leaderboard() {
             >
               <div className="hidden md:flex justify-between items-center text-xs uppercase contrast-50">
                 <div className="w-1/4"></div>
-                <div className="px-6 py-3 text-right w-1/4 whitespace-nowrap">
-                  Bought
-                </div>
+
                 <div className="px-6 py-3 text-right w-1/4 whitespace-nowrap">
                   Total Raised
+                </div>
+                <div className="px-6 py-3 text-right w-1/4 whitespace-nowrap">
+                  Bought
                 </div>
                 <div className="px-6 py-3 text-right w-1/4 whitespace-nowrap">
                   Profits from Raised
@@ -118,14 +119,15 @@ export default function Leaderboard() {
                             <BiLinkExternal size={15} />
                           </a>
                         </div>
+
+                        <div className="w-full md:w-1/4 px-6 py-2 md:py-4 text-right flex justify-between md:justify-end">
+                          <div className="md:hidden">TOTAL RAISED</div>
+                          {row.totalRaisedInGasToken} BNB
+                        </div>
                         <div className="w-full md:w-1/4 px-6 py-2 md:py-4 text-right flex justify-between md:justify-end">
                           <div className="md:hidden">BOUGHT</div>
                           {bnbToDBMT(row.ownBuysInGasToken).toFixed(3)}{" "}
                           {tokenSymbol}
-                        </div>
-                        <div className="w-full md:w-1/4 px-6 py-2 md:py-4 text-right flex justify-between md:justify-end">
-                          <div className="md:hidden">TOTAL RAISED</div>
-                          {row.totalRaisedInGasToken} BNB
                         </div>
                         <div className="w-full md:w-1/4 px-6 py-2 md:py-4 text-right flex justify-between md:justify-end">
                           <div className="md:hidden">PROFITS FROM RAISED</div>
