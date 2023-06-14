@@ -34,113 +34,103 @@ export default function Leaderboard() {
             <div
               className={`w-full bg-white dark:bg-db-dark rounded-lg overflow-hidden p-4`}
             >
-              <table className="w-full text-left table-auto">
-                <thead className="text-xs uppercase contrast-50">
-                  <tr>
-                    <th className=""></th>
-                    <th
-                      scope="col"
-                      className="px-6 py-3 text-right min-w-[20%] whitespace-nowrap"
-                    >
-                      Bought
-                    </th>
-                    <th
-                      scope="col"
-                      className="px-6 py-3 text-right min-w-[20%] whitespace-nowrap"
-                    >
-                      Total Raised
-                    </th>
-                    <th
-                      scope="col"
-                      className="px-6 py-3 text-right min-w-[20%] whitespace-nowrap"
-                    >
-                      Profits from Raised
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {!investors
-                    ? [...Array(3)].map((_, index) => (
-                        <tr
-                          key={row.address}
-                          className={`${
-                            index % 2 === 0
-                              ? "bg-db-cyan-process/10 dark:bg-db-dark-input/30 "
-                              : " bg-db-light dark:bg-db-dark-input/50"
-                          }`}
-                        >
-                          <th scope="row" className="px-6 py-4 flex">
-                            <div class="h-4 bg-gray-700 w-48 animate-pulse"></div>
-                          </th>
-                          <td className="px-6 py-4 ">
-                            <div class="h-4 bg-gray-700 w-20 ml-auto animate-pulse"></div>
-                          </td>
-                          <td className="px-6 py-4 text-right">
-                            <div class="h-4 bg-gray-700 w-20 ml-auto animate-pulse"></div>
-                          </td>
-                          <td className="px-6 py-4 text-right">
-                            <div class="h-4 bg-gray-700 w-20 ml-auto animate-pulse"></div>
-                          </td>
-                        </tr>
-                      ))
-                    : investors.map((row, index) => (
-                        <motion.tr
-                          initial={{ opacity: 0, paddingLeft: "-50px" }}
-                          animate={{ opacity: 1, paddingLeft: "0" }}
-                          transition={{ duration: 1, delay: 0.1 * index }}
-                          key={row.address}
-                          className={`${
-                            index % 2 === 0
-                              ? "bg-db-cyan-process/10 dark:bg-db-dark-input/30 "
-                              : " bg-db-light dark:bg-db-dark-input/50"
-                          } ml-24 relative`}
-                        >
-                          <th scope="row" className="px-6 py-4 flex gap-4">
-                            {index === 0 && (
-                              <GiPodiumWinner
-                                size={25}
-                                className="text-orange-400"
-                              />
-                            )}
-                            {index === 1 && (
-                              <GiPodiumSecond
-                                size={25}
-                                className="text-neutral-300"
-                              />
-                            )}
-                            {index === 2 && (
-                              <GiPodiumThird
-                                size={25}
-                                className="text-orange-800"
-                              />
-                            )}
-                            <a
-                              className="flex gap-2 items-center"
-                              href={`https://debank.com/profile/${row.address}`}
-                              target="_blank"
-                              rel="noreferrer"
-                            >
-                              {`${row.address.slice(
-                                0,
-                                5
-                              )}...${row.address.slice(-5)}`}
-                              <BiLinkExternal size={15} />
-                            </a>
-                          </th>
-                          <td className="px-6 py-4 text-right">
-                            {bnbToDBMT(row.ownBuysInGasToken).toFixed(3)}{" "}
-                            {tokenSymbol}
-                          </td>
-                          <td className="px-6 py-4 text-right">
-                            {row.totalRaisedInGasToken} BNB
-                          </td>
-                          <td className="px-6 py-4 text-right">
-                            {row.totalReferralGainsInGasToken} BNB
-                          </td>
-                        </motion.tr>
-                      ))}
-                </tbody>
-              </table>
+              <div className="hidden md:flex justify-between items-center text-xs uppercase contrast-50">
+                <div className="w-1/4"></div>
+                <div className="px-6 py-3 text-right w-1/4 whitespace-nowrap">
+                  Bought
+                </div>
+                <div className="px-6 py-3 text-right w-1/4 whitespace-nowrap">
+                  Total Raised
+                </div>
+                <div className="px-6 py-3 text-right w-1/4 whitespace-nowrap">
+                  Profits from Raised
+                </div>
+              </div>
+
+              <div className="relative w-full text-left flex flex-col gap-2">
+                {!investors
+                  ? [...Array(3)].map((_, index) => (
+                      <tr
+                        key={row.address}
+                        className={`${
+                          index % 2 === 0
+                            ? "bg-db-cyan-process/10 dark:bg-db-dark-input/30 "
+                            : " bg-db-light dark:bg-db-dark-input/50"
+                        }`}
+                      >
+                        <th scope="row" className="px-6 py-4 flex">
+                          <div class="h-4 bg-gray-700 w-48 animate-pulse"></div>
+                        </th>
+                        <td className="px-6 py-4 ">
+                          <div class="h-4 bg-gray-700 w-20 ml-auto animate-pulse"></div>
+                        </td>
+                        <td className="px-6 py-4 text-right">
+                          <div class="h-4 bg-gray-700 w-20 ml-auto animate-pulse"></div>
+                        </td>
+                        <td className="px-6 py-4 text-right">
+                          <div class="h-4 bg-gray-700 w-20 ml-auto animate-pulse"></div>
+                        </td>
+                      </tr>
+                    ))
+                  : investors.map((row, index) => (
+                      <motion.tr
+                        initial={{ opacity: 0, marginTop: "50px" }}
+                        animate={{ opacity: 1, marginTop: "0" }}
+                        transition={{ duration: 0.5, delay: 0.1 * index }}
+                        key={row.address}
+                        className={`${
+                          index % 2 === 0
+                            ? "bg-db-cyan-process/10 dark:bg-db-dark-input/30 "
+                            : " bg-db-light dark:bg-db-dark-input/50"
+                        } w-full rounded-lg flex flex-col md:flex-row justify-between items-center`}
+                      >
+                        <div className="w-full md:w-1/4 px-6 py-2 md:py-4 flex gap-4">
+                          {index === 0 && (
+                            <GiPodiumWinner
+                              size={25}
+                              className="text-orange-400"
+                            />
+                          )}
+                          {index === 1 && (
+                            <GiPodiumSecond
+                              size={25}
+                              className="text-neutral-300"
+                            />
+                          )}
+                          {index === 2 && (
+                            <GiPodiumThird
+                              size={25}
+                              className="text-orange-800"
+                            />
+                          )}
+                          <a
+                            className="flex gap-2 items-center"
+                            href={`https://debank.com/profile/${row.address}`}
+                            target="_blank"
+                            rel="noreferrer"
+                          >
+                            {`${row.address.slice(0, 5)}...${row.address.slice(
+                              -5
+                            )}`}
+                            <BiLinkExternal size={15} />
+                          </a>
+                        </div>
+                        <div className="w-full md:w-1/4 px-6 py-2 md:py-4 text-right flex justify-between md:justify-end">
+                          <div className="md:hidden">BOUGHT</div>
+                          {bnbToDBMT(row.ownBuysInGasToken).toFixed(3)}{" "}
+                          {tokenSymbol}
+                        </div>
+                        <div className="w-full md:w-1/4 px-6 py-2 md:py-4 text-right flex justify-between md:justify-end">
+                          <div className="md:hidden">TOTAL RAISED</div>
+                          {row.totalRaisedInGasToken} BNB
+                        </div>
+                        <div className="w-full md:w-1/4 px-6 py-2 md:py-4 text-right flex justify-between md:justify-end">
+                          <div className="md:hidden">PROFITS FROM RAISED</div>
+                          {row.totalReferralGainsInGasToken} BNB
+                        </div>
+                      </motion.tr>
+                    ))}
+              </div>
             </div>
           </div>
         </div>
