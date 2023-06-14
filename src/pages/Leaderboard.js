@@ -29,12 +29,6 @@ export default function Leaderboard() {
       >
         <PageTitle title={tokenSymbol} fancyTitle={"Leaderboard"} />
 
-        REACT_APP_API_KEY = {process.env.REACT_APP_API_KEY}<br />
-        REACT_APP_AUTH_DOMAIN = {process.env.REACT_APP_AUTH_DOMAIN}<br />
-        REACT_APP_PROJECT = {process.env.REACT_APP_PROJECT}<br />
-        REACT_APP_STORAGE = {process.env.REACT_APP_STORAGE}<br />
-        REACT_APP_MESSAGING_ID = {process.env.REACT_APP_MESSAGING_ID}<br />
-        REACT_APP_APP_ID = {process.env.REACT_APP_APP_ID}<br />
         <div className="mt-2 md:mt-4 flex flex-col justify-center items-center gap-4">
           <div className="w-full lg:w-2/3">
             <div
@@ -44,13 +38,22 @@ export default function Leaderboard() {
                 <thead className="text-xs uppercase contrast-50">
                   <tr>
                     <th className=""></th>
-                    <th scope="col" className="px-6 py-3 text-right min-w-[20%] whitespace-nowrap">
+                    <th
+                      scope="col"
+                      className="px-6 py-3 text-right min-w-[20%] whitespace-nowrap"
+                    >
                       Bought
                     </th>
-                    <th scope="col" className="px-6 py-3 text-right min-w-[20%] whitespace-nowrap">
+                    <th
+                      scope="col"
+                      className="px-6 py-3 text-right min-w-[20%] whitespace-nowrap"
+                    >
                       Total Raised
                     </th>
-                    <th scope="col" className="px-6 py-3 text-right min-w-[20%] whitespace-nowrap">
+                    <th
+                      scope="col"
+                      className="px-6 py-3 text-right min-w-[20%] whitespace-nowrap"
+                    >
                       Profits from Raised
                     </th>
                   </tr>
@@ -82,10 +85,9 @@ export default function Leaderboard() {
                       ))
                     : investors.map((row, index) => (
                         <motion.tr
-                          initial={{ opacity: 0, paddingLeft: '-50px' }}
-                          animate={{ opacity: 1, paddingLeft: '0' }}
+                          initial={{ opacity: 0, paddingLeft: "-50px" }}
+                          animate={{ opacity: 1, paddingLeft: "0" }}
                           transition={{ duration: 1, delay: 0.1 * index }}
-                          
                           key={row.address}
                           className={`${
                             index % 2 === 0
