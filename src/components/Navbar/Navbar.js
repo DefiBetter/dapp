@@ -220,7 +220,7 @@ const Navbar = () => {
           <a
             target="_blank"
             rel="noreferrer"
-            href="https://github.com/DefiBetter/BetterDocs/blob/main/DeFiBetter%20Litepaper.pdf"
+            href="https://defibetter.gitbook.io/defibetter/"
             className="w-16 group h-full flex flex-col items-center justify-center relative"
           >
             <BsBook
@@ -300,7 +300,7 @@ const Navbar = () => {
             <a
               target="_blank"
               rel="noreferrer"
-              href="https://github.com/DefiBetter/BetterDocs/blob/main/DeFiBetter%20Litepaper.pdf"
+              href="https://defibetter.gitbook.io/defibetter/"
               className="h-12 group gap-2 flex items-center justify-center relative"
             >
               <BsBook
